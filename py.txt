@@ -1,0 +1,68 @@
+def print_type_tree(obj, indent=0):
+    prefix = "    " * indent
+    if isinstance(obj, dict):
+        print(f"{prefix}dict:")
+        for k, v in obj.items():
+            print(f"{prefix}  {k}: ", end="")
+            print_type_tree(v, indent + 1)
+    elif isinstance(obj, list):
+        print(f"{prefix}list[{len(obj)}]:")
+        for i, item in enumerate(obj):
+            print(f"{prefix}  [{i}]: ", end="")
+            print_type_tree(item, indent + 1)
+    else:
+        print(f"{prefix}{type(obj).__name__}")
+
+
+def print_type_tree_summary(obj, indent=0):
+    prefix = "    " * indent
+    obj_type = type(obj).__name__
+
+    if isinstance(obj, dict):
+        print(f"{prefix}dict")
+        # For each value, recursively print its type tree
+        for v in obj.values():
+            print_type_tree_summary(v, indent + 1)
+    elif isinstance(obj, list):
+        print(f"{prefix}list[{len(obj)}]")
+        for item in obj:
+            print_type_tree_summary(item, indent + 1)
+    else:
+        print(f"{prefix}{obj_type}")
+
+from collections import Counter
+
+def print_type_tree_summary_counts(obj, indent=0):
+    prefix = "    " * indent
+
+    if isinstance(obj, dict):
+        print(f"{prefix}dict")
+        # Count types of values at this level
+        type_counts = Counter(type(v).__name__ for v in obj.values())
+        for t, count in type_counts.items():
+            if t in ("dict", "list"):
+                # Recurse for dicts/lists
+                for v in obj.values():
+                    if type(v).__name__ == t:
+                        print_type_tree_summary_counts(v, indent + 1)
+            else:
+                # Print count for primitive types
+                print(f"{prefix}    {t}[{count}]")
+    elif isinstance(obj, list):
+        # Count types in list
+        type_counts = Counter(type(item).__name__ for item in obj)
+        for t, count in type_counts.items():
+            if t in ("dict", "list"):
+                for item in obj:
+                    if type(item).__name__ == t:
+                        print_type_tree_summary_counts(item, indent + 1)
+            else:
+                print(f"{prefix}    {t}[{count}]")
+    else:
+        print(f"{prefix}{type(obj).__name__}[1]")
+
+# Example usage
+print_type_tree_summary_counts(configs)
+
+# print_type_tree_summary(configs)
+# print_type_tree(configs)

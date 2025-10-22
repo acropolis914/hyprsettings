@@ -1,0 +1,13 @@
+QWidget{
+    border : 1px solid #FF0000;
+    padding: 0;
+}
+
+QPushButton {
+    border: none;
+    text-align: left;
+}
+
+QPushButton:hover {
+    background-color:#dddddd
+}
