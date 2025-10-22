@@ -8,3 +8,15 @@ wheels/
 
 # Virtual environments
 .venv
+src/ui/fonts/CommitMonoNerdFont-Bold.otf
+src/ui/fonts/CommitMonoNerdFont-BoldItalic.otf
+src/ui/fonts/CommitMonoNerdFont-Italic.otf
+src/ui/fonts/CommitMonoNerdFont-Regular.otf
+src/ui/fonts/CommitMonoNerdFontMono-Bold.otf
+src/ui/fonts/CommitMonoNerdFontMono-BoldItalic.otf
+src/ui/fonts/CommitMonoNerdFontMono-Italic.otf
+src/ui/fonts/CommitMonoNerdFontMono-Regular.otf
+src/ui/fonts/CommitMonoNerdFontPropo-Bold.otf
+src/ui/fonts/CommitMonoNerdFontPropo-BoldItalic.otf
+src/ui/fonts/CommitMonoNerdFontPropo-Italic.otf
+src/ui/fonts/CommitMonoNerdFontPropo-Regular.otf

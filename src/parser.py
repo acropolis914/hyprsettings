@@ -32,7 +32,7 @@ class Node:
     def addChildren(self, child):
         self.children.append(child)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         dict = {"type": self.type, "name": self.name}
         # new
         if self.comment:
@@ -45,7 +45,7 @@ class Node:
             dict["children"] = [child.to_dict() for child in self.children]
         return dict
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
 
     def to_hyprland(self, indent_level: int = 0) -> dict | str:
@@ -86,7 +86,9 @@ class Node:
                 groupeend_comment = None
                 for child in self.children:
                     if child.type == "GROUPEND":
-                        groupeend_comment = f"# {child.comment}" if child.comment else ""
+                        groupeend_comment = (
+                            f"# {child.comment}" if child.comment else ""
+                        )
                         continue
                     content = child.to_hyprland(indent_level)
                     group_content.append(content)
@@ -105,6 +107,16 @@ class Node:
             return f"Node: {self.name} with type {self.type}"
         if self.type == "GROUP":
             return f"Node: {self.name} with type {self.type}. Children {len(self.children)}"
+
+
+def print_hyprland(config_list, print: bool = False, save: bool = False):
+    for key, content in config_list.items():
+        if print:
+            rich.print(f"===Content of {key}, bitch===")
+            rich.print(content)
+        if save:
+            with open(f"test_{key}", "w", encoding="UTF-8") as file:
+                file.write(content)
 
 
 class ConfigParser:
@@ -189,19 +201,9 @@ class ConfigParser:
             return part1, part2
 
 
-os.system("clear")
-config = ConfigParser(config_path).root.to_json()
-rich.print_json(config)
+# os.system("clear")
+# config = ConfigParser(config_path).root.to_json()
+# rich.print_json(config)
 
-
-hyrpland_files = ConfigParser(config_path).root.to_hyprland()
-for key, content in hyrpland_files.items():
-    # rich.print(f"===Content of {key}, bitch===")
-    # rich.print(content)
-    with open(f"test_{key}", "w", encoding="UTF-8") as file:
-        file.write(content)
-
-
-# console.print(Pretty.Pretty(config, no_wrap=True))
-
-# tee /dev/tty | wl-copy
+# hyrpland_files = ConfigParser(config_path).root.to_hyprland()
+# print_hyprland(hyrpland_files, print=True, save=True)

@@ -6,9 +6,11 @@ requires-python = ">=3.10"
 dependencies = [
     "autopep8>=2.3.2",
     "flake8>=7.3.0",
+    "flask>=3.1.2",
     "pep8>=1.7.1",
     "pylint>=4.0.1",
     "pyside6>=6.10.0",
+    "pywebview[gtk,qt]>=6.1",
     "rich>=14.2.0",
     "watchdog>=6.0.0",
 ]

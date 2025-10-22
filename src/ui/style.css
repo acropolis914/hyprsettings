@@ -1,0 +1,105 @@
+:root.tokyo {
+  --bg: #0a0047;
+  --sbg: #004687;
+  --prim: #ff4499;
+  --sec: #00ffd2;
+}
+:root.mocha {
+  --bg: #1a1823;
+  --sbg: #1a1823;
+  --prim: #c29df1;
+  --sec: #f3bce6;
+}
+:root.siloe {
+  --bg: #f9e0e3;
+  --sbg: #fffbdc;
+  --prim: #602766;
+  --sec: #713d77;
+}
+
+@font-face {
+  font-family: "CommitMono Nerd Font";
+  src: url("fonts/CommitMonoNerdFont-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  transition: all 0.1s ease-in-out;
+  background-color: var(--bg);
+  color: var(--prim);
+}
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+  font-size: 62.5%;
+  font-family: "CommitMono Nerd Font Mono", monospace;
+}
+
+body {
+  padding: 1ch;
+  font-size: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  height: 100%;
+}
+
+div#main {
+  padding-top: 1rem;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+}
+
+aside#sidebar {
+  width: clamp(10ch, 20%, 30ch);
+  height: 100%;
+}
+aside#sidebar ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+aside#sidebar ul li {
+  justify-content: center;
+  align-content: center;
+  height: 3rem;
+  padding-left: 2rem;
+  border-radius: 1ch;
+}
+aside#sidebar ul li:hover {
+  transform: scale(1.05);
+  background-color: var(--sec);
+  border: 1px solid var(--sec);
+  color: var(--bg);
+}
+aside#sidebar ul li:active {
+  transform: scale(0.95);
+  background-color: var(--sec);
+}
+
+header {
+  border-bottom: 1px solid var(--prim);
+  padding: 1rem;
+}
+
+footer {
+  display: flex;
+  flex-direction: row;
+}
+footer > * {
+  font-size: 1rem;
+}
+
+button {
+  border: none;
+}
+button:hover {
+  transform: scale(1.1);
+}
+
+/*# sourceMappingURL=style.css.map */
