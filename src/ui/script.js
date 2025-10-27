@@ -1,9 +1,9 @@
 //@ts-check
-import { bindFlags, modkeys, dispatchers, dispatcherParams, noneDispatchers } from "./hyprland-specific/binds.js";
-let data;
+import { configRenderer } from "./configRenderer.js";
+window.jsonViewer = document.querySelector("andypf-json-viewer")
+
 let themeButton = document.getElementById("theme-toggle")
 let root = document.querySelector("html")
-let jsonViewer = document.querySelector("andypf-json-viewer")
 let current_theme;
 let themeIndex = Number(localStorage.getItem("themeIndex") ?? 0)
 let themes = ["mocha", "tokyo", "siloe"]
@@ -23,6 +23,58 @@ function toggle_theme() {
     console.log("Theme toggled")
 }
 
+
+class ConfigTabs {
+    constructor(tab) {
+        // console.log(tab)
+        this.id = tab.id
+        console.log(`Making tab: ${tab.name}`)
+        let exists = document.querySelector(`aside#sidebar>ul>li#${this.id}`)
+        if (exists) {
+            console.log("a tab with that ID already exists")
+            return
+        }
+        this.name = tab.name
+        this.shown = tab.shown
+        this.sidebar = document.querySelector("aside#sidebar>ul")
+        this.configview = document.querySelector("#content-area")
+        this.makeSidebarItem()
+        this.makeContentView()
+
+    }
+
+    makeSidebarItem() {
+        let item = document.createElement("li")
+        item.classList.add("sidebar-item")
+        item.textContent = this.name
+        item.id = this.id
+        item.dataset.label = this.name
+        console.log(item.dataset.label)
+        if (this.shown) {
+            document.querySelectorAll("aside#sidebar>ul>li").forEach(i =>
+                i.classList.remove("selected")
+            )
+            item.classList.add("selected")
+        }
+        item.addEventListener("click", () => {
+            handleTabClick(this.id)
+        })
+        this.sidebar.append(item)
+    }
+
+    makeContentView() {
+        let item = document.createElement("div")
+        item.id = this.id
+        if (this.shown) {
+            document.querySelectorAll(".config-set").forEach(i =>
+                i.classList.add("hidden")
+            )
+            item.classList.remove("hidden")
+        }
+        this.configview.appendChild(item)
+    }
+}
+
 function handleTabClick(id) {
     document.querySelectorAll(".config-set").forEach((element) => {
         element.id === id ? element.classList.remove("hidden") : element.classList.add("hidden")
@@ -30,90 +82,49 @@ function handleTabClick(id) {
     document.querySelectorAll(".sidebar-item").forEach((element) => {
         element.id === id ? element.classList.add("selected") : element.classList.remove("selected")
     })
-    const sidebarItem = document.querySelector(`#${id}`);
+    const sidebarItem = document.querySelector(`ul>#${id}`);
     const sidebarItemTitle = sidebarItem.dataset.label;
+    const configSetTitle = document.querySelector("#config-set-title")
+    configSetTitle.textContent = sidebarItemTitle
 }
 
 document.querySelectorAll(".sidebar-item").forEach((li) => {
     li.addEventListener("click", () => {
         handleTabClick(li.id)
     })
+    li.setAttribute("tabindex", "0");
+    li.addEventListener("keydown", (e) => { handleTabClick(li.id) })
 })
 
 
 async function setup() {
-    setupTheme()
-    window.addEventListener('pywebviewready', async function () {
-        jsonViewer.data = JSON.stringify(JSON.parse(await window.pywebview.api.get_config()))
-        data = JSON.parse(await window.pywebview.api.get_config())
-        console.table(data["children"])
-    })
+    await waitFor(() => window.pywebview?.api.init)
+    window.data = JSON.parse(await window.pywebview.api.init())
+    new configRenderer(window.data)
+    jsonViewer.data = window.data
+
+    let tabs = [
+        {
+            "name": "Halu",
+            "shown": false,
+            "id": "halu"
+        }
+    ]
+    for (let tab of tabs) {
+        new ConfigTabs(tab)
+    }
 }
 
+async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
+    const start = Date.now()
+    while (!check()) {
+        if (Date.now() - start > timeout) throw new Error('Timeout waiting for condition')
+        await new Promise(r => setTimeout(r, interval))
+    }
+}
+
+setupTheme()
+console.log("pywebview is ready")
 setup()
-
-class EditorItem_Binds {
-    constructor(name, uuid, value, comment = null) {
-        if (!name.trim().startsWith("bind")) return console.warn(`Given json object is not sutable for this editor item:${name}=${value}`)
-        const template = document.getElementById("keybind-template")
-        this.el = template.content.firstElementChild.cloneNode(true)
-
-        this.el.dataset.name = name
-        this.el.dataset.uuid = uuid
-        this.el.dataset.comment = comment ?? ""
-
-        let tomselect_bindflag_settings = { options: bindFlags, valueField: "value", searchField: "value" }
-        let bindflag_selectel = this.el.querySelector(".bindflags")
-        console.log(name)
-        let bindflag_additems = name.trim().substring(4).split("")
-        let bindflag_selector = new TomSelect(bindflag_selectel, tomselect_bindflag_settings)
-        bindflag_additems.forEach(element => {
-            bindflag_selector.addItem(element)
-        });
-
-        this.el.querySelector(".comment").textContent = comment ?? ""
-
-        let tomselect_modkeys_settings = { options: modkeys, valueField: "value", searchField: "text" }
-        let modkey_select = this.el.querySelector(".modkey")
-        new TomSelect(modkey_select, tomselect_modkeys_settings)
-
-        const dispatcherSelect = this.el.querySelector(".dispatcher");
-        const paramSelect = this.el.querySelector(".params");
-
-        const dispatcherTS = new TomSelect(dispatcherSelect, {
-            options: dispatchers,
-            maxItems: 1,
-            valueField: "value",
-            searchField: "text",
-            onChange: (value) => {
-                paramTS.clearOptions();
-                const allowedParams = dispatcherParams[value] || [];
-                paramTS.addOptions(allowedParams);
-                if (noneDispatchers.includes(value)) {
-                    paramTS.disable()
-                } else {
-                    paramTS.enable()
-                }
-            },
-        });
-
-        const paramTS = new TomSelect(paramSelect, {
-            create: true,
-            disable: true,
-            options: [],
-            valueField: "value",
-            searchField: "text",
-        });
-
-
-
-    }
-
-    addToParent(parent) {
-        parent.appendChild(this.el)
-    }
-}
-
-
 
 

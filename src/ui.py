@@ -1,39 +1,43 @@
 import webview
-from parser import ConfigParser
+from parser import ConfigParser, Node, makeUUID
 from pathlib import Path
 import mimetypes
 
-current_file = Path(__file__).parent.resolve()
-html_file = current_file / "ui" / "index.html"
-css_file = current_file / "ui" / "style.css"
 
-with open(html_file, "r", encoding="UTF-8") as html_content:
-    html = html_content.read()
+def on_loaded(window):
+	print("DOM is ready")
+	window.events.loaded -= on_loaded
 
 
 class Api:
-    def init(self):
-        return self.get_config()
+	def init(self):
+		return self.get_config()
 
-    def get_config(self):
-        config_path = Path.home() / ".config" / "hypr" / "hyprland.conf"
-        config = ConfigParser(config_path).root.to_json()
-        return config
+	def get_config(self):
+		return config
 
-    def save_config(self, json: str):
-        pass
+	def save_config(self, json: str):
+		pass
+
+	def new_uuid(self, count: int):
+		return makeUUID(count)
 
 
-api = Api()
+if __name__ == "__main__":
+	current_file = Path(__file__).parent.resolve()
+	config_path = Path.home() / ".config" / "hypr" / "hyprland.conf"
+	config = ConfigParser(config_path).root.to_json()
 
-mimetypes.add_type("application/javascript", ".js")
-window = webview.create_window(
-    "Hyprland Config Editor",
-    "ui/index.html",
-    js_api=api,
-    transparent=True,
-    # frameless=True,r
-)
+	api = Api()
+	mimetypes.add_type("application/javascript", ".js")
+	window = webview.create_window(
+		"Hyprland Config Editor",
+		"ui/index.html",
+		js_api=api,
+		transparent=True,
+	)
+	window.events.loaded += on_loaded
 
-# window.load_css(stylesheet=css_file)
-webview.start(gui="gtk", debug=True, private_mode=False, storage_path=".pywebview")
+	webview.start(
+		gui="gtk", debug=True, private_mode=False, storage_path=".pywebview"
+	)

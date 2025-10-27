@@ -19,6 +19,10 @@ console = Console()
 NodeType = Literal["KEY", "GROUP", "COMMENT", "BLANK", "FILE", "GROUPEND"]
 
 
+def makeUUID(count: int):
+    return str(uuid.uuid4()).replace("-", "")[:count]
+
+
 class Node:
     def __init__(self, name, type_: NodeType, value=None, comment=None, position=None):
         allowed_types = get_args(NodeType)
@@ -31,7 +35,7 @@ class Node:
         self.comment = comment
         self.children: list = []
         self.position = position
-        self.uuid = str(uuid.uuid4()).replace("-", "")[:8]
+        self.uuid = makeUUID(8)
 
     def addChildren(self, child):
         self.children.append(child)
@@ -209,6 +213,9 @@ class ConfigParser:
                     # print(comment)
                     self.stack[-1].addChildren(groupend_node)
                     self.stack.pop()
+                # elif name.startswith("$"):
+                #     name,value = self.get_parts(line,"=")
+                #     name.rstrip("$")
                 else:
                     name, value = self.get_parts(line, "=")
                     # print(position)
@@ -248,9 +255,9 @@ class ConfigParser:
             return part1, part2
 
 
-os.system("clear")
-config_node1 = ConfigParser.load(config_path).to_json()
-rich.print_json(config_node1)
+# os.system("clear")
+# config_node1 = ConfigParser.load(config_path).to_json()
+# rich.print_json(config_node1)
 # with open("config_node1.txt", "w", encoding="UTF-8") as node1:
 #     node1.write(config_node1)
 

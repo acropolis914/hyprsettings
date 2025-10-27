@@ -1,73 +1,109 @@
 <!DOCTYPE html>
 <html lang="en" class="">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <meta http-equiv="refresh" content="1" /> -->
-    <title>Hyprland Config Parser by Pol</title>
-    <script type="module" src="script.js" defer></script>
-    <script type="module" src="jslib/json-viewer.js"></script>
-    <script type="module" src="jslib/hotkeys.min.js"></script>
-    <script type="module" src="jslib/tom-select.complete.min.js"></script>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="jslib/tom-select.css" />
-  </head>
-  <body>
-    <header> HyprUI</header>
-    <div id="main">
-      <aside id="sidebar">
-        <ul>
-          <li class="sidebar-item selected" id="general" data-label="General">
-            General
-          </li>
-          <li class="sidebar-item" id="display" data-label="Monitor">
-            Monitor
-          </li>
-          <li class="sidebar-item" id="keybinds" data-label="Keybinds">
-            Keybinds
-          </li>
-          <li class="sidebar-item" id="window-rules" data-label="Window Rules">
-            Window Rules
-          </li>
-          <li
-            class="sidebar-item"
-            id="miscellaneous"
-            data-label="Miscellaneous"
-          >
-            Misc
-          </li>
-        </ul>
-      </aside>
-      <div id="content-area">
-        <h1 onclick="configSet_toTop" id="config-set-title">General</h1>
-        <div class="config-set" id="general">
-          <andypf-json-viewer style="" expanded="false"></andypf-json-viewer>
-        </div>
-        <div class="config-set hidden" id="display"></div>
-        <div class="config-set hidden" id="keybinds"></div>
-        <div class="config-set hidden" id="window-rules"></div>
-        <div class="config-set hidden" id="miscellaneous"></div>
-      </div>
-    </div>
-    <footer>
-      <button type="button" id="theme-toggle" onclick="toggle_theme">⚪</button>
-      <p>|<a href="http://github.com/AcroPolis914">AcroPolis914</a></p>
-    </footer>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<!-- <meta http-equiv="refresh" content="1" /> -->
+		<title>Hyprland Config Parser by Pol</title>
+		<script type="module" src="script.js" defer></script>
+		<script type="module" src="jslib/json-viewer.js"></script>
+		<script type="module" src="jslib/hotkeys.min.js"></script>
+		<script
+			type="module"
+			src="jslib/tom-select.complete.min.js"
+		></script>
+		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="jslib/tom-select.css" />
+	</head>
+	<body>
+		<header> HyprUI</header>
+		<div id="main">
+			<aside id="sidebar">
+				<ul>
+					<li
+						class="sidebar-item"
+						id="general"
+						data-label="General"
+					>
+						General
+					</li>
+					<li
+						class="sidebar-item"
+						id="display"
+						data-label="Monitor"
+					>
+						Monitor
+					</li>
+					<li
+						class="sidebar-item selected"
+						id="keybinds"
+						data-label="Keybinds"
+					>
+						Keybinds
+					</li>
+					<li
+						class="sidebar-item"
+						id="window-rules"
+						data-label="Window Rules"
+					>
+						Window Rules
+					</li>
+					<li
+						class="sidebar-item"
+						id="miscellaneous"
+						data-label="Miscellaneous"
+					>
+						Misc
+					</li>
+				</ul>
+			</aside>
+			<div id="content-area">
+				<h1 onclick="" id="config-set-title">Keybinds</h1>
+				<div class="config-set hidden" id="general">
+					<andypf-json-viewer
+						style=""
+						expanded="false"
+					></andypf-json-viewer>
+				</div>
+				<div class="config-set hidden" id="display"></div>
+				<div class="config-set" id="keybinds"></div>
+				<div class="config-set hidden" id="window-rules"></div>
+				<div class="config-set hidden" id="miscellaneous"></div>
+			</div>
+		</div>
+		<footer>
+			<button
+				type="button"
+				id="theme-toggle"
+				onclick="toggle_theme"
+			>
+				⚪
+			</button>
+			<p>|<a href="http://github.com/AcroPolis914">HyprUI</a></p>
+		</footer>
+	</body>
 
-  <template id="keybind-template">
-    <div class="editor-item">
-      <div class="keybind-editor">
-        <select class="bindflags" multiple></select>
-        <select class="modkey" multiple></select>
-        <div class="keypress"></div>
-        <select class="dispatcher" multiple></select>
-        <select class="params"></select>
-      </div>
-      <div class="comment-area">
-        <span class="comment-hashtag">#</span>
-        <textarea class="comment" contenteditable="true"></textarea>
-      </div>
-    </div>
-  </template>
+	<template id="keybind-template">
+		<div class="editor-item" tabindex="0">
+			<div class="editor-item-preview"></div>
+			<div class="keybind-editor">
+				<select class="bindflags" multiple></select>
+				<select class="modkey" multiple></select>
+				<textarea class="keypress"></textarea>
+				<select class="dispatcher" multiple></select>
+				<textarea class="params"></textarea>
+			</div>
+			<div class="comment-area">
+				<span class="comment-hashtag">#</span>
+				<textarea
+					class="comment"
+					contenteditable="true"
+					placeholder="No Comment"
+				></textarea>
+			</div>
+		</div>
+	</template>
 </html>

@@ -447,7 +447,6 @@ export const dispatcherParams = {
         { value: "u", text: "Up" },
         { value: "d", text: "Down" }
     ],
-    // etc...
 };
 
 export const noneDispatchers = [
