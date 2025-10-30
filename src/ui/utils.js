@@ -6,10 +6,11 @@ export async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
 	}
 }
 
-export const debounce = (fn, wait = 300) => {
+export const debounce = (fn, wait = 100) => {
 	let timeout;
-	return (...args) => {
+	return function (...args) {
+		const context = this;
 		clearTimeout(timeout);
-		timeout = setTimeout(() => fn.apply(this, args), wait);
+		timeout = setTimeout(() => fn.apply(context, args), wait);
 	};
 };

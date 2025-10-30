@@ -169,7 +169,7 @@ footer > * {
 .config-set {
   display: flex;
   height: 100%;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   flex-direction: column;
   min-height: 0;
   overflow-y: scroll;
@@ -207,6 +207,7 @@ footer > * {
   opacity: 0.7;
   background-blend-mode: multiply;
   border-radius: var(--border-rad);
+  font-size: 1.6rem;
 }
 .editor-item:focus-within {
   border-color: var(--prim);
@@ -238,6 +239,7 @@ footer > * {
   color: var(--sec);
   flex: 1;
   border-radius: var(--border-rad);
+  font-size: 1.6rem !important;
 }
 .editor-item .keybind-editor > textarea {
   padding: 2px 2px;
@@ -326,12 +328,18 @@ footer > * {
 }
 
 .todo {
+  display: block;
+  width: 100%;
+  white-space: normal;
+  text-overflow: ellipsis;
+  display: block;
   border-radius: var(--border-rad);
   color: var(--sec);
-  white-space: nowrap;
+  width: 100%;
+  line-height: 2rem;
 }
 .todo.disabled {
-  border: 1px dashed red;
+  text-decoration: line-through;
 }
 
 /* =================================
@@ -357,6 +365,11 @@ button {
 button:hover {
   transform: scale(1.1);
   color: var(--sec);
+}
+
+.blank-line {
+  color: transparent;
+  max-width: 100%;
 }
 
 .hidden {

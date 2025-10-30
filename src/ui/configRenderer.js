@@ -34,8 +34,7 @@ export class configRenderer {
             this.comment_stack.push(json)
             if (this.comment_stack.length === 3) {
                 for (let i = 0; i < this.comment_stack.length; i++) {
-                    let comment_item = new EditorItem_Comments(this.comment_stack[i]["comment"], this.comment_stack[i]["uuid"], this.comment_stack[i]["position"], true)
-                    // console.log(`Adding comment ${this.comment_stack[i]["comment"]} to ${this.current_tab}`)
+                    let comment_item = new EditorItem_Comments(this.comment_stack[i], true)
                     comment_item.addToParent(this.current_tab)
                 }
                 this.comment_stack = []
@@ -55,29 +54,32 @@ export class configRenderer {
             });
 
         } // end of comment stacks
-
         //inline comments
         else if (json["type"] === "COMMENT") {
-            let comment_item = new EditorItem_Comments(`${json["comment"]}`, json["uuid"], json["position"])
+            let comment_item = new EditorItem_Comments(json, false)
             comment_item.addToParent(this.current_tab)
         }
 
-        //bind editor
-        else if (json["type"] === "KEY" && json["name"].startsWith("bind")) {
-            let keybindsTab = document.querySelector(".config-set#keybinds")
-            if (!keybindsTab) await waitFor(() => keybindsTab = document.querySelector(".config-set#keybinds"))
-            let keybind_item = new EditorItem_Binds(json["name"], json["uuid"], json["value"], json["comment"], json["position"])
-            keybind_item.addToParent(keybindsTab)
-            this.current_tab = keybindsTab
-        } else if (json["type"] === "KEY") {
-            console.log(json["disabled"])
+        else if (json["type"] === "BLANK") {
+            let blankline = document.createElement("div")
+            blankline.classList.add("blank-line")
+            blankline.textContent = "THIS IS A BLANK LINE"
+            this.current_tab.appendChild(blankline)
+        }
+
+        else if (json["type"] === "KEY") {
+            if (json["name"].startsWith("bind")) {
+                let keybindsTab = document.querySelector(".config-set#keybinds")
+                if (!keybindsTab) await waitFor(() => keybindsTab = document.querySelector(".config-set#keybinds"))
+                let keybind_item = new EditorItem_Binds(json, false, keybindsTab)
+                this.current_tab = keybindsTab
+                return
+            }
             let genericItem = document.createElement("div")
             genericItem.textContent = `${json["name"]} = ${json["value"]}`
             genericItem.title = json["position"]
             genericItem.classList.add("todo")
-            console.log(json["disabled"])
             if (json["disabled"] === true) {
-                console.log("Disabled item found")
                 genericItem.classList.add("disabled")
             }
             genericItem.setAttribute("contenteditable", "true")
@@ -96,8 +98,23 @@ export class configRenderer {
     }
 }
 
+class EditorItem_Generic {
+    constructor(json, disabled=false, parent){
+
+    }
+    update(){
+        
+    }
+    save(){
+
+    }
+}
+
 class EditorItem_Comments {
-    constructor(comment, uuid, position, hidden = false) {
+    constructor(json, hidden = false) {
+        let comment = json["comment"]
+        let uuid = json["uuid"]
+        let position = json["position"]
         this.initial_load = true
         this.el = document.createElement("div")
         this.el.dataset.name = "comment"
@@ -120,33 +137,34 @@ class EditorItem_Comments {
     }
     update() {
         this.el.dataset.comment = this.textarea.value
-        console.log(this.textarea.value)
         if (!this.initial_load) {
             this.saveDebounced()
         }
 
     }
+
     addToParent(parent) {
         parent.appendChild(this.el)
     }
+
     save() {
         if (this.el.dataset.comment.startsWith("#")) {
             console.log("saving text inpuut")
+            let type = "COMMENT"
             let name = this.el.dataset.name
             let uuid = this.el.dataset.uuid
             let position = this.el.dataset.position
-            let value = this.el.dataset.value
+            let value = null
             let comment = this.el.dataset.comment
-            saveKey("COMMENT", name, uuid, position, value, comment)
+            saveKey(type, name, uuid, position, value, comment)
         } else {
             let [name, value] = this.el.dataset.comment.split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
-            console.log(this.el.dataset.comment)
+            let [new_value, comment] = value.split(/#(.*)/).slice(0, 2).map(p => (p.trim()))
             let uuid = this.el.dataset.uuid
             let type = "KEY"
             let position = this.el.dataset.position
-            // console.log(name, value)
             if (name && value) {
-                saveKey(type, name, uuid, position, value)
+                saveKey(type, name, uuid, position, value, comment = comment)
             }
 
         }
@@ -155,7 +173,12 @@ class EditorItem_Comments {
 }
 
 class EditorItem_Binds {
-    constructor(name, uuid, value = null, comment = null, position = null) {
+    constructor(json, disabled = false, parent) {
+        let name = json["name"]
+        let uuid = json["uuid"]
+        let value = json["value"]
+        let comment = json["comment"]
+        let position = json["position"]
         if (!name.trim().startsWith("bind")) return console.warn(`Given json object is not sutable for this editor item:${name}=${value}`)
         const template = document.getElementById("keybind-template")
         this.el = template.content.firstElementChild.cloneNode(true)
@@ -281,11 +304,11 @@ class EditorItem_Binds {
         this.comment_el.value = comment ?? ""
         this.comment_el.addEventListener("input", () => {
             if (!this.initial_load) {
+                this.el.dataset.comment = this.comment_el.value
                 this.update()
-                console.log(this.el.dataset.comment)
             }
         })
-        this.update()
+        this.addToParent(parent)
         this.initial_load = false
     }
 
@@ -308,6 +331,7 @@ class EditorItem_Binds {
 
         this.el.dataset.name = bindflagString
         this.el.dataset.value = `${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}`
+
         let saved_comment = this.comment_el.value
         this.el.dataset.comment = saved_comment
         if (!this.initial_load) {
@@ -338,14 +362,14 @@ class EditorItem_Binds {
     }
 
     save() {
-        console.log(`Element with uuid ${this.el.dataset.uuid} changed to ${this.preview}`)
+        console.log(`Element with uuid ${this.el.dataset.uuid} changed to ${this.preview} with comment ${this.el.dataset.comment}`)
         let name = this.el.dataset.name
         let uuid = this.el.dataset.uuid
         let position = this.el.dataset.position
         let value = this.el.dataset.value
-        let comment = this.el.dataset.comment
+        const commentToSave = this.comment_el.value.trim() === "" ? null : this.comment_el.value;
         let type = this.el.dataset.type
-        saveKey(type, name, uuid, position, value, comment)
+        saveKey(type, name, uuid, position, value, commentToSave, false)
     }
 
 }
@@ -373,6 +397,7 @@ function findParent(root, path) {
     }
     return node
 }
+
 /**
  * Description
  * @param {String} type
@@ -381,10 +406,10 @@ function findParent(root, path) {
  * @param {String} position
  * @param {String} value
  * @param {String} comment=null
+ * @param {Boolean} disabled=false
  * @returns {any}
  */
-
-function saveKey(type, name, uuid, position, value, comment = null) {
+function saveKey(type, name, uuid, position, value, comment = null, disabled = false) {
     let root = window.data
     let path = position.split(":")
     let parent = findParent(root, path)
@@ -398,7 +423,14 @@ function saveKey(type, name, uuid, position, value, comment = null) {
     node["uuid"] = uuid
     node["position"] = position
     node["value"] = value
-    if (comment) node["comment"] = comment
+    if (disabled) {
+        node["disabled"] = True
+    }
+    if (comment) {
+        node["comment"] = comment
+    } else if (node.hasOwnProperty("comment")) {
+        delete node["comment"]
+    }
 
     window.jsViewer.data = window.data
 

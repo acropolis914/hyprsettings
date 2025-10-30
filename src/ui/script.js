@@ -241,12 +241,8 @@ async function setupData() {
 
 document.addEventListener("DOMContentLoaded", async () => {
     setupTheme()
-    // await createDynamicTabs()
     await waitFor(() => createDynamicTabs())
     console.log("pywebview is ready")
-    // await waitFor(() => document.querySelector(".config-set#js_debug"))
-    // await waitFor(() => document.querySelector(".config-set#general"))
-    // await waitFor(() => document.querySelector(".config-set#keybinds"))
     await setupData()
     renderSettings()
 })

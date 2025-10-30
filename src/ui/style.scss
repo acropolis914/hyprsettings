@@ -207,7 +207,7 @@ footer {
 .config-set {
 	display: flex;
 	height: 100%;
-	flex: 1 1 auto;
+	flex: 0 1 auto;
 	flex-direction: column;
 	min-height: 0;
 	overflow-y: scroll;
@@ -257,6 +257,7 @@ footer {
 	opacity: 0.7;
 	background-blend-mode: multiply;
 	border-radius: var(--border-rad); // Use var
+	font-size: 1.6rem;
 
 	&:focus-within {
 		border-color: var(--prim);
@@ -292,6 +293,7 @@ footer {
 			color: var(--sec);
 			flex: 1;
 			border-radius: var(--border-rad);
+			font-size: 1.6rem !important;
 		}
 		> textarea {
 			padding: 2px 2px;
@@ -367,13 +369,12 @@ footer {
 		color: var(--prim);
 		font-style: italic;
 		// line-height: 0.8rem;
-		@include text-ellipsis; // Use mixin
+		@include text-ellipsis;
 		box-shadow: none !important;
 		opacity: 0.7;
 		outline: none !important;
 		resize: none;
 		overflow: hidden;
-		// padding: 2px;
 
 		&::after {
 			margin-left: 2px;
@@ -393,12 +394,22 @@ footer {
 }
 
 .todo {
+	display: block;
+	width: 100%;
+	// overflow-x: hidden;
+	// overflow-y: auto;
+	white-space: normal;
+	// word-break: ;
+	text-overflow: ellipsis;
+	// overflow-x: hidden;
+	display: block;
 	border-radius: var(--border-rad);
 	color: var(--sec);
-	// border: 1px dashed var(--prim2);
-	white-space: nowrap;
+	// height: 1.6rem;
+	width: 100%;
+	line-height: 2rem;
 	&.disabled {
-		border: 1px dashed red;
+		text-decoration: line-through;
 	}
 }
 
@@ -433,6 +444,10 @@ button {
 }
 
 // --- Utility Classes ---
+.blank-line {
+	color: transparent;
+	max-width: 100%;
+}
 .hidden {
 	display: none !important;
 	visibility: hidden;
