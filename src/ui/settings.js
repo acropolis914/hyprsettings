@@ -31,7 +31,6 @@ class CheckBoxItem {
 		this.settingContainer.appendChild(this.label)
 		settingsEl.appendChild(this.settingContainer)
 	}
-
 	return() {
 		return this.settingContainer, this.checkbox
 	}
@@ -47,14 +46,14 @@ function createLineCommentsVisibilitySetting() {
 		console.log("toggled comments")
 		window.config["show_line_comments"] = el.checked
 		localStorage.setItem("config", JSON.stringify(window.config))
-		let commentItems = document.querySelectorAll(".config-set>.editor-item:has(>.editor-item-comment)")
+		let commentItems = document.querySelectorAll(".editor-item:has(>.editor-item-comment)")
 		if (el.checked) {
 			commentItems.forEach(i =>
-				i.classList.remove("hidden")
+				i.classList.remove("settings-hidden")
 			)
 		} else {
 			commentItems.forEach(i =>
-				i.classList.add("hidden")
+				i.classList.add("settings-hidden")
 			)
 		}
 	})

@@ -18,14 +18,18 @@ let tabids = [
     ["permissions", "permissions"],
     ["look and feel", "looknfeel"],
     ["animations", "animations"],
-    ["input", "input"]
+    ["input", "input"],
+    ["debug", "debug"]
 ];
 export class configRenderer {
     constructor(json) {
         this.json = json
-        this.current_tab = document.querySelector(".config-set#general")
+        this.current_container = []
+        this.current_container.push(document.querySelector(".config-set#general"))
         this.comment_stack = []
+        this.group_stack = []
         this.parse(this.json)
+
     }
 
     async parse(json) {
@@ -34,8 +38,10 @@ export class configRenderer {
             this.comment_stack.push(json)
             if (this.comment_stack.length === 3) {
                 for (let i = 0; i < this.comment_stack.length; i++) {
-                    let comment_item = new EditorItem_Comments(this.comment_stack[i], true)
-                    comment_item.addToParent(this.current_tab)
+                    let comment_item = new EditorItem_Comments(this.comment_stack[i])
+                    // console.log(comment_item)
+                    comment_item.el.classList.add("hidden")
+                    comment_item.addToParent(this.current_container.at(-1))
                 }
                 this.comment_stack = []
             }
@@ -46,9 +52,10 @@ export class configRenderer {
             let comment = json["comment"].trim().replace(/^#+|#+$/g, "").trim();
             tabids.forEach(([key, val]) => {
                 if (comment.toLowerCase().includes(key)) {
-                    this.current_tab = document.querySelector(`.config-set#${val}`)
+                    this.current_container.pop()
+                    this.current_container.push(document.querySelector(`.config-set#${val}`))
                     if (!document.querySelector(`.config-set#${val}`)) {
-                        waitFor(() => this.current_tab = document.querySelector(`.config-set#${val}`))
+                        waitFor(() => this.current_container.push(document.querySelector(`.config-set#${val}`)))
                     }
                 }
             });
@@ -57,14 +64,39 @@ export class configRenderer {
         //inline comments
         else if (json["type"] === "COMMENT") {
             let comment_item = new EditorItem_Comments(json, false)
-            comment_item.addToParent(this.current_tab)
+            comment_item.addToParent(this.current_container.at(-1))
         }
 
-        else if (json["type"] === "BLANK") {
-            let blankline = document.createElement("div")
-            blankline.classList.add("blank-line")
-            blankline.textContent = "THIS IS A BLANK LINE"
-            this.current_tab.appendChild(blankline)
+        // else if (json["type"] === "BLANK") {
+        //     let blankline = document.createElement("div")
+        //     blankline.classList.add("blank-line")
+        //     blankline.textContent = "THIS IS A BLANK LINE"
+        //     this.current_container.at(-1).appendChild(blankline)
+        // }
+
+        else if (json["type"] === "GROUP") {
+            // console.log(`json group: ${json["name"]}`)
+            if (json["position"] && json["position"].split(":").length > 1) {
+                // console.log("Groupstart: ", json["position"])
+                let group_el = document.createElement("div")
+                group_el.classList.add("config-group")
+                group_el.dataset.name = json["name"]
+                group_el.dataset.uuid = json["uuid"]
+                group_el.dataset.postion = json["position"]
+                group_el.setAttribute("title", json["position"])
+                if (json["comment"]) {
+                    group_el.dataset.comment = json["comment"]
+                }
+                this.current_container.at(-1).appendChild(group_el)
+                this.current_container.push(group_el)
+            }
+
+            // let currentpath = Array.from(this.)
+            // console.log(`Group ${json["name"]} under ${currentpath} is not yet handled to make a new div.`)
+        }
+        else if (json["position"] && json["type"] === "GROUPEND" && json["position"].split(":").length > 1) {
+            // console.log("Groupend: ", json["position"])
+            this.current_container.pop()
         }
 
         else if (json["type"] === "KEY") {
@@ -72,7 +104,9 @@ export class configRenderer {
                 let keybindsTab = document.querySelector(".config-set#keybinds")
                 if (!keybindsTab) await waitFor(() => keybindsTab = document.querySelector(".config-set#keybinds"))
                 let keybind_item = new EditorItem_Binds(json, false, keybindsTab)
-                this.current_tab = keybindsTab
+                this.current_container.pop()
+                this.current_container.push(keybindsTab)
+                keybind_item.addToParent(this.current_container.at(-1))
                 return
             }
             let genericItem = document.createElement("div")
@@ -83,7 +117,7 @@ export class configRenderer {
                 genericItem.classList.add("disabled")
             }
             genericItem.setAttribute("contenteditable", "true")
-            this.current_tab.appendChild(genericItem)
+            this.current_container.at(-1).appendChild(genericItem)
         }
 
         //recursive children rendering
@@ -98,15 +132,49 @@ export class configRenderer {
     }
 }
 
+// class EditorItem_Template {
+//     constructor(json, disabled = false,) {
+//         this.inital_load = true
+//         this.saveDebounced = debounce(() => this.save(), 250);
+
+//         this.update()
+//         this.inital_load=true
+//     }
+//     update() {
+//         if (!this.inital_load){
+//             this.saveDebounced()
+//         }
+//     }
+
+//     addToParent(parent){
+//         parent.appendChild(this.el)
+//     }
+
+//     save() {
+//         // saveKey(type, name, uuid, position, value)
+//     }
+// }
+
 class EditorItem_Generic {
-    constructor(json, disabled=false, parent){
+    constructor(json, disabled = false,) {
+        this.inital_load = true
+        this.saveDebounced = debounce(() => this.save(), 250);
 
+        this.update()
+        this.inital_load = true
     }
-    update(){
-        
+    update() {
+        if (!this.inital_load) {
+            this.saveDebounced()
+        }
     }
-    save(){
 
+    addToParent(parent) {
+        parent.appendChild(this.el)
+    }
+
+    save() {
+        // saveKey(type, name, uuid, position, value)
     }
 }
 
@@ -124,7 +192,7 @@ class EditorItem_Comments {
         this.el.setAttribute("title", position)
         this.el.classList.add("editor-item")
         if (hidden) {
-            this.el.classList.add("hidden")
+            this.el.classList.add("settings-hidden")
         }
         this.textarea = this.el.appendChild(document.createElement("textarea"))
         // textarea.contentEditable = "true"
@@ -308,7 +376,10 @@ class EditorItem_Binds {
                 this.update()
             }
         })
-        this.addToParent(parent)
+        if (parent) {
+            this.addToParent(parent)
+        }
+        this.update()
         this.initial_load = false
     }
 
@@ -415,7 +486,7 @@ function saveKey(type, name, uuid, position, value, comment = null, disabled = f
     let parent = findParent(root, path)
     let node = parent.children.find(node => node.uuid === uuid)
     if (node && node.type === "KEY") {
-        console.log(node)
+        // console.log(node)
         // console.log(parent.children.indexOf(node))
     }
     node["name"] = name

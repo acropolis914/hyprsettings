@@ -246,6 +246,31 @@ footer {
 	}
 }
 
+.config-group {
+	position: relative;
+	border: 1px solid var(--prim);
+	border-radius: var(--border-rad);
+	margin-top: var(--spacing-unit);
+	margin-bottom: var(--spacing-unit);
+	padding: 2rem;
+	display: flex;
+	flex-direction: column;
+}
+
+/* the floating label on the border */
+.config-group::before {
+	content: attr(data-name);
+	position: absolute;
+	top: 0;
+	left: 1rem; /* adjust for spacing */
+	transform: translateY(-50%);
+	background-color: var(--bg, #fff); /* match your group background */
+	padding: 0 0.5em;
+	font-size: 1.6rem;
+	color: var(--prim);
+	text-transform: capitalize;
+}
+
 // --- Editor Item ---
 
 .editor-item {
@@ -449,6 +474,12 @@ button {
 	max-width: 100%;
 }
 .hidden {
+	display: none !important;
+	visibility: hidden;
+	flex: 0;
+}
+
+.settings-hidden {
 	display: none !important;
 	visibility: hidden;
 	flex: 0;
