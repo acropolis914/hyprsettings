@@ -15,6 +15,11 @@
 			type="module"
 			src="jslib/tom-select.complete.min.js"
 		></script>
+		<!-- <script src="jslib/eruda.js"></script>
+		<script>
+			eruda.init();
+		</script> -->
+		<link rel="stylesheet" href="reset.css" />
 		<link rel="stylesheet" href="style.css" />
 		<link rel="stylesheet" href="jslib/tom-select.css" />
 	</head>
@@ -22,56 +27,10 @@
 		<header> HyprUI</header>
 		<div id="main">
 			<aside id="sidebar">
-				<ul>
-					<li
-						class="sidebar-item"
-						id="general"
-						data-label="General"
-					>
-						General
-					</li>
-					<li
-						class="sidebar-item"
-						id="display"
-						data-label="Monitor"
-					>
-						Monitor
-					</li>
-					<li
-						class="sidebar-item selected"
-						id="keybinds"
-						data-label="Keybinds"
-					>
-						Keybinds
-					</li>
-					<li
-						class="sidebar-item"
-						id="window-rules"
-						data-label="Window Rules"
-					>
-						Window Rules
-					</li>
-					<li
-						class="sidebar-item"
-						id="miscellaneous"
-						data-label="Miscellaneous"
-					>
-						Misc
-					</li>
-				</ul>
+				<ul></ul>
 			</aside>
 			<div id="content-area">
 				<h1 onclick="" id="config-set-title">Keybinds</h1>
-				<div class="config-set hidden" id="general">
-					<andypf-json-viewer
-						style=""
-						expanded="false"
-					></andypf-json-viewer>
-				</div>
-				<div class="config-set hidden" id="display"></div>
-				<div class="config-set" id="keybinds"></div>
-				<div class="config-set hidden" id="window-rules"></div>
-				<div class="config-set hidden" id="miscellaneous"></div>
 			</div>
 		</div>
 		<footer>

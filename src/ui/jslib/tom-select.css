@@ -14,10 +14,10 @@
  */
 
  .ts-wrapper >*{
-  background-color: var(--sbg) !important;
+  background-color: var(--bg1) !important;
   color: var(--prim) !important;
-  border: 1px solid var(--sbg) !important;
-  border-radius: var(--border-rad);
+  border: 1px solid var(--bg1) !important;
+  border-radius: var(--border-rad) !important;
   /* z-index: 5 !important; */
   align-items: center;
   box-sizing: border-box !important;
@@ -26,7 +26,7 @@
 
  .ts-control,
 .ts-dropdown {
-  background-color: var(--sbg) !important;
+  background-color: var(--bg1) !important;
   color: var(--sec) !important;
 }
 
@@ -73,7 +73,7 @@
   /* padding: 2px 6px; */
   /* background: #f2f2f2; */
   /* color: #303030; */
-  border: 0 solid #d0d0d0;
+  border: 1 solid var(--sec);
   /* flex: 1 1 calc(50% - 1rem);  */
   overflow: hidden;
   white-space: nowrap;
@@ -156,6 +156,7 @@
   box-sizing: border-box;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-radius: 0 0 3px 3px;
+  overscroll-behavior: contain;
 }
 .ts-dropdown [data-selectable] {
   cursor: pointer;

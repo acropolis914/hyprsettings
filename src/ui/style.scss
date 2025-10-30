@@ -1,17 +1,57 @@
-:root {
-	--border-rad: 5px;
+/* =================================
+   1. Variables & Mixins
+   ================================= */
 
+// -- SCSS-only Vars (Internal) --
+$transition-speed-fast: 0.05s;
+$transition-speed-normal: 0.1s;
+$transition-main: background-color $transition-speed-normal ease,
+	color $transition-speed-fast ease;
+
+// -- Mixins --
+
+// Single-line text overflow
+@mixin text-ellipsis {
+	white-space: nowrap;
 	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+// Sidebar tab active state (for :hover, :active, .selected)
+@mixin sidebar-item-active {
+	background-color: var(--sec);
+	color: var(--bg);
+	font-weight: 600;
+}
+
+/* =================================
+   2. Theming & Base Styles
+   ================================= */
+
+// --- Theming Root ---
+:root {
+	// These are now themeable from JS!
+	--spacing-unit: 1rem;
+	--border-rad: 5px;
+	--font-primary: "CommitMono Nerd Font Mono";
+
+	// Themes
+	// improve theming: needs at least three surface colors
+	// and three+ text colors (prim, sec, tert with highlight variants)
 	&.tokyo {
 		--bg: #0a0047de;
-		--sbg: #0a3964;
+		--sbg: #094277;
 		--prim: #05c5a2;
 		--sec: #ff4499;
 	}
 	&.mocha {
-		--bg: #1a1823de;
+		--bg: #1e1e2e;
 		--sbg: #36314e;
-		--prim: #c29df1;
+		--bg1: #45475a;
+		--bg2: #585b70;
+		--prim: #b09fe3;
+		--prim2: #bac2de;
+		--prim3: #a6adc8;
 		--sec: #f3bce6;
 	}
 	&.siloe {
@@ -22,6 +62,7 @@
 	}
 }
 
+// --- Font ---
 @font-face {
 	font-family: "CommitMono Nerd Font";
 	src: url("fonts/CommitMonoNerdFont-Regular.otf") format("opentype");
@@ -29,210 +70,244 @@
 	font-style: normal;
 }
 
-* {
-	margin: 0;
-	padding: 0;
-
-	border-radius: var(--border-rad);
-	transition: all 0.1s ease-in-out;
-	transition: color 0.05s;
-	box-sizing: border-box !important;
-	/* border: var(--sec) 1px solid;*/
-}
+// --- Base & Resets ---
 
 html {
 	height: 100%;
-
+	font-size: 62.5%; // 1rem = 10px
+	box-sizing: border-box;
 	background-color: var(--bg);
-
 	color: var(--prim);
-	font-family: "CommitMono Nerd Font Mono", monospace;
-	font-size: 62.5%;
+	font-family: var(--font-primary); // Use the CSS var
+	overflow: hidden;
 	min-height: 0;
-	overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: inherit; // Better box-sizing reset
 }
 
 body {
 	display: flex;
-	height: 100%;
-	padding: 1rem;
-
-	font-size: 1.6rem;
 	flex-direction: column;
+	height: 100%;
+	padding: var(--spacing-unit); // Use the CSS var
+	font-size: 1.6rem; // Default to 16px
 	max-width: 100%;
-	min-height: 100%;
-	min-height: 0;
+	min-height: 0; // Fix for flex children
 	overflow: hidden;
+	// Specific, performant transition
+	transition: $transition-main;
+	overflow-x: hidden;
 }
+
+/* =================================
+   3. Layout
+   ================================= */
+
 header {
-	padding: 1rem;
-	border-radius: 0;
+	padding: var(--spacing-unit); // Use var
 	border-bottom: 1px solid var(--prim);
+	border-radius: 0;
+	transition: transform $transition-speed-normal ease; // Specific transition
+
 	&:hover {
 		transform: scale(1.01);
 	}
 }
 
-div#main {
+#main {
 	display: flex;
-	padding-top: 1rem;
-	flex: 1;
-	flex-direction: row;
-	min-height: 0;
+	flex: 1; // Take remaining vertical space
+	padding-top: var(--spacing-unit); // Use var
+	min-height: 0; // Allow content to scroll
 	max-width: 100%;
 }
 
-aside#sidebar {
+#sidebar {
 	height: 100%;
-	// width: clamp(10ch, 20%, 30ch);
-	flex: 0 1 20%;
+	flex: 0 0 20%; // Strict 20%
 	min-width: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+
 	ul {
 		display: flex;
 		list-style: none;
 		flex-direction: column;
-
-		li {
-			height: 3rem;
-			width: 100%;
-			padding-left: 1rem;
-			border-radius: 0ch;
-			align-content: center;
-			justify-content: center;
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-
-			&:hover {
-				border: 1px solid var(--sec);
-				background-color: var(--sec);
-				color: var(--bg);
-				font-weight: 600;
-				// transform: scale(1.05);
-			}
-			&:active {
-				background-color: var(--sec);
-
-				font-weight: 600;
-				transform: scale(0.95);
-			}
-			&.selected {
-				background-color: var(--sec);
-
-				color: var(--bg);
-				font-weight: 600;
-			}
-		}
 	}
 }
 
 #content-area {
 	display: flex;
 	height: 100%;
-	padding-left: 1rem;
-	flex: 0 0 80%;
+	padding-left: var(--spacing-unit); // Use var
+	flex: 0 0 80%; // Strict 80%
+	max-width: 80%; // Enforce max width
 	flex-direction: column;
-	max-width: 80%;
 	min-height: 0;
-	.config-set {
-		display: flex;
-		height: 100%;
-		flex: 1 1 auto;
-		flex-direction: column;
-		min-height: 0rem;
-		overflow-y: scroll;
-	}
-	h1 {
-		margin-bottom: 1rem;
-		font-size: 1.6rem;
-	}
 }
 
 footer {
 	display: flex;
 	align-items: center;
-	flex-direction: row;
+	flex-direction: row-reverse; // This moves items to the right
+	margin-top: var(--spacing-unit); // Use var
+
 	> * {
 		font-size: 1rem;
 	}
 }
-a {
-	background-color: none;
 
-	color: var(--prim);
-	/* font-size: 1rem;*/
-	&:checked {
-		color: var(--prim);
-	}
+/* =================================
+   4. Components
+   ================================= */
+
+// --- Sidebar Components ---
+
+.tab-separator {
+	margin-left: var(--spacing-unit); // Use var
+	margin-top: var(--spacing-unit); // Use var
+	border-bottom: 3px solid var(--sbg);
+	border-radius: 0;
+	font-size: 1.2rem;
 }
-button {
-	/* padding: 0.5rem;*/
-	border: none;
-	background: none;
-	cursor: pointer;
+
+.sidebar-item {
+	display: flex; // For vertical alignment
+	align-items: center;
+	height: 3rem;
+	padding-left: var(--spacing-unit); // Use var
+	width: 100%;
+	border-radius: 0;
+	@include text-ellipsis;
+	transition: $transition-main, transform $transition-speed-normal ease;
+
 	&:hover {
-		transform: scale(1.1);
+		@include sidebar-item-active; // Use mixin
+		border: 1px solid var(--sec);
+	}
+
+	&:active {
+		@include sidebar-item-active; // Use mixin
+		transform: scale(0.95);
+	}
+
+	&.selected {
+		@include sidebar-item-active; // Use mixin
 	}
 }
 
-.hidden {
-	display: none !important;
-	visibility: hidden;
-	flex: 0;
+// --- Content Area Components ---
+
+.config-set {
+	display: flex;
+	height: 100%;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-height: 0;
+	overflow-y: scroll;
+	margin-top: 1rem;
+
+	// Nest child selectors for clarity
+	h1 {
+		margin-bottom: var(--spacing-unit); // Use var
+		font-size: 1.6rem;
+	}
+
+	// Specific styles for the #settings tab
+	&#settings {
+		.setting-container {
+			display: flex;
+			margin-left: var(--spacing-unit); // Use var
+			flex-direction: row;
+			align-items: center;
+
+			input[type="checkbox"] {
+				margin-right: var(--spacing-unit); // Use var
+				width: 2rem; // Set a custom width
+				height: 2rem; // Set a custom height
+				transition: $transition-main;
+				&:active {
+					transform: scale(1.5);
+				}
+			}
+
+			label {
+				&:hover {
+					filter: brightness(5);
+				}
+			}
+		}
+	}
 }
+
+// --- Editor Item ---
+
 .editor-item {
-	/* border: 1px solid var(--sbg);*/
-	margin-bottom: 1rem;
-	// margin-top: 1rem;
+	height: auto;
+	margin-bottom: var(--spacing-unit); // Use var
 	padding: 0.5rem;
 	border: 1px solid transparent;
-	background-color: var(--bg);
+	background-color: var(--sbg);
 	opacity: 0.7;
-	background-blend-mode: darken;
-	height: auto;
-	/* transition: opacity 0.2s;*/
-	> * > ** {
-		min-width: 0 !important;
-	}
+	background-blend-mode: multiply;
+	border-radius: var(--border-rad); // Use var
+
 	&:focus-within {
-		border: 1px solid var(--prim);
+		border-color: var(--prim);
 		opacity: 1;
 	}
-	&.compact > .keybind-editor,
-	&.compact > .comment-area {
-		display: none !important;
+	&:focus-visible {
+		outline: none;
+		border: 1px dashed var(--sec);
 	}
+
+	&.compact {
+		> .keybind-editor,
+		> .comment-area {
+			display: none !important;
+		}
+	}
+
 	.editor-item-preview {
 		margin-bottom: 2px;
 		font-size: 1.4rem;
 		i {
-			opacity: 0.7;
 			color: var(--sec);
+			opacity: 0.7;
 		}
 	}
+
 	.keybind-editor {
 		display: flex;
 		flex-direction: row;
 		> * {
-			margin-right: 1rem;
-			background-color: var(--sbg);
+			margin-right: var(--spacing-unit); // Use var
+			background-color: var(--bg1);
 			color: var(--sec);
 			flex: 1;
+			border-radius: var(--border-rad);
 		}
 		> textarea {
+			padding: 2px 2px;
 			border: 0;
 			outline: none;
 			resize: none;
-			padding: 2px 2px;
 		}
 	}
+
 	.comment-area {
 		display: flex;
+		align-items: center;
+		justify-content: center;
 		margin-top: 0.2rem;
 		padding: 0;
-		align-items: center;
-		flex-direction: row;
-		justify-content: center;
+
 		> * {
 			height: 2rem;
 			opacity: (0.6);
@@ -245,35 +320,121 @@ button {
 				outline: none;
 			}
 		}
+
 		&:has(> textarea:placeholder-shown) {
-			opacity: 0.3;
+			opacity: 0.6;
 		}
+
 		.comment {
 			display: flex;
 			height: 2rem;
 			padding: 2px;
 			width: 100%;
-
 			border: 0;
-
-			background-color: rgba($color: #000000, $alpha: 0);
-
+			background-color: transparent;
 			color: var(--prim);
 			font-style: italic;
 			align-items: center;
 			resize: none;
-			/* text-align: center;*/
 			&:hover {
 				cursor: text;
 				opacity: 1;
 			}
 		}
+
 		.comment-hashtag {
-			padding-top: 4px;
-			align-items: center;
-		}
-		> textarea:placeholder-shown {
-			// opacity: 0.1;
+			padding-top: 0px;
 		}
 	}
+}
+
+// --- Line Comment Item (Specific) ---
+.editor-item:has(> .editor-item-comment) {
+	margin: 0;
+	padding: 0;
+	outline: none;
+	border: none;
+	background-color: transparent;
+	opacity: 1;
+	// line-height: 0.8;
+	// border: 1px solid red;
+
+	> .editor-item-comment {
+		margin-bottom: 0;
+		width: 100%;
+		border: 0;
+		background-color: transparent;
+		color: var(--prim);
+		font-style: italic;
+		// line-height: 0.8rem;
+		@include text-ellipsis; // Use mixin
+		box-shadow: none !important;
+		opacity: 0.7;
+		outline: none !important;
+		resize: none;
+		overflow: hidden;
+		// padding: 2px;
+
+		&::after {
+			margin-left: 2px;
+			content: " ⇢";
+			flex-shrink: 0;
+		}
+		&:hover {
+			cursor: text;
+			opacity: 1;
+		}
+		&:focus,
+		&:focus-visible {
+			outline: none;
+			border: 1px dashed var(--sec);
+		}
+	}
+}
+
+.todo {
+	border-radius: var(--border-rad);
+	color: var(--sec);
+	// border: 1px dashed var(--prim2);
+	white-space: nowrap;
+	&.disabled {
+		border: 1px dashed red;
+	}
+}
+
+/* =================================
+   5. Base Elements & Utilities
+   ================================= */
+
+// --- Base Elements ---
+a {
+	background: none;
+	color: var(--prim);
+	text-decoration: none; // Added
+	transition: color $transition-speed-normal ease;
+
+	&:hover {
+		color: var(--sec); // Added
+	}
+}
+
+button {
+	border: none;
+	background: none;
+	cursor: pointer;
+	color: var(--prim); // Added
+	transition: transform $transition-speed-normal ease,
+		color $transition-speed-normal ease;
+
+	&:hover {
+		transform: scale(1.1);
+		color: var(--sec); // Added
+	}
+}
+
+// --- Utility Classes ---
+.hidden {
+	display: none !important;
+	visibility: hidden;
+	flex: 0;
 }

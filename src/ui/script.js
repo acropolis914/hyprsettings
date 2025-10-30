@@ -1,5 +1,7 @@
 //@ts-check
+import { waitFor } from "./utils.js"
 import { configRenderer } from "./configRenderer.js";
+import { renderSettings } from "./settings.js";
 window.jsonViewer = document.querySelector("andypf-json-viewer")
 
 let themeButton = document.getElementById("theme-toggle")
@@ -27,11 +29,15 @@ function toggle_theme() {
 class ConfigTabs {
     constructor(tab) {
         // console.log(tab)
+        if (tab.name === "separator") {
+            this.sidebar = document.querySelector("aside#sidebar>ul")
+            this.make_separator(tab)
+            return
+        }
         this.id = tab.id
-        console.log(`Making tab: ${tab.name}`)
         let exists = document.querySelector(`aside#sidebar>ul>li#${this.id}`)
         if (exists) {
-            console.log("a tab with that ID already exists")
+            console.warn(`A tab with id ${tab.id} already exists.`)
             return
         }
         this.name = tab.name
@@ -43,13 +49,21 @@ class ConfigTabs {
 
     }
 
+    make_separator(tab) {
+        let separator = document.createElement("div")
+        separator.classList.add("tab-separator")
+        separator.textContent = tab.label
+        this.sidebar.appendChild(separator)
+    }
+
     makeSidebarItem() {
         let item = document.createElement("li")
         item.classList.add("sidebar-item")
+        item.tabIndex = 0
         item.textContent = this.name
         item.id = this.id
         item.dataset.label = this.name
-        console.log(item.dataset.label)
+        // console.log(item.dataset.label)
         if (this.shown) {
             document.querySelectorAll("aside#sidebar>ul>li").forEach(i =>
                 i.classList.remove("selected")
@@ -57,74 +71,182 @@ class ConfigTabs {
             item.classList.add("selected")
         }
         item.addEventListener("click", () => {
-            handleTabClick(this.id)
+            this.handleTabClick(this.id)
         })
+        item.addEventListener("focus", (e) => { this.handleTabClick(this.id) })
         this.sidebar.append(item)
     }
 
     makeContentView() {
         let item = document.createElement("div")
+        item.classList.add("config-set")
         item.id = this.id
+        item.classList.add("hidden")
         if (this.shown) {
-            document.querySelectorAll(".config-set").forEach(i =>
+            document.querySelectorAll("#content-area>.config-set").forEach(i =>
                 i.classList.add("hidden")
             )
             item.classList.remove("hidden")
+            document.getElementById("config-set-title").textContent = this.name
         }
         this.configview.appendChild(item)
     }
+    handleTabClick(id) {
+        document.querySelectorAll(".config-set").forEach((element) => {
+            element.id === id ? element.classList.remove("hidden") : element.classList.add("hidden")
+        })
+        document.querySelectorAll(".sidebar-item").forEach((element) => {
+            element.id === id ? element.classList.add("selected") : element.classList.remove("selected")
+        })
+        const sidebarItem = document.querySelector(`ul>#${id}`);
+        const sidebarItemTitle = sidebarItem.dataset.label;
+        const configSetTitle = document.querySelector("#config-set-title")
+        configSetTitle.textContent = sidebarItemTitle
+    }
+
 }
 
-function handleTabClick(id) {
-    document.querySelectorAll(".config-set").forEach((element) => {
-        element.id === id ? element.classList.remove("hidden") : element.classList.add("hidden")
-    })
-    document.querySelectorAll(".sidebar-item").forEach((element) => {
-        element.id === id ? element.classList.add("selected") : element.classList.remove("selected")
-    })
-    const sidebarItem = document.querySelector(`ul>#${id}`);
-    const sidebarItemTitle = sidebarItem.dataset.label;
-    const configSetTitle = document.querySelector("#config-set-title")
-    configSetTitle.textContent = sidebarItemTitle
-}
 
-document.querySelectorAll(".sidebar-item").forEach((li) => {
-    li.addEventListener("click", () => {
-        handleTabClick(li.id)
-    })
-    li.setAttribute("tabindex", "0");
-    li.addEventListener("keydown", (e) => { handleTabClick(li.id) })
-})
-
-
-async function setup() {
-    await waitFor(() => window.pywebview?.api.init)
-    window.data = JSON.parse(await window.pywebview.api.init())
-    new configRenderer(window.data)
-    jsonViewer.data = window.data
-
+async function createDynamicTabs() {
     let tabs = [
         {
-            "name": "Halu",
+            "name": "General",
+            "shown": true,
+            "id": "general"
+        },
+        {
+            "name": "Keybinds",
             "shown": false,
-            "id": "halu"
+            "id": "keybinds"
+        },
+
+        {
+            "name": "separator",
+            "label": "Appearance"
+        },
+        {
+            "name": "Look & Feel",
+            "shown": false,
+            "id": "looknfeel"
+        },
+        {
+            "name": "Animations",
+            "shown": false,
+            "id": "animations"
+        },
+
+        {
+            "name": "separator",
+            "label": "Layouts"
+        },
+        {
+            "name": "Workspaces",
+            "shown": false,
+            "id": "workspaces"
+        },
+        {
+            "name": "Window Rules",
+            "shown": false,
+            "id": "win-rules"
+        },
+
+        {
+            "name": "separator",
+            "label": "System & Devices"
+        },
+        {
+            "name": "Monitor",
+            "shown": false,
+            "id": "monitor"
+        },
+        {
+            "name": "Input",
+            "shown": false,
+            "id": "input"
+        },
+        {
+            "name": "Environment Variables",
+            "shown": false,
+            "id": "envars"
+        },
+
+        {
+            "name": "separator",
+            "label": "System Behavior"
+        },
+        {
+            "name": "Globals",
+            "shown": false,
+            "id": "globals"
+        },
+        {
+            "name": "Permissions",
+            "shown": false,
+            "id": "permissions"
+        },
+        {
+            "name": "AutoStart",
+            "shown": false,
+            "id": "autostart"
+        },
+        {
+            "name": "Miscellaneous",
+            "shown": false,
+            "id": "miscellaneous"
+        },
+
+        {
+            "name": "separator",
+            "label": "Utility & Debugging"
+        },
+        {
+            "name": "Settings",
+            "shown": false,
+            "id": "settings"
+        },
+        {
+            "name": "Debug / Testing",
+            "shown": false,
+            "id": "js_debug"
         }
-    ]
+    ];
+
+
     for (let tab of tabs) {
+        // console.log(tab)
         new ConfigTabs(tab)
     }
+    return true
+
+    // document.querySelectorAll(".sidebar-item").forEach((li) => {
+    //     li.addEventListener("click", () => {
+    //         handleTabClick(li.id)
+    //     })
+    //     li.setAttribute("tabindex", "0");
+    //     li.addEventListener("focus", (e) => { handleTabClick(li.id) })
+    // })
 }
 
-async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
-    const start = Date.now()
-    while (!check()) {
-        if (Date.now() - start > timeout) throw new Error('Timeout waiting for condition')
-        await new Promise(r => setTimeout(r, interval))
-    }
+
+async function setupData() {
+    await waitFor(() => window.pywebview?.api.init)
+    window.data = await JSON.parse(await window.pywebview.api.init())
+    window.jsViewer = document.createElement("andypf-json-viewer")
+    document.querySelector(".config-set#js_debug").appendChild(jsViewer)
+    window.jsViewer.data = window.data
+    // window.jsViewer.setAttribute("expanded", "true")
+    new configRenderer(window.data)
 }
 
-setupTheme()
-console.log("pywebview is ready")
-setup()
 
-
+document.addEventListener("DOMContentLoaded", async () => {
+    setupTheme()
+    // await createDynamicTabs()
+    await waitFor(() => createDynamicTabs())
+    console.log("pywebview is ready")
+    // await waitFor(() => document.querySelector(".config-set#js_debug"))
+    // await waitFor(() => document.querySelector(".config-set#general"))
+    // await waitFor(() => document.querySelector(".config-set#keybinds"))
+    await setupData()
+    renderSettings()
+})

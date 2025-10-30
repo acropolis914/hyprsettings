@@ -1,17 +1,29 @@
+@charset "UTF-8";
+/* =================================
+   1. Variables & Mixins
+   ================================= */
+/* =================================
+   2. Theming & Base Styles
+   ================================= */
 :root {
+  --spacing-unit: 1rem;
   --border-rad: 5px;
-  overflow: hidden;
+  --font-primary: "CommitMono Nerd Font Mono";
 }
 :root.tokyo {
   --bg: #0a0047de;
-  --sbg: #0a3964;
+  --sbg: #094277;
   --prim: #05c5a2;
   --sec: #ff4499;
 }
 :root.mocha {
-  --bg: #1a1823de;
+  --bg: #1e1e2e;
   --sbg: #36314e;
-  --prim: #c29df1;
+  --bg1: #45475a;
+  --bg2: #585b70;
+  --prim: #b09fe3;
+  --prim2: #bac2de;
+  --prim3: #a6adc8;
   --sec: #f3bce6;
 }
 :root.siloe {
@@ -27,169 +39,185 @@
   font-weight: normal;
   font-style: normal;
 }
-* {
-  margin: 0;
-  padding: 0;
-  border-radius: var(--border-rad);
-  transition: all 0.1s ease-in-out;
-  transition: color 0.05s;
-  box-sizing: border-box !important;
-  /* border: var(--sec) 1px solid;*/
-}
-
 html {
   height: 100%;
+  font-size: 62.5%;
+  box-sizing: border-box;
   background-color: var(--bg);
   color: var(--prim);
-  font-family: "CommitMono Nerd Font Mono", monospace;
-  font-size: 62.5%;
+  font-family: var(--font-primary);
+  overflow: hidden;
   min-height: 0;
-  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
 }
 
 body {
   display: flex;
-  height: 100%;
-  padding: 1rem;
-  font-size: 1.6rem;
   flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-unit);
+  font-size: 1.6rem;
   max-width: 100%;
-  min-height: 100%;
   min-height: 0;
   overflow: hidden;
+  transition: background-color 0.1s ease, color 0.05s ease;
+  overflow-x: hidden;
 }
 
+/* =================================
+   3. Layout
+   ================================= */
 header {
-  padding: 1rem;
-  border-radius: 0;
+  padding: var(--spacing-unit);
   border-bottom: 1px solid var(--prim);
+  border-radius: 0;
+  transition: transform 0.1s ease;
 }
 header:hover {
   transform: scale(1.01);
 }
 
-div#main {
+#main {
   display: flex;
-  padding-top: 1rem;
   flex: 1;
-  flex-direction: row;
+  padding-top: var(--spacing-unit);
   min-height: 0;
   max-width: 100%;
 }
 
-aside#sidebar {
+#sidebar {
   height: 100%;
-  flex: 0 1 20%;
+  flex: 0 0 20%;
   min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
-aside#sidebar ul {
+#sidebar ul {
   display: flex;
   list-style: none;
   flex-direction: column;
-}
-aside#sidebar ul li {
-  height: 3rem;
-  width: 100%;
-  padding-left: 1rem;
-  border-radius: 0ch;
-  align-content: center;
-  justify-content: center;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-aside#sidebar ul li:hover {
-  border: 1px solid var(--sec);
-  background-color: var(--sec);
-  color: var(--bg);
-  font-weight: 600;
-}
-aside#sidebar ul li:active {
-  background-color: var(--sec);
-  font-weight: 600;
-  transform: scale(0.95);
-}
-aside#sidebar ul li.selected {
-  background-color: var(--sec);
-  color: var(--bg);
-  font-weight: 600;
 }
 
 #content-area {
   display: flex;
   height: 100%;
-  padding-left: 1rem;
+  padding-left: var(--spacing-unit);
   flex: 0 0 80%;
-  flex-direction: column;
   max-width: 80%;
-  min-height: 0;
-}
-#content-area .config-set {
-  display: flex;
-  height: 100%;
-  flex: 1 1 auto;
   flex-direction: column;
-  min-height: 0rem;
-  overflow-y: scroll;
-}
-#content-area h1 {
-  margin-bottom: 1rem;
-  font-size: 1.6rem;
+  min-height: 0;
 }
 
 footer {
   display: flex;
   align-items: center;
-  flex-direction: row;
+  flex-direction: row-reverse;
+  margin-top: var(--spacing-unit);
 }
 footer > * {
   font-size: 1rem;
 }
 
-a {
-  background-color: none;
-  color: var(--prim);
-  /* font-size: 1rem;*/
-}
-a:checked {
-  color: var(--prim);
-}
-
-button {
-  /* padding: 0.5rem;*/
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-button:hover {
-  transform: scale(1.1);
+/* =================================
+   4. Components
+   ================================= */
+.tab-separator {
+  margin-left: var(--spacing-unit);
+  margin-top: var(--spacing-unit);
+  border-bottom: 3px solid var(--sbg);
+  border-radius: 0;
+  font-size: 1.2rem;
 }
 
-.hidden {
-  display: none !important;
-  visibility: hidden;
-  flex: 0;
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  padding-left: var(--spacing-unit);
+  width: 100%;
+  border-radius: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.1s ease, color 0.05s ease, transform 0.1s ease;
+}
+.sidebar-item:hover {
+  background-color: var(--sec);
+  color: var(--bg);
+  font-weight: 600;
+  border: 1px solid var(--sec);
+}
+.sidebar-item:active {
+  background-color: var(--sec);
+  color: var(--bg);
+  font-weight: 600;
+  transform: scale(0.95);
+}
+.sidebar-item.selected {
+  background-color: var(--sec);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.config-set {
+  display: flex;
+  height: 100%;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: scroll;
+  margin-top: 1rem;
+}
+.config-set h1 {
+  margin-bottom: var(--spacing-unit);
+  font-size: 1.6rem;
+}
+.config-set#settings .setting-container {
+  display: flex;
+  margin-left: var(--spacing-unit);
+  flex-direction: row;
+  align-items: center;
+}
+.config-set#settings .setting-container input[type=checkbox] {
+  margin-right: var(--spacing-unit);
+  width: 2rem;
+  height: 2rem;
+  transition: background-color 0.1s ease, color 0.05s ease;
+}
+.config-set#settings .setting-container input[type=checkbox]:active {
+  transform: scale(1.5);
+}
+.config-set#settings .setting-container label:hover {
+  filter: brightness(5);
 }
 
 .editor-item {
-  /* border: 1px solid var(--sbg);*/
-  margin-bottom: 1rem;
+  height: auto;
+  margin-bottom: var(--spacing-unit);
   padding: 0.5rem;
   border: 1px solid transparent;
-  background-color: var(--bg);
+  background-color: var(--sbg);
   opacity: 0.7;
-  background-blend-mode: darken;
-  height: auto;
-  /* transition: opacity 0.2s;*/
-}
-.editor-item > * > ** {
-  min-width: 0 !important;
+  background-blend-mode: multiply;
+  border-radius: var(--border-rad);
 }
 .editor-item:focus-within {
-  border: 1px solid var(--prim);
+  border-color: var(--prim);
   opacity: 1;
 }
-.editor-item.compact > .keybind-editor, .editor-item.compact > .comment-area {
+.editor-item:focus-visible {
+  outline: none;
+  border: 1px dashed var(--sec);
+}
+.editor-item.compact > .keybind-editor,
+.editor-item.compact > .comment-area {
   display: none !important;
 }
 .editor-item .editor-item-preview {
@@ -197,32 +225,32 @@ button:hover {
   font-size: 1.4rem;
 }
 .editor-item .editor-item-preview i {
-  opacity: 0.7;
   color: var(--sec);
+  opacity: 0.7;
 }
 .editor-item .keybind-editor {
   display: flex;
   flex-direction: row;
 }
 .editor-item .keybind-editor > * {
-  margin-right: 1rem;
-  background-color: var(--sbg);
+  margin-right: var(--spacing-unit);
+  background-color: var(--bg1);
   color: var(--sec);
   flex: 1;
+  border-radius: var(--border-rad);
 }
 .editor-item .keybind-editor > textarea {
+  padding: 2px 2px;
   border: 0;
   outline: none;
   resize: none;
-  padding: 2px 2px;
 }
 .editor-item .comment-area {
   display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 0.2rem;
   padding: 0;
-  align-items: center;
-  flex-direction: row;
-  justify-content: center;
 }
 .editor-item .comment-area > * {
   height: 2rem;
@@ -237,7 +265,7 @@ button:hover {
   outline: none;
 }
 .editor-item .comment-area:has(> textarea:placeholder-shown) {
-  opacity: 0.3;
+  opacity: 0.6;
 }
 .editor-item .comment-area .comment {
   display: flex;
@@ -245,20 +273,96 @@ button:hover {
   padding: 2px;
   width: 100%;
   border: 0;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
   color: var(--prim);
   font-style: italic;
   align-items: center;
   resize: none;
-  /* text-align: center;*/
 }
 .editor-item .comment-area .comment:hover {
   cursor: text;
   opacity: 1;
 }
 .editor-item .comment-area .comment-hashtag {
-  padding-top: 4px;
-  align-items: center;
+  padding-top: 0px;
+}
+
+.editor-item:has(> .editor-item-comment) {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  opacity: 1;
+}
+.editor-item:has(> .editor-item-comment) > .editor-item-comment {
+  margin-bottom: 0;
+  width: 100%;
+  border: 0;
+  background-color: transparent;
+  color: var(--prim);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: none !important;
+  opacity: 0.7;
+  outline: none !important;
+  resize: none;
+  overflow: hidden;
+}
+.editor-item:has(> .editor-item-comment) > .editor-item-comment::after {
+  margin-left: 2px;
+  content: " ⇢";
+  flex-shrink: 0;
+}
+.editor-item:has(> .editor-item-comment) > .editor-item-comment:hover {
+  cursor: text;
+  opacity: 1;
+}
+.editor-item:has(> .editor-item-comment) > .editor-item-comment:focus, .editor-item:has(> .editor-item-comment) > .editor-item-comment:focus-visible {
+  outline: none;
+  border: 1px dashed var(--sec);
+}
+
+.todo {
+  border-radius: var(--border-rad);
+  color: var(--sec);
+  white-space: nowrap;
+}
+.todo.disabled {
+  border: 1px dashed red;
+}
+
+/* =================================
+   5. Base Elements & Utilities
+   ================================= */
+a {
+  background: none;
+  color: var(--prim);
+  text-decoration: none;
+  transition: color 0.1s ease;
+}
+a:hover {
+  color: var(--sec);
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--prim);
+  transition: transform 0.1s ease, color 0.1s ease;
+}
+button:hover {
+  transform: scale(1.1);
+  color: var(--sec);
+}
+
+.hidden {
+  display: none !important;
+  visibility: hidden;
+  flex: 0;
 }
 
 /*# sourceMappingURL=style.css.map */
