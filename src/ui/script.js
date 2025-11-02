@@ -234,15 +234,25 @@ async function setupData() {
     window.jsViewer = document.createElement("andypf-json-viewer")
     document.querySelector(".config-set#js_debug").appendChild(jsViewer)
     window.jsViewer.data = window.data
-    // window.jsViewer.setAttribute("expanded", "true")
+    // console.log(windowConfig)
     new configRenderer(window.data)
+}
+
+async function load_config() {
+    await waitFor(() => window.pywebview?.api.init)
+    let windowConfig = await window.pywebview.api.read_window_config()
+    window.config = window.config || {}
+    for (let key in windowConfig.config) {
+        // console.log(key, windowConfig.config[key])
+        window.config[key] = windowConfig.config[key]
+    }
 }
 
 
 document.addEventListener("DOMContentLoaded", async () => {
+    load_config()
     setupTheme()
     await waitFor(() => createDynamicTabs())
-    console.log("pywebview is ready")
     await setupData()
     renderSettings()
 })

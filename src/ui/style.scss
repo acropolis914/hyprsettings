@@ -24,6 +24,22 @@ $transition-main: background-color $transition-speed-normal ease,
 	font-weight: 600;
 }
 
+@mixin scroll-on-hover($duration: 5s) {
+	position: relative;
+	overflow: hidden;
+	white-space: nowrap;
+	display: inline-block;
+	vertical-align: middle;
+
+	> span {
+		display: inline-block;
+		transition: transform $duration linear;
+	}
+
+	&:hover > span {
+		transform: translateX(calc(-100% + 100%));
+	}
+}
 /* =================================
    2. Theming & Base Styles
    ================================= */
@@ -39,15 +55,16 @@ $transition-main: background-color $transition-speed-normal ease,
 	// improve theming: needs at least three surface colors
 	// and three+ text colors (prim, sec, tert with highlight variants)
 	&.tokyo {
-		--bg: #0a0047de;
+		--bg: #140f30de;
 		--sbg: #094277;
 		--prim: #05c5a2;
-		--sec: #ff4499;
+		--prim2: #5dc9b5;
+		--sec: #ec84b3;
 	}
 	&.mocha {
 		--bg: #1e1e2e;
-		--sbg: #36314e;
-		--bg1: #45475a;
+		--sbg: #16122d;
+		--bg1: #212547;
 		--bg2: #585b70;
 		--prim: #b09fe3;
 		--prim2: #bac2de;
@@ -56,8 +73,8 @@ $transition-main: background-color $transition-speed-normal ease,
 	}
 	&.siloe {
 		--bg: #f9e0e3de;
-		--sbg: #fffbdc;
-		--prim: #602766;
+		--sbg: #fbedeede;
+		--prim: #522856;
 		--sec: #713d77;
 	}
 }
@@ -89,6 +106,7 @@ html {
 	margin: 0;
 	padding: 0;
 	box-sizing: inherit; // Better box-sizing reset
+	scrollbar-gutter: stable !important;
 }
 
 body {
@@ -139,24 +157,28 @@ header {
 		display: flex;
 		list-style: none;
 		flex-direction: column;
+		padding-right: 1rem;
 	}
 }
 
 #content-area {
 	display: flex;
 	height: 100%;
-	padding-left: var(--spacing-unit); // Use var
+	// padding-left: var(--spacing-unit); // Use var
 	flex: 0 0 80%; // Strict 80%
 	max-width: 80%; // Enforce max width
 	flex-direction: column;
 	min-height: 0;
+	padding-left: 1.5rem;
 }
 
 footer {
 	display: flex;
+	flex-direction: row;
 	align-items: center;
-	flex-direction: row-reverse; // This moves items to the right
-	margin-top: var(--spacing-unit); // Use var
+	// flex-direction: row-reverse; // This moves items to the right
+	justify-content: flex-end;
+	// margin-top: var(--spacing-unit); // Use var
 
 	> * {
 		font-size: 1rem;
@@ -183,13 +205,14 @@ footer {
 	height: 3rem;
 	padding-left: var(--spacing-unit); // Use var
 	width: 100%;
-	border-radius: 0;
+	border-radius: var(--border-rad);
 	@include text-ellipsis;
 	transition: $transition-main, transform $transition-speed-normal ease;
+	// @include scroll-on-hover(7s);
 
 	&:hover {
 		@include sidebar-item-active; // Use mixin
-		border: 1px solid var(--sec);
+		// border: 1px solid var(--sec);
 	}
 
 	&:active {
@@ -212,6 +235,7 @@ footer {
 	min-height: 0;
 	overflow-y: scroll;
 	margin-top: 1rem;
+	padding-right: 2rem;
 
 	// Nest child selectors for clarity
 	h1 {
@@ -272,6 +296,9 @@ footer {
 }
 
 // --- Editor Item ---
+.editor-item {
+	position: relative;
+}
 
 .editor-item {
 	height: auto;
@@ -279,8 +306,8 @@ footer {
 	padding: 0.5rem;
 	border: 1px solid transparent;
 	background-color: var(--sbg);
-	opacity: 0.7;
-	background-blend-mode: multiply;
+	opacity: 0.8;
+	// background-blend-mode: multiply;
 	border-radius: var(--border-rad); // Use var
 	font-size: 1.6rem;
 
@@ -294,9 +321,11 @@ footer {
 	}
 
 	&.compact {
+		// background-color: transparent !important;
 		> .keybind-editor,
 		> .comment-area {
-			display: none !important;
+			display: none;
+			opacity: 0;
 		}
 	}
 
@@ -310,6 +339,9 @@ footer {
 	}
 
 	.keybind-editor {
+		// grid-template-rows: 1fr;
+		// grid-template-columns: repeat(1fr, 4);
+		// overflow: hidden;
 		display: flex;
 		flex-direction: row;
 		> * {
@@ -331,6 +363,7 @@ footer {
 	.comment-area {
 		display: flex;
 		align-items: center;
+		font-style: italic;
 		justify-content: center;
 		margin-top: 0.2rem;
 		padding: 0;
@@ -396,7 +429,7 @@ footer {
 		// line-height: 0.8rem;
 		@include text-ellipsis;
 		box-shadow: none !important;
-		opacity: 0.7;
+		opacity: 0.5;
 		outline: none !important;
 		resize: none;
 		overflow: hidden;
@@ -436,6 +469,14 @@ footer {
 	&.disabled {
 		text-decoration: line-through;
 	}
+	> span {
+		&#key {
+			color: var(--sec);
+		}
+		&#value {
+			color: var(--prim);
+		}
+	}
 }
 
 /* =================================
@@ -454,11 +495,13 @@ a {
 	}
 }
 
-button {
+button#theme-toggle {
 	border: none;
 	background: none;
 	cursor: pointer;
 	color: var(--prim); // Added
+	font-size: 2rem;
+	margin-left: 2rem;
 	transition: transform $transition-speed-normal ease,
 		color $transition-speed-normal ease;
 
@@ -479,8 +522,97 @@ button {
 	flex: 0;
 }
 
+.disabled {
+	// filter: grayscale(100%);
+	// pointer-events: none;
+	position: relative;
+	opacity: 0.4;
+	z-index: auto;
+	transform: none; /* ensure no transform creates a context */
+}
+.disabled::before {
+	content: "[x]";
+}
+
 .settings-hidden {
 	display: none !important;
 	visibility: hidden;
 	flex: 0;
+}
+
+.context-menu {
+	position: absolute;
+	top: 110%;
+	right: 0%;
+	display: flex;
+	flex-direction: row;
+	background-color: var(--bg1);
+	z-index: 10 !important;
+	border-radius: var(--border-rad);
+	padding: calc(var(--spacing-unit) / 2);
+	border: 1px solid var(--prim);
+	.ctx-button {
+		display: flex;
+		flex-direction: column;
+		width: 4rem;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		overflow: hidden;
+		gap: 0.2rem;
+		color: var(--sec);
+		.ctx-button-icon {
+			font-size: 3rem;
+			line-height: 2rem;
+		}
+		.ctx-button-label {
+			text-align: center;
+			font-size: 1rem;
+			line-height: 1rem;
+			// @include text-ellipsis();
+		}
+		&:hover {
+			scale: 1.05;
+			filter: brightness(1);
+		}
+		&:active {
+			scale: 0.95;
+		}
+	}
+}
+
+// --- Scroll Bars Suck ---
+
+/* width */
+::-webkit-scrollbar {
+	width: 10px;
+	opacity: 0;
+	transition: opacity 1s linear;
+}
+::-webkit-scrollbar:hover {
+	width: 10px;
+	opacity: 1;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: var(--bg1);
+	border-radius: var(--border-rad);
+	transition: opacity 1s linear;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: var(--bg2);
+}
+
+.scrollable {
+	overflow: auto;
+	scrollbar-gutter: stable both-edges; /* reserves space inside */
+	background-clip: padding-box;
 }

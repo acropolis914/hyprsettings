@@ -1,9 +1,13 @@
 // TODO: WHAT TO DO WHEN COMMENTS ARE UNCOMMENTED?
 // IDEA: change value to key and parse
+import { ContextMenu } from "./contextMenu.js";
 import { bindFlags, modkeys, dispatchers, dispatcherParams, noneDispatchers } from "./hyprland-specific/binds.js"
-import { debounce, waitFor } from "./utils.js"
+import { debounce, saveKey, waitFor } from "./utils.js"
 // @ts-ignore
-window.dryrun = false
+// window.config = window.config || {};
+// window.config["dryrun"] = false
+// window.config["compact"] = true
+
 
 //tabids for comment stacks so configRenderer() knows where to put them
 let tabids = [
@@ -103,21 +107,14 @@ export class configRenderer {
             if (json["name"].startsWith("bind")) {
                 let keybindsTab = document.querySelector(".config-set#keybinds")
                 if (!keybindsTab) await waitFor(() => keybindsTab = document.querySelector(".config-set#keybinds"))
-                let keybind_item = new EditorItem_Binds(json, false, keybindsTab)
+                let keybind_item = new EditorItem_Binds(json, json["disabled"], keybindsTab)
                 this.current_container.pop()
                 this.current_container.push(keybindsTab)
                 keybind_item.addToParent(this.current_container.at(-1))
                 return
             }
-            let genericItem = document.createElement("div")
-            genericItem.textContent = `${json["name"]} = ${json["value"]}`
-            genericItem.title = json["position"]
-            genericItem.classList.add("todo")
-            if (json["disabled"] === true) {
-                genericItem.classList.add("disabled")
-            }
-            genericItem.setAttribute("contenteditable", "true")
-            this.current_container.at(-1).appendChild(genericItem)
+            let genericItem = new EditorItem_Generic(json, json["disabled"])
+            this.current_container.at(-1).appendChild(genericItem.el)
         }
 
         //recursive children rendering
@@ -156,7 +153,23 @@ export class configRenderer {
 // }
 
 class EditorItem_Generic {
-    constructor(json, disabled = false,) {
+    constructor(json, disabled = false) {
+        let name = json["name"]
+        let uuid = json["uuid"]
+        let value = json["value"]
+        let comment = json["comment"]
+        let position = json["position"]
+
+        this.el = document.createElement("div")
+        this.el.innerHTML = `<span id="key">${json["name"]} </span> = <span id="value">${json["value"]}</span>`
+        this.el.title = json["position"]
+        this.el.classList.add("todo")
+        if (disabled === true) {
+            this.el.classList.add("disabled")
+        }
+
+        this.el.setAttribute("contenteditable", "true")
+
         this.inital_load = true
         this.saveDebounced = debounce(() => this.save(), 250);
 
@@ -199,7 +212,7 @@ class EditorItem_Comments {
         this.textarea.setAttribute("rows", 1)
         this.textarea.classList.add("editor-item-comment")
         this.textarea.value = comment
-        this.saveDebounced = debounce(() => this.save(), 250);
+        this.saveDebounced = debounce(() => this.save(), 100);
         this.textarea.addEventListener("input", () => this.update())
         this.initial_load = false
     }
@@ -242,15 +255,23 @@ class EditorItem_Comments {
 
 class EditorItem_Binds {
     constructor(json, disabled = false, parent) {
+        this.initial_load = true
         let name = json["name"]
         let uuid = json["uuid"]
         let value = json["value"]
         let comment = json["comment"]
         let position = json["position"]
-        if (!name.trim().startsWith("bind")) return console.warn(`Given json object is not sutable for this editor item:${name}=${value}`)
+        if (!name.trim().startsWith("bind")) {
+            return console.warn(`Given json object is not sutable for this editor item:${name}=${value}`)
+        }
         const template = document.getElementById("keybind-template")
         this.el = template.content.firstElementChild.cloneNode(true)
-
+        if (window.config.compact) {
+            this.el.classList.add("compact")
+        }
+        if (disabled) {
+            this.el.classList.add("disabled")
+        }
         this.el.setAttribute("title", position)
         this.el.dataset.name = name
         // console.log(name, this.el.dataset.name)
@@ -258,10 +279,17 @@ class EditorItem_Binds {
         this.el.dataset.value = value ?? ""
         this.el.dataset.comment = comment ?? ""
         this.el.dataset.position = position ?? ""
+        this.el.dataset.disabled = disabled ?? false
         this.el.dataset.type = "KEY"
         this.preview = ""
-        this.initial_load = true
-        this.saveDebounced = debounce(() => this.save(), 1000);
+        this.contextMenu = new ContextMenu([
+            { label: "Add Above", icon: "󰅃", action: () => this.addAbove() },
+            { label: "Add Below", icon: "󰅀", action: () => this.addAbove() },
+            { label: "Disable Item", icon: "󰈉", action: () => this.disable() },
+            { label: "Delete Key", icon: "󰗩", action: () => this.addAbove() }
+        ])
+        this.el.appendChild(this.contextMenu.el)
+        this.saveDebounced = debounce(() => this.save(), 100);
 
         let values = value.split(",", 4)
         // console.log(values)
@@ -379,6 +407,30 @@ class EditorItem_Binds {
         if (parent) {
             this.addToParent(parent)
         }
+
+        this.el.addEventListener("click", (e) => {
+            this.el.classList.remove("compact")
+            this.contextMenu.show()
+        })
+        this.el.addEventListener("dblclick", (e) => {
+            console.log("Double clicked!")
+            // let target = e.target()
+            this.el.classList.toggle("compact")
+            this.contextMenu.hide()
+        })
+        this.el.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                this.el.classList.toggle("compact")
+                // this.contextMenu.el.classList.toggle("hidden")
+            }
+        })
+        this.el.addEventListener("focus", (e) => {
+            this.contextMenu.show()
+        })
+        this.el.addEventListener("blur", () => {
+            this.contextMenu.hide()
+            // this.el.classList.add("compact")
+        })
         this.update()
         this.initial_load = false
     }
@@ -414,6 +466,23 @@ class EditorItem_Binds {
         parent.appendChild(this.el)
     }
 
+    addAbove() {
+        console.log("Addabove yet to be implemented")
+    }
+
+    disable() {
+        if (this.el.dataset.disabled == "false") {
+            this.el.dataset.disabled = true
+            this.el.classList.add("disabled")
+            this.save()
+        } else {
+            this.el.dataset.disabled = false
+            this.el.classList.remove("disabled")
+            this.save()
+        }
+
+    }
+
     hasMod(element) {
         for (const mod of modkeys) {
             if (mod.value.includes(element)) {
@@ -440,75 +509,11 @@ class EditorItem_Binds {
         let value = this.el.dataset.value
         const commentToSave = this.comment_el.value.trim() === "" ? null : this.comment_el.value;
         let type = this.el.dataset.type
-        saveKey(type, name, uuid, position, value, commentToSave, false)
+        let disabled = this.el.dataset.disabled === "true"
+        console.log(`this key is disabled`, disabled)
+        saveKey(type, name, uuid, position, value, commentToSave, disabled)
     }
 
 }
 
 
-/**
- * Description
- * @param {JSON} root
- * @param {String} path
- * @returns {JSON}
- */
-function findParent(root, path) {
-    let node = root
-    for (let i = 1; i < path.length; i++) {
-        const key = path[i]
-        if (!node.children) {
-            console.log(`Node ${node} has no children`)
-            return null
-        }
-        node = node.children.find(child => child.name === key);
-        if (!node) {
-            console.log(`No parent node ${node} found`)
-            return null
-        }
-    }
-    return node
-}
-
-/**
- * Description
- * @param {String} type
- * @param {String} name
- * @param {String} uuid
- * @param {String} position
- * @param {String} value
- * @param {String} comment=null
- * @param {Boolean} disabled=false
- * @returns {any}
- */
-function saveKey(type, name, uuid, position, value, comment = null, disabled = false) {
-    let root = window.data
-    let path = position.split(":")
-    let parent = findParent(root, path)
-    let node = parent.children.find(node => node.uuid === uuid)
-    if (node && node.type === "KEY") {
-        // console.log(node)
-        // console.log(parent.children.indexOf(node))
-    }
-    node["name"] = name
-    node["type"] = type
-    node["uuid"] = uuid
-    node["position"] = position
-    node["value"] = value
-    if (disabled) {
-        node["disabled"] = True
-    }
-    if (comment) {
-        node["comment"] = comment
-    } else if (node.hasOwnProperty("comment")) {
-        delete node["comment"]
-    }
-
-    window.jsViewer.data = window.data
-
-    if (!window.dryrun) {
-        console.log(`Node ${uuid} saved:`, node)
-        window.pywebview.api.save_config(JSON.stringify(window.data))
-    } else {
-        console.log(`Node ${uuid} dryrun:`, node)
-    }
-}

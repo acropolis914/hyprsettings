@@ -11,15 +11,16 @@
   --font-primary: "CommitMono Nerd Font Mono";
 }
 :root.tokyo {
-  --bg: #0a0047de;
+  --bg: #140f30de;
   --sbg: #094277;
   --prim: #05c5a2;
-  --sec: #ff4499;
+  --prim2: #5dc9b5;
+  --sec: #ec84b3;
 }
 :root.mocha {
   --bg: #1e1e2e;
-  --sbg: #36314e;
-  --bg1: #45475a;
+  --sbg: #16122d;
+  --bg1: #212547;
   --bg2: #585b70;
   --prim: #b09fe3;
   --prim2: #bac2de;
@@ -28,8 +29,8 @@
 }
 :root.siloe {
   --bg: #f9e0e3de;
-  --sbg: #fffbdc;
-  --prim: #602766;
+  --sbg: #fbedeede;
+  --prim: #522856;
   --sec: #713d77;
 }
 
@@ -56,6 +57,7 @@ html {
   margin: 0;
   padding: 0;
   box-sizing: inherit;
+  scrollbar-gutter: stable !important;
 }
 
 body {
@@ -103,23 +105,24 @@ header:hover {
   display: flex;
   list-style: none;
   flex-direction: column;
+  padding-right: 1rem;
 }
 
 #content-area {
   display: flex;
   height: 100%;
-  padding-left: var(--spacing-unit);
   flex: 0 0 80%;
   max-width: 80%;
   flex-direction: column;
   min-height: 0;
+  padding-left: 1.5rem;
 }
 
 footer {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  flex-direction: row-reverse;
-  margin-top: var(--spacing-unit);
+  justify-content: flex-end;
 }
 footer > * {
   font-size: 1rem;
@@ -142,7 +145,7 @@ footer > * {
   height: 3rem;
   padding-left: var(--spacing-unit);
   width: 100%;
-  border-radius: 0;
+  border-radius: var(--border-rad);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -152,7 +155,6 @@ footer > * {
   background-color: var(--sec);
   color: var(--bg);
   font-weight: 600;
-  border: 1px solid var(--sec);
 }
 .sidebar-item:active {
   background-color: var(--sec);
@@ -174,6 +176,7 @@ footer > * {
   min-height: 0;
   overflow-y: scroll;
   margin-top: 1rem;
+  padding-right: 2rem;
 }
 .config-set h1 {
   margin-bottom: var(--spacing-unit);
@@ -224,13 +227,16 @@ footer > * {
 }
 
 .editor-item {
+  position: relative;
+}
+
+.editor-item {
   height: auto;
   margin-bottom: var(--spacing-unit);
   padding: 0.5rem;
   border: 1px solid transparent;
   background-color: var(--sbg);
-  opacity: 0.7;
-  background-blend-mode: multiply;
+  opacity: 0.8;
   border-radius: var(--border-rad);
   font-size: 1.6rem;
 }
@@ -244,7 +250,8 @@ footer > * {
 }
 .editor-item.compact > .keybind-editor,
 .editor-item.compact > .comment-area {
-  display: none !important;
+  display: none;
+  opacity: 0;
 }
 .editor-item .editor-item-preview {
   margin-bottom: 2px;
@@ -275,6 +282,7 @@ footer > * {
 .editor-item .comment-area {
   display: flex;
   align-items: center;
+  font-style: italic;
   justify-content: center;
   margin-top: 0.2rem;
   padding: 0;
@@ -333,7 +341,7 @@ footer > * {
   overflow: hidden;
   text-overflow: ellipsis;
   box-shadow: none !important;
-  opacity: 0.7;
+  opacity: 0.5;
   outline: none !important;
   resize: none;
   overflow: hidden;
@@ -366,6 +374,12 @@ footer > * {
 .todo.disabled {
   text-decoration: line-through;
 }
+.todo > span#key {
+  color: var(--sec);
+}
+.todo > span#value {
+  color: var(--prim);
+}
 
 /* =================================
    5. Base Elements & Utilities
@@ -380,14 +394,16 @@ a:hover {
   color: var(--sec);
 }
 
-button {
+button#theme-toggle {
   border: none;
   background: none;
   cursor: pointer;
   color: var(--prim);
+  font-size: 2rem;
+  margin-left: 2rem;
   transition: transform 0.1s ease, color 0.1s ease;
 }
-button:hover {
+button#theme-toggle:hover {
   transform: scale(1.1);
   color: var(--sec);
 }
@@ -403,10 +419,96 @@ button:hover {
   flex: 0;
 }
 
+.disabled {
+  position: relative;
+  opacity: 0.4;
+  z-index: auto;
+  transform: none; /* ensure no transform creates a context */
+}
+
+.disabled::before {
+  content: "[x]";
+}
+
 .settings-hidden {
   display: none !important;
   visibility: hidden;
   flex: 0;
+}
+
+.context-menu {
+  position: absolute;
+  top: 110%;
+  right: 0%;
+  display: flex;
+  flex-direction: row;
+  background-color: var(--bg1);
+  z-index: 10 !important;
+  border-radius: var(--border-rad);
+  padding: calc(var(--spacing-unit) / 2);
+  border: 1px solid var(--prim);
+}
+.context-menu .ctx-button {
+  display: flex;
+  flex-direction: column;
+  width: 4rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  gap: 0.2rem;
+  color: var(--sec);
+}
+.context-menu .ctx-button .ctx-button-icon {
+  font-size: 3rem;
+  line-height: 2rem;
+}
+.context-menu .ctx-button .ctx-button-label {
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1rem;
+}
+.context-menu .ctx-button:hover {
+  scale: 1.05;
+  filter: brightness(1);
+}
+.context-menu .ctx-button:active {
+  scale: 0.95;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  opacity: 0;
+  transition: opacity 1s linear;
+}
+
+::-webkit-scrollbar:hover {
+  width: 10px;
+  opacity: 1;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--bg1);
+  border-radius: var(--border-rad);
+  transition: opacity 1s linear;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg2);
+}
+
+.scrollable {
+  overflow: auto;
+  scrollbar-gutter: stable both-edges; /* reserves space inside */
+  background-clip: padding-box;
 }
 
 /*# sourceMappingURL=style.css.map */

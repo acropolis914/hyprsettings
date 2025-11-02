@@ -1,12 +1,11 @@
 import { waitFor } from "./utils.js"
 let settingsEl = document.querySelector(".config-set#settings")
-window.config = JSON.parse(localStorage.getItem("config")) || {}
+
 
 export function renderSettings() {
 	settingsEl = document.querySelector(".config-set#settings")
 	createLineCommentsVisibilitySetting()
 }
-
 
 /**
  * Description

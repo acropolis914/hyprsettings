@@ -336,9 +336,9 @@ class ConfigParser:
 
 
 os.system("clear")
-config_node1 = ConfigParser.load(config_path).to_hyprland()
+# config_node1 = ConfigParser.load(config_path).to_hyprland()
 # print(type(config_node1))
-print_hyprland(config_node1, print=True)
+# print_hyprland(config_node1, print=True)
 # rich.print_json(config_node1)
 # with open("config_node1.txt", "w", encoding="UTF-8") as node1:
 #     node1.write(config_node1)
