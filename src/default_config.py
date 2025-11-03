@@ -1,14 +1,18 @@
 # language=TOML
 default_config = """
 [config]
-first_run = true # DO NOT CHANGE
+first_run = true                    # DO NOT CHANGE
 dryrun = false
 compact = true
 show_line_comments = true
+show_header_comments = false
+ctx_label_hidden = false
+current_theme = "Catppuccin Mocha"
+font = "CommitMono Nerd Font Propo"
 
 [[theme]]
 name = "Catppuccin Mocha"
-author = "Catppuccin"
+author = "Catppuccin Org"
 variant = "Dark"
 description = "Soothing pastel theme for the high-strung."
 link = "https://github.com/catppuccin/catppuccin"
@@ -95,7 +99,7 @@ overlay = "#7e85a3"
 shadow = "#6b7089"
 
 [[theme]]
-name = "Catppuccin Frappé"
+name = "Catppuccin Frappe"                                 #removed the accented e cause its harder to type lol
 author = "Catppuccin"
 variant = "Dark"
 description = "Soothing pastel theme for the high-strung."
@@ -140,7 +144,7 @@ shadow = "#737994"
 
 [[theme]]
 name = "Catppuccin Latte"
-author = "Catppuccin"
+author = "Catppuccin Org"
 variant = "Light"
 description = "Soothing pastel theme for the high-strung."
 link = "https://github.com/catppuccin/catppuccin"
@@ -190,7 +194,7 @@ description = "An ambitious theme for terminals, vim, and friends."
 link = "https://embark-theme.github.io/"
 
 # Surfaces
-surface-0 = "#2D2B40"
+surface-0 = "#242231ff"    #Darkened it a bit for a less jarring look
 surface-1 = "#1E1C31"
 surface-2 = "#100E23"
 surface-border = "#585273"

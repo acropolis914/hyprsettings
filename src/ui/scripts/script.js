@@ -6,6 +6,7 @@ import { configRenderer } from "./configRenderer.js"
 import { renderSettings } from "./settings.js"
 import { createDynamicTabs } from "./createDynamicTabs.js"
 import { setupTheme } from "./setupTheme.js"
+import "./onboarding.js"
 // @ts-ignore
 window.jsonViewer = document.querySelector("andypf-json-viewer")
 
@@ -46,5 +47,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     createDynamicTabs()
     await setupData()
     renderSettings()
-
 })

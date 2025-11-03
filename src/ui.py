@@ -87,6 +87,4 @@ if __name__ == "__main__":
 	#
 	window.events.loaded += on_loaded
 
-	webview.start(
-		gui="gtk", debug=True, private_mode=False, storage_path=".pywebview"
-	)
+	webview.start(gui="gtk", private_mode=False, storage_path=".pywebview")

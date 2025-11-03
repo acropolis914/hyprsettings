@@ -303,6 +303,9 @@ h1#config-set-title {
 	> .config-group {
 		margin-top: 2rem;
 	}
+	&:has(> .config-group:last-child) {
+		padding-bottom: var(--spacing-unit);
+	}
 }
 
 /* the floating label on the border */
@@ -552,6 +555,12 @@ button#theme-toggle {
 	visibility: hidden;
 	flex: 0;
 }
+a {
+	color: var(--accent) !important;
+	&:hover {
+		text-decoration: underline;
+	}
+}
 
 .disabled {
 	// filter: grayscale(100%);
@@ -613,6 +622,37 @@ button#theme-toggle {
 	}
 }
 
+code {
+	background-color: var(--surface-1) !important;
+	border: var(--surface-border);
+	color: var(--accent-active);
+	border-radius: var(--border-rad);
+}
+
+button {
+	background-color: var(--accent);
+	outline: none;
+	border: none;
+	border-radius: var(--border-rad);
+	padding: var(--spacing-unit);
+	&:active {
+		background-color: var(--accent-active);
+	}
+	&:hover {
+		background-color: var(--accent-hover);
+		scale: 1.05;
+	}
+}
+
+span {
+	&.warning {
+		color: var(--accent-warning);
+	}
+	&.success {
+		color: var(--accent-success);
+	}
+}
+
 // --- Scroll Bars Suck ---
 
 /* width */
@@ -656,6 +696,7 @@ button#theme-toggle {
 
 #onboarding {
 	display: flex;
+	flex-direction: column;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -665,9 +706,41 @@ button#theme-toggle {
 	background-color: var(--surface-0) 50%;
 	backdrop-filter: blur(10px);
 	backdrop-filter: brightness(-0.5);
-
 	justify-items: center;
 	justify-content: center;
 	align-items: center;
-	transition: all 1s;
+	transition: all 0.4s ease;
+	transition: opacity 1s ease;
+	> * {
+		margin-bottom: var(--spacing-unit);
+	}
+	> p {
+		text-align: center;
+		display: inline-block;
+		padding-left: 10rem;
+		padding-right: 10rem;
+		margin-top: 1rem;
+	}
+
+	button {
+		font-weight: bold;
+		transition: scale 0.1 ease;
+		cursor: pointer;
+		scale: 1;
+
+		&:active {
+			scale: 0.9 !important;
+		}
+		&:hover {
+			scale: 1.05;
+		}
+	}
+	a {
+		white-space: nowrap;
+	}
+	ul {
+		list-style: square;
+		padding-left: 20rem;
+		padding-right: 20rem;
+	}
 }

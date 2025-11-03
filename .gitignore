@@ -16,6 +16,7 @@ pywebview/
 .mypy_cache/
 storage/
 node_modules
+.vscode
 
 # Virtual environments
 .venv

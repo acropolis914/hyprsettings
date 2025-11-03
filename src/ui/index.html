@@ -22,6 +22,49 @@
 	<body>
 		<div id="onboarding" class="hidden">
 			<h1>Hello!</h1>
+			<p>
+				This is very much in its
+				<span class="warning">alpha state</span>. Things may
+				break, things may not work. If you have time, dive in
+				and make changes, and submit pull requests at found at
+				the
+				<a
+					href="https://github.com/acropolis914/hyprsettings"
+					target="_blank"
+					> Github repo</a
+				>
+			</p>
+			<p>
+				A config has been written to
+				<code>~/.config/hypr/hyprsettings.toml</code><br />
+				Please change the font to an available Nerd Font
+				<br />
+			</p>
+
+			<p>
+				<span class="success">What's working? <br /></span>
+				<ul>
+					<li>The keybind editor works as expected</li>
+					<li>you can remove # to
+						turn comment to a key(if valid else it returns to the
+						commented version)</li>
+				</ul>
+			</p>
+
+			<p>
+				<span class="warning">What's not working<br /></span>
+				<ul>
+					<li>Adding new items</li>
+					<li>Editing config lines not yet fully implemented and pused to repo</li>
+				</ul>
+			</p>
+			<button
+			type="button"
+			id="onboarding-finish"
+			onclick="finishOnboarding()"
+		>
+			Okay!
+		</button>
 		</div>
 		<header> HyprUI</header>
 		<div id="main">
@@ -34,7 +77,11 @@
 		</div>
 		<footer>
 			<button type="button" id="theme-toggle">󰔎</button>
-			<p>|<a href="http://github.com/AcroPolis914">HyprSettings</a></p>
+			<p>
+				<a href="http://github.com/AcroPolis914/hyprsettings"
+					>HyprSettings</a
+				>
+			</p>
 		</footer>
 	</body>
 
