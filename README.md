@@ -32,10 +32,10 @@ git clone https://github.com/acropolis914/hyprsettings
 cd hyprsettings
 ```
 
-2. Install required system packages:
+2. Install required system packages(make a venv if you want):
 
 ```bash
-sudo pacman -Syu python python-gobject gtk3
+sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
 ```
 
 3. Run the UI:
@@ -51,7 +51,7 @@ python src/ui.py
 For Arch users, you can run the following single block to install dependencies and add a keybind to your Hyprland configuration:
 
 ```bash
-sudo pacman -Syu python python-gobject gtk3
+sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
 git clone https://github.com/acropolis914/hyprsettings ~/hyprsettings
 echo 'bind = SUPER, I, Exec, python ~/hyprsettings/src/ui.py' >> ~/.config/hypr/hyprland.conf
 ```
@@ -100,7 +100,7 @@ To make comments appear under the correct tab in Hyprsettings, use a **three-lin
 
 This will place the section under the **Animations** tab in the UI.
 
-| Comment Name (lowercase)       | Tab ID          |
+| Comment block name (case insensitive)       | Tab ID          |
 |--------------------------------|----------------|
 | general                        | general        |
 | monitor                        | monitor        |
