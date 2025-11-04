@@ -15,7 +15,7 @@ import re
 
 rich.traceback.install(show_locals=True)
 
-file_path = f"{Path(__file__).resolve().parent}/ConfigDescriptions.hpp"
+file_path = f"{Path(__file__).resolve().parent}/ConfigDescriptions.txt"
 
 
 def get_parts(line: str):

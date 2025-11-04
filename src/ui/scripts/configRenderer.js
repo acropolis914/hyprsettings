@@ -6,7 +6,9 @@
 import { ContextMenu } from "./contextMenu.js";
 import { bindFlags, modkeys, dispatchers, dispatcherParams, noneDispatchers } from "../hyprland-specific/binds.js"
 import { debounce, saveKey, waitFor } from "./utils.js"
-// @ts-ignore
+// Ensure TomSelect is available to the TypeScript/IDE by referencing window.TomSelect.
+// This creates a local binding so TS doesn't report "Cannot find name 'TomSelect'".
+const TomSelect = (typeof window !== "undefined" && window.TomSelect) ? window.TomSelect : undefined;
 
 
 //tabids for comment stacks so configRenderer() knows where to put them
@@ -163,15 +165,23 @@ export class configRenderer {
 
 class EditorItem_Generic {
     constructor(json, disabled = false) {
+        this.inital_load = true
         let name = json["name"]
         let uuid = json["uuid"]
         let value = json["value"]
-        let comment = json["comment"]
+        let comment = json["comment"] ? ` # ${json["comment"]}` : ""
         let position = json["position"]
 
         this.el = document.createElement("div")
-        this.el.innerHTML = `<span id="key">${json["name"]} </span> = <span id="value">${json["value"]}</span>`
+        this.el.innerHTML = `<span id="key">${json["name"]} </span> = <span id="value">${json["value"]}</span>${comment}`
         this.el.title = json["position"]
+        this.el.dataset.name = name
+        this.el.dataset.uuid = uuid
+        this.el.dataset.value = value ?? ""
+        this.el.dataset.comment = comment ?? ""
+        this.el.dataset.position = position ?? ""
+        this.el.dataset.disabled = disabled ?? false
+        this.el.dataset.type = "KEY"
         this.el.classList.add("todo")
         if (disabled === true) {
             this.el.classList.add("disabled")
@@ -179,11 +189,11 @@ class EditorItem_Generic {
 
         this.el.setAttribute("contenteditable", "true")
 
-        this.inital_load = true
+
         this.saveDebounced = debounce(() => this.save(), 250);
 
         this.update()
-        this.inital_load = true
+        this.inital_load = false
     }
     update() {
         if (!this.inital_load) {
@@ -196,7 +206,14 @@ class EditorItem_Generic {
     }
 
     save() {
-        // saveKey(type, name, uuid, position, value)
+        let type = this.el.dataset.type
+        let name = this.el.dataset.name
+        let uuid = this.el.dataset.uuid
+        let value = this.el.dataset.value
+        let comment = this.el.dataset.comment
+        let position = this.el.dataset.position
+        let disabled = this.el.dataset.disabled === "true" ? true : false
+        saveKey(type, name, uuid, position, value, comment, disabled)
     }
 }
 

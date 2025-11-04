@@ -62,7 +62,7 @@ class Api:
 				return self.window_config
 
 	def save_window_config(self, json_fromjs):
-		print(f"Called save window config.")
+		print("Called save window config.")
 		config_from_json = json.loads(json_fromjs)
 		# print(config_from_json)
 		for key in config_from_json:
