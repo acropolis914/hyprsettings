@@ -10,7 +10,7 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 
 You can fork this repo, make changes, and submit pull requests. Please also submit bugs, start discussions, etc. I'd love to hear from you!
 
----
+
 
 ## Table of Contents
 
@@ -23,7 +23,7 @@ You can fork this repo, make changes, and submit pull requests. Please also subm
 	- [A Personal Note](#a-personal-note)
 		- [Notice on the use of AI](#notice-on-the-use-of-ai)
 
----
+
 
 ## Testing the UI
 
@@ -46,7 +46,7 @@ sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit pyth
 python src/ui.py
 ```
 
----
+
 
 ## Arch Linux Installation (Dependencies + Hyprland bind)
 
@@ -60,7 +60,7 @@ echo 'bind = SUPER, I, Exec, python ~/hyprsettings/src/ui.py' >> ~/.config/hypr/
 
 > Make sure to replace `SUPER, I` with the key combination you want to use.
 
----
+
 
 ## Configuration and Theming
 
@@ -72,7 +72,7 @@ Hyprsettings will create a configuration file at:
 
 The defaults should be fine, but if you like tweaking, you can explore and modify the file. Be careful, though I don’t have extensive safeguards and fallbacks right now.
 
----
+
 
 ## Organizing Comments into Tabs
 
@@ -103,7 +103,7 @@ To make comments appear under the correct tab in Hyprsettings, use a **three-lin
 This will place the section under the **Animations** tab in the UI.
 
 | Comment block name (case insensitive)       | Tab ID          |
-|--------------------------------|----------------|
+|--|-|
 | general                        | general        |
 | monitor                        | monitor        |
 | keybindings                    | keybinds       |
@@ -120,14 +120,14 @@ This will place the section under the **Animations** tab in the UI.
 
 > Use this convention consistently to ensure each comment appears in the correct tab while your config keys remain auto-sorted.
 
----
+
 
 ## A Personal Note
 
 Please note that this is my first publicly announced project, so be kind and help me improve it! Start discussions if you want to chat with me about it.  
 I’m not a professional programmer, nor have I studied programming academically, but I’ve been slowly chipping away at this. 😄
 
----
+
 
 ### Notice on the use of AI
 
