@@ -1,8 +1,8 @@
 /* eslint-env browser */
 /* global pywebview, TomSelect */
 
-// TODO: WHAT TO DO WHEN COMMENTS ARE UNCOMMENTED?
-// IDEA: change value to key and parse
+//Probably needs to use switch statements on some but I'll do that later on
+
 import { ContextMenu } from "./contextMenu.js";
 import { bindFlags, modkeys, dispatchers, dispatcherParams, noneDispatchers } from "../hyprland-specific/binds.js"
 import { debounce, saveKey, waitFor } from "./utils.js"
@@ -10,6 +10,7 @@ import { debounce, saveKey, waitFor } from "./utils.js"
 
 
 //tabids for comment stacks so configRenderer() knows where to put them
+//[HeaderCommentBlockName(case insensitive),tabID
 let tabids = [
     ["general", "general"],
     ["monitor", "monitor"],
@@ -17,6 +18,7 @@ let tabids = [
     ["miscellaneous", "miscellaneous"],
     ["programs", "globals"],
     ["windows and workspaces", "win-rules"],
+    ["layer rules", "layer-rules"],
     ["autostart", "autostart"],
     ["variables", "envars"],
     ["permissions", "permissions"],
@@ -25,9 +27,15 @@ let tabids = [
     ["input", "input"],
     ["debug", "debug"]
 ];
-
-let keyStarts = [
-
+let keyNameStarts=[
+    {"$": "globals"},
+    {"windowrulev2":"win-rules"},
+    {"bind":"keybinds"},
+    {"layerrule":"layerrules"},
+    {"workspace": "workspaces"},
+    {"env": "envars"},
+    {"permission": "persmissions"},
+    {"exec": "autostart"},
 ]
 export class configRenderer {
     constructor(json) {

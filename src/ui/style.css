@@ -400,9 +400,6 @@ h1#config-set-title {
   width: 100%;
   line-height: 2rem;
 }
-.todo.disabled {
-  text-decoration: line-through;
-}
 .todo > span#key {
   color: var(--accent);
 }
@@ -460,13 +457,20 @@ a:hover {
 
 .disabled {
   position: relative;
-  color: var(--text-disabled) !important;
   z-index: auto;
   transform: none; /* ensure no transform creates a context */
 }
 
 .disabled::before {
-  content: "[x]";
+  content: "Disabled";
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-contrast);
+  background-color: var(--accent-warning);
+  border-radius: var(--border-rad);
+  height: 1.4 rem;
+  padding: 0.5ch;
+  margin-right: 1ch;
 }
 
 .settings-hidden {
@@ -594,7 +598,14 @@ span.success {
   margin-bottom: var(--spacing-unit);
   text-shadow: 0 5px 20px 10px rgb(0, 0, 0), 0 1px 5px rgb(0, 0, 0);
 }
-#onboarding h1, #onboarding h2, #onboarding h3, #onboarding h4, #onboarding h5, #onboarding h6, #onboarding a, #onboarding li {
+#onboarding h1,
+#onboarding h2,
+#onboarding h3,
+#onboarding h4,
+#onboarding h5,
+#onboarding h6,
+#onboarding a,
+#onboarding li {
   margin-bottom: 0.3rem;
 }
 #onboarding p {

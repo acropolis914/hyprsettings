@@ -1,3 +1,98 @@
+import { saveConfig } from "./utils.js";
+
+let tabs = [
+	{
+		name: "General",
+		id: "general",
+		default: true,
+	},
+	{
+		name: "Keybinds",
+		id: "keybinds",
+	},
+
+	{
+		name: "separator",
+		label: "Appearance",
+	},
+	{
+		name: "Look & Feel",
+		id: "looknfeel",
+	},
+	{
+		name: "Animations",
+		id: "animations",
+	},
+
+	{
+		name: "separator",
+		label: "Layouts",
+	},
+	{
+		name: "Workspaces",
+		id: "workspaces",
+	},
+	{
+		name: "Window Rules",
+		id: "win-rules",
+	},
+	{
+		name: "Layer Rules",
+		id: "layer-rules",
+	},
+
+	{
+		name: "separator",
+		label: "System & Devices",
+	},
+	{
+		name: "Monitor",
+		id: "monitor",
+	},
+	{
+		name: "Input",
+		id: "input",
+	},
+	{
+		name: "Environment Variables",
+		id: "envars",
+	},
+
+	{
+		name: "separator",
+		label: "System Behavior",
+	},
+	{
+		name: "Globals",
+		id: "globals",
+	},
+	{
+		name: "Permissions",
+		id: "permissions",
+	},
+	{
+		name: "AutoStart",
+		id: "autostart",
+	},
+	{
+		name: "Miscellaneous",
+		id: "miscellaneous",
+	},
+
+	{
+		name: "separator",
+		label: "Utility & Debugging",
+	},
+	{
+		name: "Settings",
+		id: "settings",
+	},
+	{
+		name: "Debug / Testing",
+		id: "js_debug",
+	},
+];
+
 class ConfigTabs {
 	constructor(tab) {
 		// console.log(tab)
@@ -81,105 +176,24 @@ class ConfigTabs {
 				? element.classList.add("selected")
 				: element.classList.remove("selected");
 		});
-		const sidebarItem = document.querySelector(`ul>#${id}`);
+		const sidebarItem = document.querySelector(`aside#sidebar>ul>#${id}`);
 		const sidebarItemTitle = sidebarItem.dataset.label;
 		const configSetTitle = document.querySelector("#config-set-title");
 		configSetTitle.textContent = sidebarItemTitle;
+		window.config["last_tab"] = id
+		saveConfig()
 	}
 }
 export async function createDynamicTabs() {
-	let tabs = [
-		{
-			name: "General",
-			id: "general",
-		},
-		{
-			name: "Keybinds",
-			id: "keybinds",
-		},
-
-		{
-			name: "separator",
-			label: "Appearance",
-		},
-		{
-			name: "Look & Feel",
-			id: "looknfeel",
-		},
-		{
-			name: "Animations",
-			id: "animations",
-		},
-
-		{
-			name: "separator",
-			label: "Layouts",
-		},
-		{
-			name: "Workspaces",
-			id: "workspaces",
-		},
-		{
-			name: "Window Rules",
-			id: "win-rules",
-		},
-
-		{
-			name: "separator",
-			label: "System & Devices",
-		},
-		{
-			name: "Monitor",
-			id: "monitor",
-		},
-		{
-			name: "Input",
-			id: "input",
-		},
-		{
-			name: "Environment Variables",
-			id: "envars",
-		},
-
-		{
-			name: "separator",
-			label: "System Behavior",
-		},
-		{
-			name: "Globals",
-			id: "globals",
-		},
-		{
-			name: "Permissions",
-			id: "permissions",
-		},
-		{
-			name: "AutoStart",
-			id: "autostart",
-		},
-		{
-			name: "Miscellaneous",
-			id: "miscellaneous",
-		},
-
-		{
-			name: "separator",
-			label: "Utility & Debugging",
-		},
-		{
-			name: "Settings",
-			id: "settings",
-			default: true,
-		},
-		{
-			name: "Debug / Testing",
-			id: "js_debug",
-		},
-	];
 
 	for (let tab of tabs) {
 		// console.log(tab)
 		new ConfigTabs(tab);
+	}
+	if(window.config["last_tab"]){
+		let id = window.config["last_tab"]
+		let selected_tab = document.querySelector(`aside#sidebar>ul>#${id}`)
+		selected_tab.click()
 	}
 
 	// document.querySelectorAll(".sidebar-item").forEach((li) => {

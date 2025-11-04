@@ -502,7 +502,7 @@ h1#config-set-title {
 	width: 100%;
 	line-height: 2rem;
 	&.disabled {
-		text-decoration: line-through;
+		// text-decoration: line-through;
 	}
 	> span {
 		&#key {
@@ -572,12 +572,20 @@ a {
 	// pointer-events: none;
 	position: relative;
 	// opacity: 0.4; // Replaced with semantic color
-	color: var(--text-disabled) !important;
+	// color: var(--text-disabled) !important;
 	z-index: auto;
 	transform: none; /* ensure no transform creates a context */
 }
 .disabled::before {
-	content: "[x]";
+	content: "Disabled";
+	font-size: 1rem;
+	font-weight: bold;
+	color: var(--text-contrast);
+	background-color: var(--accent-warning);
+	border-radius: var(--border-rad);
+	height: 1.4 rem;
+	padding: 0.5ch;
+	margin-right: 1ch;
 }
 
 .settings-hidden {
@@ -721,9 +729,16 @@ span {
 		text-shadow: 0 5px 20px 10px rgba(0, 0, 0, 1),
 			0 1px 5px rgba(0, 0, 0, 1);
 	}
-	h1, h2, h3, h4, h5, h6, a, li {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	a,
+	li {
 		margin-bottom: 0.3rem;
-	    }
+	}
 	p {
 		text-align: center;
 		display: inline-block;
