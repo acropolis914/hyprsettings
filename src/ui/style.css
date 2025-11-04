@@ -385,7 +385,6 @@ h1#config-set-title {
 }
 .editor-item:has(> .editor-item-comment) > .editor-item-comment:focus, .editor-item:has(> .editor-item-comment) > .editor-item-comment:focus-visible {
   outline: none;
-  border: 1px dashed var(--accent-active);
   color: var(--text-1);
 }
 
@@ -554,6 +553,10 @@ span.danger {
   color: var(--accent-danger);
 }
 
+.warn {
+  color: var(--accent-danger) !important;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -652,13 +655,13 @@ span.danger {
   width: 100vw;
   z-index: 10;
   background-color: var(--surface-0) 50%;
-  backdrop-filter: blur(10px);
-  backdrop-filter: brightness(-0.5);
+  backdrop-filter: blur(10px) brightness(0.6);
   justify-items: center;
   justify-content: center;
   align-items: center;
-  transition: all 0.4s ease;
+  transition: all 1s ease;
   transition: opacity 1s ease;
+  opacity: 0;
 }
 
 /*# sourceMappingURL=style.css.map */

@@ -513,6 +513,10 @@ class EditorItem_Binds {
             this.el.classList.remove("compact")
             this.contextMenu.show()
         })
+        this.el.addEventListener("contextmenu", (e) => {
+            e.preventDefault()
+            this.contextMenu.show()
+        })
         this.el.addEventListener("dblclick", (e) => {
             console.log("Double clicked!")
             // let target = e.target()

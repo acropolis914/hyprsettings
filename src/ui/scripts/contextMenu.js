@@ -2,6 +2,7 @@ export class ContextMenu {
 	constructor(items = []) {
 		this.el = document.createElement("div")
 		this.el.classList.add("context-menu", "hidden")
+		this.el.setAttribute("contenteditable", false)
 
 		for (const { label, icon, action } of items) {
 			const btnEl = document.createElement("div")
@@ -16,10 +17,37 @@ export class ContextMenu {
 			}
 			labelEl.textContent = label
 
-			btnEl.addEventListener("click", (e) => {
-				e.stopPropagation()
-				action?.()
-			})
+			if (label.toLowerCase().includes("delete")) {
+				let clickCount = 0
+				btnEl.addEventListener("click", (e) => {
+					e.stopPropagation()
+					clickCount += 1
+					if (clickCount == 1) {
+						iconEl.classList.add("warn")
+						labelEl.classList.add("warn")
+						labelEl.textContent = "You sure?"
+						console.log("Are you sure?")
+					}
+					if (clickCount > 1) {
+						action?.()
+					}
+				})
+				btnEl.addEventListener("mouseleave", (e) => {
+					setTimeout(() => {
+						clickCount = 0
+						iconEl.classList.remove("warn")
+						labelEl.classList.remove("warn")
+						labelEl.textContent = label
+					}, 2000)
+				})
+
+			} else {
+				btnEl.addEventListener("click", (e) => {
+					e.stopPropagation()
+					action?.()
+				})
+			}
+
 
 			btnEl.appendChild(iconEl)
 			btnEl.appendChild(labelEl)

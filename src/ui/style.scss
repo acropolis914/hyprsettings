@@ -480,7 +480,7 @@ h1#config-set-title {
 		&:focus,
 		&:focus-visible {
 			outline: none;
-			border: 1px dashed var(--accent-active);
+			// border: 1px dashed var(--accent-active);
 			color: var(--text-1); // Brighten on focus
 		}
 	}
@@ -672,6 +672,10 @@ span {
 	}
 }
 
+.warn {
+	color: var(--accent-danger) !important;
+}
+
 // --- Scroll Bars Suck ---
 
 /* width */
@@ -786,11 +790,11 @@ span {
 	width: 100vw;
 	z-index: 10;
 	background-color: var(--surface-0) 50%;
-	backdrop-filter: blur(10px);
-	backdrop-filter: brightness(-0.5);
+	backdrop-filter: blur(10px) brightness(0.6);
 	justify-items: center;
 	justify-content: center;
 	align-items: center;
-	transition: all 0.4s ease;
+	transition: all 1s ease;
 	transition: opacity 1s ease;
+	opacity: 0;
 }
