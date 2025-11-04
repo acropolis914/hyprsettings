@@ -47,7 +47,7 @@ function createLineCommentsVisibilitySetting() {
 		const el = e.target
 		window.config["show_line_comments"] = el.checked
 		await window.pywebview.api.save_window_config(JSON.stringify(window.config))
-		console.log(`Toggled: ${config_key} to ${el.checked}`)
+		console.log(`Toggled: to ${el.checked}`)
 		let commentItems = document.querySelectorAll(".editor-item:has(>.editor-item-comment)")
 		if (el.checked) {
 			commentItems.forEach(i =>
@@ -68,12 +68,13 @@ function createHeaderCommentsVisibilitySetting() {
 		const el = e.target
 		window.config["show_header_comments"] = el.checked
 		await window.pywebview.api.save_window_config(JSON.stringify(window.config))
-		console.log(`Toggled: ${config_key} to ${el.checked}`)
-		let commentItems = document.querySelectorAll("block-comment")
+		console.log(`Toggled: show header comments to ${el.checked}`)
+		let commentItems = document.querySelectorAll(".block-comment")
 		if (el.checked) {
-			commentItems.forEach(i =>
+			commentItems.forEach((i) => {
+				// console.log(i)
 				i.classList.remove("settings-hidden")
-			)
+			})
 		} else {
 			commentItems.forEach(i =>
 				i.classList.add("settings-hidden")

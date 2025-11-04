@@ -27,6 +27,9 @@ export class ContextMenu {
 
 		}
 	}
+	toggle() {
+		this.el.classList.toggle("hidden")
+	}
 
 	show() {
 		this.el.classList.remove("hidden")

@@ -6,9 +6,7 @@
 import { ContextMenu } from "./contextMenu.js";
 import { bindFlags, modkeys, dispatchers, dispatcherParams, noneDispatchers } from "../hyprland-specific/binds.js"
 import { debounce, saveKey, waitFor } from "./utils.js"
-// Ensure TomSelect is available to the TypeScript/IDE by referencing window.TomSelect.
-// This creates a local binding so TS doesn't report "Cannot find name 'TomSelect'".
-const TomSelect = (typeof window !== "undefined" && window.TomSelect) ? window.TomSelect : undefined;
+
 
 
 //tabids for comment stacks so configRenderer() knows where to put them
@@ -52,7 +50,7 @@ export class configRenderer {
                     // console.log(comment_item)
                     comment_item.el.classList.add("block-comment")
                     if (!window.config["show_header_comments"]) {
-                        comment_item.el.classList.add("hidden")
+                        comment_item.el.classList.add("settings-hidden")
                     }
 
                     comment_item.addToParent(this.current_container.at(-1))
@@ -174,6 +172,7 @@ class EditorItem_Generic {
 
         this.el = document.createElement("div")
         this.el.innerHTML = `<span id="key">${json["name"]} </span> = <span id="value">${json["value"]}</span>${comment}`
+        this.el.classList.add("editor-item")
         this.el.title = json["position"]
         this.el.dataset.name = name
         this.el.dataset.uuid = uuid
@@ -186,15 +185,51 @@ class EditorItem_Generic {
         if (disabled === true) {
             this.el.classList.add("disabled")
         }
-
         this.el.setAttribute("contenteditable", "true")
-
-
         this.saveDebounced = debounce(() => this.save(), 250);
+
+        this.contextMenu = new ContextMenu([
+            { label: "Add Above", icon: "󰅃", action: () => this.addAbove() },
+            { label: "Add Below", icon: "󰅀", action: () => this.addAbove() },
+            { label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
+            { label: "Delete Key", icon: "󰗩", action: () => this.addAbove() }
+        ])
+        this.el.appendChild(this.contextMenu.el)
+
+        this.el.addEventListener("click", (e) => {
+            // this.el.classList.remove("compact")
+            console.log("clicked")
+            this.contextMenu.show()
+        })
+        this.el.addEventListener("contextmenu", (e) => {
+            // this.el.classList.remove("compact")
+            e.preventDefault()
+            console.log("Right clicked")
+            this.contextMenu.show()
+            console.log(this.contextMenu.show())
+        })
+        this.el.addEventListener("dblclick", (e) => {
+            console.log("Double clicked!")
+            this.contextMenu.hide()
+        })
+        this.el.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                // this.el.classList.toggle("compact")
+                // this.contextMenu.el.classList.toggle("hidden")
+            }
+        })
+        this.el.addEventListener("focus", (e) => {
+            this.contextMenu.show()
+        })
+        this.el.addEventListener("blur", () => {
+            this.contextMenu.hide()
+            // this.el.classList.add("compact")
+        })
 
         this.update()
         this.inital_load = false
     }
+
     update() {
         if (!this.inital_load) {
             this.saveDebounced()
@@ -203,6 +238,14 @@ class EditorItem_Generic {
 
     addToParent(parent) {
         parent.appendChild(this.el)
+    }
+    addAbove() {
+        console.log("Add above is not yet implemented")
+    }
+    disable() {
+        this.el.dataset.disabled = this.el.dataset.disabled === "true" ? "false" : "true"
+        this.el.classList.toggle("disabled")
+        this.saveDebounced()
     }
 
     save() {

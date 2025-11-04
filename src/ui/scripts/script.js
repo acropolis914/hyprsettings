@@ -7,6 +7,7 @@ import { renderSettings } from "./settings.js"
 import { createDynamicTabs } from "./createDynamicTabs.js"
 import { setupTheme } from "./setupTheme.js"
 import "./onboarding.js"
+import "./testingScreen.js"
 // @ts-ignore
 window.jsonViewer = document.querySelector("andypf-json-viewer")
 

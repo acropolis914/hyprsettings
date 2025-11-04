@@ -446,11 +446,10 @@ h1#config-set-title {
 	margin: 0;
 	padding: 0;
 	outline: none;
-	border: none;
 	background-color: transparent;
 	opacity: 1;
-	// line-height: 0.8;
-	// border: 1px solid red;
+	border: 1px solid transparent;
+	border-radius: var(--border-rad);
 
 	> .editor-item-comment {
 		margin-bottom: 0;
@@ -466,6 +465,8 @@ h1#config-set-title {
 		outline: none !important;
 		resize: none;
 		overflow: hidden;
+		border: 1px solid transparent;
+		border-radius: var(--border-rad);
 
 		&::after {
 			margin-left: 2px;
@@ -587,11 +588,11 @@ a {
 
 .context-menu {
 	position: absolute;
-	top: 110%;
+	top: calc(100% + 1rem);
 	right: 0%;
 	display: flex;
 	flex-direction: row;
-	background-color: var(--surface-2);
+	background-color: var(--surface-0);
 	z-index: 10 !important;
 	border-radius: var(--border-rad);
 	padding: calc(var(--spacing-unit) / 2);
@@ -706,24 +707,28 @@ span {
 	left: 0;
 	height: 100vh;
 	width: 100vw;
-	z-index: 999;
+	z-index: 10;
 	background-color: var(--surface-0) 50%;
-	backdrop-filter: blur(10px);
-	backdrop-filter: brightness(-0.5);
+	backdrop-filter: blur(10px) brightness(0.8);
 	justify-items: center;
 	justify-content: center;
 	align-items: center;
 	transition: all 0.4s ease;
 	transition: opacity 1s ease;
-	> * {
+
+	* {
 		margin-bottom: var(--spacing-unit);
+		text-shadow: 0 5px 20px 10px rgba(0, 0, 0, 1),
+			0 1px 5px rgba(0, 0, 0, 1);
 	}
-	> p {
+	h1, h2, h3, h4, h5, h6, a, li {
+		margin-bottom: 0.3rem;
+	    }
+	p {
 		text-align: center;
 		display: inline-block;
 		padding-left: 10rem;
 		padding-right: 10rem;
-		margin-top: 1rem;
 	}
 
 	button {
@@ -747,4 +752,27 @@ span {
 		padding-left: 20rem;
 		padding-right: 20rem;
 	}
+}
+
+.testing-screen-button {
+	z-index: 20;
+}
+
+.testing-screen {
+	display: flex;
+	flex-direction: column;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100vw;
+	z-index: 10;
+	background-color: var(--surface-0) 50%;
+	backdrop-filter: blur(10px);
+	backdrop-filter: brightness(-0.5);
+	justify-items: center;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.4s ease;
+	transition: opacity 1s ease;
 }

@@ -20,6 +20,24 @@
 		<link rel="stylesheet" href="jslib/tom-select.css" />
 	</head>
 	<body>
+		<header> HyprUI</header>
+		<div id="main">
+			<aside id="sidebar">
+				<ul></ul>
+			</aside>
+			<div id="content-area">
+				<h1 onclick="" id="config-set-title"></h1>
+			</div>
+		</div>
+		<footer>
+			<button type="button" id="theme-toggle">󰔎</button>
+			<p>
+				<a href="http://github.com/AcroPolis914/hyprsettings"
+					>HyprSettings</a
+				>
+			</p>
+		</footer>
+
 		<div id="onboarding" class="hidden">
 			<h1>Hello!</h1>
 			<p>
@@ -46,8 +64,7 @@
 				<ul>
 					<li>The keybind editor works as expected</li>
 					<li>you can remove # to
-						turn comment to a key(if valid else it returns to the
-						commented version)</li>
+						turn comment to a key(if valid)</li>
 				</ul>
 			</p>
 
@@ -66,23 +83,20 @@
 			Okay!
 		</button>
 		</div>
-		<header> HyprUI</header>
-		<div id="main">
-			<aside id="sidebar">
-				<ul></ul>
-			</aside>
-			<div id="content-area">
-				<h1 onclick="" id="config-set-title"></h1>
+		
+		<div class="testing-screen hidden">
+			<div class="editor-item">
+				<div class="editor-item-preview">Hello</div>
+				<div class="comment-area">
+					<span class="comment-hashtag">#</span>
+					<textarea
+						class="comment"
+						contenteditable="true"
+						placeholder="No Comment"
+					></textarea>
+				</div>
 			</div>
 		</div>
-		<footer>
-			<button type="button" id="theme-toggle">󰔎</button>
-			<p>
-				<a href="http://github.com/AcroPolis914/hyprsettings"
-					>HyprSettings</a
-				>
-			</p>
-		</footer>
 	</body>
 
 	<template id="keybind-template">
