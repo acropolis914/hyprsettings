@@ -11,7 +11,7 @@ export class ContextMenu {
 			iconEl.textContent = icon
 			const labelEl = document.createElement("div")
 			labelEl.classList.add("ctx-button-label")
-			if (window.config["ctx_label_hidden"]) {
+			if (!window.config["show_contextmenu_label"]) {
 				labelEl.classList.add("hidden")
 			}
 			labelEl.textContent = label

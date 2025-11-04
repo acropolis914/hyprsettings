@@ -1,4 +1,4 @@
-import { waitFor } from "./utils.js"
+import { saveConfig, waitFor } from "./utils.js"
 let settingsEl = document.querySelector(".config-set#settings")
 
 
@@ -6,6 +6,7 @@ export async function renderSettings() {
 	await waitFor(() => window.pywebview?.api?.save_window_config)
 	settingsEl = document.querySelector(".config-set#settings")
 	createLineCommentsVisibilitySetting()
+	createHeaderCommentsVisibilitySetting()
 }
 
 /**
@@ -57,5 +58,27 @@ function createLineCommentsVisibilitySetting() {
 				i.classList.add("settings-hidden")
 			)
 		}
+	})
+}
+
+function createHeaderCommentsVisibilitySetting() {
+	let { container, checkbox } = new CheckBoxItem("show-header-comments",
+		"Show header comments", "show_header_comments", window.config["show_header_comments"] || false).return()
+	checkbox.addEventListener("change", async (e) => {
+		const el = e.target
+		window.config["show_header_comments"] = el.checked
+		await window.pywebview.api.save_window_config(JSON.stringify(window.config))
+		console.log(`Toggled: ${config_key} to ${el.checked}`)
+		let commentItems = document.querySelectorAll("block-comment")
+		if (el.checked) {
+			commentItems.forEach(i =>
+				i.classList.remove("settings-hidden")
+			)
+		} else {
+			commentItems.forEach(i =>
+				i.classList.add("settings-hidden")
+			)
+		}
+		saveConfig()
 	})
 }

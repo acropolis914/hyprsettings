@@ -14,12 +14,14 @@ You can fork this repo, make changes, and submit pull requests. Please also subm
 
 ## Table of Contents
 
-1. [Testing the UI](#testing-the-ui)  
-2. [Arch Linux Installation](#arch-linux-installation-dependencies--hyprland-bind)  
-3. [Configuration and Theming](#configuration-and-theming)  
-4. [Organizing Comments into Tabs](#organizing-comments-into-tabs)  
-5. [A Personal Note](#a-personal-note)  
-6. [Notice on the use of AI](#notice-on-the-use-of-ai)
+- [HyprSettings](#hyprsettings)
+	- [Table of Contents](#table-of-contents)
+	- [Testing the UI](#testing-the-ui)
+	- [Arch Linux Installation (Dependencies + Hyprland bind)](#arch-linux-installation-dependencies--hyprland-bind)
+	- [Configuration and Theming](#configuration-and-theming)
+	- [Organizing Comments into Tabs](#organizing-comments-into-tabs)
+	- [A Personal Note](#a-personal-note)
+		- [Notice on the use of AI](#notice-on-the-use-of-ai)
 
 ---
 
@@ -35,7 +37,7 @@ cd hyprsettings
 2. Install required system packages:
 
 ```bash
-sudo pacman -Syu python python-gobject gtk3
+sudo pacman -Syu python python-gobject gtk3 pywebview
 ```
 
 3. Run the UI:

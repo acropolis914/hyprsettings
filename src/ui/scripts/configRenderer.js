@@ -48,7 +48,11 @@ export class configRenderer {
                 for (let i = 0; i < this.comment_stack.length; i++) {
                     let comment_item = new EditorItem_Comments(this.comment_stack[i])
                     // console.log(comment_item)
-                    comment_item.el.classList.add("hidden")
+                    comment_item.el.classList.add("block-comment")
+                    if (!window.config["show_header_comments"]) {
+                        comment_item.el.classList.add("hidden")
+                    }
+
                     comment_item.addToParent(this.current_container.at(-1))
                 }
                 this.comment_stack = []

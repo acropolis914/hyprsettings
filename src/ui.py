@@ -1,15 +1,16 @@
 from pathlib import Path
 import subprocess
+import os
 import webview
 from rich import traceback
 import mimetypes
 from parser import ConfigParser, Node, makeUUID, print_hyprland
 import tomlkit as toml
-from default_config import default_config
 import json
 
 
 traceback.install(show_locals=True)
+thisfile_path = Path(__file__).parent.resolve()
 
 
 def on_loaded(window):
@@ -17,12 +18,16 @@ def on_loaded(window):
 	window.events.loaded -= on_loaded
 
 
+def on_closed(window):
+	print("Window closed. Terminating process.")
+	os._exit(0)
+
+
 class Api:
 	def init(self):
 		return self.get_config()
 
 	def get_config(self, path=None):
-		# current_file = Path(__file__).parent.resolve()
 		hyprland_config_path = Path.home() / ".config" / "hypr" / "hyprland.conf"
 		config = ConfigParser(hyprland_config_path).root.to_json()
 		return config
@@ -37,11 +42,18 @@ class Api:
 
 	def read_window_config(self):
 		window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"
+		template = Path(thisfile_path / "default_config.toml")
 		if not window_config_path.is_file():
 			print(f"Config file not found in {window_config_path}")
+			with open(
+				template,
+				"r",
+			) as default_config:
+				default_config_text = default_config.read()
 			with window_config_path.open("w") as config_file:
-				config_file.write(default_config)
-			self.window_config = toml.parse(default_config)
+				print(default_config_text)
+				config_file.write(default_config_text)
+			self.window_config = toml.parse(default_config_text)
 			return self.window_config
 		else:
 			with window_config_path.open("r", encoding="utf-8") as config_file:
@@ -50,9 +62,9 @@ class Api:
 				return self.window_config
 
 	def save_window_config(self, json_fromjs):
-		print(f"Called save window config {json_fromjs}")
+		print(f"Called save window config.")
 		config_from_json = json.loads(json_fromjs)
-		print(config_from_json)
+		# print(config_from_json)
 		for key in config_from_json:
 			self.window_config["config"][key] = config_from_json[key]
 		window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"
@@ -83,8 +95,6 @@ if __name__ == "__main__":
 		transparent=True,
 	)
 
-	# print(webview.settings)
-	#
 	window.events.loaded += on_loaded
-
+	window.events.closed += on_closed
 	webview.start(gui="gtk", private_mode=False, storage_path=".pywebview")

@@ -1,3 +1,4 @@
 indent-width = 6
+line-length = 120
 [format]
 indent-style = "tab"

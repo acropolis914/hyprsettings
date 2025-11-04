@@ -1,12 +1,10 @@
-# language=TOML
-default_config = """
 [config]
-first_run = true                    # DO NOT CHANGE
+first_run = true                    # do NOT change
 dryrun = false
-compact = true
+compact = true                      #makes binds hide their fields by default
 show_line_comments = true
 show_header_comments = false
-ctx_label_hidden = false
+show_contextmenu_label = true
 current_theme = "Catppuccin Mocha"
 font = "CommitMono Nerd Font Propo"
 
@@ -229,5 +227,3 @@ purple = "#C792EA"
 # Utilities
 overlay = "#2D2B40"
 shadow = "#100E23"
-
-"""
