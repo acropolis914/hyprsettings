@@ -44,7 +44,7 @@ async function load_config() {
 document.addEventListener("DOMContentLoaded", async () => {
     await load_config()
     await setupTheme()
-    document.documentElement.style.opacity = "1"; // fade in roo
+    document.documentElement.style.opacity = window.config["transparency"] || 1; // fade in roo
     createDynamicTabs()
     await setupData()
     renderSettings()

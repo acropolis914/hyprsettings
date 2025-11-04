@@ -19,6 +19,9 @@ export async function setupTheme() {
 				}
 				root.style.setProperty(`--${key}`, value, "important");
 			});
+			root.classList.remove("dark")
+			root.classList.remove("light")
+			root.classList.add(theme.variant.toLowerCase())
 			window.config["current_theme"] = theme.name
 		}
 	});
@@ -30,7 +33,7 @@ themeButton.addEventListener("click", () => {
 
 function changeTheme() {
 	currentThemeIndex += 1;
-	currentThemeIndex = currentThemeIndex % (window.themes.length - 1);
+	currentThemeIndex = currentThemeIndex % (window.themes.length);
 	let theme = window.themes[currentThemeIndex]
 	console.log(`Changing theme to ${theme.name}`)
 	Object.entries(theme).forEach(([key, value]) => {
@@ -41,11 +44,14 @@ function changeTheme() {
 	});
 	window.config["current_theme"] = theme.name
 	window.themeVariant = theme["variant"].toLowerCase()
-	console.log(window.themeVariant)
+	// console.log(window.themeVariant)
 	if (window.themeVariant === "dark") {
 		window.jsViewer.setAttribute("theme", "default-dark")
 	} else {
 		window.jsViewer.setAttribute("theme", "default-light")
 	}
+	root.classList.remove("dark")
+	root.classList.remove("light")
+	root.classList.add(theme.variant.toLowerCase())
 	saveConfig()
 }

@@ -148,7 +148,7 @@ header {
 	font-weight: 800;
 
 	&:hover {
-		transform: scale(1.01);
+		transform: scale(1.05) translateX(2.5rem);
 	}
 }
 
@@ -194,7 +194,7 @@ header {
 		> ul > li {
 			justify-content: center;
 			height: 3rem;
-			padding: 0;
+			padding-left: 1rem;
 		}
 		> ul > div {
 			opacity: 0;
@@ -397,6 +397,14 @@ h1#config-set-title {
 		i {
 			color: var(--text-2); // Replaced --sec and opacity
 		}
+		span {
+			&#key {
+				color: var(--accent);
+			}
+			&#value {
+				color: var(--teal);
+			}
+		}
 	}
 
 	.keybind-editor {
@@ -408,7 +416,7 @@ h1#config-set-title {
 		> * {
 			margin-right: var(--spacing-unit); // Use var
 			background-color: var(--surface-1);
-			color: var(--pink); // Kept pink as it seemed intentional
+			color: var(--text-0); // Kept pink as it seemed intentional
 			flex: 1;
 			border-radius: var(--border-rad);
 			font-size: 1.6rem !important;
@@ -491,7 +499,7 @@ h1#config-set-title {
 		background-color: transparent;
 		color: var(--text-4); // Dimmer color for base state
 		font-style: italic;
-		// line-height: 0.8rem;
+		font-weight: 400; // line-height: 0.8rem;
 		@include text-ellipsis;
 		box-shadow: none !important;
 		// opacity: 0.5; // Removed, handled by text color
@@ -509,40 +517,47 @@ h1#config-set-title {
 		&:hover {
 			cursor: text;
 			color: var(--text-1); // Brighten on hover
+			font-weight: unset;
 		}
 		&:focus,
 		&:focus-visible {
 			outline: none;
 			// border: 1px dashed var(--accent-active);
 			color: var(--text-1); // Brighten on focus
+			font-weight: unset;
 		}
 	}
 }
 
-.todo {
-	display: block;
+.editor-item.editor-item-generic {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
 	width: 100%;
-	// overflow-x: hidden;
-	// overflow-y: auto;
 	white-space: normal;
-	// word-break: ;
 	text-overflow: ellipsis;
-	// overflow-x: hidden;
-	display: block;
 	border-radius: var(--border-rad);
-	color: var(--text-2); // Using semantic color for TODO
-	// height: 1.6rem;
+	border: 0px;
+	color: var(--text-2);
 	width: 100%;
-	line-height: 2rem;
+	// line-height: 2rem;
+	padding: 0;
+	height: 3rem;
 	&.disabled {
 		// text-decoration: line-through;
 	}
 	> span {
 		&#key {
 			color: var(--accent);
+			padding-right: 1rem;
+			padding-left: 0.5rem;
+			// background-color: var(--surface-0);
 		}
 		&#value {
 			color: var(--teal);
+			padding-left: 0.5rem;
+			white-space: nowrap;
+			@include text-ellipsis;
 		}
 	}
 	&:focus-visible,
@@ -713,9 +728,10 @@ span {
 
 /* width */
 ::-webkit-scrollbar {
-	width: 10px;
+	width: 1rem;
 	opacity: 0; // Kept for show/hide interaction
 	transition: opacity 1s linear;
+	background-color: transparent;
 }
 ::-webkit-scrollbar:hover {
 	width: 10px;
@@ -724,7 +740,8 @@ span {
 
 /* Track */
 ::-webkit-scrollbar-track {
-	background: transparent;
+	background-color: transparent !important;
+	// background-color: black;
 }
 
 /* Handle */
@@ -736,7 +753,7 @@ span {
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--surface-border);
+	background-color: var(--surface-border);
 }
 
 // .scrollable {

@@ -8,15 +8,18 @@ user = "HyprSettings" #change this to yours
 # Changing while HyprSettings is open
 # will save what is on memory as a side effect.
 [config]
-first_run = true                   # Changing this to true will show the onboarding.
+first_run = false                  # Changing this to true will show the onboarding.
 dryrun = false                     # Dryrun will not save changes.
 compact = true                     # Makes binds hide their fields by default.
-show_line_comments = true
+show_line_comments = false
 show_header_comments = false
 show_contextmenu_label = true
-current_theme = "Catppuccin Mocha"
-font = "Monospace"                 # Please use a nerd font.
-last_tab = "win-rules"
+show_sidebar_icons = false
+current_theme = "Embark"
+font = "CommitMono Nerd Font Mono" # Please use a nerd font.
+last_tab = "monitor"
+transparency = 0.8
+
 
 [[theme]]
 name = "Catppuccin Mocha"
@@ -203,7 +206,7 @@ link = "https://embark-theme.github.io/"
 
 # Surfaces
 surface-0 = "#242231ff"    #Darkened it a bit for a less jarring look
-surface-1 = "#1E1C31"
+surface-1 = "#191726ff"
 surface-2 = "#100E23"
 surface-border = "#585273"
 
@@ -211,8 +214,8 @@ surface-border = "#585273"
 text-0 = "#A6B3CC"
 text-1 = "#A6B3CC"
 text-2 = "#585273"
-text-3 = "#3E3859"
-text-4 = "#3E3859"
+text-3 = "#453d66ff"
+text-4 = "#453d67ff"
 text-disabled = "#3E3859"
 text-contrast = "#100E23"
 

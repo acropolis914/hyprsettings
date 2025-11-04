@@ -145,7 +145,10 @@ export async function createDynamicTabs() {
 	if (window.config["last_tab"]) {
 		let id = window.config["last_tab"]
 		let selected_tab = document.querySelector(`aside#sidebar>ul>#${id}`)
-		selected_tab.click()
+		if (selected_tab) {
+			selected_tab.click()
+		}
+
 	}
 
 	// document.querySelectorAll(".sidebar-item").forEach((li) => {

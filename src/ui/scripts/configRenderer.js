@@ -205,8 +205,9 @@ class EditorItem_Generic {
         let position = json["position"]
 
         this.el = document.createElement("div")
-        this.el.innerHTML = `<span id="key">${json["name"]} </span> = <span id="value">${json["value"]}</span>${comment}`
+        this.el.innerHTML = `<span id="key">${json["name"]} </span> <span id="value">${json["value"]}</span>${comment}`
         this.el.classList.add("editor-item")
+        this.el.classList.add("editor-item-generic")
         this.el.title = json["position"]
         this.el.dataset.name = name
         this.el.dataset.uuid = uuid
@@ -215,7 +216,7 @@ class EditorItem_Generic {
         this.el.dataset.position = position ?? ""
         this.el.dataset.disabled = disabled ?? false
         this.el.dataset.type = "KEY"
-        this.el.classList.add("todo")
+        // this.el.classList.add("todo")
         if (disabled === true) {
             this.el.classList.add("disabled")
         }
@@ -230,6 +231,7 @@ class EditorItem_Generic {
         ])
         this.el.appendChild(this.contextMenu.el)
 
+        this.el.addEventListener("input",this.update)
         this.el.addEventListener("click", (e) => {
             // this.el.classList.remove("compact")
             console.log("clicked")
@@ -562,7 +564,7 @@ class EditorItem_Binds {
 
         let preview_el = this.el.querySelector(".editor-item-preview")
         let comment = this.comment_el.value ? `# ${this.comment_el.value}` : ""
-        preview_el.innerHTML = `${bindflagString} = ${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString} <i>${comment}</i>`
+        preview_el.innerHTML = `<span id="key">${bindflagString}<span/> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}<span/><i>${comment}</i>`
         this.preview = `${bindflagString} = ${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString} ${comment}`
 
         this.el.dataset.name = bindflagString
