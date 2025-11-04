@@ -1,97 +1,39 @@
 import { saveConfig } from "./utils.js";
 
 let tabs = [
-	{
-		name: "General",
-		id: "general",
-		default: true,
-	},
-	{
-		name: "Keybinds",
-		id: "keybinds",
-	},
+	{ name: "General", id: "general", default: true, icon: "" }, // nf-md-settings
+	{ name: "Keybinds", id: "keybinds", icon: "" }, // nf-md-key
 
-	{
-		name: "separator",
-		label: "Appearance",
-	},
-	{
-		name: "Look & Feel",
-		id: "looknfeel",
-	},
-	{
-		name: "Animations",
-		id: "animations",
-	},
+	{ name: "separator", label: "Appearance" },
 
-	{
-		name: "separator",
-		label: "Layouts",
-	},
-	{
-		name: "Workspaces",
-		id: "workspaces",
-	},
-	{
-		name: "Window Rules",
-		id: "win-rules",
-	},
-	{
-		name: "Layer Rules",
-		id: "layer-rules",
-	},
+	{ name: "Look & Feel", id: "looknfeel", icon: "" }, // nf-md-brush
+	{ name: "Animations", id: "animations", icon: "" }, // nf-md-movie
 
-	{
-		name: "separator",
-		label: "System & Devices",
-	},
-	{
-		name: "Monitor",
-		id: "monitor",
-	},
-	{
-		name: "Input",
-		id: "input",
-	},
-	{
-		name: "Environment Variables",
-		id: "envars",
-	},
+	{ name: "separator", label: "Layouts" },
 
-	{
-		name: "separator",
-		label: "System Behavior",
-	},
-	{
-		name: "Globals",
-		id: "globals",
-	},
-	{
-		name: "Permissions",
-		id: "permissions",
-	},
-	{
-		name: "AutoStart",
-		id: "autostart",
-	},
-	{
-		name: "Miscellaneous",
-		id: "miscellaneous",
-	},
+	{ name: "Workspaces", id: "workspaces", icon: "" }, // nf-md-view_quilt
+	{ name: "Window Rules", id: "win-rules", icon: "" }, // nf-md-window
+	{ name: "Layer Rules", id: "layer-rules", icon: "" }, // nf-md-layers
 
-	{
-		name: "separator",
-		label: "Utility & Debugging",
-	},
-	{
-		name: "Settings",
-		id: "settings",
-	},
-	{
-		name: "Debug / Testing",
-		id: "js_debug",
-	},
+	{ name: "separator", label: "System & Devices" },
+
+	{ name: "Monitor", id: "monitor", icon: "󰨇" }, // nf-md-monitor
+	{ name: "Input", id: "input", icon: "" }, // nf-md-keyboard
+	{ name: "Environment Variables", id: "envars", icon: "" }, // nf-md-code
+
+	{ name: "separator", label: "System Behavior" },
+
+	{ name: "Globals", id: "globals", icon: "" }, // nf-md-globe
+	{ name: "Permissions", id: "permissions", icon: "󰒃" }, // nf-md-lock
+	{ name: "AutoStart", id: "autostart", icon: "" }, // nf-md-play_circle_outline
+	{ name: "Miscellaneous", id: "miscellaneous", icon: "" }, // nf-md-more_horiz
+
+	{ name: "separator", label: "Utility & Debugging" },
+
+	{ name: "Settings", id: "settings", icon: "" }, // nf-md-tune
+	{ name: "Debug / Testing", id: "js_debug", icon: "" }, // nf-md-bug_report
 ];
+
 
 class ConfigTabs {
 	constructor(tab) {
@@ -103,6 +45,7 @@ class ConfigTabs {
 		}
 		this.id = tab.id;
 		this.name = tab.name;
+		this.icon = tab.icon;
 		let exists = document.querySelector(
 			`aside#sidebar>ul>li#${this.id}`
 		);
@@ -131,7 +74,16 @@ class ConfigTabs {
 		let item = document.createElement("li");
 		item.classList.add("sidebar-item");
 		item.tabIndex = 0;
-		item.textContent = this.name;
+		let icon = document.createElement("div")
+		icon.textContent = this.icon
+		icon.classList.add("sidebar-icon")
+		icon.id = "sidebar-icon"
+		let text = document.createElement("div")
+		text.textContent = this.name
+		text.classList.add("sidebar-text")
+		item.appendChild(icon)
+		item.appendChild(text)
+		// item.textContent = this.name;
 		item.id = this.id;
 		item.dataset.label = this.name;
 		// console.log(item.dataset.label)
@@ -190,7 +142,7 @@ export async function createDynamicTabs() {
 		// console.log(tab)
 		new ConfigTabs(tab);
 	}
-	if(window.config["last_tab"]){
+	if (window.config["last_tab"]) {
 		let id = window.config["last_tab"]
 		let selected_tab = document.querySelector(`aside#sidebar>ul>#${id}`)
 		selected_tab.click()

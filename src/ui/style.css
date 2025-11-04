@@ -118,6 +118,36 @@ header:hover {
   list-style: none;
   flex-direction: column;
 }
+#sidebar ul .sidebar-icon {
+  font-size: 3rem;
+  padding: var(--spacing-unit);
+}
+#sidebar ul > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 25rem) {
+  #sidebar > ul > li .sidebar-text {
+    opacity: 0;
+    position: absolute;
+    transform: translateX(1rem);
+  }
+  #sidebar > ul > li {
+    justify-content: center;
+    height: 3rem;
+    padding: 0;
+  }
+  #sidebar > ul > div {
+    opacity: 0;
+  }
+  #sidebar #sidebar-icon.sidebar-icon {
+    display: inline-block !important;
+  }
+  #sidebar > ul {
+    padding: 0;
+  }
+}
 
 #content-area {
   display: flex;
@@ -165,6 +195,7 @@ footer > * {
   text-overflow: ellipsis;
   transition: background-color 0.5s ease, color 0.05s ease, transform 0.5s ease;
   opacity: 0.9;
+  transition: transform 1s ease;
 }
 .sidebar-item:hover {
   background-color: var(--accent);
@@ -474,8 +505,6 @@ a:hover {
 
 .settings-hidden {
   display: none !important;
-  visibility: hidden;
-  flex: 0;
 }
 
 .context-menu {

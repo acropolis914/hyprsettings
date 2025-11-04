@@ -168,12 +168,44 @@ header {
 	overflow-y: auto;
 	overflow-x: hidden;
 	background-color: var(--surface-0);
+	// transition: all 1s ease;
 
 	ul {
 		display: flex;
 		list-style: none;
 		flex-direction: column;
 		// padding-right: 1rem;
+		.sidebar-icon {
+			// display: none;
+			font-size: 3rem;
+			padding: var(--spacing-unit);
+		}
+		> div {
+			@include text-ellipsis();
+		}
+	}
+	@media (max-width: 25rem) {
+		> ul > li .sidebar-text {
+			opacity: 0;
+			// display: none !important;
+			position: absolute;
+			transform: translateX(1rem);
+		}
+		> ul > li {
+			justify-content: center;
+			height: 3rem;
+			padding: 0;
+		}
+		> ul > div {
+			opacity: 0;
+		}
+		#sidebar-icon.sidebar-icon {
+			//this has to be the id for higher prio
+			display: inline-block !important;
+		}
+		> ul {
+			padding: 0;
+		}
 	}
 }
 
@@ -228,6 +260,7 @@ footer {
 	transition: $transition-main, transform $transition-speed-normal ease;
 	// @include scroll-on-hover(7s);
 	opacity: 0.9;
+	transition: transform 1s ease;
 
 	&:hover {
 		@include sidebar-item-active; // Use mixin
@@ -590,8 +623,8 @@ a {
 
 .settings-hidden {
 	display: none !important;
-	visibility: hidden;
-	flex: 0;
+	// visibility: hidden;
+	// flex: 0;
 }
 
 .context-menu {

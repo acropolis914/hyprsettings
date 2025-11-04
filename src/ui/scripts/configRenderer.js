@@ -37,6 +37,7 @@ let keyNameStarts = [
     ["permission", "persmissions"],
     ["exec", "autostart"],
     ["layerrule", "layerrules"],
+    ["source", "general"],
 ];
 export class configRenderer {
     constructor(json) {

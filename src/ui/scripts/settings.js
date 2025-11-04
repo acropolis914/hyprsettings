@@ -7,6 +7,7 @@ export async function renderSettings() {
 	settingsEl = document.querySelector(".config-set#settings")
 	createLineCommentsVisibilitySetting()
 	createHeaderCommentsVisibilitySetting()
+	createSidebarIconsVisibilitySetting()
 }
 
 /**
@@ -58,6 +59,7 @@ function createLineCommentsVisibilitySetting() {
 				i.classList.add("settings-hidden")
 			)
 		}
+		saveConfig()
 	})
 }
 
@@ -75,6 +77,28 @@ function createHeaderCommentsVisibilitySetting() {
 				// console.log(i)
 				i.classList.remove("settings-hidden")
 			})
+		} else {
+			commentItems.forEach(i =>
+				i.classList.add("settings-hidden")
+			)
+		}
+		saveConfig()
+	})
+}
+
+function createSidebarIconsVisibilitySetting() {
+	let { container, checkbox } = new CheckBoxItem("show_sidebar_icons",
+		"Show sidebar icons", "show_sidebar_icons", window.config["show_sidebar_icons"] || true).return()
+	checkbox.addEventListener("change", async (e) => {
+		const el = e.target
+		window.config["show_sidebar_icons"] = el.checked
+		await window.pywebview.api.save_window_config(JSON.stringify(window.config))
+		console.log(`Toggled: to ${el.checked}`)
+		let commentItems = document.querySelectorAll("#sidebar-icon")
+		if (el.checked) {
+			commentItems.forEach(i =>
+				i.classList.remove("settings-hidden")
+			)
 		} else {
 			commentItems.forEach(i =>
 				i.classList.add("settings-hidden")
