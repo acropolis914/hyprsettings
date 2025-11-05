@@ -1,13 +1,6 @@
-/* eslint-env browser */
-/* global pywebview, TomSelect */
-
-//Probably needs to use switch statements on some but I'll do that later on
-
 import { ContextMenu } from "./contextMenu.js";
 import { bindFlags, modkeys, dispatchers, dispatcherParams, noneDispatchers } from "../hyprland-specific/binds.js"
 import { debounce, deleteKey, saveKey, waitFor } from "./utils.js"
-
-
 
 //tabids for comment stacks so configRenderer() knows where to put them
 //[HeaderCommentBlockName(case insensitive),tabID
@@ -72,15 +65,6 @@ export class configRenderer {
         else if (json["type"] === "COMMENT" && json["comment"].includes("### ")) {
             this.comment_stack.push(json)
             let comment = json["comment"].trim().replace(/^#+|#+$/g, "").trim();
-            // tabids.forEach(([key, val]) => {
-            //     if (comment.toLowerCase().includes(key)) {
-            //         this.current_container.pop()
-            //         this.current_container.push(document.querySelector(`.config-set#${val}`))
-            //         if (!document.querySelector(`.config-set#${val}`)) {
-            //             waitFor(() => this.current_container.push(document.querySelector(`.config-set#${val}`)))
-            //         }
-            //     }
-            // });
 
             for (const [key, value] of tabids) {
                 if (comment.toLowerCase().includes(key)) {
@@ -114,6 +98,7 @@ export class configRenderer {
                 // console.log("Groupstart: ", json["position"])
                 let group_el = document.createElement("div")
                 group_el.classList.add("config-group")
+                group_el.classList.add("editor-item")
                 group_el.dataset.name = json["name"]
                 group_el.dataset.uuid = json["uuid"]
                 group_el.dataset.postion = json["position"]
@@ -124,9 +109,6 @@ export class configRenderer {
                 this.current_container.at(-1).appendChild(group_el)
                 this.current_container.push(group_el)
             }
-
-            // let currentpath = Array.from(this.)
-            // console.log(`Group ${json["name"]} under ${currentpath} is not yet handled to make a new div.`)
         }
         else if (json["position"] && json["type"] === "GROUPEND" && json["position"].split(":").length > 1) {
             this.current_container.pop()
@@ -201,11 +183,11 @@ class EditorItem_Generic {
         let name = json["name"]
         let uuid = json["uuid"]
         let value = json["value"]
-        let comment = json["comment"] ? ` # ${json["comment"]}` : ""
+        let comment = json["comment"] ? `# ${json["comment"]}` : ""
         let position = json["position"]
 
         this.el = document.createElement("div")
-        this.el.innerHTML = `<span id="key">${json["name"]} </span> <span id="value">${json["value"]}</span>${comment}`
+        this.el.innerHTML = `<span id="key">${json["name"]} </span> <span id="value">${json["value"]}</span>&nbsp;${comment}`
         this.el.classList.add("editor-item")
         this.el.classList.add("editor-item-generic")
         this.el.title = json["position"]
@@ -216,7 +198,6 @@ class EditorItem_Generic {
         this.el.dataset.position = position ?? ""
         this.el.dataset.disabled = disabled ?? false
         this.el.dataset.type = "KEY"
-        // this.el.classList.add("todo")
         if (disabled === true) {
             this.el.classList.add("disabled")
         }
@@ -231,7 +212,7 @@ class EditorItem_Generic {
         ])
         this.el.appendChild(this.contextMenu.el)
 
-        this.el.addEventListener("input",this.update)
+        this.el.addEventListener("input", this.update)
         this.el.addEventListener("click", (e) => {
             // this.el.classList.remove("compact")
             console.log("clicked")
@@ -317,12 +298,48 @@ class EditorItem_Comments {
             this.el.classList.add("settings-hidden")
         }
         this.textarea = this.el.appendChild(document.createElement("textarea"))
-        // textarea.contentEditable = "true"
+        // this.textarea.contentEditable = "true"
         this.textarea.setAttribute("rows", "1")
         this.textarea.classList.add("editor-item-comment")
         this.textarea.value = comment
         this.saveDebounced = debounce(() => this.save(), 100);
         this.textarea.addEventListener("input", () => this.update())
+        this.contextMenu = new ContextMenu([
+            { label: "Add Above", icon: "󰅃", action: () => this.addAbove() },
+            { label: "Add Below", icon: "󰅀", action: () => this.addAbove() },
+            { label: "Delete Key", icon: "󰗩", action: () => this.delete() }
+        ])
+        this.el.appendChild(this.contextMenu.el)
+        this.el.addEventListener("click", (e) => {
+            // this.el.classList.remove("compact")
+            console.log("clicked")
+            this.contextMenu.show()
+        })
+        this.el.addEventListener("contextmenu", (e) => {
+            // this.el.classList.remove("compact")
+            e.preventDefault()
+            console.log("Right clicked")
+            this.contextMenu.show()
+            console.log(this.contextMenu.show())
+        })
+        this.el.addEventListener("dblclick", (e) => {
+            console.log("Double clicked!")
+            this.contextMenu.hide()
+        })
+        this.el.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                // this.el.classList.toggle("compact")
+                // this.contextMenu.el.classList.toggle("hidden")
+            }
+        })
+        this.el.addEventListener("focus", (e) => {
+            this.contextMenu.show()
+        })
+        document.addEventListener("mousedown", (e) => {
+            if (!this.el.contains(e.target) && !this.contextMenu.el.contains(e.target)) {
+                this.contextMenu.hide();
+            }
+        }); //this is heavy cause it adds a lot of evlisteners in document O(n) where n= comments
         this.initial_load = false
     }
     update() {

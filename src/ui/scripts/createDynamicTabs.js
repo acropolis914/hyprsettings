@@ -31,7 +31,7 @@ let tabs = [
 	{ name: "separator", label: "Utility & Debugging" },
 
 	{ name: "Settings", id: "settings", icon: "" }, // nf-md-tune
-	{ name: "Debug / Testing", id: "js_debug", icon: "" }, // nf-md-bug_report
+	{ name: "Debug / Testing", id: "debug", icon: "" }, // nf-md-bug_report
 ];
 
 
@@ -67,6 +67,7 @@ class ConfigTabs {
 		let separator = document.createElement("div");
 		separator.classList.add("tab-separator");
 		separator.textContent = tab.label;
+		separator.setAttribute("title", tab.label)
 		this.sidebar.appendChild(separator);
 	}
 
@@ -83,6 +84,7 @@ class ConfigTabs {
 		text.classList.add("sidebar-text")
 		item.appendChild(icon)
 		item.appendChild(text)
+		item.setAttribute("title", this.name)
 		// item.textContent = this.name;
 		item.id = this.id;
 		item.dataset.label = this.name;

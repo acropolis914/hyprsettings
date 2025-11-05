@@ -16,7 +16,7 @@ async function setupData() {
     await waitFor(() => window.pywebview?.api.init)
     window.data = await JSON.parse(await window.pywebview.api.init())
     window.jsViewer = document.createElement("andypf-json-viewer")
-    document.querySelector(".config-set#js_debug").appendChild(jsViewer)
+    document.querySelector(".config-set#debug").appendChild(jsViewer)
     window.jsViewer.data = window.data
     console.log(window.themeVariant)
     if (window.themeVariant === "dark") {
@@ -44,7 +44,7 @@ async function load_config() {
 document.addEventListener("DOMContentLoaded", async () => {
     await load_config()
     await setupTheme()
-    document.documentElement.style.opacity = window.config["transparency"] || 1; // fade in roo
+    document.documentElement.style.opacity = window.config["transparency"] || 1; // fade in root to prevent FOUC
     createDynamicTabs()
     await setupData()
     renderSettings()

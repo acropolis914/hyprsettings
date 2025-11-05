@@ -20,7 +20,7 @@
 		<link rel="stylesheet" href="jslib/tom-select.css" />
 	</head>
 	<body>
-		<header> HyprSettings</header>
+		<header  id="main-header" onclick="location.reload()" title="Click to reinitialize session"> HyprSettings</header>
 		<div id="main">
 			<aside id="sidebar">
 				<ul></ul>
@@ -87,17 +87,21 @@
 		</div>
 		
 		<div class="testing-screen hidden">
-			<p>Press F3 to get out of this screen</p>
-			<div class="editor-item">
-				<div class="editor-item-preview">Hello</div>
-				<div class="comment-area">
-					<span class="comment-hashtag">#</span>
-					<textarea
-						class="comment"
-						placeholder="No Comment"
-					></textarea>
+			<header>F3 Debug Screen</header>
+			<div id="main-part">
+				<div class="editor-item">
+					<div class="editor-item-preview">Hello</div>
+					<div class="comment-area">
+						<span class="comment-hashtag">#</span>
+						<textarea
+							class="comment"
+							placeholder="No Comment"
+						></textarea>
+					</div>
 				</div>
 			</div>
+			
+			<footer><p>Press F3 to get out of this screen</p></footer>
 		</div>
 	</body>
 

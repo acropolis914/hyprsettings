@@ -1,20 +1,19 @@
 @charset "UTF-8";
-/* =================================
-   1. Variables & Mixins
-   ================================= */
+/* -- Mixins --*/
+/* Single-line text overflow*/
+/* Sidebar tab active state (for :hover, :active, .selected)*/
 /* =================================
    2. Theming & Base Styles
    ================================= */
 :root {
+  /* These are now themeable from JS!*/
   --spacing-unit: 1rem;
   --border-rad: 5px;
   --background-alpha: 0.9;
-  /* Surfaces */
   --surface-0: #1e1e2e;
   --surface-1: #181825;
   --surface-2: #11111b;
   --surface-border: #585b70;
-  /* Text hierarchy */
   --text-0: #cdd6f4;
   --text-1: #bac2de;
   --text-2: #a6adc8;
@@ -22,14 +21,12 @@
   --text-4: #7f849c;
   --text-disabled: #6c7086;
   --text-contrast: #11111b;
-  /* Accents */
   --accent: #89b4fa;
   --accent-hover: #74c7ec;
   --accent-active: #cba6f7;
   --accent-success: #a6e3a1;
   --accent-warning: #f9e2af;
   --accent-danger: #f38ba8;
-  /* Common colors */
   --red: #f38ba8;
   --orange: #fab387;
   --yellow: #f9e2af;
@@ -38,29 +35,29 @@
   --blue: #89b4fa;
   --pink: #f5c2e7;
   --purple: #cba6f7;
-  /* Utilities */
   --overlay: #7f849c;
   --shadow: #6c7086;
 }
 
+/* --- Base & Resets ---*/
 html {
   height: 100%;
-  font-size: 62.5%;
-  box-sizing: border-box;
   background-color: var(--surface-0);
   color: var(--text-0);
   font-family: var(--font-primary) !important;
-  overflow: hidden;
-  min-height: 0;
+  font-size: 62.5%;
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
+  box-sizing: border-box;
+  overflow: hidden;
+  min-height: 0;
 }
 
 html,
 body {
-  -webkit-font-smoothing: antialiased; /* macOS/WebKit */
-  -moz-osx-font-smoothing: grayscale; /* macOS/Firefox */
-  text-rendering: optimizeLegibility; /* improves kerning and ligatures */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 *,
@@ -68,32 +65,34 @@ body {
 *::after {
   margin: 0;
   padding: 0;
-  box-sizing: inherit;
+  box-sizing: inherit; /* Better box-sizing reset*/
+  /* scrollbar-gutter: stable !important;*/
+  /* filter: saturate(1.1), brightness(1.1), contrast(1.5);*/
 }
 
 body {
   display: flex;
-  flex-direction: column;
   height: 100%;
-  font-size: 1.6rem;
   max-width: 100%;
   min-height: 0;
-  overflow: hidden;
+  font-size: 1.6rem;
   transition: background-color 0.5s ease, color 0.05s ease;
+  flex-direction: column;
+  overflow: hidden;
   overflow-x: hidden;
 }
 
 /* =================================
    3. Layout
    ================================= */
-header {
+header#main-header {
   padding: var(--spacing-unit);
   border-bottom: 1px solid var(--surface-border);
   border-radius: 0;
-  transition: transform 0.5s ease;
   font-weight: 800;
+  transition: transform 0.5s ease; /* Use var*/
 }
-header:hover {
+header#main-header:hover {
   transform: scale(1.05) translateX(2.5rem);
 }
 
@@ -101,26 +100,31 @@ header:hover {
   display: flex;
   flex: 1;
   min-height: 0;
-  max-width: 100%;
-  background-color: var(--surface-0);
+  max-width: 100%; /* Take remaining vertical space*/
+  /* padding-top: var(--spacing-unit); // Use var*/ /* Allow content to scroll*/
 }
 
 #sidebar {
   height: 100%;
+  background-color: var(--surface-0);
   flex: 0 0 20%;
   min-width: 0;
   overflow-y: auto;
-  overflow-x: hidden;
-  background-color: var(--surface-0);
+  overflow-x: hidden; /* Strict 20%*/
+  /* transition: all 1s ease;*/
 }
 #sidebar ul {
   display: flex;
   list-style: none;
   flex-direction: column;
+  /* padding-right: 1rem;*/
 }
 #sidebar ul .sidebar-icon {
-  font-size: 3rem;
+  /* display: none;*/
+  display: inline-flex;
   padding: var(--spacing-unit);
+  font-size: 3rem;
+  line-height: 1;
 }
 #sidebar ul > div {
   white-space: nowrap;
@@ -129,19 +133,21 @@ header:hover {
 }
 @media (max-width: 25rem) {
   #sidebar > ul > li .sidebar-text {
-    opacity: 0;
     position: absolute;
+    opacity: 0;
     transform: translateX(1rem);
+    /* display: none !important;*/
   }
   #sidebar > ul > li {
-    justify-content: center;
     height: 3rem;
     padding-left: 1rem;
+    justify-content: center;
   }
   #sidebar > ul > div {
     opacity: 0;
   }
   #sidebar #sidebar-icon.sidebar-icon {
+    /*this has to be the id for higher prio*/
     display: inline-block !important;
   }
   #sidebar > ul {
@@ -152,22 +158,25 @@ header:hover {
 #content-area {
   display: flex;
   height: 100%;
+  padding-left: 1.5rem;
   padding-top: var(--spacing-unit);
+  background-color: var(--surface-1);
   flex: 0 0 80%;
   max-width: 80%;
   flex-direction: column;
-  min-height: 0;
-  padding-left: 1.5rem;
-  background-color: var(--surface-1);
+  min-height: 0; /* Use var*/ /* Strict 80%*/ /* Enforce max width*/
 }
 
 footer {
   display: flex;
+  padding-left: var(--spacing-unit);
+  padding-right: var(--spacing-unit);
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  padding-left: var(--spacing-unit);
-  padding-right: var(--spacing-unit);
+  z-index: 10;
+  /* flex-direction: row-reverse; // This moves items to the right*/
+  /* margin-top: var(--spacing-unit); // Use var*/
 }
 footer > * {
   font-size: 1rem;
@@ -176,66 +185,77 @@ footer > * {
 /* =================================
    4. Components
    ================================= */
+/* --- Sidebar Components ---*/
 .tab-separator {
   margin-left: var(--spacing-unit);
   margin-top: var(--spacing-unit);
   border-bottom: 3px solid var(--surface-1);
   border-radius: 0;
-  font-size: 1.2rem;
+  font-size: 1.2rem; /* Use var*/ /* Use var*/
 }
 
 .sidebar-item {
   display: flex;
-  align-items: center;
   height: 3rem;
   padding-left: var(--spacing-unit);
   width: 100%;
+  opacity: 0.9;
+  transition: background-color 0.5s ease, color 0.05s ease, transform 0.5s ease;
+  transition: transform 1s ease;
+  align-items: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: background-color 0.5s ease, color 0.05s ease, transform 0.5s ease;
-  opacity: 0.9;
-  transition: transform 1s ease;
+  /* For vertical alignment*/
+  /* border-radius: var(--border-rad);*/
+  /* @include scroll-on-hover(7s);*/
 }
 .sidebar-item:hover {
   background-color: var(--accent);
   color: var(--text-contrast);
   font-weight: 600;
+  /* Use mixin*/
+  /* border: 1px solid var(--accent);*/
 }
 .sidebar-item:active {
+  transform: scale(0.95);
   background-color: var(--accent);
   color: var(--text-contrast);
   font-weight: 600;
-  transform: scale(0.95);
+  /* Use mixin*/
 }
 .sidebar-item.selected {
+  opacity: 1;
   background-color: var(--accent);
   color: var(--text-contrast);
   font-weight: 600;
-  opacity: 1;
+  /* Use mixin*/
 }
 
+/* --- Content Area Components ---*/
 .config-set {
   display: flex;
   height: 100%;
+  margin-top: 1rem;
+  padding-right: 2rem;
   flex: 0 1 auto;
   flex-direction: column;
   min-height: 0;
   overflow-y: scroll;
-  margin-top: 1rem;
-  padding-right: 2rem;
+  /* Specific styles for the #settings tab*/
 }
 .config-set#settings .setting-container {
   display: flex;
+  height: 3rem;
   margin-left: var(--spacing-unit);
   flex-direction: row;
-  align-items: center;
+  align-items: center; /* Use var*/
 }
 .config-set#settings .setting-container input[type=checkbox] {
+  height: 2rem;
   margin-right: var(--spacing-unit);
   width: 2rem;
-  height: 2rem;
-  transition: background-color 0.5s ease, color 0.05s ease;
+  transition: background-color 0.5s ease, color 0.05s ease; /* Use var*/ /* Set a custom width*/ /* Set a custom height*/
 }
 .config-set#settings .setting-container input[type=checkbox]:active {
   transform: scale(1.5);
@@ -246,44 +266,14 @@ footer > * {
 
 h1#config-set-title {
   margin-bottom: var(--spacing-unit);
-  color: var(--accent);
+  color: var(--accent); /* Use var*/
+  /* font-size: 1.6rem;*/
 }
 
-.config-group {
-  position: relative;
-  border: 1px solid var(--surface-border);
-  border-radius: var(--border-rad);
-  margin-top: var(--spacing-unit);
-  margin-bottom: var(--spacing-unit);
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-}
-.config-group > .config-group {
-  margin-top: 2rem;
-}
-.config-group:has(> .config-group:last-child) {
-  padding-bottom: var(--spacing-unit);
-}
-
-/* the floating label on the border */
-.config-group::before {
-  content: attr(data-name);
-  position: absolute;
-  top: 0;
-  left: 1rem; /* adjust for spacing */
-  transform: translateY(-50%);
-  background-color: var(--surface-1); /* match your group background */
-  padding: 0 0.5em;
-  font-size: 1.6rem;
-  color: var(--text-1);
-  text-transform: capitalize;
-  font-weight: 800;
-  color: var(--text-0);
-}
-
+/* --- Editor Item ---*/
 .editor-item {
   position: relative;
+  border-radius: var(--border-rad);
 }
 
 .editor-item {
@@ -291,18 +281,20 @@ h1#config-set-title {
   margin-bottom: var(--spacing-unit);
   padding: 0.5rem;
   border: 1px solid transparent;
-  background-color: var(--surface-0);
-  opacity: 0.8;
-  border-radius: var(--border-rad);
   font-size: 1.6rem;
+  opacity: 0.8;
+  background-color: var(--surface-0);
 }
 .editor-item:focus-within {
   border-color: var(--accent);
   opacity: 1;
 }
 .editor-item:focus-visible {
-  outline: none;
   border: 1px dashed var(--accent-active);
+  outline: none;
+}
+.editor-item.compact {
+  /* background-color: transparent !important;*/
 }
 .editor-item.compact > .keybind-editor,
 .editor-item.compact > .comment-area {
@@ -314,7 +306,7 @@ h1#config-set-title {
   font-size: 1.4rem;
 }
 .editor-item .editor-item-preview i {
-  color: var(--text-2);
+  color: var(--text-2); /* Replaced --sec and opacity*/
 }
 .editor-item .editor-item-preview span#key {
   color: var(--accent);
@@ -326,39 +318,50 @@ h1#config-set-title {
   display: flex;
   flex-direction: row;
 }
+@media (max-width: 40rem) {
+  .editor-item .keybind-editor {
+    flex-direction: column !important;
+    gap: 1rem;
+  }
+}
 .editor-item .keybind-editor > * {
   margin-right: var(--spacing-unit);
+  border-radius: var(--border-rad);
   background-color: var(--surface-1);
   color: var(--text-0);
-  flex: 1;
-  border-radius: var(--border-rad);
   font-size: 1.6rem !important;
+  flex: 1; /* Use var*/ /* Kept pink as it seemed intentional*/
+  height: 3rem !important;
 }
 .editor-item .keybind-editor > textarea {
   padding: 2px 2px;
   border: 0;
   outline: none;
   resize: none;
+  height: 3rem;
 }
 .editor-item .comment-area {
   display: flex;
-  align-items: center;
-  font-style: italic;
-  justify-content: center;
   margin-top: 0.2rem;
   padding: 0;
+  font-style: italic;
+  align-items: center;
+  justify-content: center;
 }
 .editor-item .comment-area > * {
   height: 2rem;
   align-items: center;
   justify-content: center;
+  /* opacity: (0.6); // Removed, handled by text color*/
 }
 .editor-item .comment-area > *:focus {
   border: none;
   border-bottom: 1px solid var(--accent) !important;
   outline: none;
+  /* opacity: 1; // Removed*/
 }
 .editor-item .comment-area:has(> textarea:placeholder-shown) {
+  /* Removed opacity*/
   opacity: 0.6;
 }
 .editor-item .comment-area .comment {
@@ -371,46 +374,48 @@ h1#config-set-title {
   color: var(--text-1);
   font-style: italic;
   align-items: center;
-  resize: none;
+  resize: none; /* Dim color for base state*/
 }
 .editor-item .comment-area .comment:hover {
-  cursor: text;
   color: var(--text-1);
+  cursor: text; /* Brighten on hover*/
 }
 .editor-item .comment-area .comment:focus {
-  color: var(--text-1);
+  color: var(--text-1); /* Brighten on focus*/
 }
 .editor-item .comment-area .comment-hashtag {
   padding-top: 0px;
   color: var(--text-1);
 }
 
+/* --- Line Comment Item (Specific) ---*/
 .editor-item:has(> .editor-item-comment) {
   margin: 0;
   padding: 0;
-  outline: none;
+  border: 1px solid transparent;
   background-color: transparent;
   opacity: 1;
-  border: 1px solid transparent;
-  border-radius: var(--border-rad);
+  outline: none;
 }
 .editor-item:has(> .editor-item-comment) > .editor-item-comment {
   margin-bottom: 0;
   width: 100%;
   border: 0;
+  border: 1px solid transparent;
+  border-radius: var(--border-rad);
   background-color: transparent;
   color: var(--text-4);
   font-style: italic;
   font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   box-shadow: none !important;
   outline: none !important;
   resize: none;
   overflow: hidden;
-  border: 1px solid transparent;
-  border-radius: var(--border-rad);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Dimmer color for base state*/ /* line-height: 0.8rem;*/
+  /* opacity: 0.5; // Removed, handled by text color*/
 }
 .editor-item:has(> .editor-item-comment) > .editor-item-comment::after {
   margin-left: 2px;
@@ -418,38 +423,45 @@ h1#config-set-title {
   flex-shrink: 0;
 }
 .editor-item:has(> .editor-item-comment) > .editor-item-comment:hover {
-  cursor: text;
   color: var(--text-1);
   font-weight: unset;
+  cursor: text; /* Brighten on hover*/
 }
 .editor-item:has(> .editor-item-comment) > .editor-item-comment:focus, .editor-item:has(> .editor-item-comment) > .editor-item-comment:focus-visible {
-  outline: none;
   color: var(--text-1);
   font-weight: unset;
+  outline: none;
+  /* border: 1px dashed var(--accent-active);*/ /* Brighten on focus*/
 }
 
 .editor-item.editor-item-generic {
   display: flex;
+  height: 3rem;
+  padding: 0;
+  width: 100%;
+  width: 100%;
+  border: 0px;
+  border-radius: var(--border-rad);
+  color: var(--text-2);
+  text-overflow: ellipsis;
+  white-space: normal;
   flex-direction: row;
   align-items: center;
-  width: 100%;
-  white-space: normal;
-  text-overflow: ellipsis;
-  border-radius: var(--border-rad);
-  border: 0px;
-  color: var(--text-2);
-  width: 100%;
-  padding: 0;
-  height: 3rem;
 }
-.editor-item.editor-item-generic > span#key {
-  color: var(--accent);
+.editor-item.editor-item-generic.disabled {
+  /* text-decoration: line-through;*/
+}
+.editor-item.editor-item-generic > *#key {
+  height: 100%;
+  padding-left: 0.5rem;
   padding-right: 1rem;
-  padding-left: 0.5rem;
+  border-radius: var(--border-rad);
+  color: var(--accent);
+  align-content: center;
 }
-.editor-item.editor-item-generic > span#value {
-  color: var(--teal);
+.editor-item.editor-item-generic > *#value {
   padding-left: 0.5rem;
+  color: var(--teal);
   white-space: nowrap;
   white-space: nowrap;
   overflow: hidden;
@@ -459,33 +471,71 @@ h1#config-set-title {
   border: 0;
 }
 
+.config-group {
+  background-color: var(--surface-1);
+  background-blend-mode: multiply;
+  position: relative;
+  display: flex;
+  margin-bottom: var(--spacing-unit);
+  margin-top: var(--spacing-unit);
+  padding: 2rem;
+  padding-top: 2.5 rem;
+  padding-bottom: 1rem;
+  border: 3px solid var(--surface-0);
+  border-radius: var(--border-rad);
+  flex-direction: column;
+  opacity: 1;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
+}
+.config-group > .config-group {
+  margin-top: 1.5rem;
+}
+
+/* the floating label on the border */
+.config-group::before {
+  left: 1rem;
+  position: absolute;
+  top: 0;
+  padding: 0 0.5em;
+  background-color: var(--surface-1);
+  backdrop-filter: brightness(0.1);
+  color: var(--text-1);
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-transform: capitalize;
+  transform: translateY(-50%);
+  content: attr(data-name);
+}
+
 /* =================================
    5. Base Elements & Utilities
    ================================= */
+/* --- Base Elements ---*/
 a {
   background: none;
   color: var(--accent);
   text-decoration: none;
-  transition: color 0.5s ease;
+  transition: color 0.5s ease; /* Added*/
 }
 a:hover {
-  color: var(--accent-hover);
+  color: var(--accent-hover); /* Added*/
 }
 
 button#theme-toggle {
+  margin-left: 2rem;
   border: none;
   background: none;
-  cursor: pointer;
   color: var(--text-1);
   font-size: 2rem;
-  margin-left: 2rem;
-  transition: transform 0.5s ease, color 0.5s ease;
+  cursor: pointer;
+  transition: transform 0.5s ease, color 0.5s ease; /* Added*/
 }
 button#theme-toggle:hover {
-  transform: scale(1.1);
   color: var(--accent);
+  transform: scale(1.1); /* Added*/
 }
 
+/* --- Utility Classes ---*/
 .blank-line {
   color: transparent;
   max-width: 100%;
@@ -505,80 +555,92 @@ a:hover {
 }
 
 .disabled {
+  /* filter: grayscale(100%);*/
+  /* pointer-events: none;*/
   position: relative;
   z-index: auto;
-  transform: none; /* ensure no transform creates a context */
+  transform: none;
+  /* opacity: 0.4; // Replaced with semantic color*/
+  /* color: var(--text-disabled) !important;*/ /* ensure no transform creates a context */
 }
 
 .disabled::before {
-  content: "Disabled";
+  height: 1.4 rem;
+  margin-right: 1ch;
+  padding: 0.5ch;
+  border-radius: var(--border-rad);
+  background-color: var(--accent-warning);
+  color: var(--text-contrast);
   font-size: 1rem;
   font-weight: bold;
-  color: var(--text-contrast);
-  background-color: var(--accent-warning);
-  border-radius: var(--border-rad);
-  height: 1.4 rem;
-  padding: 0.5ch;
-  margin-right: 1ch;
+  content: "Disabled";
 }
 
 .settings-hidden {
   display: none !important;
+  /* visibility: hidden;*/
+  /* flex: 0;*/
 }
 
 .context-menu {
   position: absolute;
-  top: calc(100% + 1rem);
   right: 0%;
+  top: calc(100% + 1rem);
+  z-index: 30 !important;
   display: flex;
-  flex-direction: row;
-  background-color: var(--surface-0);
-  z-index: 10 !important;
-  border-radius: var(--border-rad);
   padding: calc(var(--spacing-unit) / 2);
   border: 1px solid var(--surface-border);
+  border-radius: var(--border-rad);
+  background-color: var(--surface-0);
+  opacity: 0;
+  transition: all 0.5s ease;
+  flex-direction: row;
 }
 .context-menu .ctx-button {
   display: flex;
-  flex-direction: column;
   width: 4rem;
+  color: var(--text-1);
+  cursor: pointer;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   overflow: hidden;
   gap: 0.2rem;
-  color: var(--text-1);
 }
 .context-menu .ctx-button .ctx-button-icon {
   font-size: 3rem;
   line-height: 2rem;
 }
 .context-menu .ctx-button .ctx-button-label {
-  text-align: center;
   font-size: 1rem;
   line-height: 1rem;
+  text-align: center;
+  /* @include text-ellipsis();*/
 }
 .context-menu .ctx-button:hover {
   scale: 1.05;
-  filter: brightness(1.2);
+  filter: brightness(1.2); /* Use brightness instead of scale*/
 }
 .context-menu .ctx-button:active {
   scale: 0.95;
 }
+.context-menu .ctx-button > * {
+  transition: all 0.2s ease;
+}
 
 code {
-  background-color: var(--surface-1) !important;
   border: var(--surface-border);
-  color: var(--accent-active);
   border-radius: var(--border-rad);
+  background-color: var(--surface-1) !important;
+  color: var(--accent-active);
 }
 
 button {
-  background-color: var(--accent);
-  outline: none;
+  padding: var(--spacing-unit);
   border: none;
   border-radius: var(--border-rad);
-  padding: var(--spacing-unit);
+  background-color: var(--accent);
+  outline: none;
 }
 button:active {
   background-color: var(--accent-active);
@@ -605,28 +667,30 @@ span.danger {
   color: var(--accent-danger) !important;
 }
 
+/* --- Scroll Bars Suck ---*/
 /* width */
 ::-webkit-scrollbar {
   width: 1rem;
-  opacity: 0;
-  transition: opacity 1s linear;
   background-color: transparent;
+  opacity: 0;
+  transition: opacity 1s linear; /* Kept for show/hide interaction*/
 }
 
 ::-webkit-scrollbar:hover {
   width: 10px;
-  opacity: 1;
+  opacity: 1; /* Kept for show/hide interaction*/
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
   background-color: transparent !important;
+  /* background-color: black;*/
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--surface-2);
   border-radius: var(--border-rad);
+  background: var(--surface-2);
   transition: opacity 1s linear;
 }
 
@@ -635,22 +699,28 @@ span.danger {
   background-color: var(--surface-border);
 }
 
+/* .scrollable {*/
+/* 	overflow: auto;*/
+/* 	scrollbar-gutter: stable both-edges; */ /* reserves space inside */ /**/
+/* 	background-clip: padding-box;*/
+/* }*/
+/* THIS IS THE ONE TIME ONBOARDING*/
 #onboarding {
-  display: flex;
-  flex-direction: column;
+  left: 0;
   position: fixed;
   top: 0;
-  left: 0;
+  z-index: 10;
+  display: flex;
   height: 100vh;
   width: 100vw;
-  z-index: 10;
   background-color: var(--surface-0) 50%;
+  transition: all 0.4s ease;
+  transition: opacity 1s ease;
+  flex-direction: column;
   backdrop-filter: blur(10px) brightness(0.6);
   justify-items: center;
   justify-content: center;
   align-items: center;
-  transition: all 0.4s ease;
-  transition: opacity 1s ease;
 }
 #onboarding * {
   margin-bottom: 0;
@@ -663,16 +733,16 @@ span.danger {
   margin-bottom: 0.3rem;
 }
 #onboarding p {
-  text-align: center;
   display: inline-block;
+  margin-bottom: 0.55rem;
   padding-left: 8rem;
   padding-right: 8rem;
-  margin-bottom: 0.55rem;
+  text-align: center;
 }
 #onboarding button {
   font-weight: bold;
-  transition: scale 0.1 ease;
   cursor: pointer;
+  transition: scale 0.1 ease;
   scale: 1;
 }
 #onboarding button:active {
@@ -685,9 +755,9 @@ span.danger {
   white-space: nowrap;
 }
 #onboarding ul {
-  list-style: square;
   padding-left: 20rem;
   padding-right: 20rem;
+  list-style: square;
 }
 
 .testing-screen-button {
@@ -695,22 +765,25 @@ span.danger {
 }
 
 .testing-screen {
-  display: flex;
-  flex-direction: column;
+  left: 0;
   position: fixed;
   top: 0;
-  left: 0;
+  z-index: 10;
+  display: flex;
   height: 100vh;
   width: 100vw;
-  z-index: 10;
   background-color: var(--surface-0) 50%;
+  opacity: 0;
+  transition: all 1s ease;
+  transition: opacity 1s ease;
+  flex-direction: column;
   backdrop-filter: blur(10px) brightness(0.6);
   justify-items: center;
   justify-content: center;
   align-items: center;
-  transition: all 1s ease;
-  transition: opacity 1s ease;
-  opacity: 0;
+}
+.testing-screen #main-part {
+  flex: 1;
 }
 
 /*# sourceMappingURL=style.css.map */

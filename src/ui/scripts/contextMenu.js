@@ -1,8 +1,21 @@
+// document.addEventListener("mousedown", (e) => {
+// 	allContextMenus.forEach(menu => {
+// 	    if (!menu.el.contains(e.target) && !menu.parentEl.contains(e.target)) {
+// 		  menu.hide();
+// 	    }
+// 	});
+//   });
+
 export class ContextMenu {
 	constructor(items = []) {
 		this.el = document.createElement("div")
 		this.el.classList.add("context-menu", "hidden")
 		this.el.setAttribute("contenteditable", false)
+		this.el.addEventListener("transitionend", (e) => {
+			if (e.propertyName === "opacity" && getComputedStyle(e.target).opacity === "0") {
+				this.el.classList.add("hidden")
+			}
+		});
 
 		for (const { label, icon, action } of items) {
 			const btnEl = document.createElement("div")
@@ -38,7 +51,7 @@ export class ContextMenu {
 						iconEl.classList.remove("warn")
 						labelEl.classList.remove("warn")
 						labelEl.textContent = label
-					}, 2000)
+					}, 1500)
 				})
 
 			} else {
@@ -60,10 +73,17 @@ export class ContextMenu {
 	}
 
 	show() {
+		this.el.style.opacity = 1
 		this.el.classList.remove("hidden")
+
+
 	}
 	hide() {
-		this.el.classList.add("hidden")
+		this.el.style.opacity = 0
+		// setTimeout(() => {
+		// 	this.el.classList.add("hidden")
+		// }, 500)
+
 	}
 
 }
