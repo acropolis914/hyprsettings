@@ -14,6 +14,14 @@ export const debounce = (fn, wait = 100) => {
 		timeout = setTimeout(() => fn.apply(context, args), wait);
 	};
 };
+
+export function hideAllContextMenus() {
+	console.log("hiding all ctx")
+	document.querySelectorAll(".context-menu").forEach((ctx) => {
+		ctx.style.opacity = 0
+		console.log("hid this ctx")
+	})
+}
 /**
  * Description
  * @param {JSON} root

@@ -274,12 +274,13 @@ h1#config-set-title {
 .editor-item {
   position: relative;
   border-radius: var(--border-rad);
+  padding: 0.5rem;
+  margin-bottom: var(--spacing-unit);
 }
 
 .editor-item {
-  height: auto;
-  margin-bottom: var(--spacing-unit);
-  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
   border: 1px solid transparent;
   font-size: 1.6rem;
   opacity: 0.8;
@@ -296,8 +297,9 @@ h1#config-set-title {
 .editor-item.compact {
   /* background-color: transparent !important;*/
 }
-.editor-item.compact > .keybind-editor,
-.editor-item.compact > .comment-area {
+.editor-item.compact .keybind-editor,
+.editor-item.compact .generic-editor,
+.editor-item.compact .comment-area {
   display: none;
   opacity: 0;
 }
@@ -314,31 +316,38 @@ h1#config-set-title {
 .editor-item .editor-item-preview span#value {
   color: var(--teal);
 }
-.editor-item .keybind-editor {
+.editor-item .keybind-editor,
+.editor-item .generic-editor {
   display: flex;
   flex-direction: row;
+  flex: 1;
+  align-items: stretch;
+  height: 100%;
 }
 @media (max-width: 40rem) {
-  .editor-item .keybind-editor {
+  .editor-item .keybind-editor,
+  .editor-item .generic-editor {
     flex-direction: column !important;
     gap: 1rem;
   }
 }
-.editor-item .keybind-editor > * {
+.editor-item .keybind-editor > *,
+.editor-item .generic-editor > * {
   margin-right: var(--spacing-unit);
   border-radius: var(--border-rad);
   background-color: var(--surface-1);
   color: var(--text-0);
   font-size: 1.6rem !important;
-  flex: 1; /* Use var*/ /* Kept pink as it seemed intentional*/
-  height: 3rem !important;
+  flex: 1;
+  height: 100% !important;
+  box-sizing: border-box;
 }
-.editor-item .keybind-editor > textarea {
+.editor-item .keybind-editor > textarea,
+.editor-item .generic-editor > textarea {
   padding: 2px 2px;
   border: 0;
   outline: none;
   resize: none;
-  height: 3rem;
 }
 .editor-item .comment-area {
   display: flex;
@@ -434,24 +443,18 @@ h1#config-set-title {
   /* border: 1px dashed var(--accent-active);*/ /* Brighten on focus*/
 }
 
-.editor-item.editor-item-generic {
+.editor-item-generic {
   display: flex;
-  height: 3rem;
-  padding: 0;
-  width: 100%;
-  width: 100%;
-  border: 0px;
+  flex-direction: column;
   border-radius: var(--border-rad);
+  position: relative;
   color: var(--text-2);
-  text-overflow: ellipsis;
-  white-space: normal;
-  flex-direction: row;
-  align-items: center;
+  width: 100%;
 }
-.editor-item.editor-item-generic.disabled {
+.editor-item-generic.disabled {
   /* text-decoration: line-through;*/
 }
-.editor-item.editor-item-generic > *#key {
+.editor-item-generic > *#key {
   height: 100%;
   padding-left: 0.5rem;
   padding-right: 1rem;
@@ -459,7 +462,7 @@ h1#config-set-title {
   color: var(--accent);
   align-content: center;
 }
-.editor-item.editor-item-generic > *#value {
+.editor-item-generic > *#value {
   padding-left: 0.5rem;
   color: var(--teal);
   white-space: nowrap;
@@ -467,10 +470,6 @@ h1#config-set-title {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.editor-item.editor-item-generic:focus-visible, .editor-item.editor-item-generic:focus {
-  border: 0;
-}
-
 .config-group {
   background-color: var(--surface-1);
   background-blend-mode: multiply;
@@ -586,7 +585,7 @@ a:hover {
   position: absolute;
   right: 0%;
   top: calc(100% + 1rem);
-  z-index: 30 !important;
+  z-index: 300;
   display: flex;
   padding: calc(var(--spacing-unit) / 2);
   border: 1px solid var(--surface-border);

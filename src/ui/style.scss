@@ -331,16 +331,18 @@ h1#config-set-title {
 	position: relative;
 	border-radius: var(--border-rad);
 	// box-shadow: 0 0px 2px rgba(0, 7, 76, 0.3);
+	padding: 0.5rem;
+	margin-bottom: var(--spacing-unit);
 }
 
 .editor-item {
-	height: auto;
-	margin-bottom: var(--spacing-unit);
-	padding: 0.5rem;
+	display: flex;
+	flex-direction: column;
 	border: 1px solid transparent;
 	font-size: 1.6rem;
 	opacity: 0.8;
 	background-color: var(--surface-0);
+
 	&:focus-within {
 		border-color: var(--accent);
 		opacity: 1;
@@ -352,8 +354,9 @@ h1#config-set-title {
 
 	&.compact {
 		/* background-color: transparent !important;*/
-		> .keybind-editor,
-		> .comment-area {
+		.keybind-editor,
+		.generic-editor,
+		.comment-area {
 			display: none;
 			opacity: 0;
 		}
@@ -375,9 +378,15 @@ h1#config-set-title {
 		}
 	}
 
-	.keybind-editor {
+	.keybind-editor,
+	.generic-editor {
 		display: flex;
 		flex-direction: row;
+		flex: 1;
+		align-items: stretch;
+		height: 100%;
+		// flex: 1 0 3rem;
+		// gap: 1rem;
 		@media (max-width: 40rem) {
 			flex-direction: column !important;
 			gap: 1rem;
@@ -389,15 +398,15 @@ h1#config-set-title {
 			background-color: var(--surface-1);
 			color: var(--text-0);
 			font-size: 1.6rem !important;
-			flex: 1; /* Use var*/ /* Kept pink as it seemed intentional*/
-			height: 3rem !important;
+			flex: 1;
+			height: 100% !important;
+			box-sizing: border-box;
 		}
 		> textarea {
 			padding: 2px 2px;
 			border: 0;
 			outline: none;
 			resize: none;
-			height: 3rem;
 		}
 	}
 
@@ -505,22 +514,21 @@ h1#config-set-title {
 	}
 }
 
-.editor-item.editor-item-generic {
+.editor-item-generic {
 	display: flex;
-	height: 3rem;
-	padding: 0;
-	width: 100%;
-	width: 100%;
-	border: 0px;
+	flex-direction: column;
 	border-radius: var(--border-rad);
+	position: relative;
 	color: var(--text-2);
-	text-overflow: ellipsis;
-	white-space: normal;
-	flex-direction: row;
-	align-items: center;
+	width: 100%;
 	&.disabled {
 		/* text-decoration: line-through;*/
 	}
+	// > .generic-editor {
+	// 	display: flex;
+	// 	flex-direction: row;
+	// 	gap: 1rem;
+	// }
 	> * {
 		&#key {
 			height: 100%;
@@ -544,7 +552,7 @@ h1#config-set-title {
 	}
 	&:focus-visible,
 	&:focus {
-		border: 0;
+		// border: 0;
 	}
 }
 
@@ -674,7 +682,7 @@ a {
 	position: absolute;
 	right: 0%;
 	top: calc(100% + 1rem);
-	z-index: 30 !important;
+	z-index: 300;
 
 	display: flex;
 	padding: calc(var(--spacing-unit) / 2);

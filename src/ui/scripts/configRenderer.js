@@ -1,6 +1,6 @@
 import { ContextMenu } from "./contextMenu.js";
 import { bindFlags, modkeys, dispatchers, dispatcherParams, noneDispatchers } from "../hyprland-specific/binds.js"
-import { debounce, deleteKey, saveKey, waitFor } from "./utils.js"
+import { debounce, deleteKey, hideAllContextMenus, saveKey, waitFor } from "./utils.js"
 
 //tabids for comment stacks so configRenderer() knows where to put them
 //[HeaderCommentBlockName(case insensitive),tabID
@@ -90,7 +90,7 @@ export class configRenderer {
         //     blankline.classList.add("blank-line")
         //     blankline.textContent = "THIS IS A BLANK LINE"
         //     this.current_container.at(-1).appendChild(blankline)
-        // }
+        // } //fugly
 
         else if (json["type"] === "GROUP") {
             // console.log(`json group: ${json["name"]}`)
@@ -102,7 +102,7 @@ export class configRenderer {
                 group_el.dataset.name = json["name"]
                 group_el.dataset.uuid = json["uuid"]
                 group_el.dataset.postion = json["position"]
-                group_el.setAttribute("title", json["position"])
+                group_el.setAttribute("title", json["position"].replace("root:", ""))
                 if (json["comment"]) {
                     group_el.dataset.comment = json["comment"]
                 }
@@ -178,30 +178,34 @@ export class configRenderer {
 // }
 
 class EditorItem_Generic {
-    constructor(json, disabled = false) {
+    constructor(json, disabled = false) {//disabled is separate cause I needed it sometimes for debug. should I remove it?
         this.inital_load = true
         let name = json["name"]
         let uuid = json["uuid"]
         let value = json["value"]
-        let comment = json["comment"] ? `# ${json["comment"]}` : ""
+        let comment = json["comment"] ? `${json["comment"]}` : ""
         let position = json["position"]
 
-        this.el = document.createElement("div")
-        this.el.innerHTML = `<span id="key">${json["name"]} </span> <span id="value">${json["value"]}</span>&nbsp;${comment}`
+        const template = document.getElementById("generic-template")
+        this.el = template.content.firstElementChild.cloneNode(true)
+        let preview_el = this.el.querySelector(".editor-item-preview")
+        preview_el.innerHTML = `<span id="key">${json["name"]} </span> <span id="value">${json["value"]}</span>&nbsp;${comment}`
         this.el.classList.add("editor-item")
         this.el.classList.add("editor-item-generic")
-        this.el.title = json["position"]
+        if (window.config.compact) {
+            this.el.classList.add("compact")
+        }
+        this.el.title = json["position"].replace("root:", "").replaceAll(":", "   ")
         this.el.dataset.name = name
         this.el.dataset.uuid = uuid
         this.el.dataset.value = value ?? ""
         this.el.dataset.comment = comment ?? ""
         this.el.dataset.position = position ?? ""
-        this.el.dataset.disabled = disabled ?? false
+        this.el.dataset.disabled = disabled ? "true" : "false" //lol vscode badly wants to be a string that's why 
         this.el.dataset.type = "KEY"
         if (disabled === true) {
             this.el.classList.add("disabled")
         }
-        this.el.setAttribute("contenteditable", "true")
         this.saveDebounced = debounce(() => this.save(), 250);
 
         this.contextMenu = new ContextMenu([
@@ -210,29 +214,29 @@ class EditorItem_Generic {
             { label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
             { label: "Delete Key", icon: "󰗩", action: () => this.delete() }
         ])
+
         this.el.appendChild(this.contextMenu.el)
 
-        this.el.addEventListener("input", this.update)
         this.el.addEventListener("click", (e) => {
-            // this.el.classList.remove("compact")
-            console.log("clicked")
+            hideAllContextMenus()
+            this.el.classList.remove("compact")
             this.contextMenu.show()
         })
         this.el.addEventListener("contextmenu", (e) => {
-            // this.el.classList.remove("compact")
             e.preventDefault()
-            console.log("Right clicked")
+            hideAllContextMenus()
             this.contextMenu.show()
-            console.log(this.contextMenu.show())
         })
         this.el.addEventListener("dblclick", (e) => {
             console.log("Double clicked!")
+            hideAllContextMenus()
+            this.el.classList.toggle("compact")
             this.contextMenu.hide()
         })
         this.el.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                // this.el.classList.toggle("compact")
-                // this.contextMenu.el.classList.toggle("hidden")
+                this.el.classList.toggle("compact")
+                this.contextMenu.el.classList.toggle("hidden")
             }
         })
         this.el.addEventListener("focus", (e) => {
@@ -292,7 +296,7 @@ class EditorItem_Comments {
         this.el.dataset.comment = comment
         this.el.dataset.uuid = uuid
         this.el.dataset.position = position
-        this.el.setAttribute("title", position)
+        this.el.title = position.replace("root:", "").replaceAll(":", "   ")
         this.el.classList.add("editor-item")
         if (hidden) {
             this.el.classList.add("settings-hidden")
@@ -312,13 +316,13 @@ class EditorItem_Comments {
         this.el.appendChild(this.contextMenu.el)
         this.el.addEventListener("click", (e) => {
             // this.el.classList.remove("compact")
-            console.log("clicked")
+            hideAllContextMenus()
             this.contextMenu.show()
         })
         this.el.addEventListener("contextmenu", (e) => {
             // this.el.classList.remove("compact")
             e.preventDefault()
-            console.log("Right clicked")
+            hideAllContextMenus()
             this.contextMenu.show()
             console.log(this.contextMenu.show())
         })
@@ -329,17 +333,14 @@ class EditorItem_Comments {
         this.el.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 // this.el.classList.toggle("compact")
-                // this.contextMenu.el.classList.toggle("hidden")
+                this.contextMenu.el.classList.toggle("hidden")
             }
         })
         this.el.addEventListener("focus", (e) => {
             this.contextMenu.show()
+            hideAllContextMenus()
         })
-        document.addEventListener("mousedown", (e) => {
-            if (!this.el.contains(e.target) && !this.contextMenu.el.contains(e.target)) {
-                this.contextMenu.hide();
-            }
-        }); //this is heavy cause it adds a lot of evlisteners in document O(n) where n= comments
+
         this.initial_load = false
     }
     update() {
@@ -374,7 +375,7 @@ class EditorItem_Comments {
             let type = "KEY"
             let position = this.el.dataset.position
             if (name && value) {
-                saveKey(type, name, uuid, position, value, comment = comment)
+                saveKey(type, name, uuid, position, value, comment = comment, disabled = false)
             }
 
         }
@@ -402,7 +403,7 @@ class EditorItem_Binds {
         if (disabled) {
             this.el.classList.add("disabled")
         }
-        this.el.setAttribute("title", position)
+        this.el.title = position.replace("root:", "")
         this.el.dataset.name = name
         this.el.dataset.uuid = uuid
         this.el.dataset.value = value ?? ""

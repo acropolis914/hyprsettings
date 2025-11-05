@@ -80,9 +80,9 @@ export class ContextMenu {
 	}
 	hide() {
 		this.el.style.opacity = 0
-		// setTimeout(() => {
-		// 	this.el.classList.add("hidden")
-		// }, 500)
+		setTimeout(() => {
+			this.el.classList.add("hidden")
+		}, 500)
 
 	}
 

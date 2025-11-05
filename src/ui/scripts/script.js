@@ -6,6 +6,7 @@ import { configRenderer } from "./configRenderer.js"
 import { renderSettings } from "./settings.js"
 import { createDynamicTabs } from "./createDynamicTabs.js"
 import { setupTheme } from "./setupTheme.js"
+import "./documentListeners.js"
 import "./onboarding.js"
 import "./testingScreen.js"
 // @ts-ignore
@@ -14,7 +15,9 @@ window.jsonViewer = document.querySelector("andypf-json-viewer")
 
 async function setupData() {
     await waitFor(() => window.pywebview?.api.init)
+    // @ts-ignore
     window.data = await JSON.parse(await window.pywebview.api.init())
+    // @ts-ignore
     window.jsViewer = document.createElement("andypf-json-viewer")
     document.querySelector(".config-set#debug").appendChild(jsViewer)
     window.jsViewer.data = window.data
