@@ -387,6 +387,7 @@ class EditorItem_Comments {
                 this.el.focus()
                 // this.textarea.blur()
             }
+            //testing signed commit
             if (e.key === "ArrowDown" || e.key === "ArrowUp") {
                 e.preventDefault()
                 this.el.focus()
