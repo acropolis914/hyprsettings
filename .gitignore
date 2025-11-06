@@ -17,6 +17,5 @@ pywebview/
 storage/
 node_modules
 .vscode
-
-# Virtual environments
+setupscript.sh
 .venv

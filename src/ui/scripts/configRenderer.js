@@ -460,7 +460,7 @@ class EditorItem_Comments {
         this.el.remove()
     }
     save() {
-        if (this.el.dataset.comment.startsWith("#")) {
+        if (this.el.dataset.comment.trim().startsWith("#")) {
             let type = "COMMENT"
             let name = this.el.dataset.name
             let uuid = this.el.dataset.uuid
@@ -469,13 +469,14 @@ class EditorItem_Comments {
             let comment = this.el.dataset.comment
             saveKey(type, name, uuid, position, value, comment)
         } else {
+            console.log("detected comment to key transformation")
             let [name, value] = this.el.dataset.comment.split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
             let [new_value, comment] = value.split(/#(.*)/).slice(0, 2).map(p => (p.trim()))
             let uuid = this.el.dataset.uuid
             let type = "KEY"
             let position = this.el.dataset.position
             if (name && value) {
-                saveKey(type, name, uuid, position, value, comment = comment, disabled = false)
+                saveKey(type, name, uuid, position, value, comment = comment, false)
             }
 
         }
