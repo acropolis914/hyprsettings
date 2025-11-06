@@ -64,10 +64,10 @@ def get_config_descriptions() -> list:
 				pass
 			elif line.startswith(".value"):
 				parts = get_parts(line).split(":")
-				path = ":".join(parts[:1])
+				path = ":".join(parts[:-1])
 				name = parts[-1]
-				# if len(parts) - 1 > 1:
-				#       print(name)
+				if len(parts) - 1 > 1:
+					print(path)
 				is_editing_description = False
 			elif line.startswith(".description"):
 				parts = get_parts(line)
@@ -104,4 +104,4 @@ def get_config_descriptions() -> list:
 
 config_list = get_config_descriptions()
 jsonstring = json.dumps(config_list, indent=4)
-print(jsonstring)
+# print(jsonstring)

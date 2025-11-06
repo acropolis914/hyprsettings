@@ -32,6 +32,20 @@ let keyNameStarts = [
     ["layerrule", "layerrules"],
     ["source", "general"],
 ];
+
+let configGroups = [
+    ["debug", "miscellaneous"],
+    ["general", "looknfeel"],
+    ["decoration", "looknfeel"],
+    ["animations", "animations"],
+    ["xwayland", "win-rules"],
+    ["input", "input"],
+    ["device", "input"],
+    ["cursor", "input"],
+    ["binds", "input"],
+    ["ecosystem", "permissions"],
+    ["group", "win-rules"]
+]
 export class configRenderer {
     constructor(json) {
         this.json = json
@@ -116,7 +130,13 @@ export class configRenderer {
             if (json["position"] && json["position"].split(":").length > 1) {
                 //
                 let group_el = new ConfiGroup(json).return()
-                this.current_container.at(-1).appendChild(group_el)
+                // this.current_container.at(-1).appendChild(group_el)
+                for (const [key, value] of configGroups) {
+                    if (json.name.trim().startsWith(key)) {
+                        document.querySelector(`.config-set#${value}`).appendChild(group_el)
+                        break
+                    }
+                }
                 this.current_container.push(group_el)
             }
         }
