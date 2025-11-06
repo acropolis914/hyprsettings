@@ -21,7 +21,6 @@ async function setupData() {
     window.jsViewer = document.createElement("andypf-json-viewer")
     document.querySelector(".config-set#debug").appendChild(jsViewer)
     window.jsViewer.data = window.data
-    console.log(window.themeVariant)
     if (window.themeVariant === "dark") {
         window.jsViewer.setAttribute("theme", "papercolor-dark")
     } else {

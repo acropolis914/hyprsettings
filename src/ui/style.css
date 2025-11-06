@@ -319,18 +319,23 @@ h1#config-set-title {
   font-weight: bold;
 }
 .editor-item:focus-visible.config-group, .editor-item:focus.config-group {
-  border: 1px solid var(--accent-hover);
+  border: 3px solid var(--accent-hover);
   opacity: 1;
-  margin-left: 2rem !important;
 }
 .editor-item:focus-visible.config-group::after, .editor-item:focus.config-group::after {
   content: "\e602";
   position: absolute;
-  left: -2rem;
-  top: 0rem;
+  left: 0.5rem;
+  top: 1.2rem;
   transform: translateY(-50%);
   color: var(--accent-success);
   font-weight: bold;
+}
+.editor-item:focus-visible.config-group::before, .editor-item:focus.config-group::before {
+  transform: translateY(0);
+}
+.editor-item:focus-within.config-group::before {
+  transform: translateY(0);
 }
 .editor-item:focus-within:not(:focus):not(.config-group) {
   border: 1px solid var(--accent-hover);
@@ -340,7 +345,7 @@ h1#config-set-title {
 .editor-item:focus-within:not(:focus):not(.config-group)::after {
   content: "\f040";
   position: absolute;
-  left: -1rem;
+  left: -1.5rem;
   top: 1rem;
   transform: translateY(-50%);
   color: var(--accent-success);
@@ -765,53 +770,74 @@ span.danger {
   position: fixed;
   top: 0;
   z-index: 10;
-  display: flex;
-  height: 100vh;
-  width: 100vw;
   background-color: var(--surface-0) 50%;
   transition: all 0.4s ease;
   transition: opacity 1s ease;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  backdrop-filter: blur(10px) brightness(0.4);
+}
+#onboarding #message {
+  flex: 6;
+}
+#onboarding #instructions {
+  flex: 4;
+  padding-left: 0 !important;
+  padding-right: 5rem !important;
+}
+#onboarding .column {
+  display: flex;
   flex-direction: column;
-  backdrop-filter: blur(10px) brightness(0.6);
   justify-items: center;
   justify-content: center;
   align-items: center;
+  padding-left: 5rem;
+  padding-right: 5rem;
 }
-#onboarding * {
+#onboarding .column * {
   margin-bottom: 0;
   text-shadow: 0 5px 20px 10px rgb(0, 0, 0), 0 1px 5px rgb(0, 0, 0);
+  line-height: 1.85rem;
+  font-size: 1.5rem;
 }
-#onboarding h1,
-#onboarding h2,
-#onboarding a,
-#onboarding li {
+#onboarding .column h1,
+#onboarding .column h2,
+#onboarding .column a,
+#onboarding .column li {
   margin-bottom: 0.3rem;
 }
-#onboarding p {
+#onboarding .column h1 {
+  font-size: 2rem !important;
+}
+#onboarding .column h1 > * {
+  font-size: 2rem !important;
+  color: var(--accent-danger);
+}
+#onboarding .column p {
   display: inline-block;
   margin-bottom: 0.55rem;
-  padding-left: 8rem;
-  padding-right: 8rem;
   text-align: center;
 }
-#onboarding button {
+#onboarding .column button {
   font-weight: bold;
   cursor: pointer;
   transition: scale 0.1 ease;
   scale: 1;
 }
-#onboarding button:active {
+#onboarding .column button:active {
   scale: 0.9 !important;
 }
-#onboarding button:hover {
+#onboarding .column button:hover {
   scale: 1.05;
 }
-#onboarding a {
+#onboarding .column a {
   white-space: nowrap;
 }
-#onboarding ul {
-  padding-left: 20rem;
-  padding-right: 20rem;
+#onboarding .column ul {
+  padding-left: 2rem;
+  padding-right: 2rem;
   list-style: square;
 }
 

@@ -390,17 +390,25 @@ h1#config-set-title {
 	}
 	&:focus-visible.config-group,
 	&:focus.config-group {
-		border: 1px solid var(--accent-hover);
+		border: 3px solid var(--accent-hover);
 		opacity: 1;
-		margin-left: 2rem !important;
+		// margin-left: !important;
 		&::after {
 			content: "";
 			position: absolute;
-			left: -2rem; // adjust to fit your layout
-			top: 0rem;
+			left: 0.5rem; // adjust to fit your layout
+			top: 1.2rem;
 			transform: translateY(-50%);
 			color: var(--accent-success);
 			font-weight: bold;
+		}
+		&::before {
+			transform: translateY(0);
+		}
+	}
+	&:focus-within.config-group {
+		&::before {
+			transform: translateY(0);
 		}
 	}
 	&:focus-within:not(:focus):not(.config-group) {
@@ -410,7 +418,7 @@ h1#config-set-title {
 		&::after {
 			content: "";
 			position: absolute;
-			left: -1rem; // adjust to fit your layout
+			left: -1.5rem; // adjust to fit your layout
 			top: 1rem;
 			transform: translateY(-50%);
 			color: var(--accent-success);
@@ -914,60 +922,80 @@ span {
 	position: fixed;
 	top: 0;
 	z-index: 10;
-
-	display: flex;
-	height: 100vh;
-	width: 100vw;
-
 	background-color: var(--surface-0) 50%;
 	transition: all 0.4s ease;
 	transition: opacity 1s ease;
-	flex-direction: column;
-	backdrop-filter: blur(10px) brightness(0.6);
-	justify-items: center;
-	justify-content: center;
-	align-items: center;
-
-	* {
-		margin-bottom: 0;
-		text-shadow: 0 5px 20px 10px rgba(0, 0, 0, 1),
-			0 1px 5px rgba(0, 0, 0, 1);
+	display: flex;
+	flex-direction: row;
+	height: 100vh;
+	width: 100vw;
+	backdrop-filter: blur(10px) brightness(0.4);
+	#message {
+		flex: 6;
 	}
-	h1,
-	h2,
-	a,
-	li {
-		margin-bottom: 0.3rem;
+	#instructions {
+		flex: 4;
+		padding-left: 0 !important;
+		padding-right: 5rem !important;
 	}
-	p {
-		display: inline-block;
-		margin-bottom: 0.55rem;
-		padding-left: 8rem;
-		padding-right: 8rem;
-
-		text-align: center;
-	}
-
-	button {
-		font-weight: bold;
-		cursor: pointer;
-		transition: scale 0.1 ease;
-		scale: 1;
-
-		&:active {
-			scale: 0.9 !important;
+	.column {
+		display: flex;
+		flex-direction: column;
+		justify-items: center;
+		justify-content: center;
+		align-items: center;
+		padding-left: 5rem;
+		padding-right: 5rem;
+		* {
+			margin-bottom: 0;
+			text-shadow: 0 5px 20px 10px rgba(0, 0, 0, 1),
+				0 1px 5px rgba(0, 0, 0, 1);
+			line-height: 1.85rem;
+			font-size: 1.5rem;
 		}
-		&:hover {
-			scale: 1.05;
+		h1,
+		h2,
+		a,
+		li {
+			margin-bottom: 0.3rem;
 		}
-	}
-	a {
-		white-space: nowrap;
-	}
-	ul {
-		padding-left: 20rem;
-		padding-right: 20rem;
-		list-style: square;
+		h1 {
+			font-size: 2rem !important;
+			> * {
+				font-size: 2rem !important;
+				color: var(--accent-danger);
+			}
+		}
+		p {
+			display: inline-block;
+			margin-bottom: 0.55rem;
+			// padding-left: 8rem;
+			// padding-right: 8rem;
+
+			text-align: center;
+		}
+
+		button {
+			font-weight: bold;
+			cursor: pointer;
+			transition: scale 0.1 ease;
+			scale: 1;
+
+			&:active {
+				scale: 0.9 !important;
+			}
+			&:hover {
+				scale: 1.05;
+			}
+		}
+		a {
+			white-space: nowrap;
+		}
+		ul {
+			padding-left: 2rem;
+			padding-right: 2rem;
+			list-style: square;
+		}
 	}
 }
 

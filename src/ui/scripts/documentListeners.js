@@ -8,6 +8,8 @@ document.addEventListener('keydown', (event) => {
 	}
 });
 
+
+
 document.addEventListener("mousedown", e => {
 	if (!e.target.closest(".context-menu, .editor-item")) {
 		hideAllContextMenus()
@@ -35,27 +37,36 @@ hotkeys('*', { keydown: true, keyup: true }, (event) => {
 	}, 1500)
 });
 
-window.currentView = "tabs"; // default active tab index
-window.activeTab
-window.mainFocus = {}; // store focused element per tab
-window.currentFocus = null
-hotkeys('*', (event) => { //fucking monolith //maybe I'm a bad dev like yandev?omg
-	let focused = document.activeElement
-	if (event.key === "ArrowRight" && window.currentView === "tabs") {
 
+
+window.currentView = "tabs";
+window.activeTab;
+window.mainFocus = {};
+window.currentFocus = null;
+
+hotkeys('*', (event) => {
+	let focused = document.activeElement;
+
+	if (event.key === "Escape") {
+		event.preventDefault();
+	}
+	if (event.key === "Tab") {
+		event.preventDefault();
+	}
+
+	if (event.key === "ArrowRight" && window.currentView === "tabs") {
 		const currentSet = document.querySelector(`.config-set#${window.activeTab}`);
 		if (!currentSet) {
 			console.log(`Config set ${window.activeTab} doesnt exist.`);
-			return
+			return;
 		} else {
 			console.log(`Config set ${window.activeTab} exists.`);
 		}
-		document.querySelector(".sidebar-item.keyboard-selected")?.classList.remove("keyboard-selected")
-
+		document.querySelector(".sidebar-item.keyboard-selected")?.classList.remove("keyboard-selected");
 		if (window.mainFocus[window.activeTab] && currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`)) {
 			const prevFocus = currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`);
 			if (prevFocus) {
-				window.currentFocus = prevFocus
+				window.currentFocus = prevFocus;
 				prevFocus.focus({ preventScroll: true });
 				window.currentView = "main";
 			}
@@ -63,9 +74,8 @@ hotkeys('*', (event) => { //fucking monolith //maybe I'm a bad dev like yandev?o
 			const firstChild = Array.from(currentSet.children).find(
 				child => !child.classList.contains("settings-hidden") && child.getAttribute("tabindex") != null
 			);
-
 			if (firstChild) {
-				window.currentFocus = firstChild
+				window.currentFocus = firstChild;
 				firstChild.focus({ preventScroll: true });
 				window.mainFocus[window.activeTab] = firstChild.dataset.uuid || 0;
 				window.currentView = "main";
@@ -78,16 +88,14 @@ hotkeys('*', (event) => { //fucking monolith //maybe I'm a bad dev like yandev?o
 		if (activeElem && activeElem.dataset.uuid != null) {
 			window.mainFocus[window.activeTab] = activeElem.dataset.uuid;
 		}
-		window.currentFocus.blur()
+		window.currentFocus.blur();
 		window.currentView = "tabs";
 		const selectedTab = document.querySelector(`.selected`);
-
 		if (selectedTab) {
-			selectedTab.classList.add("keyboard-selected")
-			selectedTab.click()
-			console.log(selectedTab)
+			selectedTab.classList.add("keyboard-selected");
+			selectedTab.click();
+			console.log(selectedTab);
 		}
-
 	}
 
 	switch (window.currentView) {
@@ -97,17 +105,15 @@ hotkeys('*', (event) => { //fucking monolith //maybe I'm a bad dev like yandev?o
 
 			let activeElement = currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`);
 			if (!activeElement) {
-				activeElement = document.activeElement
+				activeElement = document.activeElement;
 				if (activeElement.getAttribute("tabindex") == null) {
-					break
+					break;
 				}
 			}
-
 
 			const children = Array.from(currentSet.querySelectorAll(".editor-item"));
 			let index = children.indexOf(activeElement);
 			let newIndex = index;
-
 
 			switch (event.key) {
 				case "ArrowDown":
@@ -116,7 +122,6 @@ hotkeys('*', (event) => { //fucking monolith //maybe I'm a bad dev like yandev?o
 					while (children[newIndex].classList.contains("settings-hidden")) {
 						newIndex = (newIndex + 1) % children.length;
 					}
-					// window.currentFocus.blur()
 					break;
 				case "ArrowUp":
 					event.preventDefault();
@@ -124,36 +129,32 @@ hotkeys('*', (event) => { //fucking monolith //maybe I'm a bad dev like yandev?o
 					while (children[newIndex].classList.contains("settings-hidden")) {
 						newIndex = (newIndex - 1 + children.length) % children.length;
 					}
-					// window.currentFocus.blur()
 					break;
 			}
 
 			activeElement.blur();
 			const newActiveElement = children[newIndex];
 			if (!activeElement) break;
-			window.currentFocus = newActiveElement
+			window.currentFocus = newActiveElement;
 			newActiveElement.focus();
 			window.mainFocus[window.activeTab] = newActiveElement.dataset.uuid;
 
 			if (newActiveElement.classList.contains(".config-group")) {
-				console.log(newActiveElement.classList)
-				const offset = 80; // pixels from top
+				console.log(newActiveElement.classList);
+				const offset = 80;
 				const top = element.getBoundingClientRect().top + window.scrollY - offset;
 				window.scrollTo({ top, behavior: "smooth" });
 			} else {
 				newActiveElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
 			}
-
 			break;
 		}
 
 		case "tabs": {
 			const currentSelected = document.querySelector(".selected");
 			if (!currentSelected) break;
-
 			const parent = currentSelected.parentElement;
 			if (!parent) break;
-
 			const children = Array.from(parent.children);
 			let index = children.indexOf(currentSelected);
 			let newIndex = index;
@@ -173,25 +174,18 @@ hotkeys('*', (event) => { //fucking monolith //maybe I'm a bad dev like yandev?o
 						newIndex = (newIndex - 1 + children.length) % children.length;
 					}
 					break;
+				// (add other per-tabs keys if ever needed)
 			}
 
 			currentSelected.classList.remove("selected");
 			currentSelected.classList.remove("keyboard-selected");
 			const newSelected = children[newIndex];
 			newSelected.classList.add("selected");
-			newSelected.classList.add("keyboard-selected")
+			newSelected.classList.add("keyboard-selected");
 			newSelected.click();
 			newSelected.scrollIntoView({ behavior: "smooth", block: "nearest" });
-
 			window.activeTab = newSelected.id;
-
 			break;
 		}
-	}
-	if (event.key === "Escape") {
-		event.preventDefault()
-	}
-	if (event.key === "Tab") {
-		event.preventDefault()
 	}
 });

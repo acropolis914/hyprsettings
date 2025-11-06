@@ -1,22 +1,39 @@
 import { saveConfig } from "./utils.js";
 
-let onboardingUI = document.getElementById("onboarding")
+const onboardingUI = document.getElementById("onboarding");
+const finishBtn = document.getElementById("onboarding-finish");
+let isFading = false;
 
-document.getElementById("onboarding-finish").addEventListener("click", () => {
-	finishOnboarding()
-})
+finishBtn.addEventListener("click", finishOnboarding);
 
 onboardingUI.addEventListener("transitionend", () => {
 	const opacity = parseFloat(getComputedStyle(onboardingUI).opacity);
-	if (opacity === 0) {
-		setTimeout(() => onboardingUI.classList.add("hidden"), 1000);
+	if (opacity === 0 && isFading) {
+		isFading = false;
+		onboardingUI.classList.add("hidden");
 	}
 });
 
-
 function finishOnboarding() {
-	console.log("click")
-	onboardingUI.style.opacity = 0
-	window.config["first_run"] = false
-	saveConfig()
+	if (isFading) return; // Prevent multiple clicks during fade
+	isFading = true;
+	console.log("finish onboarding");
+	onboardingUI.style.opacity = 0;
+	window.config["first_run"] = false;
+	saveConfig();
 }
+
+// Explicitly show/hide with F1
+document.addEventListener("keydown", (event) => {
+	if (event.key === "F1") {
+		event.preventDefault();
+
+		const isHidden = onboardingUI.classList.contains("hidden");
+		if (isHidden) {
+			onboardingUI.classList.remove("hidden");
+			onboardingUI.style.opacity = 1;
+		} else {
+			finishOnboarding();
+		}
+	}
+});

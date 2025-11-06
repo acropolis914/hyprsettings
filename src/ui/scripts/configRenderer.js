@@ -217,7 +217,6 @@ class EditorItem_Generic {
         }
 
         this.preview_el = this.el.querySelector(".editor-item-preview")
-        this.preview_el.innerHTML = `<span id="key">${json["name"]} </span> <span id="value">${json["value"]}</span>&nbsp;${comment}`
 
         this.genericEditor_el = this.el.querySelector(".generic-editor")
         this.genericEditor_el.innerHTML = ""
@@ -243,9 +242,24 @@ class EditorItem_Generic {
             { label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
             { label: "Delete Key", icon: "󰗩", action: () => this.delete() }
         ])
-
         this.el.appendChild(this.contextMenu.el)
 
+        this.addListeners()
+
+        this.update()
+        this.inital_load = false
+    }
+
+    update() {
+        let name = this.el.dataset.name
+        let value = this.el.dataset.value
+        let comment = this.el.dataset.comment
+        this.preview_el.innerHTML = `<span id="key">${name} </span> <span id="value">${value}</span>&nbsp;${comment}`
+        if (!this.inital_load) {
+            this.saveDebounced()
+        }
+    }
+    addListeners() {
         this.el.addEventListener("click", (e) => {
 
             this.el.classList.remove("compact")
@@ -274,17 +288,7 @@ class EditorItem_Generic {
             this.contextMenu.hide()
             // this.el.classList.add("compact")
         })
-
-        this.update()
-        this.inital_load = false
     }
-
-    update() {
-        if (!this.inital_load) {
-            this.saveDebounced()
-        }
-    }
-
     addToParent(parent) {
         parent.appendChild(this.el)
     }
@@ -342,6 +346,19 @@ class EditorItem_Comments {
             { label: "Delete Key", icon: "󰗩", action: () => this.delete() }
         ])
         this.el.appendChild(this.contextMenu.el)
+        this.addListeners()
+
+        this.initial_load = false
+    }
+
+    update() {
+        this.el.dataset.comment = this.textarea.value
+        if (!this.initial_load) {
+            this.saveDebounced()
+        }
+
+    }
+    addListeners() {
         this.el.addEventListener("click", (e) => {
             this.contextMenu.show()
         })
@@ -396,17 +413,7 @@ class EditorItem_Comments {
         this.el.addEventListener("focus", (e) => {
             this.contextMenu.show()
         })
-
-        this.initial_load = false
     }
-    update() {
-        this.el.dataset.comment = this.textarea.value
-        if (!this.initial_load) {
-            this.saveDebounced()
-        }
-
-    }
-
     addToParent(parent) {
         parent.appendChild(this.el)
     }
