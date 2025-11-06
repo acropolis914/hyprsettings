@@ -39,7 +39,7 @@ window.currentView = "tabs"; // default active tab index
 window.activeTab
 window.mainFocus = {}; // store focused element per tab
 window.currentFocus = null
-hotkeys('*', (event) => { //fucking monolith
+hotkeys('*', (event) => { //fucking monolith //maybe I'm a bad dev like yandev?omg
 	let focused = document.activeElement
 	if (event.key === "ArrowRight" && window.currentView === "tabs") {
 
@@ -50,6 +50,7 @@ hotkeys('*', (event) => { //fucking monolith
 		} else {
 			console.log(`Config set ${window.activeTab} exists.`);
 		}
+		document.querySelector(".sidebar-item.keyboard-selected")?.classList.remove("keyboard-selected")
 
 		if (window.mainFocus[window.activeTab] && currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`)) {
 			const prevFocus = currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`);
@@ -80,7 +81,13 @@ hotkeys('*', (event) => { //fucking monolith
 		window.currentFocus.blur()
 		window.currentView = "tabs";
 		const selectedTab = document.querySelector(`.selected`);
-		if (selectedTab) selectedTab.click()
+
+		if (selectedTab) {
+			selectedTab.classList.add("keyboard-selected")
+			selectedTab.click()
+			console.log(selectedTab)
+		}
+
 	}
 
 	switch (window.currentView) {
@@ -94,7 +101,6 @@ hotkeys('*', (event) => { //fucking monolith
 				if (activeElement.getAttribute("tabindex") == null) {
 					break
 				}
-				// break;
 			}
 
 
@@ -170,8 +176,10 @@ hotkeys('*', (event) => { //fucking monolith
 			}
 
 			currentSelected.classList.remove("selected");
+			currentSelected.classList.remove("keyboard-selected");
 			const newSelected = children[newIndex];
 			newSelected.classList.add("selected");
+			newSelected.classList.add("keyboard-selected")
 			newSelected.click();
 			newSelected.scrollIntoView({ behavior: "smooth", block: "nearest" });
 

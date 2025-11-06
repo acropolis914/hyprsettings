@@ -252,6 +252,7 @@ footer {
 }
 
 .sidebar-item {
+	position: relative;
 	display: flex;
 	height: 3rem;
 	padding-left: var(--spacing-unit);
@@ -265,7 +266,23 @@ footer {
 	transition: background-color 0.1s ease-in-out;
 	/* border-radius: var(--border-rad);*/
 	/* @include scroll-on-hover(7s);*/
+	&.keyboard-selected {
+		// border: 1px solid var(--accent-hover);
+		// opacity: 1;
+		// width: calc(100% - 2rem);
+		// margin-left: 2rem !important;
 
+		&::after {
+			content: "";
+			position: absolute;
+			left: 2px;
+			// top: 50%;
+			// transform: translateY(-50%);
+			// font-size: 3rem;
+			color: var(--text-contrast);
+			font-weight: bold;
+		}
+	}
 	&:hover {
 		@include sidebar-item-active; /* Use mixin*/
 		background-color: var(--accent-active);
@@ -288,8 +305,7 @@ footer {
 /* --- Content Area Components ---*/
 
 .config-set {
-	overflow-y: hidden;
-	overscroll-behavior-y: none;
+	overflow-x: hidden;
 	display: flex;
 	height: 100%;
 	max-width: 100%;

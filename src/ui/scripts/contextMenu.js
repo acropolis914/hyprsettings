@@ -34,27 +34,38 @@ export class ContextMenu {
 
 			if (label.toLowerCase().includes("delete")) {
 				let clickCount = 0
+				let timeoutId;
 				btnEl.addEventListener("click", (e) => {
-					e.stopPropagation()
-					clickCount += 1
-					if (clickCount == 1) {
-						iconEl.classList.add("warn")
-						labelEl.classList.add("warn")
-						labelEl.textContent = "You sure?"
-						console.log("Are you sure?")
+					e.stopPropagation();
+
+					clickCount += 1;
+
+					if (clickCount === 1) {
+						iconEl.classList.add("warn");
+						labelEl.classList.add("warn");
+						labelEl.textContent = "You sure?";
+						console.log("Are you sure?");
+
+						clearTimeout(timeoutId);
+						timeoutId = setTimeout(() => reset(), 2000); // auto-reset after 2s
+					} else {
+						clearTimeout(timeoutId);
+						reset();
+						action?.();
 					}
-					if (clickCount > 1) {
-						action?.()
-					}
-				})
-				btnEl.addEventListener("mouseleave", (e) => {
-					setTimeout(() => {
-						clickCount = 0
-						iconEl.classList.remove("warn")
-						labelEl.classList.remove("warn")
-						labelEl.textContent = label
-					}, 1500)
-				})
+				});
+
+				function reset() {
+					clickCount = 0;
+					iconEl.classList.remove("warn");
+					labelEl.classList.remove("warn");
+					labelEl.textContent = label;
+				}
+
+				btnEl.addEventListener("mouseleave", () => {
+					clearTimeout(timeoutId);
+					timeoutId = setTimeout(() => reset(), 1500);
+				});
 
 			} else {
 				btnEl.addEventListener("click", (e) => {

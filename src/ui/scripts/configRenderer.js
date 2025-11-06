@@ -113,7 +113,6 @@ export class configRenderer {
         // } //fugly
 
         else if (json["type"] === "GROUP") {
-            //
             if (json["position"] && json["position"].split(":").length > 1) {
                 //
                 let group_el = new ConfiGroup(json).return()
@@ -146,8 +145,6 @@ export class configRenderer {
             }
             if (!tabToAddTo) {
                 tabToAddTo = this.current_container.at(-1)
-            }
-            if (json.name.startsWith("layerrule")) {
             }
             tabToAddTo.appendChild(genericItem.el)
         }
@@ -230,7 +227,10 @@ class EditorItem_Generic {
         this.valueEditor = document.createElement("textarea")
         this.valueEditor.rows = 1
         this.valueEditor.id = "generic-value"
-        // this.genericEditor_el.appendChild(this.keyEditor)
+        if (name.startsWith("$")) {
+            this.genericEditor_el.appendChild(this.keyEditor)
+        }
+
         this.genericEditor_el.appendChild(this.valueEditor)
         this.keyEditor.value = name
         this.valueEditor.value = value
@@ -604,15 +604,17 @@ class EditorItem_Binds {
             this.contextMenu.hide()
         })
         this.el.addEventListener("keydown", (e) => {
+            // e.stopPropagation()
             if (e.key === "Enter") {
                 this.el.classList.toggle("compact")
                 this.contextMenu.show()
             }
             if (e.key === "Delete") {
-                this.el.contextMenu.el.children.forEach(element => {
+                e.preventDefault()
+                Array.from(this.contextMenu.el.children).forEach(element => {
                     let label_el = element.querySelector(".ctx-button-label")
-                    if (label_el.toLowerCase().contains("Delete")) {
-                        element.click()
+                    if (label_el.textContent.toLowerCase().includes("delete")) {
+                        setTimeout(() => element.click(), 0);
                     }
                 });
 
@@ -622,7 +624,7 @@ class EditorItem_Binds {
             this.contextMenu.show()
         })
         this.el.addEventListener("blur", () => {
-            // this.contextMenu.hide()
+            this.contextMenu.hide()
         })
         this.update()
         this.initial_load = false

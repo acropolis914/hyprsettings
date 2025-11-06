@@ -128,7 +128,7 @@ class ConfigTabs {
 		document.querySelectorAll(".sidebar-item").forEach((element) => {
 			element.id === id
 				? element.classList.add("selected")
-				: element.classList.remove("selected");
+				: element.classList.remove("selected", "keyboard-selected");
 		});
 		const sidebarItem = document.querySelector(`aside#sidebar>ul>#${id}`);
 		const sidebarItemTitle = sidebarItem.dataset.label;

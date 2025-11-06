@@ -196,6 +196,7 @@ footer > * {
 }
 
 .sidebar-item {
+  position: relative;
   display: flex;
   height: 3rem;
   padding-left: var(--spacing-unit);
@@ -212,6 +213,13 @@ footer > * {
   transition: background-color 0.1s ease-in-out;
   /* border-radius: var(--border-rad);*/
   /* @include scroll-on-hover(7s);*/
+}
+.sidebar-item.keyboard-selected::after {
+  content: "\e602";
+  position: absolute;
+  left: 2px;
+  color: var(--text-contrast);
+  font-weight: bold;
 }
 .sidebar-item:hover {
   background-color: var(--accent);
@@ -238,8 +246,7 @@ footer > * {
 
 /* --- Content Area Components ---*/
 .config-set {
-  overflow-y: hidden;
-  overscroll-behavior-y: none;
+  overflow-x: hidden;
   display: flex;
   height: 100%;
   max-width: 100%;
