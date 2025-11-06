@@ -19,16 +19,19 @@ const pressed = new Set();
 hotkeys('*', { keydown: true, keyup: true }, (event) => {
 	if (event.type === 'keydown') pressed.add(event.key);
 	if (event.type === 'keyup') {
-		setTimeout(()=>{
+		setTimeout(() => {
 			pressed.delete(event.key);
-		},200)
-		
+		}, 200)
+
 	}
-	document.querySelector("#keys-display").textContent =
+	document.querySelector("#keys-display").innerHTML =
 		Array.from(pressed).join(" + ");
+	// Array.from(pressed)
+	// 	.map(string => `<div class="keypress">${string}</div>`)
+	// 	.join(" + ");
 	setTimeout(() => {
 		pressed.clear()
-		document.querySelector("#keys-display").textContent =""
+		document.querySelector("#keys-display").textContent = ""
 	}, 1500)
 });
 
@@ -39,7 +42,6 @@ window.currentFocus = null
 hotkeys('*', (event) => {
 	let focused = document.activeElement
 	if (event.key === "ArrowRight" && window.currentView === "tabs") {
-		window.currentView = "main";
 
 		const currentSet = document.querySelector(`.config-set#${window.activeTab}`);
 		if (!currentSet) return;
@@ -49,6 +51,7 @@ hotkeys('*', (event) => {
 			if (prevFocus) {
 				window.currentFocus = prevFocus
 				prevFocus.focus({ preventScroll: true });
+				window.currentView = "main";
 			}
 		} else {
 			const firstChild = Array.from(currentSet.children).find(
@@ -56,14 +59,10 @@ hotkeys('*', (event) => {
 			);
 
 			if (firstChild) {
-				console.log("First visible child:", firstChild);
-				// Do whatever you need with firstChild, e.g., focus
-			}
-
-			if (firstChild) {
 				window.currentFocus = firstChild
 				firstChild.focus({ preventScroll: true });
 				window.mainFocus[window.activeTab] = firstChild.dataset.uuid || firstChild.id || 0;
+				window.currentView = "main";
 			}
 
 		}
@@ -88,7 +87,7 @@ hotkeys('*', (event) => {
 			const activeElement = currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`);
 			if (!activeElement) break;
 
-			const children = Array.from(currentSet.children);
+			const children = Array.from(currentSet.querySelectorAll(".editor-item"));
 			let index = children.indexOf(activeElement);
 			let newIndex = index;
 
@@ -100,7 +99,7 @@ hotkeys('*', (event) => {
 					while (children[newIndex].classList.contains("settings-hidden")) {
 						newIndex = (newIndex + 1) % children.length;
 					}
-					window.currentFocus.blur()
+					// window.currentFocus.blur()
 					break;
 				case "ArrowUp":
 					event.preventDefault();
@@ -108,7 +107,7 @@ hotkeys('*', (event) => {
 					while (children[newIndex].classList.contains("settings-hidden")) {
 						newIndex = (newIndex - 1 + children.length) % children.length;
 					}
-					window.currentFocus.blur()
+					// window.currentFocus.blur()
 					break;
 			}
 
@@ -117,7 +116,15 @@ hotkeys('*', (event) => {
 			window.currentFocus = newActiveElement
 			newActiveElement.focus();
 			window.mainFocus[window.activeTab] = newActiveElement.dataset.uuid;
-			newActiveElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+			if (newActiveElement.classList.contains(".config-group")) {
+				console.log(newActiveElement.classList)
+				const offset = 80; // pixels from top
+				const top = element.getBoundingClientRect().top + window.scrollY - offset;
+				window.scrollTo({ top, behavior: "smooth" });
+			} else {
+				newActiveElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+			}
 
 			break;
 		}

@@ -55,6 +55,7 @@ sass --watch style.scss:style.css
 	--spacing-unit: 1rem;
 	--border-rad: 5px;
 	--background-alpha: 0.9;
+	--animation-margin: 2rem ;
 	--surface-0: #1e1e2e;
 	--surface-1: #181825;
 	--surface-2: #11111b;
@@ -211,7 +212,7 @@ header#main-header {
 	height: 100%;
 	padding-left: 1.5rem;
 	padding-top: var(--spacing-unit);
-
+	overflow-y: hidden;
 	background-color: var(--surface-1);
 	flex: 0 0 80%;
 	max-width: 80%;
@@ -282,14 +283,17 @@ footer {
 /* --- Content Area Components ---*/
 
 .config-set {
+	overflow-y: hidden;
+	overscroll-behavior-y: none;
 	display: flex;
 	height: 100%;
+	max-width: 100%;
 	margin-top: 1rem;
 	padding-right: 2rem;
 	flex: 0 1 auto;
 	flex-direction: column;
 	min-height: 0;
-	overflow-y: scroll;
+
 
 	/* Specific styles for the #settings tab*/
 	&#settings {
@@ -333,6 +337,10 @@ h1#config-set-title {
 	// box-shadow: 0 0px 2px rgba(0, 7, 76, 0.3);
 	padding: 0.5rem;
 	margin-bottom: var(--spacing-unit);
+	transition: margin 0.2s ease;
+	&.config-group {
+		transition: margin 0.3s ease;
+	}
 }
 
 .editor-item {
@@ -343,22 +351,39 @@ h1#config-set-title {
 	opacity: 0.8;
 	background-color: var(--surface-0);
 
-	&:focus-visible,
-	&:focus {
+	&:focus-visible:not(.config-group),
+	&:focus:not(.config-group) {
 		border: 1px solid var(--accent-hover);
 		opacity: 1;
-		margin-left: 1.5rem !important;
+		width: calc(100% - 2rem);
+		margin-left: 2rem !important;
+
 		&::after {
 			content: "";
 			position: absolute;
-			left: -1rem; // adjust to fit your layout
-			top: 1rem;
+			left: -2rem; // adjust to fit your layout
+			top: 50%;
 			transform: translateY(-50%);
 			color: var(--accent-success);
 			font-weight: bold;
 		}
 	}
-	&:focus-within:not(:focus){
+	&:focus-visible.config-group,
+	&:focus.config-group {
+		border: 1px solid var(--accent-hover);
+		opacity: 1;
+		margin-left: 2rem !important;
+		&::after {
+			content: "";
+			position: absolute;
+			left: -2rem; // adjust to fit your layout
+			top: 0rem;
+			transform: translateY(-50%);
+			color: var(--accent-success);
+			font-weight: bold;
+		}
+	}
+	&:focus-within:not(:focus):not(.config-group) {
 		border: 1px solid var(--accent-hover);
 		opacity: 1;
 		margin-left: 1.5rem !important;
@@ -371,6 +396,9 @@ h1#config-set-title {
 			color: var(--accent-success);
 			font-weight: bold;
 		}
+	}
+	&:focus{
+		outline: none;
 	}
 	&.compact {
 		/* background-color: transparent !important;*/
@@ -507,7 +535,7 @@ h1#config-set-title {
 }
 
 /* --- Line Comment Item (Specific) ---*/
-.editor-item:has(> .editor-item-comment) {
+.editor-item:has(>.editor-item-comment) {
 	margin: 0;
 	padding: 0;
 	border: 1px solid transparent;

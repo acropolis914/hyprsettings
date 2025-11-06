@@ -9,6 +9,7 @@
   --spacing-unit: 1rem;
   --border-rad: 5px;
   --background-alpha: 0.9;
+  --animation-margin: 2rem ;
   --surface-0: #1e1e2e;
   --surface-1: #181825;
   --surface-2: #11111b;
@@ -159,6 +160,7 @@ header#main-header:hover {
   height: 100%;
   padding-left: 1.5rem;
   padding-top: var(--spacing-unit);
+  overflow-y: hidden;
   background-color: var(--surface-1);
   flex: 0 0 80%;
   max-width: 80%;
@@ -233,14 +235,16 @@ footer > * {
 
 /* --- Content Area Components ---*/
 .config-set {
+  overflow-y: hidden;
+  overscroll-behavior-y: none;
   display: flex;
   height: 100%;
+  max-width: 100%;
   margin-top: 1rem;
   padding-right: 2rem;
   flex: 0 1 auto;
   flex-direction: column;
   min-height: 0;
-  overflow-y: scroll;
   /* Specific styles for the #settings tab*/
 }
 .config-set#settings .setting-container {
@@ -275,6 +279,10 @@ h1#config-set-title {
   border-radius: var(--border-rad);
   padding: 0.5rem;
   margin-bottom: var(--spacing-unit);
+  transition: margin 0.2s ease;
+}
+.editor-item.config-group {
+  transition: margin 0.3s ease;
 }
 
 .editor-item {
@@ -285,26 +293,41 @@ h1#config-set-title {
   opacity: 0.8;
   background-color: var(--surface-0);
 }
-.editor-item:focus-visible, .editor-item:focus {
+.editor-item:focus-visible:not(.config-group), .editor-item:focus:not(.config-group) {
   border: 1px solid var(--accent-hover);
   opacity: 1;
-  margin-left: 1.5rem !important;
+  width: calc(100% - 2rem);
+  margin-left: 2rem !important;
 }
-.editor-item:focus-visible::after, .editor-item:focus::after {
+.editor-item:focus-visible:not(.config-group)::after, .editor-item:focus:not(.config-group)::after {
   content: "\e602";
   position: absolute;
-  left: -1rem;
-  top: 1rem;
+  left: -2rem;
+  top: 50%;
   transform: translateY(-50%);
   color: var(--accent-success);
   font-weight: bold;
 }
-.editor-item:focus-within:not(:focus) {
+.editor-item:focus-visible.config-group, .editor-item:focus.config-group {
+  border: 1px solid var(--accent-hover);
+  opacity: 1;
+  margin-left: 2rem !important;
+}
+.editor-item:focus-visible.config-group::after, .editor-item:focus.config-group::after {
+  content: "\e602";
+  position: absolute;
+  left: -2rem;
+  top: 0rem;
+  transform: translateY(-50%);
+  color: var(--accent-success);
+  font-weight: bold;
+}
+.editor-item:focus-within:not(:focus):not(.config-group) {
   border: 1px solid var(--accent-hover);
   opacity: 1;
   margin-left: 1.5rem !important;
 }
-.editor-item:focus-within:not(:focus)::after {
+.editor-item:focus-within:not(:focus):not(.config-group)::after {
   content: "\f040";
   position: absolute;
   left: -1rem;
@@ -312,6 +335,9 @@ h1#config-set-title {
   transform: translateY(-50%);
   color: var(--accent-success);
   font-weight: bold;
+}
+.editor-item:focus {
+  outline: none;
 }
 .editor-item.compact {
   /* background-color: transparent !important;*/
