@@ -387,7 +387,7 @@ class EditorItem_Comments {
                 this.el.focus()
                 // this.textarea.blur()
             }
-            if (e.key === "ArrowDown") {
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") {
                 e.preventDefault()
                 this.el.focus()
             }
