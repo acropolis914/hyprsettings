@@ -33,7 +33,7 @@ Add to your NixOS configuration (`/etc/nixos/configuration.nix` or flake):
 #### Try without installing
 
 ```bash
-nix run github:wiktormalyska/hyprsettings-nixos
+nix run github:wiktormalyska/hyprsettings-nixos --no-write-lock-file
 ```
 
 #### Install to user profile
