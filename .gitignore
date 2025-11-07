@@ -20,3 +20,9 @@ node_modules
 
 # Virtual environments
 .venv
+
+# Nix
+result
+result-*
+.direnv/
+flake.lock

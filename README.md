@@ -16,12 +16,43 @@ You can fork this repo, make changes, and submit pull requests. Please also subm
 
 - [HyprSettings](#hyprsettings)
 	- [Table of Contents](#table-of-contents)
+	- [Installation](#installation)
+		- [NixOS Installation](#nixos-installation)
+		- [Arch Linux Installation (Dependencies + Hyprland bind)](#arch-linux-installation-dependencies--hyprland-bind)
 	- [Testing the UI](#testing-the-ui)
-	- [Arch Linux Installation (Dependencies + Hyprland bind)](#arch-linux-installation-dependencies--hyprland-bind)
 	- [Configuration and Theming](#configuration-and-theming)
 	- [Organizing Comments into Tabs](#organizing-comments-into-tabs)
 	- [A Personal Note](#a-personal-note)
 		- [Notice on the use of AI](#notice-on-the-use-of-ai)
+
+
+
+## Installation
+
+### NixOS Installation
+
+For NixOS users, this repository includes full Nix packaging support with both flakes and traditional Nix.
+
+See [NIX_INSTALLATION.md](NIX_INSTALLATION.md) for detailed installation instructions including:
+- Installation with Nix flakes
+- Traditional Nix installation
+- Home Manager integration
+- NixOS module usage
+
+Quick start with flakes:
+```bash
+nix run github:wiktormalyska/hyprsettings-nixos
+```
+
+### Arch Linux Installation (Dependencies + Hyprland bind)
+
+For Arch users, you can run the following single block to install dependencies and add a keybind to your Hyprland configuration:
+
+```bash
+sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
+git clone https://github.com/acropolis914/hyprsettings ~/hyprsettings
+echo 'bind = SUPER, I, Exec, python ~/hyprsettings/src/ui.py' >> ~/.config/hypr/hyprland.conf
+```
 
 
 
@@ -44,18 +75,6 @@ sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit pyth
 
 ```bash
 python src/ui.py
-```
-
-
-
-## Arch Linux Installation (Dependencies + Hyprland bind)
-
-For Arch users, you can run the following single block to install dependencies and add a keybind to your Hyprland configuration:
-
-```bash
-sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
-git clone https://github.com/acropolis914/hyprsettings ~/hyprsettings
-echo 'bind = SUPER, I, Exec, python ~/hyprsettings/src/ui.py' >> ~/.config/hypr/hyprland.conf
 ```
 
 > Make sure to replace `SUPER, I` with the key combination you want to use.
