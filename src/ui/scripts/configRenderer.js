@@ -365,6 +365,10 @@ class EditorItem_Comments {
         this.el.dataset.comment = comment
         this.el.dataset.uuid = uuid
         this.el.dataset.position = position
+        // let [name, value] = this.el.dataset.comment.replace(/^[ #]+/, '').split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
+        // if (name && value){
+
+        // }
         this.el.title = position.replace("root:", "").replaceAll(":", "   ")
         this.el.classList.add("editor-item")
         this.el.setAttribute("tabindex", 0)
@@ -467,7 +471,7 @@ class EditorItem_Comments {
             let position = this.el.dataset.position
             let value = null
             let comment = this.el.dataset.comment
-            saveKey(type, name, uuid, position, value, comment)
+            saveKey(type, name, uuid, position, value, comment, false)
         } else {
             console.log("detected comment to key transformation")
             let [name, value] = this.el.dataset.comment.split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
