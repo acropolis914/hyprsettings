@@ -155,6 +155,12 @@ export class EditorItem_Binds {
 			this.addToParent(parent);
 		}
 
+		this.addListeners();
+		this.update();
+		this.initial_load = false;
+	}
+
+	addListeners() {
 		this.el.addEventListener("click", (e) => {
 			this.el.classList.remove("compact");
 			this.contextMenu.show();
@@ -191,30 +197,22 @@ export class EditorItem_Binds {
 		this.el.addEventListener("blur", () => {
 			this.contextMenu.hide();
 		});
-		this.update();
-		this.initial_load = false;
 	}
 
 	update() {
 		let bindFlags = this.bindflagTS.getValue();
 		let bindflagString = Array.isArray(bindFlags) ? `bind${bindFlags.join("")}` : bindFlags;
-
 		let modKeys = this.modkeyTS.getValue();
 		let modKeyString = Array.isArray(modKeys) ? modKeys.join(" ") : modKeys;
-
 		let keyPress = this.el.querySelector(".keypress").value;
-
 		let disPatcherString = this.dispatcherTS.getValue();
 		let paramString = this.el.querySelector(".params").value.trim();
-
 		let preview_el = this.el.querySelector(".editor-item-preview");
 		let comment = this.comment_el.value ? `# ${this.comment_el.value}` : "";
-		preview_el.innerHTML = `<span id="key">${bindflagString}<span/> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}<span/><i>${comment}</i>`;
+		preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span><i>${comment}</i>`;
 		this.preview = `${bindflagString} = ${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString} ${comment}`;
-
 		this.el.dataset.name = bindflagString;
 		this.el.dataset.value = `${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}`;
-
 		let saved_comment = this.comment_el.value;
 		this.el.dataset.comment = saved_comment;
 		if (!this.initial_load) {

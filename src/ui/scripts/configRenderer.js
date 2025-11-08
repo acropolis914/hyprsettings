@@ -26,10 +26,20 @@ export class configRenderer {
 
     async parse(json) {
         //Comment Stacking for three line label comments from default hyprland.conf
-        if (json["type"] === "COMMENT" && json["comment"].startsWith("####") &&(this.comment_stack.length == 0 || this.comment_stack.length == 2)) {
+        if (json["type"] === "COMMENT" && json["comment"].startsWith("####") && (this.comment_stack.length == 0 || this.comment_stack.length == 2)) {
             this.comment_stack.push(json)
+            // @ts-ignore
             if (this.comment_stack.length === 3) {
-                renderCommentStack();
+                for (let i = 0; i < this.comment_stack.length; i++) {
+                    let comment_item = new EditorItem_Comments(this.comment_stack[i])
+                    comment_item.el.classList.add("block-comment")
+                    if (!window.config["show_header_comments"]) {
+                        comment_item.el.classList.add("settings-hidden")
+                    }
+
+                    comment_item.addToParent(this.current_container.at(-1))
+                }
+                this.comment_stack = []
             }
         }
 
@@ -53,7 +63,17 @@ export class configRenderer {
         //inline comments
         else if (json["type"] === "COMMENT") {
             if (this.comment_stack.length > 0) { //catch for when there is a comment stack that didnt end
-                renderCommentStack()
+                for (let i = 0; i < this.comment_stack.length; i++) {
+                    let comment_item = new EditorItem_Comments(this.comment_stack[i])
+                    //
+                    comment_item.el.classList.add("block-comment")
+                    if (!window.config["show_header_comments"]) {
+                        comment_item.el.classList.add("settings-hidden")
+                    }
+
+                    comment_item.addToParent(this.current_container.at(-1))
+                }
+                this.comment_stack = []
             }
             let comment_item = new EditorItem_Comments(json, false)
             comment_item.addToParent(this.current_container.at(-1))
@@ -115,14 +135,12 @@ export class configRenderer {
         }
 
         //recursive children rendering
-        for (let key in json) {
-            if (key === "children") {
-                for (let child of json[key]) {
+
+            if (json["children"]) {
+                for (const child of json.children) {
                     this.parse(child)
-                    //
                 }
             }
-        }
 
 
 

@@ -99,16 +99,13 @@ if __name__ == "__main__":
 		width=800,
 		height=600,
 		easy_drag=True,
-		on_top=True,
 	)
 	webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
 	window.events.loaded += on_loaded
 	window.events.closed += on_closed
 	webview.start(
 		gui="gtk",
-		debug=True,
+		debug=False,
 		private_mode=False,
 		storage_path=".pywebview",
-		http_server=True,
-		http_port=12345,
 	)
