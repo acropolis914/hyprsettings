@@ -1,12 +1,4 @@
-// document.addEventListener("mousedown", (e) => {
-// 	allContextMenus.forEach(menu => {
-// 	    if (!menu.el.contains(e.target) && !menu.parentEl.contains(e.target)) {
-// 		  menu.hide();
-// 	    }
-// 	});
-//   });
-
-import { hideAllContextMenus } from "./utils.js";
+import { hideAllContextMenus } from "../utils.js";
 
 export class ContextMenu {
 	constructor(items = []) {

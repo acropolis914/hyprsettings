@@ -42,7 +42,6 @@ async function load_config() {
     }
 }
 
-
 document.addEventListener("DOMContentLoaded", async () => {
     await load_config()
     await setupTheme()

@@ -6,6 +6,9 @@ declare global {
       debug?: boolean;
       // … whatever shape you want
     };
+    jsonViewer: {
+      data: JSON;
+    }
   }
 }
 
