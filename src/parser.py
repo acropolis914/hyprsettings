@@ -279,18 +279,20 @@ class ConfigParser:
 					self.stack[-1].addChildren(node)
 
 				if check.startswith("source"):
-					_ , file_path = map(str.strip, line.split("=", 1))
+					_, file_path = map(str.strip, line.split("=", 1))
+
 					def glob_path(path):
 						path_str = path.rstrip("*")
 						if not os.path.exists(path_str):
 							print(f"Path does not exist: {path_str}")
 							return
 						for content in os.listdir(path_str):
-							if Path(path_str,content).is_file():
+							if Path(path_str, content).is_file():
 								sources.append(Path(path_str, content).resolve())
-							elif Path(path_str,content).is_dir():
-								glob_path(str(Path(path_str,content)))
+							elif Path(path_str, content).is_dir():
+								glob_path(str(Path(path_str, content)))
 							print(f"Added via glob: {Path(path_str, content).resolve()}")
+
 					if file_path.startswith("~"):
 						file_path = str(Path(file_path).expanduser())
 						if file_path.endswith(".conf"):
