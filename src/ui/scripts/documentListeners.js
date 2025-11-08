@@ -8,16 +8,14 @@ document.addEventListener('keydown', (event) => {
 	}
 });
 
-
-
 document.addEventListener("mousedown", e => {
 	if (!e.target.closest(".context-menu, .editor-item")) {
 		hideAllContextMenus()
 	}
 })
 
-
 const pressed = new Set();
+
 hotkeys('*', { keydown: true, keyup: true }, (event) => {
 	if (event.type === 'keydown') pressed.add(event.key);
 	if (event.type === 'keyup') {

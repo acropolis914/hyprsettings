@@ -1,18 +1,10 @@
-// document.addEventListener("mousedown", (e) => {
-// 	allContextMenus.forEach(menu => {
-// 	    if (!menu.el.contains(e.target) && !menu.parentEl.contains(e.target)) {
-// 		  menu.hide();
-// 	    }
-// 	});
-//   });
-
-import { hideAllContextMenus } from "./utils.js";
+import { hideAllContextMenus } from "../utils.js";
 
 export class ContextMenu {
 	constructor(items = []) {
 		this.el = document.createElement("div")
 		this.el.classList.add("context-menu", "hidden")
-		this.el.setAttribute("contenteditable", false)
+		this.el.setAttribute("contenteditable", "false")
 		this.el.addEventListener("transitionend", (e) => {
 			if (e.propertyName === "opacity" && getComputedStyle(e.target).opacity === "0") {
 				this.el.classList.add("hidden")

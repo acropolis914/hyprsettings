@@ -42,7 +42,6 @@ async function load_config() {
     }
 }
 
-
 document.addEventListener("DOMContentLoaded", async () => {
     await load_config()
     await setupTheme()
@@ -51,3 +50,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     await setupData()
     renderSettings()
 })
+
+window.addEventListener("error", e => {
+    console.error("🔥", e.error?.stack || `${e.message}\n${e.filename}:${e.lineno}`);
+});
+
+window.addEventListener("unhandledrejection", e => {
+    console.error("🚨 Unhandled Promise rejection:", e.reason?.stack || e.reason);
+});
+
+

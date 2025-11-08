@@ -1,40 +1,5 @@
 import { saveConfig } from "./utils.js";
-
-let tabs = [
-	{ name: "General", id: "general", default: true, icon: "" }, // nf-md-settings
-	{ name: "Keybinds", id: "keybinds", icon: "" }, // nf-md-key
-
-	{ name: "separator", label: "Appearance" },
-
-	{ name: "Look & Feel", id: "looknfeel", icon: "" }, // nf-md-brush
-	{ name: "Animations", id: "animations", icon: "" }, // nf-md-movie
-
-	{ name: "separator", label: "Layouts" },
-
-	{ name: "Workspaces", id: "workspaces", icon: "" }, // nf-md-view_quilt
-	{ name: "Window Rules", id: "win-rules", icon: "" }, // nf-md-window
-	{ name: "Layer Rules", id: "layer-rules", icon: "" }, // nf-md-layers
-
-	{ name: "separator", label: "System & Devices" },
-
-	{ name: "Monitor", id: "monitor", icon: "󰨇" }, // nf-md-monitor
-	{ name: "Input", id: "input", icon: "" }, // nf-md-keyboard
-	{ name: "Environment Variables", id: "envars", icon: "" }, // nf-md-code
-
-	{ name: "separator", label: "System Behavior" },
-
-	{ name: "Globals", id: "globals", icon: "" }, // nf-md-globe
-	{ name: "Permissions", id: "permissions", icon: "󰒃" }, // nf-md-lock
-	{ name: "AutoStart", id: "autostart", icon: "" }, // nf-md-play_circle_outline
-	{ name: "Miscellaneous", id: "miscellaneous", icon: "" }, // nf-md-more_horiz
-
-	{ name: "separator", label: "Utility & Debugging" },
-
-	{ name: "Settings", id: "settings", icon: "" }, // nf-md-tune
-	{ name: "Debug / Testing", id: "debug", icon: "" }, // nf-md-bug_report
-];
-
-
+import { tabs } from "./configMap.js";
 class ConfigTabs {
 	constructor(tab) {
 		// console.log(tab)
@@ -141,7 +106,6 @@ class ConfigTabs {
 	}
 }
 export async function createDynamicTabs() {
-
 	for (let tab of tabs) {
 		// console.log(tab)
 		new ConfigTabs(tab);
@@ -155,7 +119,6 @@ export async function createDynamicTabs() {
 		window.activeTab = id
 
 	}
-
 	// document.querySelectorAll(".sidebar-item").forEach((li) => {
 	//     li.addEventListener("click", () => {
 	//         handleTabClick(li.id)
