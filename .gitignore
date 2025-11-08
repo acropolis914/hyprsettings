@@ -19,3 +19,8 @@ node_modules
 .vscode
 setupscript.sh
 .venv
+
+# Nix
+result
+result-*
+.direnv/
