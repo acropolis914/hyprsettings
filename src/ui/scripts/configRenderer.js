@@ -17,9 +17,8 @@ export class configRenderer {
         this.parse(this.json)
         document.querySelectorAll(".editor-item").forEach((element) => {
             element.addEventListener("click", () => {
-                // window.currentView = "main"; // FIXME : Change to globals 
                 GLOBAL.setKey("currentView", "main")
-                window.mainFocus[window.activeTab] = element.dataset.uuid
+                GLOBAL["mainFocus"][GLOBAL["activeTab"]] = element.dataset.uuid
             })
 
         }) //maybe I can instead check for focuswithin
@@ -136,11 +135,11 @@ export class configRenderer {
 
         //recursive children rendering
 
-            if (json["children"]) {
-                for (const child of json.children) {
-                    this.parse(child)
-                }
+        if (json["children"]) {
+            for (const child of json.children) {
+                this.parse(child)
             }
+        }
 
 
 

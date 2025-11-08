@@ -101,9 +101,8 @@ class ConfigTabs {
 		const configSetTitle = document.querySelector("#config-set-title");
 		configSetTitle.textContent = sidebarItemTitle;
 		window.config["last_tab"] = id
-		window.currentView = "tabs" // FIXME: Change to globals
 		GLOBAL.setKey("currentView", "tabs")
-		window.activeTab = id
+		GLOBAL["activeTab"] = id
 		saveConfig()
 	}
 }
@@ -118,7 +117,7 @@ export async function createDynamicTabs() {
 		if (selected_tab) {
 			selected_tab.click()
 		}
-		window.activeTab = id
+		GLOBAL["activeTab"] = id
 
 	}
 	// document.querySelectorAll(".sidebar-item").forEach((li) => {

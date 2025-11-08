@@ -9,24 +9,26 @@ import { setupTheme } from "./setupTheme.js"
 import "./documentListeners.js"
 import "./onboarding.js"
 import "./testingScreen.js"
+import { GLOBAL } from "./GLOBAL.js"
+window.Global = GLOBAL
 // @ts-ignore
-window.jsonViewer = document.querySelector("andypf-json-viewer")
 
 
 async function setupData() {
     await waitFor(() => window.pywebview?.api.init)
     // @ts-ignore
-    window.data = await JSON.parse(await window.pywebview.api.init())
+    GLOBAL["data"]
+    GLOBAL["data"]= await JSON.parse(await window.pywebview.api.init())
     // @ts-ignore
     window.jsViewer = document.createElement("andypf-json-viewer")
     document.querySelector(".config-set#debug").appendChild(jsViewer)
-    window.jsViewer.data = window.data
+    window.jsViewer.data = GLOBAL["data"]
     if (window.themeVariant === "dark") {
         window.jsViewer.setAttribute("theme", "papercolor-dark")
     } else {
         window.jsViewer.setAttribute("theme", "default-light")
     }
-    new configRenderer(window.data)
+    new configRenderer(GLOBAL["data"])
 }
 
 async function load_config() {

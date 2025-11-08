@@ -1,3 +1,5 @@
+import { GLOBAL } from "./GLOBAL.js";
+
 export async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
 	const start = Date.now()
 	while (!check()) {
@@ -56,7 +58,7 @@ function findParent(root, path) {
  * @returns {any}
  */
 export function saveKey(type, name, uuid, position, value, comment = null, disabled = false) {
-	let root = window.data;
+	let root = GLOBAL["data"];
 	let path = position.split(":");
 	let parent = findParent(root, path);
 	let node = parent.children.find(node => node.uuid === uuid);
@@ -80,11 +82,11 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 		delete node["comment"];
 	}
 
-	window.jsViewer.data = window.data;
+	window.jsViewer.data = GLOBAL["data"];
 
 	if (!window.config.dryrun) {
 		console.log(`Node ${uuid} saved:`, node);
-		window.pywebview.api.save_config(JSON.stringify(window.data));
+		window.pywebview.api.save_config(JSON.stringify(GLOBAL["data"]));
 	} else {
 		console.log(`Dryrun save ${uuid}:`, node);
 	}
@@ -92,7 +94,7 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 
 export function deleteKey(uuid, position) {
 	console.log(`Deleting ${position} => with uuid ${uuid}`)
-	let root = window.data;
+	let root = GLOBAL["data"];
 	let path = position.split(":");
 	let parent = findParent(root, path);
 	let node = parent.children.find(node => node.uuid === uuid);
@@ -100,8 +102,8 @@ export function deleteKey(uuid, position) {
 	if (!window.config.dryrun) {
 		console.log(`Node ${uuid} deleted:`, node);
 		parent.children.splice(nodeIndex, 1)
-		window.pywebview.api.save_config(JSON.stringify(window.data));
-		window.jsViewer.data = window.data;
+		window.pywebview.api.save_config(JSON.stringify(GLOBAL["data"]));
+		window.jsViewer.data = GLOBAL["data"];
 	} else {
 		console.log(`Dryrun delete ${uuid}:`, node);
 	}
