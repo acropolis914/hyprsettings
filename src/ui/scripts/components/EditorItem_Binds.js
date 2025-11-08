@@ -1,6 +1,7 @@
 import { bindFlags, modkeys, dispatchers } from "../../hyprland-specific/hyprlandBindDefinitions.js";
 import { ContextMenu } from "./contextMenu.js";
 import { debounce, deleteKey, saveKey } from "../utils.js";
+import { GLOBAL } from "../GLOBAL.js";
 
 export class EditorItem_Binds {
 	constructor(json, disabled = false, parent) {
@@ -16,7 +17,7 @@ export class EditorItem_Binds {
 		const template = document.getElementById("keybind-template");
 		this.el = template.content.firstElementChild.cloneNode(true);
 		// @ts-ignore
-		if (window.config.compact) {
+		if (GLOBAL["config"].compact) {
 			this.el.classList.add("compact");
 		}
 		if (disabled) {

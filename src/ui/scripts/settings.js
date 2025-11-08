@@ -28,7 +28,7 @@ class CheckBoxItem {
 		this.checkbox = document.createElement("input")
 		this.checkbox.id = id
 		this.checkbox.setAttribute("type", "checkbox")
-		this.checkbox.checked = window.config[config_key] || default_value
+		this.checkbox.checked = GLOBAL["config"][config_key] || default_value
 		this.label = document.createElement("label")
 		this.label.setAttribute("for", id)
 		this.label.textContent = label
@@ -58,11 +58,11 @@ class CheckBoxItem {
 
 function createLineCommentsVisibilitySetting() {
 	let { container, checkbox } = new CheckBoxItem("show-line-comments",
-		"Show line comments", "show_line_comments", window.config["show_line_comments"] || true).return()
+		"Show line comments", "show_line_comments", GLOBAL["config"]["show_line_comments"] || true).return()
 	checkbox.addEventListener("change", async (e) => {
 		const el = e.target
-		window.config["show_line_comments"] = el.checked
-		await window.pywebview.api.save_window_config(JSON.stringify(window.config))
+		GLOBAL["config"]["show_line_comments"] = el.checked
+		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["config"]))
 		console.log(`Toggled: to ${el.checked}`)
 		let commentItems = document.querySelectorAll(".editor-item:has(>.editor-item-comment)")
 		if (el.checked) {
@@ -80,11 +80,11 @@ function createLineCommentsVisibilitySetting() {
 
 function createHeaderCommentsVisibilitySetting() {
 	let { container, checkbox } = new CheckBoxItem("show-header-comments",
-		"Show header comments", "show_header_comments", window.config["show_header_comments"] || false).return()
+		"Show header comments", "show_header_comments", GLOBAL["config"]["show_header_comments"] || false).return()
 	checkbox.addEventListener("change", async (e) => {
 		const el = e.target
-		window.config["show_header_comments"] = el.checked
-		await window.pywebview.api.save_window_config(JSON.stringify(window.config))
+		GLOBAL["config"]["show_header_comments"] = el.checked
+		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["config"]))
 		console.log(`Toggled: show header comments to ${el.checked}`)
 		let commentItems = document.querySelectorAll(".block-comment")
 		if (el.checked) {
@@ -103,11 +103,11 @@ function createHeaderCommentsVisibilitySetting() {
 
 function createSidebarIconsVisibilitySetting() {
 	let { container, checkbox } = new CheckBoxItem("show_sidebar_icons",
-		"Show sidebar icons", "show_sidebar_icons", window.config["show_sidebar_icons"] || true).return()
+		"Show sidebar icons", "show_sidebar_icons", GLOBAL["config"]["show_sidebar_icons"] || true).return()
 	checkbox.addEventListener("change", async (e) => {
 		const el = e.target
-		window.config["show_sidebar_icons"] = el.checked
-		await window.pywebview.api.save_window_config(JSON.stringify(window.config))
+		GLOBAL["config"]["show_sidebar_icons"] = el.checked
+		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["config"]))
 		console.log(`Toggled: to ${el.checked}`)
 		let commentItems = document.querySelectorAll("#sidebar-icon")
 		if (el.checked) {

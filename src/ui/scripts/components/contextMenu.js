@@ -1,4 +1,5 @@
 import { hideAllContextMenus } from "../utils.js";
+import { GLOBAL } from "../GLOBAL.js";
 
 export class ContextMenu {
 	constructor(items = []) {
@@ -19,7 +20,7 @@ export class ContextMenu {
 			iconEl.textContent = icon
 			const labelEl = document.createElement("div")
 			labelEl.classList.add("ctx-button-label")
-			if (!window.config["show_contextmenu_label"]) {
+			if (!GLOBAL["config"]["show_contextmenu_label"]) {
 				labelEl.classList.add("hidden")
 			}
 			labelEl.textContent = label

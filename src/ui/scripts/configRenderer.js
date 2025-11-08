@@ -33,7 +33,7 @@ export class configRenderer {
                 for (let i = 0; i < this.comment_stack.length; i++) {
                     let comment_item = new EditorItem_Comments(this.comment_stack[i])
                     comment_item.el.classList.add("block-comment")
-                    if (!window.config["show_header_comments"]) {
+                    if (!GLOBAL["config"]["show_header_comments"]) {
                         comment_item.el.classList.add("settings-hidden")
                     }
 
@@ -66,7 +66,7 @@ export class configRenderer {
                     let comment_item = new EditorItem_Comments(this.comment_stack[i])
                     //
                     comment_item.el.classList.add("block-comment")
-                    if (!window.config["show_header_comments"]) {
+                    if (!GLOBAL["config"]["show_header_comments"]) {
                         comment_item.el.classList.add("settings-hidden")
                     }
 
