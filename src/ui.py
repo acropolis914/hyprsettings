@@ -105,7 +105,7 @@ if __name__ == "__main__":
 	window.events.closed += on_closed
 	webview.start(
 		gui="gtk",
-		debug=False,
+		debug=True,
 		private_mode=False,
 		storage_path=".pywebview",
 	)

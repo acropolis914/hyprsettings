@@ -5,7 +5,7 @@ import { EditorItem_Comments } from "./components/EditorItem_Comments.js";
 import { EditorItem_Binds } from "./components/EditorItem_Binds.js";
 import { tabids, keyNameStarts, configGroups } from "./configMap.js";
 import { ConfigGroup } from "./components/ConfigGroup.js";
-
+import { GLOBAL } from "./GLOBAL.js";
 
 export class configRenderer {
     constructor(json) {
@@ -17,7 +17,8 @@ export class configRenderer {
         this.parse(this.json)
         document.querySelectorAll(".editor-item").forEach((element) => {
             element.addEventListener("click", () => {
-                window.currentView = "main";
+                // window.currentView = "main"; // FIXME : Change to globals 
+                GLOBAL.setKey("currentView", "main")
                 window.mainFocus[window.activeTab] = element.dataset.uuid
             })
 
@@ -59,7 +60,6 @@ export class configRenderer {
             }
 
         } // end of comment stacks
-        // TODO: Think of a way to make it so if the next comment after ## NAME is !startswith(#### end the group)
         //inline comments
         else if (json["type"] === "COMMENT") {
             if (this.comment_stack.length > 0) { //catch for when there is a comment stack that didnt end

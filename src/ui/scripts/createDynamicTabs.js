@@ -1,5 +1,6 @@
 import { saveConfig } from "./utils.js";
 import { tabs } from "./configMap.js";
+import { GLOBAL } from "./GLOBAL.js";
 class ConfigTabs {
 	constructor(tab) {
 		// console.log(tab)
@@ -100,7 +101,8 @@ class ConfigTabs {
 		const configSetTitle = document.querySelector("#config-set-title");
 		configSetTitle.textContent = sidebarItemTitle;
 		window.config["last_tab"] = id
-		window.currentView = "tabs"
+		window.currentView = "tabs" // FIXME: Change to globals
+		GLOBAL.setKey("currentView", "tabs")
 		window.activeTab = id
 		saveConfig()
 	}

@@ -1,3 +1,4 @@
+import { GLOBAL } from "./GLOBAL.js"
 import { saveConfig, waitFor } from "./utils.js"
 let settingsEl = document.querySelector(".config-set#settings")
 
@@ -43,7 +44,8 @@ class CheckBoxItem {
 			}
 		})
 		this.settingContainer.addEventListener("click", () => {
-			window.currentView = "main"
+			window.currentView = "main" //FIXME Change to global
+			GLOBAL.setKey("currentView", "main")
 		})
 	}
 

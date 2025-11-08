@@ -1,3 +1,4 @@
+import { GLOBAL } from "./GLOBAL.js";
 import { hideAllContextMenus } from "./utils.js";
 
 document.addEventListener('keydown', (event) => {
@@ -37,7 +38,8 @@ hotkeys('*', { keydown: true, keyup: true }, (event) => {
 
 
 
-window.currentView = "tabs";
+// window.currentView = "tabs"; //FIXME : Change to globals
+GLOBAL.setKey("currentView", "tabs")
 window.activeTab;
 window.mainFocus = {};
 window.currentFocus = null;
@@ -52,7 +54,7 @@ hotkeys('*', (event) => {
 		event.preventDefault();
 	}
 
-	if (event.key === "ArrowRight" && window.currentView === "tabs") {
+	if (event.key === "ArrowRight" && GLOBAL["currentView"] === "tabs") {//FIXME: Change to GLOBALS
 		const currentSet = document.querySelector(`.config-set#${window.activeTab}`);
 		if (!currentSet) {
 			console.log(`Config set ${window.activeTab} doesnt exist.`);
@@ -66,7 +68,8 @@ hotkeys('*', (event) => {
 			if (prevFocus) {
 				window.currentFocus = prevFocus;
 				prevFocus.focus({ preventScroll: true });
-				window.currentView = "main";
+				// window.currentView = "main"; //FIXME: Change to global
+				GLOBAL.setKey("currentView", "main")
 			}
 		} else {
 			const firstChild = Array.from(currentSet.children).find(
@@ -76,18 +79,20 @@ hotkeys('*', (event) => {
 				window.currentFocus = firstChild;
 				firstChild.focus({ preventScroll: true });
 				window.mainFocus[window.activeTab] = firstChild.dataset.uuid || 0;
-				window.currentView = "main";
+				// window.currentView = "main"; //FIXME Change to global
+				GLOBAL.setKey("currentView", "main")
 			}
 		}
 	}
 
-	if (event.key === "ArrowLeft" && window.currentView === "main") {
+	if (event.key === "ArrowLeft" && GLOBAL["currentView"] === "main") { //FIXME Change to global
 		const activeElem = document.activeElement;
 		if (activeElem && activeElem.dataset.uuid != null) {
 			window.mainFocus[window.activeTab] = activeElem.dataset.uuid;
 		}
 		window.currentFocus.blur();
 		window.currentView = "tabs";
+		GLOBAL.setKey("currentView", "tabs")
 		const selectedTab = document.querySelector(`.selected`);
 		if (selectedTab) {
 			selectedTab.classList.add("keyboard-selected");
@@ -96,7 +101,7 @@ hotkeys('*', (event) => {
 		}
 	}
 
-	switch (window.currentView) {
+	switch (GLOBAL["currentView"]) { // FIXME Change to globals
 		case "main": {
 			const currentSet = document.querySelector(`.config-set#${window.activeTab}`);
 			if (!currentSet) break;
