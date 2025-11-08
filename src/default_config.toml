@@ -240,3 +240,48 @@ purple = "#C792EA"
 # Utilities
 overlay = "#2D2B40"
 shadow = "#100E23"
+
+
+[[theme]]
+name = "Everforest"
+author = "Sainhe"
+variant = "Dark"
+description = "Everforest is a green based color scheme; it's designed to be warm and soft in order to protect developers' eyes.."
+link = "https://github.com/sainnhe/everforest"
+
+# Surfaces
+surface-0 = "#232A2E"
+surface-1 = "#2D353B"
+surface-2 = "#343F44"
+surface-border = "#3D484D"
+
+# Text hierarchy
+text-0 = "#9DA9A0"
+text-1 = "#859289"
+text-2 = "#859289"
+text-3 = "#7A8478"
+text-4 = "#7A8478"
+text-disabled = "#56635F"
+text-contrast = "#425047"
+
+# Accents
+accent = "#A7C080"
+accent-hover = "#83C092"
+accent-active = "#83C092"
+accent-success = "#83C092"
+accent-warning = "#DBBC7F"
+accent-danger = "#E67E80"
+
+# Common colors
+red = "#E67E80"
+orange = "#E69875"
+yellow = "#DBBC7F"
+green = "#A7C080"
+teal = "#83C092"
+blue = "#7FBBB3"
+pink = "#D699B6"
+purple = "#D699B6"
+
+# Utilities
+overlay = "#425047"
+shadow = "#425047"
