@@ -1,46 +1,46 @@
 //tabids for comment stacks so configRenderer() knows where to put them
 //[HeaderCommentBlockName(case insensitive),tabID
 export let tabids = [
-    ["general", "general"],
-    ["monitor", "monitor"],
-    ["keybindings", "keybinds"],
-    ["miscellaneous", "miscellaneous"],
-    ["programs", "globals"],
-    ["windows and workspaces", "win-rules"],
-    ["layer rules", "layer-rules"],
-    ["autostart", "autostart"],
-    ["variables", "envars"],
-    ["permissions", "permissions"],
-    ["look and feel", "looknfeel"],
-    ["animations", "animations"],
-    ["input", "input"],
-    ["debug", "debug"]
+	["general", "general"],
+	["monitor", "monitor"],
+	["keybindings", "keybinds"],
+	["miscellaneous", "miscellaneous"],
+	["programs", "globals"],
+	["windows and workspaces", "win-rules"],
+	["layer rules", "layer-rules"],
+	["autostart", "autostart"],
+	["variables", "envars"],
+	["permissions", "permissions"],
+	["look and feel", "looknfeel"],
+	["animations", "animations"],
+	["input", "input"],
+	["debug", "debug"]
 ];
-export let keyNameStarts = [
-    ["$", "globals"],
-    ["windowrulev2", "win-rules"],
-    ["bind", "keybinds"],
-    ["layerrule", "layer-rules", ["workspace_wraparound"]],
-    ["workspace", "workspaces"],
-    ["env", "envars"],
-    ["permission", "persmissions"],
-    ["exec", "autostart"],
-    ["layerrule", "layerrules"],
-    ["source", "general"],
+export const keyNameStarts = [
+	["$", "globals"],
+	["windowrulev2", "win-rules"],
+	["bind", "keybinds"],
+	["layerrule", "layer-rules", ["workspace_wraparound"]],
+	["workspace", "workspaces"],
+	["env", "envars"],
+	["permission", "persmissions"],
+	["exec", "autostart"],
+	["layerrule", "layerrules"],
+	["source", "general"],
 ];
 
 export let configGroups = [
-    ["debug", "miscellaneous"],
-    ["general", "looknfeel"],
-    ["decoration", "looknfeel"],
-    ["animations", "animations"],
-    ["xwayland", "win-rules"],
-    ["input", "input"],
-    ["device", "input"],
-    ["cursor", "input"],
-    ["binds", "input"],
-    ["ecosystem", "permissions"],
-    ["group", "win-rules"]
+	["debug", "miscellaneous"],
+	["general", "looknfeel"],
+	["decoration", "looknfeel"],
+	["animations", "animations"],
+	["xwayland", "win-rules"],
+	["input", "input"],
+	["device", "input"],
+	["cursor", "input"],
+	["binds", "input"],
+	["ecosystem", "permissions"],
+	["group", "win-rules"]
 ]
 
 export let tabs = [

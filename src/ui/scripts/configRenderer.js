@@ -21,13 +21,12 @@ export class configRenderer {
                 window.mainFocus[window.activeTab] = element.dataset.uuid
             })
 
-        })
-
+        }) //maybe I can instead check for focuswithin
     }
 
     async parse(json) {
         //Comment Stacking for three line label comments from default hyprland.conf
-        if (json["type"] === "COMMENT" && json["comment"].startsWith("####") && 1 < this.comment_stack.length && this.comment_stack.length < 3) {
+        if (json["type"] === "COMMENT" && json["comment"].startsWith("####") &&(this.comment_stack.length == 0 || this.comment_stack.length == 2)) {
             this.comment_stack.push(json)
             if (this.comment_stack.length === 3) {
                 for (let i = 0; i < this.comment_stack.length; i++) {
