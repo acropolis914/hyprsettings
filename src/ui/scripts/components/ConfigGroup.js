@@ -2,7 +2,7 @@ export class ConfigGroup {
 	constructor(json) {
 		this.group_el = document.createElement("div");
 		this.group_el.classList.add("config-group");
-		this.group_el.setAttribute("tabindex", 0);
+		this.group_el.setAttribute("tabindex", "0");
 		this.group_el.classList.add("editor-item");
 		this.group_el.dataset.name = json["name"];
 		this.group_el.dataset.uuid = json["uuid"];
@@ -13,7 +13,7 @@ export class ConfigGroup {
 		}
 		this.group_el.addEventListener("keydown", (e) => {
 			if (e.key == "Enter") {
-				group_el.querySelector(".editor-item").focus();
+				this.group_el.querySelector(".editor-item").focus();
 				console.log("Group is entered");
 			}
 		});

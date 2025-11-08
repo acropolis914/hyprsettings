@@ -1,4 +1,4 @@
-import { bindFlags, modkeys, dispatchers } from "../../hyprland-specific/binds";
+import { bindFlags, modkeys, dispatchers } from "../../hyprland-specific/hyprlandBindDefinitions.js";
 import { ContextMenu } from "./contextMenu.js";
 import { debounce, deleteKey, saveKey } from "../utils.js";
 

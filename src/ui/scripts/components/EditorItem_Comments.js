@@ -1,5 +1,5 @@
-import { ContextMenu } from "./components/contextMenu";
-import { debounce, deleteKey, saveKey } from "./utils";
+import { ContextMenu } from "./contextMenu.js";
+import { debounce, deleteKey, saveKey } from "../utils.js";
 
 export class EditorItem_Comments {
 	constructor(json, hidden = false) {
