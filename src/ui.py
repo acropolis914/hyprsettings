@@ -1,7 +1,6 @@
 from pathlib import Path
 import subprocess
 import os
-
 os.environ["GDK_BACKEND"] = "wayland"
 import webview
 from rich import traceback
