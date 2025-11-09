@@ -1,3 +1,4 @@
+import { GLOBAL } from "./GLOBAL.js";
 import { hideAllContextMenus } from "./utils.js";
 
 document.addEventListener('keydown', (event) => {
@@ -37,9 +38,10 @@ hotkeys('*', { keydown: true, keyup: true }, (event) => {
 
 
 
-window.currentView = "tabs";
-window.activeTab;
-window.mainFocus = {};
+// window.currentView = "tabs"; //FIXME : Change to globals
+GLOBAL.setKey("currentView", "tabs")
+GLOBAL["activeTab"];
+GLOBAL["mainFocus"] = {};
 window.currentFocus = null;
 
 hotkeys('*', (event) => {
@@ -52,21 +54,22 @@ hotkeys('*', (event) => {
 		event.preventDefault();
 	}
 
-	if (event.key === "ArrowRight" && window.currentView === "tabs") {
-		const currentSet = document.querySelector(`.config-set#${window.activeTab}`);
+	if (event.key === "ArrowRight" && GLOBAL["currentView"] === "tabs") {//FIXME: Change to GLOBALS
+		const currentSet = document.querySelector(`.config-set#${GLOBAL["activeTab"]}`);
 		if (!currentSet) {
-			console.log(`Config set ${window.activeTab} doesnt exist.`);
+			console.log(`Config set ${GLOBAL["activeTab"]} doesnt exist.`);
 			return;
 		} else {
-			console.log(`Config set ${window.activeTab} exists.`);
+			console.log(`Config set ${GLOBAL["activeTab"]} exists.`);
 		}
 		document.querySelector(".sidebar-item.keyboard-selected")?.classList.remove("keyboard-selected");
-		if (window.mainFocus[window.activeTab] && currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`)) {
-			const prevFocus = currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`);
+		if (GLOBAL["mainFocus"][GLOBAL["activeTab"]] && currentSet.querySelector(`[data-uuid='${GLOBAL["mainFocus"][GLOBAL["activeTab"]]}']`)) {
+			const prevFocus = currentSet.querySelector(`[data-uuid='${GLOBAL["mainFocus"][GLOBAL["activeTab"]]}']`);
 			if (prevFocus) {
 				window.currentFocus = prevFocus;
 				prevFocus.focus({ preventScroll: true });
-				window.currentView = "main";
+				// window.currentView = "main"; //FIXME: Change to global
+				GLOBAL.setKey("currentView", "main")
 			}
 		} else {
 			const firstChild = Array.from(currentSet.children).find(
@@ -75,19 +78,21 @@ hotkeys('*', (event) => {
 			if (firstChild) {
 				window.currentFocus = firstChild;
 				firstChild.focus({ preventScroll: true });
-				window.mainFocus[window.activeTab] = firstChild.dataset.uuid || 0;
-				window.currentView = "main";
+				GLOBAL["mainFocus"][GLOBAL["activeTab"]] = firstChild.dataset.uuid || 0;
+				// window.currentView = "main"; //FIXME Change to global
+				GLOBAL.setKey("currentView", "main")
 			}
 		}
 	}
 
-	if (event.key === "ArrowLeft" && window.currentView === "main") {
+	if (event.key === "ArrowLeft" && GLOBAL["currentView"] === "main") { //FIXME Change to global
 		const activeElem = document.activeElement;
 		if (activeElem && activeElem.dataset.uuid != null) {
-			window.mainFocus[window.activeTab] = activeElem.dataset.uuid;
+			GLOBAL["mainFocus"][GLOBAL["activeTab"]] = activeElem.dataset.uuid;
 		}
 		window.currentFocus.blur();
 		window.currentView = "tabs";
+		GLOBAL.setKey("currentView", "tabs")
 		const selectedTab = document.querySelector(`.selected`);
 		if (selectedTab) {
 			selectedTab.classList.add("keyboard-selected");
@@ -96,12 +101,12 @@ hotkeys('*', (event) => {
 		}
 	}
 
-	switch (window.currentView) {
+	switch (GLOBAL["currentView"]) { // FIXME Change to globals
 		case "main": {
-			const currentSet = document.querySelector(`.config-set#${window.activeTab}`);
+			const currentSet = document.querySelector(`.config-set#${GLOBAL["activeTab"]}`);
 			if (!currentSet) break;
 
-			let activeElement = currentSet.querySelector(`[data-uuid='${window.mainFocus[window.activeTab]}']`);
+			let activeElement = currentSet.querySelector(`[data-uuid='${GLOBAL["mainFocus"][GLOBAL["activeTab"]]}']`);
 			if (!activeElement) {
 				activeElement = document.activeElement;
 				if (activeElement.getAttribute("tabindex") == null) {
@@ -135,7 +140,7 @@ hotkeys('*', (event) => {
 			if (!activeElement) break;
 			window.currentFocus = newActiveElement;
 			newActiveElement.focus();
-			window.mainFocus[window.activeTab] = newActiveElement.dataset.uuid;
+			GLOBAL["mainFocus"][GLOBAL["activeTab"]] = newActiveElement.dataset.uuid;
 
 			if (newActiveElement.classList.contains(".config-group")) {
 				console.log(newActiveElement.classList);
@@ -182,7 +187,7 @@ hotkeys('*', (event) => {
 			newSelected.classList.add("keyboard-selected");
 			newSelected.click();
 			newSelected.scrollIntoView({ behavior: "smooth", block: "nearest" });
-			window.activeTab = newSelected.id;
+			GLOBAL["activeTab"] = newSelected.id;
 			break;
 		}
 	}

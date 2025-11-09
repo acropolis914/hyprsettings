@@ -1,7 +1,6 @@
 from pathlib import Path
 import subprocess
 import os
-
 os.environ["GDK_BACKEND"] = "wayland"
 import webview
 from rich import traceback
@@ -103,9 +102,4 @@ if __name__ == "__main__":
 	webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
 	window.events.loaded += on_loaded
 	window.events.closed += on_closed
-	webview.start(
-		gui="gtk",
-		debug=False,
-		private_mode=False,
-		storage_path=".pywebview",
-	)
+	webview.start(gui="gtk", debug=True, private_mode=False, storage_path=".pywebview", icon="icon-48.png")

@@ -787,6 +787,9 @@ span.danger {
   padding-left: 0 !important;
   padding-right: 5rem !important;
 }
+#onboarding #instructions b {
+  color: #74c7ec;
+}
 #onboarding .column {
   display: flex;
   flex-direction: column;

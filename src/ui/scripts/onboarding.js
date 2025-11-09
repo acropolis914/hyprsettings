@@ -1,4 +1,5 @@
 import { saveConfig } from "./utils.js";
+import { GLOBAL } from "./GLOBAL.js";
 
 const onboardingUI = document.getElementById("onboarding");
 const finishBtn = document.getElementById("onboarding-finish");
@@ -19,7 +20,7 @@ function finishOnboarding() {
 	isFading = true;
 	console.log("finish onboarding");
 	onboardingUI.style.opacity = 0;
-	window.config["first_run"] = false;
+	GLOBAL["config"]["first_run"] = false;
 	saveConfig();
 }
 

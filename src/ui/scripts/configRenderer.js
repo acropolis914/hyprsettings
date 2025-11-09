@@ -5,7 +5,7 @@ import { EditorItem_Comments } from "./components/EditorItem_Comments.js";
 import { EditorItem_Binds } from "./components/EditorItem_Binds.js";
 import { tabids, keyNameStarts, configGroups } from "./configMap.js";
 import { ConfigGroup } from "./components/ConfigGroup.js";
-
+import { GLOBAL } from "./GLOBAL.js";
 
 export class configRenderer {
     constructor(json) {
@@ -17,8 +17,8 @@ export class configRenderer {
         this.parse(this.json)
         document.querySelectorAll(".editor-item").forEach((element) => {
             element.addEventListener("click", () => {
-                window.currentView = "main";
-                window.mainFocus[window.activeTab] = element.dataset.uuid
+                GLOBAL.setKey("currentView", "main")
+                GLOBAL["mainFocus"][GLOBAL["activeTab"]] = element.dataset.uuid
             })
 
         }) //maybe I can instead check for focuswithin
@@ -33,7 +33,7 @@ export class configRenderer {
                 for (let i = 0; i < this.comment_stack.length; i++) {
                     let comment_item = new EditorItem_Comments(this.comment_stack[i])
                     comment_item.el.classList.add("block-comment")
-                    if (!window.config["show_header_comments"]) {
+                    if (!GLOBAL["config"]["show_header_comments"]) {
                         comment_item.el.classList.add("settings-hidden")
                     }
 
@@ -59,7 +59,6 @@ export class configRenderer {
             }
 
         } // end of comment stacks
-        // TODO: Think of a way to make it so if the next comment after ## NAME is !startswith(#### end the group)
         //inline comments
         else if (json["type"] === "COMMENT") {
             if (this.comment_stack.length > 0) { //catch for when there is a comment stack that didnt end
@@ -67,7 +66,7 @@ export class configRenderer {
                     let comment_item = new EditorItem_Comments(this.comment_stack[i])
                     //
                     comment_item.el.classList.add("block-comment")
-                    if (!window.config["show_header_comments"]) {
+                    if (!GLOBAL["config"]["show_header_comments"]) {
                         comment_item.el.classList.add("settings-hidden")
                     }
 
@@ -136,11 +135,11 @@ export class configRenderer {
 
         //recursive children rendering
 
-            if (json["children"]) {
-                for (const child of json.children) {
-                    this.parse(child)
-                }
+        if (json["children"]) {
+            for (const child of json.children) {
+                this.parse(child)
             }
+        }
 
 
 

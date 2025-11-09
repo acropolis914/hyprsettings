@@ -1,5 +1,6 @@
 import { saveConfig } from "./utils.js";
 import { tabs } from "./configMap.js";
+import { GLOBAL } from "./GLOBAL.js";
 class ConfigTabs {
 	constructor(tab) {
 		// console.log(tab)
@@ -99,9 +100,9 @@ class ConfigTabs {
 		const sidebarItemTitle = sidebarItem.dataset.label;
 		const configSetTitle = document.querySelector("#config-set-title");
 		configSetTitle.textContent = sidebarItemTitle;
-		window.config["last_tab"] = id
-		window.currentView = "tabs"
-		window.activeTab = id
+		GLOBAL["config"]["last_tab"] = id
+		GLOBAL.setKey("currentView", "tabs")
+		GLOBAL["activeTab"] = id
 		saveConfig()
 	}
 }
@@ -110,13 +111,13 @@ export async function createDynamicTabs() {
 		// console.log(tab)
 		new ConfigTabs(tab);
 	}
-	if (window.config["last_tab"]) {
-		let id = window.config["last_tab"]
+	if (GLOBAL["config"]["last_tab"]) {
+		let id = GLOBAL["config"]["last_tab"]
 		let selected_tab = document.querySelector(`aside#sidebar>ul>#${id}`)
 		if (selected_tab) {
 			selected_tab.click()
 		}
-		window.activeTab = id
+		GLOBAL["activeTab"] = id
 
 	}
 	// document.querySelectorAll(".sidebar-item").forEach((li) => {

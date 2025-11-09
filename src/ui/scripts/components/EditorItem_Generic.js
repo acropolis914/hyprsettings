@@ -1,6 +1,6 @@
 import { ContextMenu } from "./contextMenu.js";
 import { debounce, deleteKey, saveKey } from "../utils.js";
-
+import { GLOBAL } from "../GLOBAL.js";
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
 //         this.inital_load = true
@@ -34,7 +34,7 @@ export class EditorItem_Generic {
 		this.el = template.content.firstElementChild.cloneNode(true);
 		this.el.classList.add("editor-item");
 		this.el.classList.add("editor-item-generic");
-		if (window.config.compact) {
+		if (GLOBAL["config"].compact) {
 			this.el.classList.add("compact");
 		}
 		this.el.title = json["position"].replace("root:", "").replaceAll(":", "   ");
@@ -140,8 +140,8 @@ export class EditorItem_Generic {
 	}
 	addAbove() {
 	}
-	addBelow(){
-		
+	addBelow() {
+
 	}
 	delete() {
 		deleteKey(this.el.dataset.uuid, this.el.dataset.position);
