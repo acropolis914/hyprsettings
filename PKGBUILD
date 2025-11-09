@@ -1,7 +1,8 @@
-# Maintainer: AcroPolis914 <hed-phsuarnaba@smu.edu.ph>
+# Maintainer: Paul Harvey <hed-phsuarnaba@smu.edu.ph>
 pkgname=hyprsettings-git
+pkgver=v0.1.6alpha.r9.g7df9bb8   # placeholder; real version set by pkgver()
 pkgrel=1
-pkgdesc="Configurator for Hyprland (alpha, development version)"
+pkgdesc="Configurator for Hyprland (alpha, development version, user-local install)"
 arch=('x86_64')
 url="https://github.com/acropolis914/hyprsettings"
 license=('GPL3')
@@ -11,27 +12,34 @@ source=("$pkgname::git+https://github.com/acropolis914/hyprsettings.git")
 md5sums=('SKIP')
 
 pkgver() {
-  cd "$pkgname"
-  git describe --long --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+  cd "$srcdir/$pkgname"
+  local tag rev_count commit
+  tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+  rev_count=$(git rev-list --count "$tag"..HEAD)
+  commit=$(git rev-parse --short HEAD)
+  printf "%s.r%s.g%s" "$tag" "$rev_count" "$commit"
 }
 
-
 package() {
-    local install_dir="$pkgdir/.local/bin/hyprsettings"
+    local local_dir="$pkgdir/$HOME/.local"
+    local local_bin="$local_dir/bin"
+    local repo_dir="$local_bin/hyprsettings-git"
 
-    mkdir -p "$install_dir"
-    cp -r "$srcdir/$pkgname/"* "$install_dir/"
+    # Copy the repo code
+    mkdir -p "$repo_dir"
+    cp -r "$srcdir/$pkgname/"* "$repo_dir/"
 
-    # Shebang wrapper
-    cat > "$pkgdir/.local/bin/hyprsettings" <<'EOF'
-#!/usr/bin/env sh
-exec "$HOME/.local/bin/hyprsettings/src/ui.py" "$@"
+    # Bash wrapper executable
+    mkdir -p "$local_bin"
+    cat > "$local_bin/hyprsettings" <<'EOF'
+#!/usr/bin/env bash
+exec "$HOME/.local/bin/hyprsettings-git/src/ui.py" "$@"
 EOF
-    chmod +x "$pkgdir/.local/bin/hyprsettings"
+    chmod +x "$local_bin/hyprsettings"
 
     # Desktop entry
-    mkdir -p "$pkgdir/.local/share/applications"
-    cat > "$pkgdir/.local/share/applications/hyprsettings.desktop" <<EOF
+    mkdir -p "$local_dir/share/applications"
+    cat > "$local_dir/share/applications/hyprsettings.desktop" <<EOF
 [Desktop Entry]
 Name=HyprSettings
 Comment=Configurator for Hyprland
@@ -44,7 +52,7 @@ StartupNotify=true
 EOF
 
     # Icon
-    mkdir -p "$pkgdir/.local/share/icons/hicolor/48x48/apps/"
-    install -Dm644 "$srcdir/$pkgname/assets/icon.png" \
-        "$pkgdir/.local/share/icons/hicolor/48x48/apps/hyprsettings.png"
+    mkdir -p "$local_dir/share/icons/hicolor/48x48/apps/"
+    install -Dm644 "$srcdir/$pkgname/assets/icon-48.png" \
+        "$local_dir/share/icons/hicolor/48x48/apps/hyprsettings.png"
 }
