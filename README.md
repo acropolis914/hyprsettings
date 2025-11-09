@@ -1,4 +1,4 @@
-<img width="960" height="720" alt="image" src="https://github.com/user-attachments/assets/1fec3041-da5c-49f3-9826-fcd08888866f" /># HyprSettings
+# HyprSettings
 
 > New Feature – Globbing Support 🎉  
 > Globbing of `source` files has arrived! All allowed Hyprland formats — including `~/` expansion and glob patterns like `/*` — now work.  
