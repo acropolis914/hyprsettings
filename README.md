@@ -1,9 +1,18 @@
-# HyprSettings
+<img width="960" height="720" alt="image" src="https://github.com/user-attachments/assets/1fec3041-da5c-49f3-9826-fcd08888866f" /># HyprSettings
+
+> New Feature – Globbing Support 🎉  
+> Globbing of `source` files has arrived! All allowed Hyprland formats — including `~/` expansion and glob patterns like `/*` — now work.  
+> Any files you include with lines like `source = path/to/other.conf` (including `~/...` and globbed paths) are automatically discovered and shown/merged in the UI. Multi‑file Hyprland setups are now first‑class in HyprSettings.
+
+> Looking for Contributors 🙌  
+> I’d love help with: autocomplete color selectors, gradient selectors, a floating sidebar for Hyprland documentation, and other minor improvements. Open a discussion or issue if you’re interested!
 
 Hyprsettings is a configurator for `hyprland.conf` (and its included files), built for people like me who don't like faffing around with configs.  
 Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS libraries.
 
-<img width="799" height="598" alt="image" src="https://github.com/user-attachments/assets/07ed324f-0939-4f01-8475-401cf650bfc0" />
+<img width="960" height="720" alt="image" src="https://github.com/user-attachments/assets/01d6905c-283a-4269-8ffa-482613d9b97b" />
+Hyprsettings in Everforest builtin theme by @ritualcasts
+
 
 > [!IMPORTANT]
 > This is in alpha state.
@@ -15,21 +24,23 @@ You can fork this repo, make changes, and submit pull requests. Please also subm
 ## Table of Contents
 
 - [HyprSettings](#hyprsettings)
-	- [Table of Contents](#table-of-contents)
-	- [Installation](#installation)
-		- [NixOS Installation](#nixos-installation)
-		- [Arch Linux Installation (Dependencies + Hyprland bind)](#arch-linux-installation-dependencies--hyprland-bind)
-	- [Testing the UI](#testing-the-ui)
-	- [Configuration and Theming](#configuration-and-theming)
-	- [Organizing Comments into Tabs](#organizing-comments-into-tabs)
-	- [A Personal Note](#a-personal-note)
-		- [Notice on the use of AI](#notice-on-the-use-of-ai)
+  - [Installation](#installation)
+    - [NixOS Installation](#nixos-installation)
+    - [Arch Linux (AUR Package)](#arch-linux-aur-package)
+    - [Legacy Manual Arch Installation (Deprecated)](#legacy-manual-arch-installation-deprecated)
+  - [Testing the UI](#testing-the-ui)
+  - [Configuration and Theming](#configuration-and-theming)
+  - [Organizing Comments into Tabs](#organizing-comments-into-tabs)
+  - [Contributing](#contributing)
+  - [A Personal Note](#a-personal-note)
+    - [Notice on the use of AI](#notice-on-the-use-of-ai)
 
 
 
 ## Installation
 
 ### NixOS Installation
+(courtesy of @wiktormalyska)
 
 For NixOS users, this repository includes full Nix packaging support with both flakes and traditional Nix.
 
@@ -44,19 +55,42 @@ Quick start with flakes:
 nix run github:wiktormalyska/hyprsettings-nixos
 ```
 
-### Arch Linux Installation (Dependencies + Hyprland bind)
+### Arch Linux (AUR Package)
 
-For Arch users, you can run the following single block to install dependencies and add a keybind to your Hyprland configuration:
+**HyprSettings is now available on Arch / AUR!**  
+Install it with your helper of choice (example uses `yay`):
 
 ```bash
-sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
-git clone https://github.com/acropolis914/hyprsettings ~/hyprsettings
-echo 'bind = SUPER, I, Exec, python ~/hyprsettings/src/ui.py' >> ~/.config/hypr/hyprland.conf
+yay -S hyprsettings-git
 ```
+
+Yay 🎉
+
+After installation you can:
+- Launch it from your application launcher (rofi, wofi, walker, fuzzel, etc.) by searching for “HyprSettings”.
+- Run from terminal: `hyprsettings`
+- (Optional) Add a Hyprland keybind:
+  ```
+  bind = SUPER, I, Exec, hyprsettings
+  ```
+
+### Legacy Manual Arch Installation (Deprecated)
+
+~~For Arch users, you can run the following single block to install dependencies and add a keybind to your Hyprland configuration:~~
+
+```bash
+~~sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
+git clone https://github.com/acropolis914/hyprsettings ~/hyprsettings
+echo 'bind = SUPER, I, Exec, python ~/hyprsettings/src/ui.py' >> ~/.config/hypr/hyprland.conf~~
+```
+
+> The above manual method is deprecated. Use the AUR package instead unless you are hacking locally.
 
 
 
 ## Testing the UI
+
+If you are developing locally instead of using the AUR package:
 
 1. Clone the repo:
 
@@ -65,7 +99,7 @@ git clone https://github.com/acropolis914/hyprsettings
 cd hyprsettings
 ```
 
-2. Install required system packages(make a venv if you want):
+2. Install required system packages (make a venv if you want):
 
 ```bash
 sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
@@ -77,7 +111,7 @@ sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit pyth
 python src/ui.py
 ```
 
-> Make sure to replace `SUPER, I` with the key combination you want to use.
+> Make sure to replace `SUPER, I` with the key combination you want to use if you still bind manually.
 
 
 
@@ -89,14 +123,15 @@ Hyprsettings will create a configuration file at:
 ~/.config/hypr/hyprsettings.toml
 ```
 
-The defaults should be fine, but if you like tweaking, you can explore and modify the file. Be careful, though I don’t have extensive safeguards and fallbacks right now.
+Theming works perfectly out‑of‑the‑box. The defaults should be fine, but if you like tweaking, you can explore and modify the file. Be careful, though I don’t have extensive safeguards and fallbacks right now.
 
 
 
 ## Organizing Comments into Tabs
 
 > [!NOTE]
-> Config keys are **auto-sorted** regardless of where they appear in your configuration files. The convention below only applies to **comments** and determines which tab they appear under in the UI.
+> Config keys are **auto-sorted** regardless of where they appear in your configuration files. The convention below only applies to **comments** and determines which tab they appear under in the UI.  
+> With globbing/multi‑source parsing, all allowed `source =` formats are supported (absolute paths, `~/` expansion, and glob patterns like `/*`). All included files are scanned.
 
 To make comments appear under the correct tab in Hyprsettings, use a **three-line comment block** **before** the section it applies to in your configuration files. The format is flexible but must follow these rules:
 
@@ -138,6 +173,27 @@ This will place the section under the **Animations** tab in the UI.
 | debug                          | debug          |
 
 > Use this convention consistently to ensure each comment appears in the correct tab while your config keys remain auto-sorted.
+
+
+
+## Contributing
+
+I’m actively looking for contributors. Help wanted with:
+- Autocomplete color selectors
+- Gradient selectors/pickers
+- Floating sidebar for Hyprland documentation
+- Minor UI/UX improvements and polish
+- Accessibility and small quality‑of‑life tweaks
+- Packaging for more distros
+- Basic automated tests (parsing + UI sanity)
+
+How to get started:
+1. Pick or open an issue / discussion.
+2. Hack in a branch.
+3. Keep PRs focused and small if possible.
+4. Describe changes clearly (screenshots for UI tweaks help).
+
+No experience requirements—beginners welcome. Come learn.
 
 
 
