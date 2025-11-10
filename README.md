@@ -75,7 +75,7 @@ See [NIX_INSTALLATION.md](NIX_INSTALLATION.md) for detailed installation instruc
 
 Quick start with flakes:
 ```bash
-nix run github:wiktormalyska/hyprsettings-nixos
+nix run github:acropolis914/hyprsettings
 ```
 
 ### Arch Linux (AUR Package)
