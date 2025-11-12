@@ -78,11 +78,11 @@ export class configRenderer {
             let comment_item = new EditorItem_Comments(json, false)
             this.comment_queue.push(comment_item)
             if (this.comment_queue.length > 1) {
-                console.log(this.comment_queue)
+                // console.log(this.comment_queue)
                 comment_item = this.comment_queue[1]
                 comment_item.addToParent(this.current_container.at(-1))
                 this.comment_queue.pop()
-                console.log(this.comment_queue)
+                // console.log(this.comment_queue)
             }
 
         }
@@ -148,13 +148,17 @@ export class configRenderer {
                 tabToAddTo = this.current_container.at(-1)
             }
             if (this.comment_queue.length > 0) {
-                console.log("A new key is being added with comment", genericItem.name)
+                // console.log("A new key is being added with comment", genericItem.name)
                 this.comment_queue.forEach(commentEl => {
                     commentEl.addToParent(tabToAddTo)
                     this.comment_queue.pop()
                 })
             }
+            genericItem.el.addEventListener("focus", () => {
+                GLOBAL["mainFocus"][GLOBAL["activeTab"]] = genericItem.el.dataset.uuid
+            })
             genericItem.addToParent(tabToAddTo)
+
         }
 
         //recursive children rendering

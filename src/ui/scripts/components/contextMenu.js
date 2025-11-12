@@ -12,7 +12,7 @@ export class ContextMenu {
 			}
 		});
 
-		for (const { label, icon, action } of items) {
+		for (const { label, icon, action, title } of items) {
 			const btnEl = document.createElement("div")
 			btnEl.classList.add("ctx-button")
 			const iconEl = document.createElement("div")
@@ -25,7 +25,7 @@ export class ContextMenu {
 			}
 			labelEl.textContent = label
 
-			if (label.toLowerCase().includes("delete")) {
+			if (label.toLowerCase().includes("delete") || label.toLowerCase().includes("reset")) {
 				let clickCount = 0
 				let timeoutId;
 				btnEl.addEventListener("click", (e) => {

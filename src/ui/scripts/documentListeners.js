@@ -101,7 +101,7 @@ hotkeys('*', (event) => {
 		}
 	}
 
-	switch (GLOBAL["currentView"]) { // FIXME Change to globals
+	switch (GLOBAL["currentView"]) {
 		case "main": {
 			const currentSet = document.querySelector(`.config-set#${GLOBAL["activeTab"]}`);
 			if (!currentSet) break;

@@ -34,7 +34,7 @@ export class EditorItem_Binds {
 		this.preview = "";
 		this.contextMenu = new ContextMenu([
 			{ label: "Add Above", icon: "󰅃", action: () => this.addAbove() },
-			{ label: "Add Below", icon: "󰅀", action: () => this.addAbove() },
+			{ label: "Add Below", icon: "󰅀", action: () => this.addBelow() },
 			{ label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
 			{ label: "Delete Key", icon: "󰗩", action: () => this.delete() }
 		]);
@@ -226,6 +226,9 @@ export class EditorItem_Binds {
 	}
 
 	addAbove() {
+	}
+	addBelow(){
+
 	}
 	delete() {
 		deleteKey(this.el.dataset.uuid, this.el.dataset.position);

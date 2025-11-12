@@ -17,8 +17,6 @@ import tomlkit
 
 rich.traceback.install(show_locals=True)
 
-file_path = f"{Path(__file__).resolve().parent}/ConfigDescriptions.txt"
-
 
 def get_parts(line: str):
 	return line.split("=", 1)[1].strip().strip(",").strip('"')
@@ -49,7 +47,7 @@ class Node:
 		return json.dumps(self.to_dict(), indent=4)
 
 
-def get_config_descriptions() -> list:
+def get_config_descriptions(file_path) -> list:
 	descriptions = []
 	with open(file_path, "r", encoding="UTF-8") as file:
 		lines = file.readlines()
@@ -68,8 +66,8 @@ def get_config_descriptions() -> list:
 				parts = get_parts(line).split(":")
 				path = ":".join(parts[:-1])
 				name = parts[-1]
-				if len(parts) - 1 > 1:
-					print(path)
+				# if len(parts) - 1 > 1:
+				# 	print(path)
 				is_editing_description = False
 			elif line.startswith(".description"):
 				parts = get_parts(line)
@@ -104,11 +102,23 @@ def get_config_descriptions() -> list:
 	return descriptions
 
 
-config_list = get_config_descriptions()
-jsonstring = json.dumps(config_list, indent=4)
-print(
-	tomlkit.dumps(
-		{"config": [{k: (v if v is not None else "") for k, v in d.items()} for d in json.loads(jsonstring)]}
-	)
-)
+file_path = f"{Path(__file__).resolve().parent}/ConfigDescriptions.txt"
+config_list = get_config_descriptions(file_path)
+for obj in config_list:
+      if obj["description"]:
+            obj["description"] = obj["description"].strip('"').replace("\\n", "")
+            
+# jsonstring = json.dumps(config_list, indent=4)
+# print(jsonstring)
+with open("hyprland_config_descriptions.js", "w+", encoding="utf-8") as description_file:
+	description_file.write("export const config_descriptions = ")
+	json.dump(config_list, description_file, indent=2, ensure_ascii=False)
+	description_file.write(";")
+ 
+ # RUN THIS AND THEN REPLACE MANUALLY ALL \" with nothing
+# print(
+# 	tomlkit.dumps(
+# 		{"config": [{k: (v if v is not None else "") for k, v in d.items()} for d in json.loads(jsonstring)]}
+# 	)
+# )
 # print(tomlkit.dumps({'config': json.loads(jsonstring)}))

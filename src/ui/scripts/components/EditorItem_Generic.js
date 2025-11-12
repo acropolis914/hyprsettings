@@ -1,6 +1,7 @@
 import { ContextMenu } from "./contextMenu.js";
 import { debounce, deleteKey, saveKey } from "../utils.js";
 import { GLOBAL } from "../GLOBAL.js";
+import { findConfigDescription } from "../../hyprland-specific/hyprland_config_descriptions.js";
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
 //         this.inital_load = true
@@ -29,7 +30,6 @@ export class EditorItem_Generic {
 		let comment = json["comment"];
 		let position = json["position"];
 		this.saveDebounced = debounce(() => this.save(), 250);
-
 		const template = document.getElementById("generic-template");
 		this.el = template.content.firstElementChild.cloneNode(true);
 		this.el.classList.add("editor-item");
@@ -56,7 +56,13 @@ export class EditorItem_Generic {
 		this.keyEditor = document.createElement("textarea");
 		this.keyEditor.rows = 1;
 		this.keyEditor.id = "generic-key";
+		let config_position = position.split(":").slice(2).join(":")
+		this.info = findConfigDescription(config_position, name)
 		this.valueEditor = document.createElement("textarea");
+		if (this.info) {
+			this.valueEditor.setAttribute("title", JSON.stringify(this.info["description"]))
+		}
+
 		this.valueEditor.rows = 1;
 		this.valueEditor.id = "generic-value";
 		if (name.startsWith("$")) {
@@ -73,7 +79,8 @@ export class EditorItem_Generic {
 
 		this.contextMenu = new ContextMenu([
 			{ label: "Add Above", icon: "󰅃", action: () => this.addAbove() },
-			{ label: "Add Below", icon: "󰅀", action: () => this.addAbove() },
+			{ label: "Add Below", icon: "󰅀", action: () => this.addBelow() },
+			{ label: "Reset to Default", icon: "", action: () => this.valueReset() },
 			{ label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
 			{ label: "Delete Key", icon: "󰗩", action: () => this.delete() }
 		]);
@@ -124,7 +131,8 @@ export class EditorItem_Generic {
 			this.el.dataset.name = this.keyEditor.value;
 			this.update();
 		});
-		this.valueEditor.addEventListener("input", () => {
+
+		this.valueEditor.addEventListener("change", () => {
 			this.el.dataset.value = this.valueEditor.value;
 			this.update();
 		});
@@ -139,9 +147,19 @@ export class EditorItem_Generic {
 		parent.appendChild(this.el);
 	}
 	addAbove() {
+		console.log("Not available yet")
 	}
 	addBelow() {
-
+		console.log("Not available yet")
+	}
+	valueReset() {
+		if (this.info.type == "CONFIG_OPTION_INT" || (this.info.data.includes(",") && this.info.data.split(",").length === 3)) {
+			this.valueEditor.value = this.info["data"].split(",")[0].trim()
+		} else {
+			this.valueEditor.value = this.info["data"]
+		}
+		this.el.dataset.value = this.valueEditor.value;
+		this.update();
 	}
 	delete() {
 		deleteKey(this.el.dataset.uuid, this.el.dataset.position);
