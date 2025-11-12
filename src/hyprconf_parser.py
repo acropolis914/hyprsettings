@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #     SConfigOptionDescription{
 #         .value       = "general:border_size",
 #         .description = "size of the border around windows",

@@ -12,7 +12,8 @@ export class configRenderer {
         this.json = json
         this.current_container = []
         this.current_container.push(document.querySelector(".config-set#general"))
-        this.comment_stack = []
+        this.comment_stack = [] //for the block comments
+        this.comment_queue = []
         this.group_stack = []
         this.parse(this.json)
         document.querySelectorAll(".editor-item").forEach((element) => {
@@ -75,7 +76,15 @@ export class configRenderer {
                 this.comment_stack = []
             }
             let comment_item = new EditorItem_Comments(json, false)
-            comment_item.addToParent(this.current_container.at(-1))
+            this.comment_queue.push(comment_item)
+            if (this.comment_queue.length > 1) {
+                console.log(this.comment_queue)
+                comment_item = this.comment_queue[1]
+                comment_item.addToParent(this.current_container.at(-1))
+                this.comment_queue.pop()
+                console.log(this.comment_queue)
+            }
+
         }
 
         // else if (json["type"] === "BLANK") {
@@ -109,28 +118,43 @@ export class configRenderer {
         }
 
         else if (json["type"] === "KEY") {
+            // if (json["name"].startsWith("bind")) {
+            //     let keybindsTab = document.querySelector(".config-set#keybinds")
+            //     if (!keybindsTab) await waitFor(() => keybindsTab = document.querySelector(".config-set#keybinds"))
+            //     let keybind_item = 
+            //     this.current_container.pop()
+            //     this.current_container.push(keybindsTab)
+            //     keybind_item.addToParent(this.current_container.at(-1))
+            //     return
+            // }
+            let genericItem
             if (json["name"].startsWith("bind")) {
-                let keybindsTab = document.querySelector(".config-set#keybinds")
-                if (!keybindsTab) await waitFor(() => keybindsTab = document.querySelector(".config-set#keybinds"))
-                let keybind_item = new EditorItem_Binds(json, json["disabled"], keybindsTab)
-                this.current_container.pop()
-                this.current_container.push(keybindsTab)
-                keybind_item.addToParent(this.current_container.at(-1))
-                return
+                genericItem = new EditorItem_Binds(json, json["disabled"])
+            } else {
+                genericItem = new EditorItem_Generic(json, json["disabled"])
             }
-            //decision on where to put new Editor Item Keys
-            let genericItem = new EditorItem_Generic(json, json["disabled"])
+
             let tabToAddTo
             for (const [key, value] of keyNameStarts) {
                 if (json.name.trim().startsWith(key)) {
                     tabToAddTo = document.querySelector(`.config-set#${value}`)
+                    if (json.name.startsWith("bind")) {
+                        console.log()
+                    }
                     break
                 }
             }
             if (!tabToAddTo) {
                 tabToAddTo = this.current_container.at(-1)
             }
-            tabToAddTo.appendChild(genericItem.el)
+            if (this.comment_queue.length > 0) {
+                console.log("A new key is being added with comment", genericItem.name)
+                this.comment_queue.forEach(commentEl => {
+                    commentEl.addToParent(tabToAddTo)
+                    this.comment_queue.pop()
+                })
+            }
+            genericItem.addToParent(tabToAddTo)
         }
 
         //recursive children rendering
