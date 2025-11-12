@@ -14,7 +14,7 @@ Add to your NixOS configuration (`/etc/nixos/configuration.nix` or flake):
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    hyprsettings.url = "github:wiktormalyska/hyprsettings-nixos";
+    hyprsettings.url = "github:acropolis914/hyprsettings";
   };
 
   outputs = { self, nixpkgs, hyprsettings, ... }: {
@@ -33,13 +33,13 @@ Add to your NixOS configuration (`/etc/nixos/configuration.nix` or flake):
 #### Try without installing
 
 ```bash
-nix run github:wiktormalyska/hyprsettings-nixos --no-write-lock-file
+nix run github:acropolis914/hyprsettings
 ```
 
 #### Install to user profile
 
 ```bash
-nix profile install github:wiktormalyska/hyprsettings-nixos
+nix profile install github:acropolis914/hyprsettings
 ```
 
 ### Method 2: Using traditional Nix
@@ -73,7 +73,7 @@ Or with flakes:
 ```nix
 {
   inputs = {
-    hyprsettings.url = "github:wiktormalyska/hyprsettings-nixos";
+    hyprsettings.url = "github:acropolis914/hyprsettings";
   };
 
   # In your home configuration
