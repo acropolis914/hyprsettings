@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import subprocess
+import mimetypes
+import json
 import os
+
 os.environ["GDK_BACKEND"] = "wayland"
 import webview
 from rich import traceback
-import mimetypes
-from parser import ConfigParser, Node, makeUUID, print_hyprland
 import tomlkit as toml
-import json
+from parser import ConfigParser, Node, makeUUID, print_hyprland
 
 
 traceback.install(show_locals=True)
@@ -103,4 +104,5 @@ if __name__ == "__main__":
 	webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
 	window.events.loaded += on_loaded
 	window.events.closed += on_closed
-	webview.start(gui="gtk", debug=True, private_mode=False, storage_path=".pywebview", icon="icon-48.png")
+	cache_path = Path.home() / ".cache" / "hyprsettings" / ".pywebview"
+	webview.start(gui="gtk", debug=True, private_mode=False, storage_path=str(cache_path), icon="icon-48.png")
