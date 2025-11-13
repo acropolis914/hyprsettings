@@ -109,6 +109,20 @@ export function deleteKey(uuid, position) {
 	}
 }
 
+export async function addItem(type, name, value, comment, position, relative_uuid, below = true) {
+	let root = GLOBAL["data"]
+	let path = position.split(":")
+	let parent = findParent(root, path)
+	// console.log(parent)
+	let nodeIndex = parent.children.findIndex(node => node.uuid == relative_uuid)
+	// console.log({ nodeIndex })
+	let newuuid = await window.pywebview.api.new_uuid()
+	let targetIndex = below ? nodeIndex + 1 : nodeIndex
+	console.log(value)
+	parent.children.splice(targetIndex, 0, { type: type, name: name, value: value, position: position, uuid: newuuid })
+	return { type, name, value, comment, position, uuid: newuuid, below }
+}
+
 export async function saveConfig() {
 	try {
 		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["config"]))

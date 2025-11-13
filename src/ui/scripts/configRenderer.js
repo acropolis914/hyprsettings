@@ -78,13 +78,12 @@ export class configRenderer {
             let comment_item = new EditorItem_Comments(json, false)
             this.comment_queue.push(comment_item)
             if (this.comment_queue.length > 1) {
-                // console.log(this.comment_queue)
-                comment_item = this.comment_queue[1]
-                comment_item.addToParent(this.current_container.at(-1))
-                this.comment_queue.pop()
-                // console.log(this.comment_queue)
+                for (let i = 0; i < this.comment_queue.length - 1; i++) {
+                    comment_item = this.comment_queue[0]
+                    comment_item.addToParent(this.current_container.at(-1))
+                    this.comment_queue.splice(0, 1)
+                }
             }
-
         }
 
         // else if (json["type"] === "BLANK") {
@@ -118,15 +117,6 @@ export class configRenderer {
         }
 
         else if (json["type"] === "KEY") {
-            // if (json["name"].startsWith("bind")) {
-            //     let keybindsTab = document.querySelector(".config-set#keybinds")
-            //     if (!keybindsTab) await waitFor(() => keybindsTab = document.querySelector(".config-set#keybinds"))
-            //     let keybind_item = 
-            //     this.current_container.pop()
-            //     this.current_container.push(keybindsTab)
-            //     keybind_item.addToParent(this.current_container.at(-1))
-            //     return
-            // }
             let genericItem
             if (json["name"].startsWith("bind")) {
                 genericItem = new EditorItem_Binds(json, json["disabled"])
@@ -158,7 +148,6 @@ export class configRenderer {
                 GLOBAL["mainFocus"][GLOBAL["activeTab"]] = genericItem.el.dataset.uuid
             })
             genericItem.addToParent(tabToAddTo)
-
         }
 
         //recursive children rendering

@@ -1,7 +1,8 @@
 import { bindFlags, modkeys, dispatchers } from "../../hyprland-specific/hyprlandBindDefinitions.js";
 import { ContextMenu } from "./contextMenu.js";
-import { debounce, deleteKey, saveKey } from "../utils.js";
+import { addItem, debounce, deleteKey, saveKey } from "../utils.js";
 import { GLOBAL } from "../GLOBAL.js";
+import { EditorItem_Comments } from "./EditorItem_Comments.js";
 
 export class EditorItem_Binds {
 	constructor(json, disabled = false, parent) {
@@ -33,8 +34,10 @@ export class EditorItem_Binds {
 		this.el.dataset.type = "KEY";
 		this.preview = "";
 		this.contextMenu = new ContextMenu([
-			{ label: "Add Above", icon: "󰅃", action: () => this.addAbove() },
-			{ label: "Add Below", icon: "󰅀", action: () => this.addBelow() },
+			{ label: "Add Comment", icon: "󰅃", action: () => this.add("COMMENT", false) },
+			{ label: "Add Comment", icon: "󰅀", action: () => this.add("COMMENT", true)},
+			{ label: "Add Above", icon: "󰅃", action: () => this.add("KEY", false) },
+			{ label: "Add Below", icon: "󰅀", action: () => this.add("KEY", true) },
 			{ label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
 			{ label: "Delete Key", icon: "󰗩", action: () => this.delete() }
 		]);
@@ -225,10 +228,28 @@ export class EditorItem_Binds {
 		parent.appendChild(this.el);
 	}
 
-	addAbove() {
-	}
-	addBelow(){
-
+	async add(type, below = true) {
+		switch (type) {
+			case ("KEY"):
+				let newBindItem = await addItem("KEY", "bind", "SUPER, 0, exec, ", "yellow", this.el.dataset.position, this.el.dataset.uuid, below)
+				let newBindElement = new EditorItem_Binds({ name: newBindItem["name"], uuid: newBindItem["uuid"], value: newBindItem["value"], comment: newBindItem["comment"], position: this.el.dataset.position })
+				if (below) {
+					this.el.after(newBindElement.el)
+				} else {
+					this.el.before(newBindElement.el)
+				}
+				newBindElement.save()
+				break
+			case ("COMMENT"):
+				let newCommentItem = await addItem("COMMENT", "comment", "", "# New comment", this.el.dataset.position, this.el.dataset.uuid, below)
+				let newCommentElement = new EditorItem_Comments({ name: newCommentItem["comment"], uuid: newCommentItem["uuid"], value: newCommentItem["value"], comment: newCommentItem["comment"], position: this.el.dataset.position }, false)
+				if (below) {
+					this.el.after(newCommentElement.el)
+				} else {
+					this.el.before(newCommentElement.el)
+				}
+				newCommentElement.save()
+		}
 	}
 	delete() {
 		deleteKey(this.el.dataset.uuid, this.el.dataset.position);

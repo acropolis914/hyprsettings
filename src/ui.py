@@ -39,8 +39,8 @@ class Api:
 		print_hyprland(Node.from_json(json).to_hyprland(indent_level=0, save=True))
 		print("Saved to hyprland files")
 
-	def new_uuid(self, length: int):
-		return makeUUID(count)
+	def new_uuid(self, length: int = 8):
+		return makeUUID(length)
 
 	def read_window_config(self):
 		window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"

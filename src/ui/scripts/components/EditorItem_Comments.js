@@ -110,15 +110,7 @@ export class EditorItem_Comments {
 		this.el.remove();
 	}
 	save() {
-		if (this.el.dataset.comment.trim().startsWith("#")) {
-			let type = "COMMENT";
-			let name = this.el.dataset.name;
-			let uuid = this.el.dataset.uuid;
-			let position = this.el.dataset.position;
-			let value = null;
-			let comment = this.el.dataset.comment;
-			saveKey(type, name, uuid, position, value, comment, false);
-		} else {
+		if (!this.el.dataset.comment.trim().startsWith("#") && this.el.dataset.comment.split("=").length > 1) {
 			console.log("detected comment to key transformation");
 			let [name, value] = this.el.dataset.comment.split(/=(.*)/).slice(0, 2).map(p => (p.trim()));
 			let [new_value, comment] = value.split(/#(.*)/).slice(0, 2).map(p => (p.trim()));
@@ -128,8 +120,20 @@ export class EditorItem_Comments {
 			if (name && value) {
 				saveKey(type, name, uuid, position, value, comment = comment, false);
 			}
-
 		}
-
+		else {
+			let type = "COMMENT";
+			let name = this.el.dataset.name;
+			let uuid = this.el.dataset.uuid;
+			let position = this.el.dataset.position;
+			let value = null;
+			let comment
+			if(!this.el.dataset.comment.trim().startsWith("#")){
+				comment = `# ${this.el.dataset.comment}`;
+			} else {
+				comment = this.el.dataset.comment
+			}
+			saveKey(type, name, uuid, position, value, comment, false);
+		}
 	}
 }
