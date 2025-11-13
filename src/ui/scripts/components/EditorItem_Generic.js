@@ -59,14 +59,41 @@ export class EditorItem_Generic {
 		this.keyEditor.id = "generic-key";
 		this.config_position = position.split(":").slice(2).join(":")
 		this.info = findConfigDescription(this.config_position, name)
-		this.valueEditor = document.createElement("textarea");
+		if (this.info) {
+			if (this.info["type"] === "CONFIG_OPTION_INT" || this.info["type"] === "CONFIG_OPTION_FLOAT") {
+				console.log(this.el.dataset.name, "is an int with range", this.info.data)
+				const [defaultValue, min, max] = this.info["data"].split(",").map(item => item.trim())
+				this.valueEditor = document.createElement("input")
+				this.valueEditor.setAttribute("type", "range")
+				this.valueEditor.setAttribute("min", min)
+				this.valueEditor.setAttribute("max", max)
+				const steps = this.info["type"] === "CONFIG_OPTION_INT" ? 1 : (max - min) / 100
+				this.valueEditor.setAttribute("steps", steps)
+			}
+			else {
+				console.log(this.info["type"])
+			}
+		}
+		if (!this.valueEditor) {
+
+			this.valueEditor = document.createElement("textarea");
+			this.valueEditor = document.createElement("textarea");
+			this.valueEditor.rows = 1; this.valueEditor.rows = 1;
+			if (this.info) {
+				this.valueEditor.dataset.defaultData = this.info["data"]
+			}
+
+		}
+
+
+
 		if (this.info) {
 			let title = JSON.stringify(this.info["description"])
 			let type = JSON.stringify(this.info["type"])
 			this.valueEditor.title = `${JSON.parse(title)} || ${JSON.parse(type).replace("CONFIG_OPTION_", "")}`
 		}
 
-		this.valueEditor.rows = 1;
+
 		this.valueEditor.id = "generic-value";
 		if (name.startsWith("$") || name === "generic") {
 			this.genericEditor_el.appendChild(this.keyEditor);
@@ -173,7 +200,7 @@ export class EditorItem_Generic {
 				let randomKey = availableKeys[Math.floor(Math.random() * availableKeys.length)]
 				let name
 				let value
-				if (randomKey){
+				if (randomKey) {
 					name = randomKey.name
 					if (randomKey.type == "CONFIG_OPTION_INT" || (randomKey.data.includes(",") && randomKey.data.split(",").length === 3)) {
 						value = randomKey["data"].split(",")[0].trim()
@@ -182,7 +209,7 @@ export class EditorItem_Generic {
 					}
 				}
 
-				if (!name){
+				if (!name) {
 					name = this.el.dataset.name
 				}
 				let newGenericItem = await addItem("KEY", name, value, "", this.el.dataset.position, this.el.dataset.uuid, below)
