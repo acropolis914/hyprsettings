@@ -5,7 +5,7 @@ import { GLOBAL } from "../GLOBAL.js";
 import { EditorItem_Comments } from "./EditorItem_Comments.js";
 
 export class EditorItem_Binds {
-	constructor(json, disabled = false, parent) {
+	constructor(json, disabled = false) {
 		this.initial_load = true;
 		let name = json["name"];
 		let uuid = json["uuid"];
@@ -34,17 +34,25 @@ export class EditorItem_Binds {
 		this.el.dataset.type = "KEY";
 		this.preview = "";
 		this.contextMenu = new ContextMenu([
-			{ label: "Add Comment", icon: "󰅃", action: () => this.add("COMMENT", false) },
-			{ label: "Add Comment", icon: "󰅀", action: () => this.add("COMMENT", true)},
-			{ label: "Add Above", icon: "󰅃", action: () => this.add("KEY", false) },
-			{ label: "Add Below", icon: "󰅀", action: () => this.add("KEY", true) },
+			{ label: "Comment Above", icon: "", action: () => this.add("COMMENT", false) },
+			{ label: "Comment Below", icon: "", action: () => this.add("COMMENT", true)},
+			{ label: "NewBind Above", icon: "󰅃", action: () => this.add("KEY", false) },
+			{ label: "NewBind Below", icon: "󰅀", action: () => this.add("KEY", true) },
 			{ label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
 			{ label: "Delete Key", icon: "󰗩", action: () => this.delete() }
 		]);
 		this.el.appendChild(this.contextMenu.el);
 		this.saveDebounced = debounce(() => this.save(), 100);
 
-		let values = value.split(",", 4);
+		this.addElements(name, comment, parent);
+
+		this.addListeners();
+		this.update();
+		this.initial_load = false;
+	}
+
+	addElements(name, comment) {
+		let values = this.el.dataset.value.split(",", 4);
 		const renderflags = {
 			option: function (data, escape) {
 				return `<div title="${data.description}">` + escape(data.text) + `</div>`;
@@ -53,10 +61,9 @@ export class EditorItem_Binds {
 				return `<div title="${data.description}">` + escape(data.text) + `</div>`;
 			}
 		};
-
 		//bindflags
 		let bindflag_select_el = this.el.querySelector(".bindflags");
-		let bindflag_additems = name.trim().substring(4).split("");
+		let bindflag_additems = this.el.dataset.name.trim().substring(4).split("");
 		this.bindflagTS = new TomSelect(bindflag_select_el, {
 			options: bindFlags,
 			valueField: "value",
@@ -148,20 +155,13 @@ export class EditorItem_Binds {
 		});
 
 		this.comment_el = this.el.querySelector(".comment");
-		this.comment_el.value = comment ?? "";
+		this.comment_el.value = this.el.dataset.comment ?? "";
 		this.comment_el.addEventListener("input", () => {
 			if (!this.initial_load) {
 				this.el.dataset.comment = this.comment_el.value;
 				this.update();
 			}
 		});
-		if (parent) {
-			this.addToParent(parent);
-		}
-
-		this.addListeners();
-		this.update();
-		this.initial_load = false;
 	}
 
 	addListeners() {

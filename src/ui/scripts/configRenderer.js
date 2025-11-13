@@ -86,12 +86,19 @@ export class configRenderer {
             }
         }
 
-        // else if (json["type"] === "BLANK") {
-        //     let blankline = document.createElement("div")
-        //     blankline.classList.add("blank-line")
-        //     blankline.textContent = "THIS IS A BLANK LINE"
-        //     this.current_container.at(-1).appendChild(blankline)
-        // } //fugly
+        else if (json["type"] === "BLANK") {
+            if (this.comment_queue.length > 0) {
+                for (let i = 0; i < this.comment_queue.length; i++) {
+                    let comment_item = this.comment_queue[0]
+                    comment_item.addToParent(this.current_container.at(-1))
+                    this.comment_queue.splice(0, 1)
+                }
+            }
+            // let blankline = document.createElement("div")
+            // blankline.classList.add("blank-line")
+            // blankline.textContent = "THIS IS A BLANK LINE"
+            // this.current_container.at(-1).appendChild(blankline)
+        } //fugly
 
         else if (json["type"] === "GROUP") {
             if (json["position"] && json["position"].split(":").length > 1) {
@@ -125,8 +132,9 @@ export class configRenderer {
             }
 
             let tabToAddTo
-            for (const [key, value] of keyNameStarts) {
-                if (json.name.trim().startsWith(key)) {
+            for (const [key, value, exclude] of keyNameStarts) {
+                let excluded = exclude ? exclude : []
+                if (json.name.trim().startsWith(key) && !excluded.includes(json.name.trim())) {
                     tabToAddTo = document.querySelector(`.config-set#${value}`)
                     if (json.name.startsWith("bind")) {
                         console.log()

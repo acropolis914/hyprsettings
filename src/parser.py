@@ -28,12 +28,13 @@ def makeUUID(length: int):
 class Node:
 	def __init__(
 		self,
-		name,
+		name: str,
 		type_: NodeType,
-		value=None,
-		comment=None,
+		value: str | None = None,
+		comment: str | None = None,
 		position=None,
 		disabled=False,
+		line_number: int | None = None,
 	):
 		allowed_types = get_args(NodeType)
 		assert type_ in allowed_types, f"Invalid node type {type_}. Must be one of {allowed_types}"
@@ -45,6 +46,7 @@ class Node:
 		self.position = position
 		self.uuid = makeUUID(8)
 		self.disabled = disabled
+		self.line_number = line_number
 
 	def addChildren(self, child):
 		self.children.append(child)
@@ -62,6 +64,8 @@ class Node:
 			dict["children"] = [child.to_dict() for child in self.children]
 		if self.disabled:
 			dict["disabled"] = self.disabled
+		if self.line_number:
+			dict["line_number"] = self.line_number
 		return dict
 
 	def to_json(self) -> str:
@@ -134,6 +138,7 @@ class Node:
 			comment=data.get("comment"),
 			position=data.get("position"),
 			disabled=data.get("disabled"),
+			line_number=data.get("line_number"),
 		)
 		if "uuid" in data:
 			node.uuid = data["uuid"]
@@ -185,7 +190,8 @@ class ConfigParser:
 			self.stack[-1].addChildren(new_file_node)
 			self.stack.append(new_file_node)
 			sources = []
-			for line_content in config_file:
+			for line_index, line_content in enumerate(config_file, start=1):
+				# for line_content in config_file:
 				check: str = self.sanitize(line_content)
 				line, comment = self.get_parts(line_content, "#")
 				colon_index = line_content.find(":")
@@ -199,6 +205,8 @@ class ConfigParser:
 						value=None,
 						comment=None,
 						position=position,
+						disabled=False,
+						line_number=line_index,
 					)
 					self.stack[-1].addChildren(blank_line)
 					continue
@@ -229,6 +237,7 @@ class ConfigParser:
 						comment=comment,
 						position=position,
 						disabled=True,
+						line_number=line_index,
 					)
 					self.stack[-1].addChildren(node)
 				elif line_content.strip().startswith(
@@ -242,6 +251,7 @@ class ConfigParser:
 						value=None,
 						comment=new_comment,
 						position=position,
+						line_number=line_index,
 					)
 					self.stack[-1].addChildren(comment_node)
 				elif check.endswith("{"):
@@ -252,6 +262,7 @@ class ConfigParser:
 						value=None,
 						comment=comment,
 						position=position,
+						line_number=line_index,
 					)
 					self.stack[-1].addChildren(child_node)
 					self.stack.append(child_node)
@@ -262,6 +273,7 @@ class ConfigParser:
 						value=None,
 						comment=comment,
 						position=position,
+						line_number=line_index,
 					)
 					self.stack[-1].addChildren(groupend_node)
 					self.stack.pop()
@@ -276,6 +288,7 @@ class ConfigParser:
 						comment=comment,
 						position=position,
 						disabled=False,
+						line_number=line_index,
 					)
 					self.stack[-1].addChildren(node)
 

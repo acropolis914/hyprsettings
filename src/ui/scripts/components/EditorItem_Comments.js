@@ -1,5 +1,5 @@
 import { ContextMenu } from "./contextMenu.js";
-import { debounce, deleteKey, saveKey } from "../utils.js";
+import { addItem, debounce, deleteKey, saveKey } from "../utils.js";
 
 export class EditorItem_Comments {
 	constructor(json, hidden = false) {
@@ -29,8 +29,8 @@ export class EditorItem_Comments {
 		this.saveDebounced = debounce(() => this.save(), 100);
 		this.textarea.addEventListener("input", () => this.update());
 		this.contextMenu = new ContextMenu([
-			{ label: "Add Above", icon: "󰅃", action: () => this.addAbove() },
-			{ label: "Add Below", icon: "󰅀", action: () => this.addAbove() },
+			{ label: "Add Above", icon: "󰅃", action: () => this.add(false) },
+			{ label: "Add Below", icon: "󰅀", action: () => this.add() },
 			{ label: "Delete Key", icon: "󰗩", action: () => this.delete() }
 		]);
 		this.el.appendChild(this.contextMenu.el);
@@ -102,6 +102,16 @@ export class EditorItem_Comments {
 			this.contextMenu.show();
 		});
 	}
+	async add(below = true) {
+		let newCommentItem = await addItem("COMMENT", "comment", "", "# New comment", this.el.dataset.position, this.el.dataset.uuid, below)
+		let newCommentElement = new EditorItem_Comments({ name: newCommentItem["comment"], uuid: newCommentItem["uuid"], value: newCommentItem["value"], comment: newCommentItem["comment"], position: this.el.dataset.position }, false)
+		if (below) {
+			this.el.after(newCommentElement.el)
+		} else {
+			this.el.before(newCommentElement.el)
+		}
+		newCommentElement.save()
+	}
 	addToParent(parent) {
 		parent.appendChild(this.el);
 	}
@@ -128,7 +138,7 @@ export class EditorItem_Comments {
 			let position = this.el.dataset.position;
 			let value = null;
 			let comment
-			if(!this.el.dataset.comment.trim().startsWith("#")){
+			if (!this.el.dataset.comment.trim().startsWith("#")) {
 				comment = `# ${this.el.dataset.comment}`;
 			} else {
 				comment = this.el.dataset.comment

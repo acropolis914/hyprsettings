@@ -2135,5 +2135,10 @@ export function findConfigDescription(path, name) {
   return config_json
 }
 
-let description = findConfigDescription("general", "gaps_in")
-console.log(description)
+export function findAdjacentConfigKeys(path, exclude = []) {
+  let configKeys = config_descriptions.filter(item => item.path === path).filter(item=> !exclude.includes(item.name))
+  return configKeys
+}
+
+// let description = findConfigDescription("general", "gaps_in")
+// console.log(description)

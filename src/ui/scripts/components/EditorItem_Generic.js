@@ -1,7 +1,8 @@
 import { ContextMenu } from "./contextMenu.js";
-import { debounce, deleteKey, saveKey } from "../utils.js";
+import { addItem, debounce, deleteKey, saveKey } from "../utils.js";
 import { GLOBAL } from "../GLOBAL.js";
-import { findConfigDescription } from "../../hyprland-specific/hyprland_config_descriptions.js";
+import { findAdjacentConfigKeys, findConfigDescription } from "../../hyprland-specific/hyprland_config_descriptions.js";
+import { EditorItem_Comments } from "./EditorItem_Comments.js";
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
 //         this.inital_load = true
@@ -56,16 +57,18 @@ export class EditorItem_Generic {
 		this.keyEditor = document.createElement("textarea");
 		this.keyEditor.rows = 1;
 		this.keyEditor.id = "generic-key";
-		let config_position = position.split(":").slice(2).join(":")
-		this.info = findConfigDescription(config_position, name)
+		this.config_position = position.split(":").slice(2).join(":")
+		this.info = findConfigDescription(this.config_position, name)
 		this.valueEditor = document.createElement("textarea");
 		if (this.info) {
-			this.valueEditor.setAttribute("title", JSON.stringify(this.info["description"]))
+			let title = JSON.stringify(this.info["description"])
+			let type = JSON.stringify(this.info["type"])
+			this.valueEditor.title = `${JSON.parse(title)} || ${JSON.parse(type).replace("CONFIG_OPTION_", "")}`
 		}
 
 		this.valueEditor.rows = 1;
 		this.valueEditor.id = "generic-value";
-		if (name.startsWith("$")) {
+		if (name.startsWith("$") || name === "generic") {
 			this.genericEditor_el.appendChild(this.keyEditor);
 		}
 
@@ -75,19 +78,23 @@ export class EditorItem_Generic {
 		this.commentArea = this.el.querySelector(".comment");
 		this.commentArea.value = this.el.dataset.comment;
 
-
-
-		this.contextMenu = new ContextMenu([
-			{ label: "Add Above", icon: "󰅃", action: () => this.addAbove() },
-			{ label: "Add Below", icon: "󰅀", action: () => this.addBelow() },
-			{ label: "Reset to Default", icon: "", action: () => this.valueReset() },
+		let contextMenuItems = [
+			{ label: "Comment Above", icon: "", action: () => this.add("COMMENT", false) },
+			{ label: "Comment Below", icon: "", action: () => this.add("COMMENT", true) },
+			{ label: "Add Above", icon: "󰅃", action: () => this.add("KEY", false) },
+			{ label: "Add Below", icon: "󰅀", action: () => this.add("KEY", true) },
 			{ label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
 			{ label: "Delete Key", icon: "󰗩", action: () => this.delete() }
-		]);
+		]
+
+		let contextMenuItem_reset = { label: "Reset to Default", icon: "", action: () => this.valueReset() }
+		if (this.info) {
+			contextMenuItems.splice(4, 0, contextMenuItem_reset)
+		}
+
+		this.contextMenu = new ContextMenu(contextMenuItems);
 		this.el.appendChild(this.contextMenu.el);
-
 		this.addListeners();
-
 		this.update();
 		this.inital_load = false;
 	}
@@ -131,6 +138,15 @@ export class EditorItem_Generic {
 			this.el.dataset.name = this.keyEditor.value;
 			this.update();
 		});
+		this.keyEditor.addEventListener("change", () => {
+			this.el.dataset.name = this.keyEditor.value;
+			this.update();
+		});
+
+		this.valueEditor.addEventListener("input", () => {
+			this.el.dataset.value = this.valueEditor.value;
+			this.update();
+		});
 
 		this.valueEditor.addEventListener("change", () => {
 			this.el.dataset.value = this.valueEditor.value;
@@ -146,11 +162,48 @@ export class EditorItem_Generic {
 	addToParent(parent) {
 		parent.appendChild(this.el);
 	}
-	addAbove() {
-		console.log("Not available yet")
-	}
-	addBelow() {
-		console.log("Not available yet")
+	async add(type, below = true) {
+		switch (type) {
+			case ("KEY"):
+				const existingSiblingKeys = Array.from(this.el.parentNode.children)
+					.filter(el => el.classList.contains("editor-item-generic"))
+					.map(el => el.dataset.name)
+				// console.log(existingKeys)
+				let availableKeys = findAdjacentConfigKeys(this.config_position, existingSiblingKeys) //TODO: Make a selector for this 
+				let randomKey = availableKeys[Math.floor(Math.random() * availableKeys.length)]
+				let name
+				let value
+				if (randomKey){
+					name = randomKey.name
+					if (randomKey.type == "CONFIG_OPTION_INT" || (randomKey.data.includes(",") && randomKey.data.split(",").length === 3)) {
+						value = randomKey["data"].split(",")[0].trim()
+					} else {
+						value = randomKey["data"]
+					}
+				}
+
+				if (!name){
+					name = this.el.dataset.name
+				}
+				let newGenericItem = await addItem("KEY", name, value, "", this.el.dataset.position, this.el.dataset.uuid, below)
+				let newGenericElement = new EditorItem_Generic({ name: newGenericItem["name"], uuid: newGenericItem["uuid"], value: newGenericItem["value"], comment: newGenericItem["comment"], position: this.el.dataset.position })
+				if (below) {
+					this.el.after(newGenericElement.el)
+				} else {
+					this.el.before(newGenericElement.el)
+				}
+				newGenericElement.save()
+				break
+			case ("COMMENT"):
+				let newCommentItem = await addItem("COMMENT", "comment", "", "# New comment", this.el.dataset.position, this.el.dataset.uuid, below)
+				let newCommentElement = new EditorItem_Comments({ name: newCommentItem["comment"], uuid: newCommentItem["uuid"], value: newCommentItem["value"], comment: newCommentItem["comment"], position: this.el.dataset.position }, false)
+				if (below) {
+					this.el.after(newCommentElement.el)
+				} else {
+					this.el.before(newCommentElement.el)
+				}
+				newCommentElement.save()
+		}
 	}
 	valueReset() {
 		if (this.info.type == "CONFIG_OPTION_INT" || (this.info.data.includes(",") && this.info.data.split(",").length === 3)) {
