@@ -175,7 +175,7 @@ function createAnimationsToggleSetting() {
 	console.log("bornick")
 	new CheckBoxItem(
 		"Enable Animations",
-		"animations",
+		"ui_animations",
 		true,
 		{ onCheck, onUncheck },
 		tooltip
