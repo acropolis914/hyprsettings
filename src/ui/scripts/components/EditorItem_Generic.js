@@ -128,9 +128,11 @@ export class EditorItem_Generic {
 
 	update() {
 		let name = this.keyEditor.value;
+		let formatted = name.replace(/_/g, ' ');
+		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
 		let value = this.valueEditor.value;
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : "";
-		this.preview_el.innerHTML = `<span id="key">${name} </span> <span id="value">${value}</span>&nbsp;<i>${comment}<i>`;
+		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i>${comment}<i>`;
 		if (!this.inital_load) {
 			this.saveDebounced();
 		}

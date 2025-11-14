@@ -123,6 +123,12 @@ export async function addItem(type, name, value, comment, position, relative_uui
 	return { type, name, value, comment, position, uuid: newuuid, below }
 }
 
+
+export function makeUUID(length = 8) {
+	const full = crypto.randomUUID().replace(/-/g, "");
+	return full.slice(0, length);
+}
+
 export async function saveWindowConfig() {
 	try {
 		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["config"]))

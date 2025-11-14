@@ -1,5 +1,5 @@
 import { GLOBAL } from "./GLOBAL.js"
-import { saveWindowConfig, waitFor } from "./utils.js"
+import { makeUUID, saveWindowConfig, waitFor } from "./utils.js"
 let settingsEl = document.querySelector(".config-set#settings")
 
 
@@ -21,15 +21,16 @@ export async function renderSettings() {
  * @returns {HTMLElement}
  */
 class CheckBoxItem {
+
 	constructor(label, config_key, default_value, actions = {}, tooltip) {
 		this.configKey = config_key
 		this.actions = actions
 		this.settingContainer = document.createElement("div")
 		this.settingContainer.setAttribute("title", tooltip)
-
 		this.settingContainer.classList.add("setting-container")
 		this.settingContainer.classList.add("editor-item")
 		this.settingContainer.setAttribute("tabindex", 0)
+		this.settingContainer.dataset.uuid = makeUUID()
 		this.checkbox = document.createElement("input")
 		this.checkbox.id = config_key
 		this.checkbox.setAttribute("type", "checkbox")
@@ -41,18 +42,41 @@ class CheckBoxItem {
 		this.settingContainer.appendChild(this.label)
 		this.addListeners()
 		settingsEl.appendChild(this.settingContainer)
+		if (this.checkbox.checked) {
+			this.actions.onCheck()
+		} else {
+			this.actions.onUncheck()
+		}
 	}
 	addListeners() {
 		this.settingContainer.addEventListener("keydown", (e) => {
 			if (e.key === " " || e.key === "Enter") {
-				this.checkbox.click()
+				this.checkbox.checked = !this.checkbox.checked
+				this.handleToggle()
 			}
 		})
-		this.settingContainer.addEventListener("click", () => {
+		this.settingContainer.addEventListener("click", (e) => {
+			// e.preventDefault()
 			GLOBAL.setKey("currentView", "main")
+			GLOBAL["mainFocus"][GLOBAL["activeTab"]] = this.settingContainer.dataset.uuid
+			this.checkbox.checked = !this.checkbox.checked
+			this.handleToggle()
+			// this.settingContainer.focus()
 		})
+		this.settingContainer.addEventListener("focus", () => {
+			GLOBAL.setKey("currentView", "main")
+			GLOBAL["mainFocus"][GLOBAL["activeTab"]] = this.settingContainer.dataset.uuid
+		})
+		this.checkbox.addEventListener("mousedown", (e) => {
+			// e.preventDefault()
+			this.checkbox.checked = !this.checkbox.checked
+			this.handleToggle()
+			this.settingContainer.focus()
+		})
+		this.checkbox.addEventListener("change", async (e) => {
+			this.handleToggle()
 
-		this.checkbox.addEventListener("change", async (e) => { this.handleToggle() })
+		})
 	}
 
 	handleToggle() {
@@ -61,10 +85,13 @@ class CheckBoxItem {
 		saveWindowConfig()
 		if (checked && this.actions.onCheck) {
 			this.actions.onCheck()
+
 		}
 		if (!checked && this.actions.onUncheck) {
 			this.actions.onUncheck()
 		}
+		console.log(`${this.label.textContent}: ${this.checkbox.checked}`)
+		saveWindowConfig()
 	}
 	return() {
 		return { container: this.settingContainer, checkbox: this.checkbox }
@@ -89,6 +116,8 @@ function createLineCommentsVisibilitySetting() {
 	const item = new CheckBoxItem(
 		"Show line comments", "show_line_comments", true, { onCheck, onUncheck }, tooltip = tooltip)
 }
+
+
 function createHeaderCommentsVisibilitySetting() {
 	function onCheck() {
 		document.querySelectorAll(".block-comment").forEach(i =>

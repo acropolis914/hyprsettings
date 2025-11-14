@@ -35,7 +35,7 @@ export class EditorItem_Binds {
 		this.preview = "";
 		this.contextMenu = new ContextMenu([
 			{ label: "Comment Above", icon: "", action: () => this.add("COMMENT", false) },
-			{ label: "Comment Below", icon: "", action: () => this.add("COMMENT", true)},
+			{ label: "Comment Below", icon: "", action: () => this.add("COMMENT", true) },
 			{ label: "NewBind Above", icon: "󰅃", action: () => this.add("KEY", false) },
 			{ label: "NewBind Below", icon: "󰅀", action: () => this.add("KEY", true) },
 			{ label: "Toggle Disable", icon: "󰈉", action: () => this.disable() },
@@ -231,7 +231,7 @@ export class EditorItem_Binds {
 	async add(type, below = true) {
 		switch (type) {
 			case ("KEY"):
-				let newBindItem = await addItem("KEY", "bind", "SUPER, 0, exec, ", "yellow", this.el.dataset.position, this.el.dataset.uuid, below)
+				let newBindItem = await addItem("KEY", "bind", "SUPER, I, exec, hyprsettings", "", this.el.dataset.position, this.el.dataset.uuid, below)
 				let newBindElement = new EditorItem_Binds({ name: newBindItem["name"], uuid: newBindItem["uuid"], value: newBindItem["value"], comment: newBindItem["comment"], position: this.el.dataset.position })
 				if (below) {
 					this.el.after(newBindElement.el)
