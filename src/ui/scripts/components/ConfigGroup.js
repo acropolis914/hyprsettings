@@ -12,14 +12,14 @@ export class ConfigGroup {
 			this.group_el.dataset.comment = json["comment"];
 		}
 		this.group_el.addEventListener("keydown", (e) => {
-			if (e.key == "Enter") {
-				e.preventDefault()
-				// this.group_el.querySelector(".editor-item").focus();
-				const firstChild = Array.from(this.group_el.children).find(child => child.classList.contains('editor-item'))
-				firstChild.click()
-				console.log(firstChild)
-				console.log("Group is entered");
-			}
+			// if (e.key == "Enter") {
+			// 	e.preventDefault()
+			// 	// this.group_el.querySelector(".editor-item").focus();
+			// 	const firstChild = Array.from(this.group_el.children).find(child => child.classList.contains('editor-item'))
+			// 	firstChild.click()
+			// 	console.log(firstChild)
+			// 	console.log("Group is entered");
+			// }
 		});
 	}
 

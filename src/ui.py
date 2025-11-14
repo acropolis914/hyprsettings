@@ -43,6 +43,14 @@ class Api:
 		return makeUUID(length)
 
 	def read_window_config(self):
+		
+		def add_missing_keys():
+			defaults = {"animations": True}
+			config_lines = self.window_config["config"]
+			for key, val in defaults.items():
+				if key not in config_lines:
+					config_lines[key] = val
+
 		window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"
 		template = Path(thisfile_path / "default_config.toml")
 		temporary_font = self.list_fonts(mono=False, nerd=True)[1]
@@ -56,9 +64,8 @@ class Api:
 				default_config_text = default_config.read()
 			self.window_config = toml.parse(default_config_text)
 			self.window_config["config"]["font"] = temporary_font if temporary_font else "Monospace"
-			print(self.window_config["config"]["font"])
+			add_missing_keys()
 			with window_config_path.open("w") as config_file:
-				print(default_config_text)
 				config_file.write(default_config_text)
 
 			return self.window_config
@@ -66,6 +73,7 @@ class Api:
 			with window_config_path.open("r", encoding="utf-8") as config_file:
 				config = toml.parse(config_file.read())
 				self.window_config = config
+				add_missing_keys()
 				return self.window_config
 
 	def save_window_config(self, json_fromjs):

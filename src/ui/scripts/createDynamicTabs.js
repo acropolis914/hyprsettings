@@ -1,4 +1,4 @@
-import { saveConfig } from "./utils.js";
+import { saveWindowConfig } from "./utils.js";
 import { tabs } from "./configMap.js";
 import { GLOBAL } from "./GLOBAL.js";
 class ConfigTabs {
@@ -103,7 +103,7 @@ class ConfigTabs {
 		GLOBAL["config"]["last_tab"] = id
 		GLOBAL.setKey("currentView", "tabs")
 		GLOBAL["activeTab"] = id
-		saveConfig()
+		saveWindowConfig()
 	}
 }
 export async function createDynamicTabs() {

@@ -1,4 +1,4 @@
-import { saveConfig } from "./utils.js";
+import { saveWindowConfig } from "./utils.js";
 import { GLOBAL } from "./GLOBAL.js";
 
 const onboardingUI = document.getElementById("onboarding");
@@ -21,7 +21,7 @@ function finishOnboarding() {
 	console.log("finish onboarding");
 	onboardingUI.style.opacity = 0;
 	GLOBAL["config"]["first_run"] = false;
-	saveConfig();
+	saveWindowConfig();
 }
 
 // Explicitly show/hide with F1

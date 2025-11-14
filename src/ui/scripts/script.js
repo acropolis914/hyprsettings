@@ -26,10 +26,10 @@ async function setupData() {
 
 async function load_config() {
     await waitFor(() => window.pywebview?.api.init)
-    window.windowConfig = await window.pywebview.api.read_window_config()
-    window.themes = window.windowConfig.theme //just to globally access it for setupTheme
-    GLOBAL["config"] = GLOBAL["config"] || {}
-    for (let key in window.windowConfig.config) {
+    let windowConfig = await window.pywebview.api.read_window_config()
+    window.themes = windowConfig.theme //just to globally access it for setupTheme
+    GLOBAL["config"] = {}
+    for (let key in windowConfig.config) {
         GLOBAL["config"][key] = windowConfig.config[key]
     }
     if (GLOBAL["config"]["first_run"]) {

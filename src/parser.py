@@ -352,7 +352,7 @@ class ConfigParser:
 			return part1, part2
 
 
-os.system("clear")
+# os.system("clear")
 # config_node1 = ConfigParser.load(config_path).to_hyprland()
 # print(type(config_node1))
 # print_hyprland(config_node1, print=True)

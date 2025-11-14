@@ -123,7 +123,7 @@ export async function addItem(type, name, value, comment, position, relative_uui
 	return { type, name, value, comment, position, uuid: newuuid, below }
 }
 
-export async function saveConfig() {
+export async function saveWindowConfig() {
 	try {
 		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["config"]))
 	} catch (err) {

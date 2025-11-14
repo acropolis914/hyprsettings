@@ -70,6 +70,28 @@ body {
   /* filter: saturate(1.1), brightness(1.1), contrast(1.5);*/
 }
 
+html.no-anim *,
+html.no-anim *::before,
+html.no-anim *::after {
+  animation: none !important;
+  transition: none !important;
+}
+html.no-anim * .editor-item,
+html.no-anim *::before .editor-item,
+html.no-anim *::after .editor-item {
+  transition: margin 0 ease !important;
+}
+html.no-anim * .editor-item.config-group,
+html.no-anim *::before .editor-item.config-group,
+html.no-anim *::after .editor-item.config-group {
+  transition: margin 0 ease !important;
+}
+html.no-anim * .sidebar-item,
+html.no-anim *::before .sidebar-item,
+html.no-anim *::after .sidebar-item {
+  transition: none !important;
+}
+
 body {
   display: flex;
   height: 100%;

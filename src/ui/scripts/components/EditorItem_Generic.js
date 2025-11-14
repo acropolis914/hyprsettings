@@ -61,7 +61,7 @@ export class EditorItem_Generic {
 		this.info = findConfigDescription(this.config_position, name)
 		if (this.info) {
 			if (this.info["type"] === "CONFIG_OPTION_INT" || this.info["type"] === "CONFIG_OPTION_FLOAT") {
-				console.log(this.el.dataset.name, "is an int with range", this.info.data)
+				// console.log(this.el.dataset.name, "is an int with range", this.info.data)
 				const [defaultValue, min, max] = this.info["data"].split(",").map(item => item.trim())
 				this.valueEditor = document.createElement("input")
 				this.valueEditor.setAttribute("type", "range")
@@ -71,7 +71,7 @@ export class EditorItem_Generic {
 				this.valueEditor.setAttribute("step", steps)
 			}
 			else {
-				console.log(this.info["type"])
+				// console.log(this.info["type"])
 			}
 		}
 		if (!this.valueEditor) {

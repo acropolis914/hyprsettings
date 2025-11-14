@@ -117,6 +117,23 @@ body {
 	/* filter: saturate(1.1), brightness(1.1), contrast(1.5);*/
 }
 
+html.no-anim *,
+html.no-anim *::before,
+html.no-anim *::after {
+	animation: none !important;
+	transition: none !important;
+
+	.editor-item {
+		transition: margin 0 ease !important;
+		&.config-group {
+			transition: margin 0 ease !important;
+		}
+	}
+	.sidebar-item {
+		transition: none !important;
+	}
+}
+
 body {
 	display: flex;
 	height: 100%;

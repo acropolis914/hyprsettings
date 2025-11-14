@@ -1,4 +1,4 @@
-import { saveConfig, waitFor } from "./utils.js";
+import { saveWindowConfig, waitFor } from "./utils.js";
 import { GLOBAL } from "./GLOBAL.js";
 
 let themeButton = document.getElementById("theme-toggle");
@@ -54,5 +54,5 @@ function changeTheme() {
 	root.classList.remove("dark")
 	root.classList.remove("light")
 	root.classList.add(theme.variant.toLowerCase())
-	saveConfig()
+	saveWindowConfig()
 }
