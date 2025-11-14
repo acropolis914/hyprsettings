@@ -18,7 +18,7 @@ export let tabids = [
 ];
 export const keyNameStarts = [
 	["$", "globals"],
-	["windowrulev2", "win-rules"],
+	["windowrule", "win-rules"],
 	["bind", "keybinds"],
 	["layerrule", "layer-rules"],
 	["workspace", "workspaces", ["workspace_wraparound"]],

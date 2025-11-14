@@ -13,7 +13,11 @@ export class ConfigGroup {
 		}
 		this.group_el.addEventListener("keydown", (e) => {
 			if (e.key == "Enter") {
-				this.group_el.querySelector(".editor-item").focus();
+				e.preventDefault()
+				// this.group_el.querySelector(".editor-item").focus();
+				const firstChild = Array.from(this.group_el.children).find(child => child.classList.contains('editor-item'))
+				firstChild.click()
+				console.log(firstChild)
 				console.log("Group is entered");
 			}
 		});

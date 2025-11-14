@@ -68,7 +68,7 @@ export class EditorItem_Generic {
 				this.valueEditor.setAttribute("min", min)
 				this.valueEditor.setAttribute("max", max)
 				const steps = this.info["type"] === "CONFIG_OPTION_INT" ? 1 : (max - min) / 100
-				this.valueEditor.setAttribute("steps", steps)
+				this.valueEditor.setAttribute("step", steps)
 			}
 			else {
 				console.log(this.info["type"])
