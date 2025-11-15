@@ -15,6 +15,8 @@ onboardingUI.addEventListener("transitionend", () => {
 	}
 });
 
+finishBtn.addEventListener("click", finishOnboarding)
+
 function finishOnboarding() {
 	if (isFading) return; // Prevent multiple clicks during fade
 	isFading = true;

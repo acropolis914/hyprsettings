@@ -17,7 +17,8 @@ export class configRenderer {
         this.group_stack = []
         this.parse(this.json)
         document.querySelectorAll(".editor-item").forEach((element) => {
-            element.addEventListener("click", () => {
+            element.addEventListener("click", (e) => {
+                let target = e.target
                 GLOBAL.setKey("currentView", "main")
                 GLOBAL["mainFocus"][GLOBAL["activeTab"]] = element.dataset.uuid
             })

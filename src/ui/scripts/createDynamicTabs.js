@@ -100,7 +100,7 @@ class ConfigTabs {
 		const sidebarItemTitle = sidebarItem.dataset.label;
 		const configSetTitle = document.querySelector("#config-set-title");
 		configSetTitle.textContent = sidebarItemTitle;
-		GLOBAL["config"]["last_tab"] = id
+		GLOBAL["persistence"]["last_tab"] = id
 		GLOBAL.setKey("currentView", "tabs")
 		GLOBAL["activeTab"] = id
 		saveWindowConfig()
@@ -111,14 +111,16 @@ export async function createDynamicTabs() {
 		// console.log(tab)
 		new ConfigTabs(tab);
 	}
-	if (GLOBAL["config"]["last_tab"]) {
-		let id = GLOBAL["config"]["last_tab"]
+	if (GLOBAL["persistence"]["last_tab"]) {
+		let id = GLOBAL["persistence"]["last_tab"]
 		let selected_tab = document.querySelector(`aside#sidebar>ul>#${id}`)
 		if (selected_tab) {
 			selected_tab.click()
 		}
 		GLOBAL["activeTab"] = id
 
+	} else {
+		console.log(GLOBAL)
 	}
 	// document.querySelectorAll(".sidebar-item").forEach((li) => {
 	//     li.addEventListener("click", () => {

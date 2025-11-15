@@ -27,13 +27,27 @@ async function setupData() {
 async function load_config() {
     await waitFor(() => window.pywebview?.api.init)
     let windowConfig = await window.pywebview.api.read_window_config()
+    if (windowConfig["configuration-error"]) {
+        console.log("Configuration error: ", windowConfig["configuration-error"])
+        return
+    }
+
     window.themes = windowConfig.theme //just to globally access it for setupTheme
     GLOBAL["config"] = {}
+    GLOBAL["persistence"] = {}
     for (let key in windowConfig.config) {
         GLOBAL["config"][key] = windowConfig.config[key]
     }
-    if (GLOBAL["config"]["first_run"]) {
+    if (windowConfig["persistence"]) {
+        for (let key in windowConfig.persistence) {
+            GLOBAL["persistence"][key] = windowConfig.persistence[key]
+        }
+    }
+
+    if (GLOBAL["persistence"]["first_run"]) {
         document.getElementById("onboarding").classList.remove("hidden")
+    } else {
+        GLOBAL["persistence"]["first_run"] = false
     }
 }
 

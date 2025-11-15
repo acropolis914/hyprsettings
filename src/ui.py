@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from packaging.version import Version
 from pathlib import Path
 import subprocess
 import mimetypes
@@ -14,6 +15,7 @@ from parser import ConfigParser, Node, makeUUID, print_hyprland
 
 traceback.install(show_locals=True)
 thisfile_path = Path(__file__).parent.resolve()
+CURRENT_VERSION = "0.1.7"
 
 
 def on_loaded(window):
@@ -43,7 +45,31 @@ class Api:
 		return makeUUID(length)
 
 	def read_window_config(self):
-		
+		def version_migration():
+			file_info = self.window_config["file_info"]
+			if Version(file_info["version"]) < Version(CURRENT_VERSION):
+				print(
+					f"Config version {file_info['version']} is older than current {CURRENT_VERSION}. Updating version, moving keys."
+				)
+			file_info["version"] = CURRENT_VERSION
+			persistence = self.window_config.get("persistence")
+			if persistence is None:
+				self.window_config["persistence"] = toml.table()
+			try:
+				# self.window_config["config"]["last_tab"]
+				self.window_config["persistence"]["last_tab"] = self.window_config["config"]["last_tab"]
+				self.window_config["config"].pop("last_tab")
+				self.window_config = self.window_config
+			except toml.exceptions.TOMLKitError as e:
+				print(e)
+			try:
+				# self.window_config["config"]["last_tab"]
+				self.window_config["persistence"]["first_run"] = self.window_config["config"]["first_run"]
+				self.window_config["config"].pop("first_run")
+				self.window_config = self.window_config
+			except toml.exceptions.TOMLKitError as e:
+				print(e)
+
 		def add_missing_keys():
 			defaults = {"animations": True}
 			config_lines = self.window_config["config"]
@@ -64,27 +90,33 @@ class Api:
 				default_config_text = default_config.read()
 			self.window_config = toml.parse(default_config_text)
 			self.window_config["config"]["font"] = temporary_font if temporary_font else "Monospace"
-			add_missing_keys()
+			# add_missing_keys()
+			version_migration()
 			with window_config_path.open("w") as config_file:
 				config_file.write(default_config_text)
-
 			return self.window_config
 		else:
 			with window_config_path.open("r", encoding="utf-8") as config_file:
-				config = toml.parse(config_file.read())
+				config = None
+				try:
+					config = toml.parse(config_file.read())
+				except toml.exceptions.TOMLKitError as e:
+					print(e)
+					return {"configuration-error": str(e)}
 				self.window_config = config
-				add_missing_keys()
+				version_migration()
 				return self.window_config
 
-	def save_window_config(self, json_fromjs):
-		print("Called save window config.")
+	def save_window_config(self,json_fromjs, part= "config"):
+		print(f"Called save window {part}")
 		config_from_json = json.loads(json_fromjs)
 		for key in config_from_json:
-			self.window_config["config"][key] = config_from_json[key]
+			self.window_config[part][key] = config_from_json[key]
 		window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"
 		with open(window_config_path, "w", encoding="utf-8") as config_file:
 			config_tosave = toml.dumps(self.window_config)
 			config_file.write(config_tosave)
+
 
 	def list_fonts(self, mono=False, nerd=False):
 		cmd = "fc-list --format='%{family}\n'"
