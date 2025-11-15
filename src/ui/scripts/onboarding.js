@@ -20,7 +20,7 @@ function finishOnboarding() {
 	isFading = true;
 	console.log("finish onboarding");
 	onboardingUI.style.opacity = 0;
-	GLOBAL["config"]["first_run"] = false;
+	GLOBAL["persistence"]["first_run"] = false;
 	saveWindowConfig();
 }
 
