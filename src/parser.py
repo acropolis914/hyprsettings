@@ -11,9 +11,17 @@ from rich.console import Console
 import rich
 import rich.traceback
 import re
-
+import builtins
 
 rich.traceback.install(show_locals=True)
+
+
+_original_print = builtins.print
+
+
+def print(*args, **kwargs):
+	_original_print("[parser]", *args, **kwargs)
+
 
 config_path = Path.home() / ".config" / "hypr" / "hyprland.conf"
 console = Console()
@@ -190,6 +198,7 @@ class ConfigParser:
 			self.stack[-1].addChildren(new_file_node)
 			self.stack.append(new_file_node)
 			sources = []
+			globals = {}
 			for line_index, line_content in enumerate(config_file, start=1):
 				# for line_content in config_file:
 				check: str = self.sanitize(line_content)
@@ -290,10 +299,20 @@ class ConfigParser:
 						disabled=False,
 						line_number=line_index,
 					)
+					if name.startswith("$"):
+						globals[name] = value
 					self.stack[-1].addChildren(node)
 
 				if check.startswith("source"):
 					_, file_path = map(str.strip, line.split("=", 1))
+
+					if "$" in file_path:
+						print(f"Source {file_path} uses globals")
+						for key, val in globals.items():
+							if key in file_path:
+								file_path = file_path.replace(key, val)
+								break
+						print(f"Sourcing {file_path} based on globals.")
 
 					def glob_path(path):
 						path_str = path.rstrip("*")
@@ -332,7 +351,7 @@ class ConfigParser:
 					try:
 						self.parse_config(source)
 					except:
-						print("File not found. Skipping")
+						print(f"File [{source}] not found. Skipping")
 
 	def sanitize(self, string: str) -> str:
 		no_comments = string.split("#", 1)[0]

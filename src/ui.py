@@ -3,6 +3,7 @@ from packaging.version import Version
 from pathlib import Path
 import subprocess
 import mimetypes
+import builtins
 import json
 import os
 
@@ -16,6 +17,12 @@ from parser import ConfigParser, Node, makeUUID, print_hyprland
 traceback.install(show_locals=True)
 thisfile_path = Path(__file__).parent.resolve()
 CURRENT_VERSION = "0.1.7"
+
+_original_print = builtins.print
+
+
+def print(*args, **kwargs):
+	_original_print("[ui-backend]", *args, **kwargs)
 
 
 def on_loaded(window):
@@ -107,7 +114,7 @@ class Api:
 				version_migration()
 				return self.window_config
 
-	def save_window_config(self,json_fromjs, part= "config"):
+	def save_window_config(self, json_fromjs, part="config"):
 		print(f"Called save window {part}")
 		config_from_json = json.loads(json_fromjs)
 		for key in config_from_json:
@@ -116,7 +123,6 @@ class Api:
 		with open(window_config_path, "w", encoding="utf-8") as config_file:
 			config_tosave = toml.dumps(self.window_config)
 			config_file.write(config_tosave)
-
 
 	def list_fonts(self, mono=False, nerd=False):
 		cmd = "fc-list --format='%{family}\n'"
