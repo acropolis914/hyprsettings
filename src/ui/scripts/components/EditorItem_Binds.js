@@ -3,6 +3,7 @@ import { ContextMenu } from "./contextMenu.js";
 import { addItem, debounce, deleteKey, saveKey } from "../utils.js";
 import { GLOBAL } from "../GLOBAL.js";
 import { EditorItem_Comments } from "./EditorItem_Comments.js";
+// import TomSelect from "../../jslib/tom-select.complete.min"
 
 export class EditorItem_Binds {
 	constructor(json, disabled = false) {
@@ -213,7 +214,7 @@ export class EditorItem_Binds {
 		let paramString = this.el.querySelector(".params").value.trim();
 		let preview_el = this.el.querySelector(".editor-item-preview");
 		let comment = this.comment_el.value ? `# ${this.comment_el.value}` : "";
-		preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span><i>${comment}</i>`;
+		preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`;
 		this.preview = `${bindflagString} = ${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString} ${comment}`;
 		this.el.dataset.name = bindflagString;
 		this.el.dataset.value = `${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}`;

@@ -3,6 +3,7 @@ import { addItem, debounce, deleteKey, saveKey } from "../utils.js";
 import { GLOBAL } from "../GLOBAL.js";
 import { findAdjacentConfigKeys, findConfigDescription } from "../../hyprland-specific/hyprland_config_descriptions.js";
 import { EditorItem_Comments } from "./EditorItem_Comments.js";
+import { SliderModal } from "./keyEditor_Slider.js";
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
 //         this.inital_load = true
@@ -30,7 +31,7 @@ export class EditorItem_Generic {
 		let value = json["value"];
 		let comment = json["comment"];
 		let position = json["position"];
-		this.saveDebounced = debounce(() => this.save(), 250);
+		this.saveDebounced = debounce(() => this.save(), 0);
 		const template = document.getElementById("generic-template");
 		this.el = template.content.firstElementChild.cloneNode(true);
 		this.el.classList.add("editor-item");
@@ -62,16 +63,14 @@ export class EditorItem_Generic {
 		if (this.info) {
 			if (this.info["type"] === "CONFIG_OPTION_INT" || this.info["type"] === "CONFIG_OPTION_FLOAT") {
 				// console.log(this.el.dataset.name, "is an int with range", this.info.data)
-				const [defaultValue, min, max] = this.info["data"].split(",").map(item => item.trim())
-				this.valueEditor = document.createElement("input")
-				this.valueEditor.setAttribute("type", "range")
-				this.valueEditor.setAttribute("min", min)
-				this.valueEditor.setAttribute("max", max)
-				const steps = this.info["type"] === "CONFIG_OPTION_INT" ? 1 : (max - min) / 100
-				this.valueEditor.setAttribute("step", steps)
-			}
-			else {
-				// console.log(this.info["type"])
+				const [defaultValue, min, max] = this.info["data"].split(",").map(item => item.trim()).map(Number)
+				// this.valueEditor = document.createElement("input")
+				// this.valueEditor.setAttribute("type", "range")
+				// this.valueEditor.setAttribute("min", min)
+				// this.valueEditor.setAttribute("max", max)
+				// const steps = this.info["type"] === "CONFIG_OPTION_INT" ? 1 : (max - min) / 100
+				// this.valueEditor.setAttribute("step", steps)
+				this.valueEditor = new SliderModal(min, max, this.info["type"] === "CONFIG_OPTION_INT" ? false : true).el
 			}
 		}
 		if (!this.valueEditor) {
@@ -84,8 +83,6 @@ export class EditorItem_Generic {
 			}
 
 		}
-
-
 
 		if (this.info) {
 			let title = JSON.stringify(this.info["description"])
@@ -115,7 +112,7 @@ export class EditorItem_Generic {
 		]
 
 		let contextMenuItem_reset = { label: "Reset to Default", icon: "", action: () => this.valueReset() }
-		if (this.info) {
+		if (this.info) {//cause if there is an info, there is also a default value
 			contextMenuItems.splice(4, 0, contextMenuItem_reset)
 		}
 
@@ -132,7 +129,7 @@ export class EditorItem_Generic {
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
 		let value = this.valueEditor.value;
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : "";
-		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i>${comment}<i>`;
+		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`;
 		if (!this.inital_load) {
 			this.saveDebounced();
 		}

@@ -6,8 +6,9 @@ let settingsEl = document.querySelector(".config-set#settings")
 export async function renderSettings() {
 	await waitFor(() => window.pywebview?.api?.save_window_config)
 	settingsEl = document.querySelector(".config-set#settings")
-	createLineCommentsVisibilitySetting()
 	createHeaderCommentsVisibilitySetting()
+	createLineCommentsVisibilitySetting()
+	createItemPreviewCommentVisibilitySetting()
 	createSidebarIconsVisibilitySetting()
 	createAnimationsToggleSetting()
 }
@@ -135,6 +136,28 @@ function createHeaderCommentsVisibilitySetting() {
 		"Show header comments",
 		"show_header_comments",
 		false,
+		{ onCheck, onUncheck },
+		tooltip
+	)
+}
+
+function createItemPreviewCommentVisibilitySetting() {
+	function onCheck() {
+		document.querySelectorAll("i.preview-comment").forEach(i =>
+			i.classList.remove("settings-hidden")
+		)
+	}
+	function onUncheck() {
+		document.querySelectorAll("i.preview-comment").forEach(i =>
+			i.classList.add("settings-hidden")
+		)
+	}
+
+	const tooltip = "Shows or hides preview comments on config line previews."
+	new CheckBoxItem(
+		"Show config line preview comments",
+		"show_config_line_comments",
+		true,
 		{ onCheck, onUncheck },
 		tooltip
 	)

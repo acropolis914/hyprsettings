@@ -9,6 +9,7 @@ import { setupTheme } from "./setupTheme.js"
 import "./documentListeners.js"
 import "./onboarding.js"
 import "./testingScreen.js"
+import "./components/keyEditor_Slider.js"
 import { GLOBAL } from "./GLOBAL.js"
 import { jsViewerInit } from "./components/jsViewer.js"
 window.Global = GLOBAL
