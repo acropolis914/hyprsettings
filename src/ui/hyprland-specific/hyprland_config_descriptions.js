@@ -1249,7 +1249,7 @@ export const config_descriptions = [
     "name": "vrr",
     "path": "misc",
     "type": "CONFIG_OPTION_INT",
-    "data": ".value = 0, .min = 0, .max = 3",
+    "data": "0,0,3",
     "description": "\tcontrols the VRR (Adaptive Sync) of your monitors. 0 - off, 1 - on, 2 - fullscreen only, 3 - fullscreen with game or video content type [0/1/2/3]"
   },
   {
@@ -1599,7 +1599,7 @@ export const config_descriptions = [
     "name": "direct_scanout",
     "path": "render",
     "type": "CONFIG_OPTION_INT",
-    "data": ".value = 0, .min = 0, .max = 2",
+    "data": "0, 0, 2",
     "description": "Enables direct scanout. Direct scanout attempts to reduce lag when there is only one fullscreen application on a screen (e.g. game). It is also  recommended to set this to false if the fullscreen application shows graphical glitches. 0 - off, 1 - on, 2 - auto (on with content type 'game')"
   },
   {
@@ -1627,7 +1627,7 @@ export const config_descriptions = [
     "name": "cm_fs_passthrough",
     "path": "render",
     "type": "CONFIG_OPTION_INT",
-    "data": ".value = 2, .min = 0, .max = 2",
+    "data": "2, 0, 2",
     "description": "Passthrough color settings for fullscreen apps when possible"
   },
   {
@@ -1648,7 +1648,7 @@ export const config_descriptions = [
     "name": "cm_auto_hdr",
     "path": "render",
     "type": "CONFIG_OPTION_INT",
-    "data": ".value = 1, .min = 0, .max = 2",
+    "data": "1,0, 2",
     "description": "Auto-switch to hdr mode when fullscreen app is in hdr, 0 - off, 1 - hdr, 2 - hdredid (cm_fs_passthrough can switch to hdr even when this setting is off)"
   },
   {
@@ -1683,7 +1683,7 @@ export const config_descriptions = [
     "name": "no_break_fs_vrr",
     "path": "cursor",
     "type": "CONFIG_OPTION_INT",
-    "data": ".value = 2, .min = 0, .max = 2",
+    "data": "2,0,2",
     "description": "disables scheduling new frames on cursor movement for fullscreen apps with VRR enabled to avoid framerate spikes (may require no_hardware_cursors = true)  0 - off, 1 - on, 2 - auto (on with content type 'game')"
   },
   {
@@ -2136,7 +2136,7 @@ export function findConfigDescription(path, name) {
 }
 
 export function findAdjacentConfigKeys(path, exclude = []) {
-  let configKeys = config_descriptions.filter(item => item.path === path).filter(item=> !exclude.includes(item.name))
+  let configKeys = config_descriptions.filter(item => item.path === path).filter(item => !exclude.includes(item.name))
   return configKeys
 }
 

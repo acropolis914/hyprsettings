@@ -4,6 +4,8 @@ import { GLOBAL } from "../GLOBAL.js";
 import { findAdjacentConfigKeys, findConfigDescription } from "../../hyprland-specific/hyprland_config_descriptions.js";
 import { EditorItem_Comments } from "./EditorItem_Comments.js";
 import { SliderModal } from "./keyEditor_Slider.js";
+import { parseHyprColor } from "../../hyprland-specific/colorparser.js";
+
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
 //         this.inital_load = true
@@ -31,7 +33,7 @@ export class EditorItem_Generic {
 		let value = json["value"];
 		let comment = json["comment"];
 		let position = json["position"];
-		this.saveDebounced = debounce(() => this.save(), 0);
+		this.saveDebounced = debounce(() => this.save(), 15);
 		const template = document.getElementById("generic-template");
 		this.el = template.content.firstElementChild.cloneNode(true);
 		this.el.classList.add("editor-item");
@@ -64,23 +66,34 @@ export class EditorItem_Generic {
 			if (this.info["type"] === "CONFIG_OPTION_INT" || this.info["type"] === "CONFIG_OPTION_FLOAT") {
 				// console.log(this.el.dataset.name, "is an int with range", this.info.data)
 				const [defaultValue, min, max] = this.info["data"].split(",").map(item => item.trim()).map(Number)
-				// this.valueEditor = document.createElement("input")
-				// this.valueEditor.setAttribute("type", "range")
-				// this.valueEditor.setAttribute("min", min)
-				// this.valueEditor.setAttribute("max", max)
-				// const steps = this.info["type"] === "CONFIG_OPTION_INT" ? 1 : (max - min) / 100
-				// this.valueEditor.setAttribute("step", steps)
+				let data = this.info["data"]
+				// console.log({ min, max, data })
 				this.valueEditor = new SliderModal(min, max, this.info["type"] === "CONFIG_OPTION_INT" ? false : true).el
+				this.valueEditor.value = value;
+			}
+			else if (this.info["type"] === "CONFIG_OPTION_COLOR") {
+				try {
+
+					this.valueEditor = document.createElement("input")
+					this.valueEditor.setAttribute("type", "text")
+					this.valueEditor.setAttribute("data-coloris", "")
+					if (parseInt(value)) {
+						value = Number(value)
+					}
+					this.valueEditor.value = parseHyprColor(value)
+				} catch (E) {
+					this.valueEditor = null
+				}
 			}
 		}
 		if (!this.valueEditor) {
-
 			this.valueEditor = document.createElement("textarea");
 			this.valueEditor = document.createElement("textarea");
 			this.valueEditor.rows = 1; this.valueEditor.rows = 1;
 			if (this.info) {
 				this.valueEditor.dataset.defaultData = this.info["data"]
 			}
+			this.valueEditor.value = value;
 
 		}
 
@@ -98,7 +111,6 @@ export class EditorItem_Generic {
 
 		this.genericEditor_el.appendChild(this.valueEditor);
 		this.keyEditor.value = name;
-		this.valueEditor.value = value;
 		this.commentArea = this.el.querySelector(".comment");
 		this.commentArea.value = this.el.dataset.comment;
 
@@ -194,9 +206,11 @@ export class EditorItem_Generic {
 				const existingSiblingKeys = Array.from(this.el.parentNode.children)
 					.filter(el => el.classList.contains("editor-item-generic"))
 					.map(el => el.dataset.name)
-				// console.log(existingKeys)
+
+				// console.log(existingSiblingKeys)
 				let availableKeys = findAdjacentConfigKeys(this.config_position, existingSiblingKeys) //TODO: Make a selector for this 
-				let randomKey = availableKeys[Math.floor(Math.random() * availableKeys.length)]
+				// console.log(availableKeys)
+				let randomKey = availableKeys[Math.round(Math.random() * availableKeys.length)]
 				let name
 				let value
 				if (randomKey) {
@@ -207,9 +221,12 @@ export class EditorItem_Generic {
 						value = randomKey["data"]
 					}
 				}
-
-				if (!name) {
+				let allowed_dupes = ["animation", "bezier"]
+				if (!name && allowed_dupes.includes(this.el.dataset.name)) {//&& (!this.el.parent.classList.contains("config-group") || allowed_dupes.includes(this.el.dataset.name)
 					name = this.el.dataset.name
+				} else {
+					let thisname = this.el.dataset.name
+					console.log({ allowed_dupes, thisname })
 				}
 				let newGenericItem = await addItem("KEY", name, value, "", this.el.dataset.position, this.el.dataset.uuid, below)
 				let newGenericElement = new EditorItem_Generic({ name: newGenericItem["name"], uuid: newGenericItem["uuid"], value: newGenericItem["value"], comment: newGenericItem["comment"], position: this.el.dataset.position })
@@ -261,3 +278,4 @@ export class EditorItem_Generic {
 		saveKey(type, name, uuid, position, value, comment, disabled);
 	}
 }
+

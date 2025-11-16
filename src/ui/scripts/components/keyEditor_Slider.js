@@ -15,11 +15,10 @@ export class SliderModal {
 
 		// this.sliderEl = document.createElement("input")
 		// this.sliderEl.setAttribute("type", range)
-		let divisor = (max - min) > 10 ? 10000 : 1000
+		let divisor = (max - min) * 2
 		let steps = float ? ((max - min) / divisor) : 1
 		this.slider = noUiSlider.create(this.sliderEl, {
 			start: 0,
-			step: steps,
 			range: {
 				'min': min,
 				'max': max
@@ -32,22 +31,35 @@ export class SliderModal {
 		this.el.appendChild(this.textEditor)
 
 		const debouncedUpdateSlider = debounce(() => this.updateSlider(), 300);
+		const debouncedUpdateTextValue = debounce(() => this.updateSlider(), 50);
 
-		this.textEditor.addEventListener("change", () => {
+		let updating = false
+		this.textEditor.addEventListener("input", () => {
+			if (updating) return;
+			updating = true;
+			this.updateSlider()
+			updating = false;
 			this.updateSlider()
 			// debouncedUpdateSlider(); // Call the debounced version of updateSlider
 			this._emit(); // Continue emitting the event as usual
 			this._notifyInputListeners()
 		});
+		this.textEditor.addEventListener("keydown", (e) => {
+			if (e.key === "Enter") {
+				e.stopPropagation()
+			}
+		});
 		// this.textEditor.addEventListener("focus", () => {
 		// 	this.textEditor.select();
 		// });
 		this.sliderEl.noUiSlider.on("update", () => {
+			if (updating) return;
 			if (!float) {
 				this.textEditor.value = Math.round(this.sliderEl.noUiSlider.get())
 			} else {
 				this.textEditor.value = this.sliderEl.noUiSlider.get()
 			}
+			updating = false;
 			this._emit()
 			this._notifyInputListeners()
 		});
@@ -84,6 +96,10 @@ export class SliderModal {
 
 	updateSlider() {
 		this.sliderEl.noUiSlider.set(this.textEditor.value)
+	}
+
+	updateTextArea() {
+		this.textEditor.value = this.sliderEl.noUiSlider.get()
 	}
 
 	replaceElement(element) {

@@ -85,7 +85,7 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 	window.jsViewer.data = GLOBAL["data"];
 
 	if (!GLOBAL["config"].dryrun) {
-		console.log(`Node ${uuid} saved:`, node);
+		// console.log(`Node ${uuid} saved:`, node);
 		window.pywebview.api.save_config(JSON.stringify(GLOBAL["data"]));
 	} else {
 		console.log(`Dryrun save ${uuid}:`, node);
@@ -132,7 +132,7 @@ export function makeUUID(length = 8) {
 export async function saveWindowConfig() {
 	try {
 		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["config"]), "config")
-		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["persistence"]),  "persistence")
+		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["persistence"]), "persistence")
 	} catch (err) {
 		console.error("Failed to save config:", err)
 	}

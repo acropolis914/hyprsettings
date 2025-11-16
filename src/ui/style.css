@@ -440,7 +440,9 @@ h1#config-set-title {
   box-sizing: border-box;
 }
 .editor-item .keybind-editor > textarea,
-.editor-item .generic-editor > textarea {
+.editor-item .keybind-editor input,
+.editor-item .generic-editor > textarea,
+.editor-item .generic-editor input {
   padding: 2px 2px;
   border: 0;
   outline: none;

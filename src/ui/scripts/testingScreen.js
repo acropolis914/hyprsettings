@@ -3,12 +3,13 @@ let open = false
 document.addEventListener('keydown', (event) => {
 	if (event.key === 'F3') {
 		event.preventDefault(); // stop browser's built-in search
-		testingScreen.style.opacity = open ? 0 : 1
 		// setInterval(()=>{
 		// 	testingScreen.style.opacity += open ? -0.001 : +0.001
 		// }, 1)
 		if (!open) {
 			testingScreen.classList.remove("hidden")
+		} else {
+		testingScreen.classList.add("hidden")
 		}
 		open = !open
 

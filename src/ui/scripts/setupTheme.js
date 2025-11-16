@@ -26,9 +26,11 @@ export async function setupTheme() {
 			GLOBAL["config"]["current_theme"] = theme.name
 		}
 	});
+	updateColoris()
 }
 
-themeButton.addEventListener("click", () => {
+themeButton.addEventListener("click", (e) => {
+	e.stopPropagation()
 	changeTheme()
 });
 
@@ -55,4 +57,60 @@ function changeTheme() {
 	root.classList.remove("light")
 	root.classList.add(theme.variant.toLowerCase())
 	saveWindowConfig()
+	updateColoris()
+}
+
+function updateColoris() {
+	Coloris({// bind picker to THIS input only
+		theme: 'default',
+		alpha: true,        // enable opacity for RGBA
+		forceAlpha: true,
+		format: 'rgb',
+		swatches: sortSwatchesByValue(getSwatch()),     // output rgba if alpha enabled
+	});
+}
+
+
+export function getSwatch() {
+	const themeName = GLOBAL.config.current_theme;
+	const currentTheme = window.themes.find(t => t.name === themeName);
+	const colors = [];
+	const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
+	Object.values(currentTheme).forEach(value => {
+		if (typeof value === "string" && hexRegex.test(value)) {
+			colors.push(value);
+		}
+	});
+
+	return colors;
+	// return currentTheme;
+}
+
+
+
+
+function hexToRgb(hex) {
+	hex = hex.replace("#", "");
+	if (hex.length === 3) {
+		hex = hex.split("").map(c => c + c).join("");
+	}
+	const bigint = parseInt(hex, 16);
+	const r = (bigint >> 16) & 255;
+	const g = (bigint >> 8) & 255;
+	const b = bigint & 255;
+	return [r, g, b];
+}
+
+function luminance([r, g, b]) {
+	// relative luminance formula
+	const a = [r, g, b].map(v => {
+		v /= 255;
+		return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+	});
+	return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+}
+
+export function sortSwatchesByValue(colors) {
+	return colors.slice().sort((a, b) => luminance(hexToRgb(a)) - luminance(hexToRgb(b)));
 }

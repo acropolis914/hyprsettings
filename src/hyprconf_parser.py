@@ -122,3 +122,13 @@ with open("hyprland_config_descriptions.js", "w+", encoding="utf-8") as descript
 # 	)
 # )
 # print(tomlkit.dumps({'config': json.loads(jsonstring)}))
+
+
+
+# then fix the data on the outpit js
+#     "name": "vrr",
+#     "path": "misc",
+#     "type": "CONFIG_OPTION_INT",
+#     "data": ".value = 0, .min = 0, .max = 3",
+#     "description": "\tcontrols the VRR (Adaptive Sync) of your monitors. 0 - off, 1 - on, 2 - fullscreen only, 3 - fullscreen with game or video content type [0/1/2/3]"
+#   },

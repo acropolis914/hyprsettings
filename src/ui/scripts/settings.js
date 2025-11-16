@@ -185,6 +185,28 @@ function createSidebarIconsVisibilitySetting() {
 	)
 }
 
+function createCompactViewSetting() {
+	function onCheck() {
+		document.querySelectorAll(".editor-item").forEach(i =>
+			i.classList.remove("compact")
+		)
+	}
+	function onUncheck() {
+		document.querySelectorAll(".editor-item").forEach(i =>
+			i.classList.add("compact")
+		)
+	}
+
+	const tooltip = "Shows or hides sidebar icons"
+	new CheckBoxItem(
+		"Compact view",
+		"compact",
+		true,
+		{ onCheck, onUncheck },
+		tooltip
+	)
+}
+
 
 function createAnimationsToggleSetting() {
 	function onCheck() {
@@ -195,7 +217,6 @@ function createAnimationsToggleSetting() {
 	}
 
 	const tooltip = "Shows or hides sidebar icons"
-	console.log("bornick")
 	new CheckBoxItem(
 		"Enable Animations",
 		"ui_animations",

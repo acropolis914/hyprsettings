@@ -5,7 +5,7 @@ import { waitFor } from "./utils.js"
 import { configRenderer } from "./configRenderer.js"
 import { renderSettings } from "./settings.js"
 import { createDynamicTabs } from "./createDynamicTabs.js"
-import { setupTheme } from "./setupTheme.js"
+import { getSwatch, setupTheme, sortSwatchesByValue } from "./setupTheme.js"
 import "./documentListeners.js"
 import "./onboarding.js"
 import "./testingScreen.js"
@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     createDynamicTabs()
     await setupData()
     renderSettings()
+
 })
 
 window.addEventListener("error", e => {

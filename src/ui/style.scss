@@ -513,14 +513,12 @@ h1#config-set-title {
 			height: 100% !important;
 			box-sizing: border-box;
 		}
-		> textarea {
+		> textarea,
+		input {
 			padding: 2px 2px;
 			border: 0;
 			outline: none;
 			resize: none;
-		}
-		&:has(.generic-editor-slidermodal) {
-			
 		}
 	}
 
@@ -638,7 +636,6 @@ h1#config-set-title {
 		}
 	}
 }
-
 
 /* --- Line Comment Item (Specific) ---*/
 .editor-item:has(> .editor-item-comment) {
@@ -1128,4 +1125,3 @@ span {
 	outline: 2px solid var(--accent-color) !important;
 	outline-offset: 2px !important;
 }
-
