@@ -19,7 +19,7 @@ node_modules
 .vscode
 setupscript.sh
 .venv
-
+.idea/
 # Nix
 result
 result-*
