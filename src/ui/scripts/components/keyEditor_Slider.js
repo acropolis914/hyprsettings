@@ -1,16 +1,16 @@
-import noUiSlider from "../../jslib/nouislider.min.mjs"
-import { debounce } from "../utils.js"
+import noUiSlider from '../jslib/nouislider.min.mjs'
+import { debounce } from '../utils.js'
 // import wNumb from "../../jslib/wNumb.min.js"
 // import "../../jslib/nouislider.css"
 export class SliderModal {
 	constructor(min, max, float = true) {
 		this._listeners = []
 		this.float = float
-		this.el = document.createElement("div")
-		this.el.classList.add("generic-editor-slidermodal")
-		this.sliderEl = document.createElement("div")
-		this.sliderEl.classList.add("slider-styled")
-		this.sliderEl.id = ("slider-square")
+		this.el = document.createElement('div')
+		this.el.classList.add('generic-editor-slidermodal')
+		this.sliderEl = document.createElement('div')
+		this.sliderEl.classList.add('slider-styled')
+		this.sliderEl.id = ('slider-square')
 		this.el.appendChild(this.sliderEl)
 
 		// this.sliderEl = document.createElement("input")
@@ -25,61 +25,63 @@ export class SliderModal {
 			}
 		})
 
-		this.textEditor = document.createElement("input")
-		this.textEditor.setAttribute("type", "text")
-		this.textEditor.setAttribute("size", float ? "5" : "3")
+		this.textEditor = document.createElement('input')
+		this.textEditor.setAttribute('type', 'text')
+		this.textEditor.setAttribute('size', float ? '5' : '3')
 		this.el.appendChild(this.textEditor)
 
-		const debouncedUpdateSlider = debounce(() => this.updateSlider(), 300);
-		const debouncedUpdateTextValue = debounce(() => this.updateSlider(), 50);
+		const debouncedUpdateSlider = debounce(() => this.updateSlider(), 300)
+		const debouncedUpdateTextValue = debounce(() => this.updateSlider(), 50)
 
 		let updating = false
-		this.textEditor.addEventListener("input", () => {
-			if (updating) return;
-			updating = true;
+		this.textEditor.addEventListener('input', () => {
+			if (updating) return
+			updating = true
 			this.updateSlider()
-			updating = false;
+			updating = false
 			this.updateSlider()
 			// debouncedUpdateSlider(); // Call the debounced version of updateSlider
-			this._emit(); // Continue emitting the event as usual
+			this._emit() // Continue emitting the event as usual
 			this._notifyInputListeners()
-		});
-		this.textEditor.addEventListener("keydown", (e) => {
-			if (e.key === "Enter") {
+		})
+		this.textEditor.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') {
 				e.stopPropagation()
 			}
-		});
+		})
 		// this.textEditor.addEventListener("focus", () => {
 		// 	this.textEditor.select();
 		// });
-		this.sliderEl.noUiSlider.on("update", () => {
-			if (updating) return;
+		this.sliderEl.noUiSlider.on('update', () => {
+			if (updating) return
 			if (!float) {
 				this.textEditor.value = Math.round(this.sliderEl.noUiSlider.get())
 			} else {
 				this.textEditor.value = this.sliderEl.noUiSlider.get()
 			}
-			updating = false;
+			updating = false
 			this._emit()
 			this._notifyInputListeners()
-		});
+		})
 
-		Object.defineProperty(this.el, "value", {
+		Object.defineProperty(this.el, 'value', {
 			get: () => this.value,
 			set: (val) => this.value = val
 		})
 
 	}
+
 	_notifyInputListeners() {
-		const inputEvent = new Event("input", { bubbles: true });
-		this.el.dispatchEvent(inputEvent);
+		const inputEvent = new Event('input', { bubbles: true })
+		this.el.dispatchEvent(inputEvent)
 	}
 
 	_emit() {
 		for (const fn of this._listeners) {
-			fn(this.value);
+			fn(this.value)
 		}
 	}
+
 	onChange(fn) {
 		this._listeners.push(fn)
 	}
@@ -104,16 +106,16 @@ export class SliderModal {
 
 	replaceElement(element) {
 		const target = element
-		if (!target) return;
+		if (!target) return
 		console.log(target)
 		target.replaceWith(this.el)
 	}
 }
 
-document.addEventListener("DOMContentLoaded", (e) => {
-	let testingScreen = document.querySelector(".testing-screen>#main-part")
-	let slider = new SliderModal(0, 10, false)
-	slider.el.style.width = "500px"
-	testingScreen.appendChild(slider.el)
-	slider.onChange(() => { console.log(slider.value) })
-})
+// document.addEventListener("DOMContentLoaded", (e) => {
+// 	let testingScreen = document.querySelector(".testing-screen>#main-part")
+// 	let slider = new SliderModal(0, 10, false)
+// 	slider.el.style.width = "500px"
+// 	testingScreen.appendChild(slider.el)
+// 	slider.onChange(() => { console.log(slider.value) })
+// })

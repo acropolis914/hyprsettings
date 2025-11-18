@@ -131,9 +131,9 @@ export function makeUUID(length = 8) {
 
 export async function saveWindowConfig() {
 	// capture caller from stack
-	const stack = new Error().stack.split("\n")
-	const caller = stack[2]?.trim() || "(unknown caller)"
-	console.log("saveWindowConfig called by:", caller)
+	// const stack = new Error().stack.split("\n")
+	// const caller = stack[2]?.trim() || "(unknown caller)"
+	// console.log("saveWindowConfig called by:", caller)
 
 	try {
 		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL["config"]), "config")

@@ -1,42 +1,42 @@
-import { saveWindowConfig } from "./utils.js";
-import { GLOBAL } from "./GLOBAL.js";
+import { saveWindowConfig } from '../utils.js'
+import { GLOBAL } from '../GLOBAL.js'
 
-const onboardingUI = document.getElementById("onboarding");
-const finishBtn = document.getElementById("onboarding-finish");
-let isFading = false;
+const onboardingUI = document.getElementById('onboarding')
+const finishBtn = document.getElementById('onboarding-finish')
+let isFading = false
 
-finishBtn.addEventListener("click", finishOnboarding);
+finishBtn.addEventListener('click', finishOnboarding)
 
-onboardingUI.addEventListener("transitionend", () => {
-	const opacity = parseFloat(getComputedStyle(onboardingUI).opacity);
+onboardingUI.addEventListener('transitionend', () => {
+	const opacity = parseFloat(getComputedStyle(onboardingUI).opacity)
 	if (opacity === 0 && isFading) {
-		isFading = false;
-		onboardingUI.classList.add("hidden");
+		isFading = false
+		onboardingUI.classList.add('hidden')
 	}
-});
+})
 
-finishBtn.addEventListener("click", finishOnboarding)
+finishBtn.addEventListener('click', finishOnboarding)
 
 function finishOnboarding() {
-	if (isFading) return; // Prevent multiple clicks during fade
-	isFading = true;
-	console.log("finish onboarding");
-	onboardingUI.style.opacity = 0;
-	GLOBAL["persistence"]["first_run"] = false;
-	saveWindowConfig();
+	if (isFading) return // Prevent multiple clicks during fade
+	isFading = true
+	console.log('finish onboarding')
+	onboardingUI.style.opacity = 0
+	GLOBAL['persistence']['first_run'] = false
+	saveWindowConfig()
 }
 
 // Explicitly show/hide with F1
-document.addEventListener("keydown", (event) => {
-	if (event.key === "F1") {
-		event.preventDefault();
+document.addEventListener('keydown', (event) => {
+	if (event.key === 'F1') {
+		event.preventDefault()
 
-		const isHidden = onboardingUI.classList.contains("hidden");
+		const isHidden = onboardingUI.classList.contains('hidden')
 		if (isHidden) {
-			onboardingUI.classList.remove("hidden");
-			onboardingUI.style.opacity = 1;
+			onboardingUI.classList.remove('hidden')
+			onboardingUI.style.opacity = 1
 		} else {
-			finishOnboarding();
+			finishOnboarding()
 		}
 	}
-});
+})

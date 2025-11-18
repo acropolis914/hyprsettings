@@ -1,128 +1,128 @@
-import { GLOBAL } from "./GLOBAL.js"
-import { hideAllContextMenus } from "./utils.js"
+import { GLOBAL } from '../GLOBAL.js'
+import { hideAllContextMenus } from '../utils.js'
 
-document.addEventListener("keydown", (event) => {
-	if (event.key === "F5") {
+document.addEventListener('keydown', (event) => {
+	if (event.key === 'F5') {
 		event.preventDefault() // stop browser's built-in search
 		location.reload()
 
 	}
 })
 
-document.addEventListener("mousedown", e => {
-	if (!e.target.closest(".context-menu, .editor-item")) {
+document.addEventListener('mousedown', e => {
+	if (!e.target.closest('.context-menu, .editor-item')) {
 		hideAllContextMenus()
 	}
 })
 
 const pressed = new Set()
 
-hotkeys("*", { keydown: true, keyup: true }, (event) => {
-	if (event.type === "keydown") pressed.add(event.key)
-	if (event.type === "keyup") {
+hotkeys('*', { keydown: true, keyup: true }, (event) => {
+	if (event.type === 'keydown') pressed.add(event.key)
+	if (event.type === 'keyup') {
 		setTimeout(() => {
 			pressed.delete(event.key)
 		}, 200)
 
 	}
-	document.querySelector("#keys-display").innerHTML =
-		Array.from(pressed).join(" + ")
+	document.querySelector('#keys-display').innerHTML =
+		Array.from(pressed).join(' + ')
 	setTimeout(() => {
 		pressed.clear()
-		document.querySelector("#keys-display").textContent = ""
+		document.querySelector('#keys-display').textContent = ''
 	}, 1500)
 })
 
 
-GLOBAL.setKey("currentView", "tabs")
-GLOBAL["activeTab"]
-GLOBAL["mainFocus"] = {}
+GLOBAL.setKey('currentView', 'tabs')
+GLOBAL['activeTab']
+GLOBAL['mainFocus'] = {}
 window.currentFocus = null
 
-hotkeys("*", (event) => {
+hotkeys('*', (event) => {
 	let focused = document.activeElement
 
-	if (event.key === "Escape") {
+	if (event.key === 'Escape') {
 		event.preventDefault()
 	}
-	if (event.key === "Tab") {
+	if (event.key === 'Tab') {
 		// event.preventDefault();
 	}
 
-	if (event.key === "ArrowRight" && GLOBAL["currentView"] === "tabs") {
-		const currentSet = document.querySelector(`.config-set#${GLOBAL["activeTab"]}`)
+	if (event.key === 'ArrowRight' && GLOBAL['currentView'] === 'tabs') {
+		const currentSet = document.querySelector(`.config-set#${GLOBAL['activeTab']}`)
 		if (!currentSet) {
-			console.log(`Config set ${GLOBAL["activeTab"]} doesnt exist.`)
+			console.log(`Config set ${GLOBAL['activeTab']} doesnt exist.`)
 			return
 		} else {
 			// console.log(`Config set ${GLOBAL["activeTab"]} exists.`);
 		}
-		if (GLOBAL["mainFocus"][GLOBAL["activeTab"]] && currentSet.querySelector(`[data-uuid='${GLOBAL["mainFocus"][GLOBAL["activeTab"]]}']`)) {
-			const prevFocus = currentSet.querySelector(`[data-uuid='${GLOBAL["mainFocus"][GLOBAL["activeTab"]]}']`)
+		if (GLOBAL['mainFocus'][GLOBAL['activeTab']] && currentSet.querySelector(`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`)) {
+			const prevFocus = currentSet.querySelector(`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`)
 			if (prevFocus) {
 				window.currentFocus = prevFocus
 				prevFocus.focus({ preventScroll: true })
 				// window.currentView = "main"; //FIXME: Change to global
-				GLOBAL.setKey("currentView", "main")
+				GLOBAL.setKey('currentView', 'main')
 			}
 		} else {
 			const firstChild = Array.from(currentSet.children).find(
-				child => !child.classList.contains("settings-hidden") && child.getAttribute("tabindex") != null
+				child => !child.classList.contains('settings-hidden') && child.getAttribute('tabindex') != null
 			)
 			if (firstChild) {
 				window.currentFocus = firstChild
 				firstChild.focus({ preventScroll: true })
-				GLOBAL["mainFocus"][GLOBAL["activeTab"]] = firstChild.dataset.uuid || 0
+				GLOBAL['mainFocus'][GLOBAL['activeTab']] = firstChild.dataset.uuid || 0
 				// window.currentView = "main"; //FIXME Change to global
-				GLOBAL.setKey("currentView", "main")
+				GLOBAL.setKey('currentView', 'main')
 			}
 		}
 	}
 
-	if (event.key === "ArrowLeft" && GLOBAL["currentView"] === "main") { //FIXME Change to global
+	if (event.key === 'ArrowLeft' && GLOBAL['currentView'] === 'main') { //FIXME Change to global
 		const activeElem = document.activeElement
 		if (activeElem && activeElem.dataset.uuid != null) {
-			GLOBAL["mainFocus"][GLOBAL["activeTab"]] = activeElem.dataset.uuid
+			GLOBAL['mainFocus'][GLOBAL['activeTab']] = activeElem.dataset.uuid
 		}
 		window.currentFocus.blur()
-		window.currentView = "tabs"
-		GLOBAL.setKey("currentView", "tabs")
+		window.currentView = 'tabs'
+		GLOBAL.setKey('currentView', 'tabs')
 		const selectedTab = document.querySelector(`.selected`)
 		if (selectedTab) {
-			selectedTab.classList.add("keyboard-selected")
+			selectedTab.classList.add('keyboard-selected')
 			selectedTab.click()
 		}
 	}
 
-	switch (GLOBAL["currentView"]) {
-		case "main": {
-			const currentSet = document.querySelector(`.config-set#${GLOBAL["activeTab"]}`)
+	switch (GLOBAL['currentView']) {
+		case 'main': {
+			const currentSet = document.querySelector(`.config-set#${GLOBAL['activeTab']}`)
 			if (!currentSet) break
 
-			let activeElement = currentSet.querySelector(`[data-uuid='${GLOBAL["mainFocus"][GLOBAL["activeTab"]]}']`)
+			let activeElement = currentSet.querySelector(`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`)
 			if (!activeElement) {
 				activeElement = document.activeElement
-				if (activeElement.getAttribute("tabindex") == null) {
+				if (activeElement.getAttribute('tabindex') == null) {
 					break
 				}
 			}
 
-			const children = Array.from(currentSet.querySelectorAll(".editor-item"))
+			const children = Array.from(currentSet.querySelectorAll('.editor-item'))
 			let index = children.indexOf(activeElement)
 			let newIndex = index
 
 			switch (event.key) {
-				case "ArrowDown":
+				case 'ArrowDown':
 					event.preventDefault()
 					newIndex = (index === children.length - 1) ? 0 : index + 1
-					while (children[newIndex].classList.contains("settings-hidden")) {
+					while (children[newIndex].classList.contains('settings-hidden')) {
 						newIndex = (newIndex + 1) % children.length
 					}
 					break
-				case "ArrowUp":
+				case 'ArrowUp':
 					event.preventDefault()
 					newIndex = (index === 0) ? children.length - 1 : index - 1
-					while (children[newIndex].classList.contains("settings-hidden")) {
+					while (children[newIndex].classList.contains('settings-hidden')) {
 						newIndex = (newIndex - 1 + children.length) % children.length
 					}
 					break
@@ -133,21 +133,21 @@ hotkeys("*", (event) => {
 			if (!activeElement) break
 			window.currentFocus = newActiveElement
 			newActiveElement.focus()
-			GLOBAL["mainFocus"][GLOBAL["activeTab"]] = newActiveElement.dataset.uuid
+			GLOBAL['mainFocus'][GLOBAL['activeTab']] = newActiveElement.dataset.uuid
 
-			if (newActiveElement.classList.contains("config-group")) {
+			if (newActiveElement.classList.contains('config-group')) {
 				// console.log(newActiveElement.classList)
 				const offset = 80
 				const top = newActiveElement.getBoundingClientRect().top + window.scrollY - offset
-				window.scrollTo({ top, behavior: "smooth" })
+				window.scrollTo({ top, behavior: 'smooth' })
 			} else {
-				newActiveElement.scrollIntoView({ behavior: "smooth", block: "nearest" })
+				newActiveElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 			}
 			break
 		}
 
-		case "tabs": {
-			const currentSelected = document.querySelector(".selected")
+		case 'tabs': {
+			const currentSelected = document.querySelector('.selected')
 			if (!currentSelected) break
 			const parent = currentSelected.parentElement
 			if (!parent) break
@@ -156,43 +156,43 @@ hotkeys("*", (event) => {
 			let newIndex = index
 
 			switch (event.key) {
-				case "ArrowDown":
+				case 'ArrowDown':
 					event.preventDefault()
 					newIndex = (index === children.length - 1) ? 0 : index + 1
-					while (children[newIndex].tagName === "DIV") {
+					while (children[newIndex].tagName === 'DIV') {
 						newIndex = (newIndex + 1) % children.length
 					}
 					break
-				case "ArrowUp":
+				case 'ArrowUp':
 					event.preventDefault()
 					newIndex = (index === 0) ? children.length - 1 : index - 1
-					while (children[newIndex].tagName === "DIV") {
+					while (children[newIndex].tagName === 'DIV') {
 						newIndex = (newIndex - 1 + children.length) % children.length
 					}
 					break
 				// (add other per-tabs keys if ever needed)
 			}
 
-			currentSelected.classList.remove("selected")
-			currentSelected.classList.remove("keyboard-selected")
+			currentSelected.classList.remove('selected')
+			currentSelected.classList.remove('keyboard-selected')
 			const newSelected = children[newIndex]
-			newSelected.classList.add("selected")
-			newSelected.classList.add("keyboard-selected")
+			newSelected.classList.add('selected')
+			newSelected.classList.add('keyboard-selected')
 			newSelected.click()
-			newSelected.scrollIntoView({ behavior: "smooth", block: "nearest" })
-			GLOBAL["activeTab"] = newSelected.id
+			newSelected.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+			GLOBAL['activeTab'] = newSelected.id
 			break
 		}
 	}
 })
 
 
-GLOBAL.onChange("currentView", (/** @type {string} */ value) => {
+GLOBAL.onChange('currentView', (/** @type {string} */ value) => {
 	switch (value) {
-		case "main":
-			document.querySelector(".sidebar-item.keyboard-selected")?.classList.remove("keyboard-selected")
+		case 'main':
+			document.querySelector('.sidebar-item.keyboard-selected')?.classList.remove('keyboard-selected')
 			break
-		case "tabs":
+		case 'tabs':
 			const selectedTab = document.querySelector(`li.selected`)
 			// console.debug("Navigating to tab:",selectedTab.textContent.trim());
 			break

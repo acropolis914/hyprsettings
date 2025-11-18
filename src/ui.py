@@ -18,9 +18,9 @@ traceback.install(show_locals=True)
 thisfile_path = Path(__file__).parent.resolve()
 CURRENT_VERSION = "0.4.0"
 
+cache_path = Path.home() / ".cache" / "hyprsettings" / ".pywebview"
+
 _original_print = builtins.print
-
-
 def print(*args, **kwargs):
 	_original_print("[ui-backend]", *args, **kwargs)
 
@@ -150,5 +150,4 @@ if __name__ == "__main__":
 	webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
 	window.events.loaded += on_loaded
 	window.events.closed += on_closed
-	cache_path = Path.home() / ".cache" / "hyprsettings" / ".pywebview"
 	webview.start(gui="gtk", debug=True, private_mode=False, storage_path=str(cache_path), icon="icon-48.png")

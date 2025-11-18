@@ -24,7 +24,7 @@ export class configRenderer {
                 GLOBAL["mainFocus"][GLOBAL["activeTab"]] = element.dataset.uuid
             })
 
-        }) //maybe I can instead check for focuswithin
+        })
     }
 
     async parse(json) {
@@ -39,7 +39,6 @@ export class configRenderer {
                     if (!GLOBAL["config"]["show_header_comments"]) {
                         comment_item.el.classList.add("settings-hidden")
                     }
-
                     comment_item.addToParent(this.current_container.at(-1))
                 }
                 this.comment_stack = []
@@ -104,8 +103,21 @@ export class configRenderer {
 
         else if (json["type"] === "GROUP") {
             if (json["position"] && json["position"].split(":").length > 1) {
+			if (this.comment_queue.length > 0) {
+				for (let i = 0; i < this.comment_queue.length; i++) {
+					let comment_item = this.comment_queue[0]
+					comment_item.addToParent(this.current_container.at(-1))
+					this.comment_queue.splice(0, 1)
+				}
+			}
                 //
-                let group_el = new ConfigGroup(json).return()
+                let group_el = new ConfigGroup(json).return()			// if (this.comment_queue.length > 0) {
+			// 	for (let i = 0; i < this.comment_queue.length; i++) {
+			// 		let comment_item = this.comment_queue[0]
+			// 		comment_item.addToParent(this.current_container.at(-1))
+			// 		this.comment_queue.splice(0, 1)
+			// 	}
+			// }
 
                 let matched
                 for (const [key, value] of configGroups) {
