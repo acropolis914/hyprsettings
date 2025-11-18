@@ -1,5 +1,22 @@
 export class GLOBAL {
-	static setKey(key, value){
-		this[key] = value
+	static _listeners = new Map(); // key → array of callbacks
+
+	static onChange(key, callback) {
+		if (!this._listeners.has(key)) {
+			this._listeners.set(key, []);
+		}
+		this._listeners.get(key).push(callback);
+	}
+
+	static setKey(key, value) {
+		this[key] = value;
+
+		// fire listeners if any
+		const list = this._listeners.get(key);
+		if (list) {
+			for (const fn of list) fn(value);
+		}
 	}
 }
+
+

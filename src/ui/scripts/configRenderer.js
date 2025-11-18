@@ -20,6 +20,7 @@ export class configRenderer {
             element.addEventListener("click", (e) => {
                 let target = e.target
                 GLOBAL.setKey("currentView", "main")
+			// @ts-ignore
                 GLOBAL["mainFocus"][GLOBAL["activeTab"]] = element.dataset.uuid
             })
 
@@ -45,7 +46,7 @@ export class configRenderer {
             }
         }
 
-        else if (json["type"] === "COMMENT" && json["comment"].includes("### ") && (this.comment_stack.length == 1)) {
+        else if (json["type"] === "COMMENT" && json["comment"].includes("### ") && (this.comment_stack.length === 1)) {
             this.comment_stack.push(json)
             let comment = json["comment"].trim().replace(/^#+|#+$/g, "").trim();
 
@@ -54,7 +55,7 @@ export class configRenderer {
                     this.current_container.pop()
                     this.current_container.push(document.querySelector(`.config-set#${value}`))
                     if (!document.querySelector(`.config-set#${value}`)) {
-                        waitFor(() => this.current_container.push(document.querySelector(`.config-set#${val}`)))
+                        await waitFor(() => this.current_container.push(document.querySelector(`.config-set#${value}`)))
                         break
                     }
                 }
@@ -133,7 +134,11 @@ export class configRenderer {
             }
 
             let tabToAddTo
+
             for (const [key, value, exclude] of keyNameStarts) {
+			if (this.current_container.at(-1).classList.contains("config-group")){
+				break
+			}
                 let excluded = exclude ? exclude : []
                 if (json.name.trim().startsWith(key) && !excluded.includes(json.name.trim())) {
                     tabToAddTo = document.querySelector(`.config-set#${value}`)
@@ -147,7 +152,6 @@ export class configRenderer {
                 tabToAddTo = this.current_container.at(-1)
             }
             if (this.comment_queue.length > 0) {
-                // console.log("A new key is being added with comment", genericItem.name)
                 this.comment_queue.forEach(commentEl => {
                     commentEl.addToParent(tabToAddTo)
                     this.comment_queue.pop()
@@ -155,15 +159,19 @@ export class configRenderer {
             }
             genericItem.el.addEventListener("focus", () => {
                 GLOBAL["mainFocus"][GLOBAL["activeTab"]] = genericItem.el.dataset.uuid
+			GLOBAL.setKey("currentView", "main")
             })
+		  genericItem.el.addEventListener("click", () => {
+			  GLOBAL["mainFocus"][GLOBAL["activeTab"]] = genericItem.el.dataset.uuid
+			  GLOBAL.setKey("currentView", "main")
+		  })
             genericItem.addToParent(tabToAddTo)
         }
 
         //recursive children rendering
-
         if (json["children"]) {
             for (const child of json.children) {
-                this.parse(child)
+                await this.parse(child)
             }
         }
 

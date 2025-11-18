@@ -64,9 +64,9 @@ class ConfigTabs {
 		item.addEventListener("click", () => {
 			this.handleTabClick(this.id);
 		});
-		item.addEventListener("focus", (e) => {
-			this.handleTabClick(this.id);
-		});
+		// item.addEventListener("focus", (e) => {
+		// 	this.handleTabClick(this.id);
+		// });
 		this.sidebar.append(item);
 	}
 
@@ -122,11 +122,4 @@ export async function createDynamicTabs() {
 	} else {
 		console.log(GLOBAL)
 	}
-	// document.querySelectorAll(".sidebar-item").forEach((li) => {
-	//     li.addEventListener("click", () => {
-	//         handleTabClick(li.id)
-	//     })
-	//     li.setAttribute("tabindex", "0");
-	//     li.addEventListener("focus", (e) => { handleTabClick(li.id) })
-	// })
 }

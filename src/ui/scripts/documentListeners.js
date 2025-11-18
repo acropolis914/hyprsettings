@@ -27,9 +27,6 @@ hotkeys('*', { keydown: true, keyup: true }, (event) => {
 	}
 	document.querySelector("#keys-display").innerHTML =
 		Array.from(pressed).join(" + ");
-	// Array.from(pressed)
-	// 	.map(string => `<div class="keypress">${string}</div>`)
-	// 	.join(" + ");
 	setTimeout(() => {
 		pressed.clear()
 		document.querySelector("#keys-display").textContent = ""
@@ -38,7 +35,6 @@ hotkeys('*', { keydown: true, keyup: true }, (event) => {
 
 
 
-// window.currentView = "tabs"; //FIXME : Change to globals
 GLOBAL.setKey("currentView", "tabs")
 GLOBAL["activeTab"];
 GLOBAL["mainFocus"] = {};
@@ -51,18 +47,17 @@ hotkeys('*', (event) => {
 		event.preventDefault();
 	}
 	if (event.key === "Tab") {
-		event.preventDefault();
+		// event.preventDefault();
 	}
 
-	if (event.key === "ArrowRight" && GLOBAL["currentView"] === "tabs") {//FIXME: Change to GLOBALS
+	if (event.key === "ArrowRight" && GLOBAL["currentView"] === "tabs") {
 		const currentSet = document.querySelector(`.config-set#${GLOBAL["activeTab"]}`);
 		if (!currentSet) {
 			console.log(`Config set ${GLOBAL["activeTab"]} doesnt exist.`);
 			return;
 		} else {
-			console.log(`Config set ${GLOBAL["activeTab"]} exists.`);
+			// console.log(`Config set ${GLOBAL["activeTab"]} exists.`);
 		}
-		document.querySelector(".sidebar-item.keyboard-selected")?.classList.remove("keyboard-selected");
 		if (GLOBAL["mainFocus"][GLOBAL["activeTab"]] && currentSet.querySelector(`[data-uuid='${GLOBAL["mainFocus"][GLOBAL["activeTab"]]}']`)) {
 			const prevFocus = currentSet.querySelector(`[data-uuid='${GLOBAL["mainFocus"][GLOBAL["activeTab"]]}']`);
 			if (prevFocus) {
@@ -96,8 +91,7 @@ hotkeys('*', (event) => {
 		const selectedTab = document.querySelector(`.selected`);
 		if (selectedTab) {
 			selectedTab.classList.add("keyboard-selected");
-			selectedTab.click();
-			console.log(selectedTab);
+			selectedTab.click()
 		}
 	}
 
@@ -190,5 +184,19 @@ hotkeys('*', (event) => {
 			GLOBAL["activeTab"] = newSelected.id;
 			break;
 		}
+	}
+});
+
+
+GLOBAL.onChange("currentView", (/** @type {string} */ value)=>{
+	switch (value) {
+		case "main":
+			document.querySelector(".sidebar-item.keyboard-selected")?.classList.remove("keyboard-selected");
+			break;
+		case "tabs":
+			const selectedTab = document.querySelector(`li.selected`);
+			// console.debug("Navigating to tab:",selectedTab.textContent.trim());
+			break;
+
 	}
 });

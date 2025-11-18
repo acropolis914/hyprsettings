@@ -368,9 +368,9 @@ h1#config-set-title {
   content: "\f040";
   position: absolute;
   left: -1.5rem;
-  top: 1rem;
+  top: 50%;
   transform: translateY(-50%);
-  color: var(--accent-success);
+  color: var(--accent-warning);
   font-weight: bold;
 }
 .editor-item:focus {
@@ -432,7 +432,6 @@ h1#config-set-title {
 .editor-item .generic-editor > * {
   margin-right: var(--spacing-unit);
   border-radius: var(--border-rad);
-  background-color: var(--surface-1);
   color: var(--text-0);
   font-size: 1.6rem !important;
   flex: 1;
@@ -447,6 +446,10 @@ h1#config-set-title {
   border: 0;
   outline: none;
   resize: none;
+  background-color: var(--surface-1);
+}
+.editor-item .keybind-editor > * {
+  background-color: var(--surface-1);
 }
 .editor-item .comment-area {
   display: flex;
@@ -460,16 +463,13 @@ h1#config-set-title {
   height: 2rem;
   align-items: center;
   justify-content: center;
-  /* opacity: (0.6); // Removed, handled by text color*/
 }
 .editor-item .comment-area > *:focus {
   border: none;
   border-bottom: 1px solid var(--accent) !important;
   outline: none;
-  /* opacity: 1; // Removed*/
 }
 .editor-item .comment-area:has(> textarea:placeholder-shown) {
-  /* Removed opacity*/
   opacity: 0.6;
 }
 .editor-item .comment-area .comment {
@@ -494,6 +494,28 @@ h1#config-set-title {
 .editor-item .comment-area .comment-hashtag {
   padding-top: 0px;
   color: var(--text-1);
+}
+
+.generic-editor-slidermodal .slider-styled,
+.generic-editor-gradientmodal .slider-styled {
+  width: 90%;
+  background-color: var(--surface-2);
+  box-shadow: none;
+  border: 1px solid var(--surface-0);
+}
+.generic-editor-slidermodal .slider-styled#slider-square,
+.generic-editor-gradientmodal .slider-styled#slider-square {
+  border-radius: 0;
+}
+.generic-editor-slidermodal .slider-styled#slider-square .noUi-handle,
+.generic-editor-gradientmodal .slider-styled#slider-square .noUi-handle {
+  border-radius: 0;
+  background-color: var(--accent);
+  height: 18px;
+  width: 1rem;
+  top: -1px;
+  right: -9px;
+  cursor: ew-resize;
 }
 
 .generic-editor-slidermodal {
@@ -544,6 +566,90 @@ h1#config-set-title {
   outline: none;
   text-decoration: underline;
   /* border: 1px dashed var(--accent-active);*/ /* Brighten on focus*/
+}
+
+.generic-editor:has(.generic-editor-gradientmodal) {
+  background-color: transparent;
+}
+
+.generic-editor-gradientmodal {
+  flex-direction: column;
+  width: 90%;
+  background-color: transparent !important;
+}
+.generic-editor-gradientmodal button {
+  position: relative;
+  background-color: var(--surface-2) !important;
+}
+.generic-editor-gradientmodal button:hover {
+  scale: 1.05;
+  background-color: var(--surface-border);
+}
+.generic-editor-gradientmodal button:active {
+  scale: 0.95;
+}
+.generic-editor-gradientmodal button {
+  width: 3rem;
+}
+.generic-editor-gradientmodal button::after {
+  color: var(--accent);
+  content: "+";
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  transform: translateX(-50%), translateY(-50%);
+}
+.generic-editor-gradientmodal .angle-container .slider-styled {
+  width: 95%;
+}
+.generic-editor-gradientmodal .angle-container {
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.generic-editor-gradientmodal .angle-container input[type=text] {
+  width: 5%;
+  margin-bottom: 0;
+  border: 0;
+  border-radius: var(--border-rad);
+  background-color: transparent;
+  color: var(--text-1);
+  font-weight: 400;
+  box-shadow: none !important;
+  outline: none !important;
+  resize: none;
+  overflow: hidden;
+  /* opacity: 0.5; // Removed, handled by text color*/
+}
+.generic-editor-gradientmodal .angle-container input[type=text]:hover {
+  color: var(--text-1);
+  font-weight: unset;
+  cursor: text; /* Brighten on hover*/
+}
+.generic-editor-gradientmodal .angle-container input[type=text]:focus, .generic-editor-gradientmodal .angle-container input[type=text]:focus-visible {
+  color: var(--text-1);
+  font-weight: unset;
+  outline: none;
+  text-decoration: underline;
+  /* border: 1px dashed var(--accent-active);*/ /* Brighten on focus*/
+}
+.generic-editor-gradientmodal .color-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+  gap: 1rem;
+  width: 97%;
+}
+.generic-editor-gradientmodal .color-container input[type=text] {
+  background-clip: padding-box;
+  -webkit-appearance: none;
+  color: transparent;
+  z-index: 2;
+  border-radius: 2px;
+  border: 1px solid var(--surface-2) !important;
+  box-shadow: var(--surface-2) 0 3px;
+  flex: 1 0;
 }
 
 /* --- Line Comment Item (Specific) ---*/
@@ -625,6 +731,11 @@ h1#config-set-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.editor-item.focus-visible {
+  outline: 2px solid var(--accent-color) !important;
+  outline-offset: 2px !important;
 }
 
 .config-group {
@@ -953,10 +1064,6 @@ span.danger {
 .testing-screen #main-part {
   flex: 1;
   padding: 1rem;
-}
-.editor-item.focus-visible {
-  outline: 2px solid var(--accent-color) !important;
-  outline-offset: 2px !important;
 }
 
 /*# sourceMappingURL=style.css.map */

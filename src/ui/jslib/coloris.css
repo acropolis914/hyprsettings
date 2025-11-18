@@ -262,7 +262,7 @@ input.clr-color {
 	border-radius: var(--border-rad);
 	color: var(--text-0);
 	background-color: var(--surface-2);
-	font-family: sans-serif;
+	/* font-family: sans-serif; */
 	font-size: 14px;
 	text-align: center;
 	box-shadow: none;

@@ -16,7 +16,7 @@ from parser import ConfigParser, Node, makeUUID, print_hyprland
 
 traceback.install(show_locals=True)
 thisfile_path = Path(__file__).parent.resolve()
-CURRENT_VERSION = "0.1.7"
+CURRENT_VERSION = "0.4.0"
 
 _original_print = builtins.print
 

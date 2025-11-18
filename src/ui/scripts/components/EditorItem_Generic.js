@@ -4,6 +4,7 @@ import { GLOBAL } from "../GLOBAL.js";
 import { findAdjacentConfigKeys, findConfigDescription } from "../../hyprland-specific/hyprland_config_descriptions.js";
 import { EditorItem_Comments } from "./EditorItem_Comments.js";
 import { SliderModal } from "./keyEditor_Slider.js";
+import { GradientModal } from "./keyEditor_Gradient.js";
 import { parseHyprColor } from "../../hyprland-specific/colorparser.js";
 
 // class EditorItem_Template {
@@ -81,6 +82,18 @@ export class EditorItem_Generic {
 						value = Number(value)
 					}
 					this.valueEditor.value = parseHyprColor(value)
+					this.valueEditor.style.backgroundColor = this.valueEditor.value
+					this.valueEditor.style.color = "transparent"
+					this.valueEditor.addEventListener("input", () => {
+						this.valueEditor.style.backgroundColor = this.valueEditor.value
+					})
+				} catch (E) {
+					this.valueEditor = null
+				}
+			}
+			else if (this.info["type"] === "CONFIG_OPTION_GRADIENT") {
+				try {
+					this.valueEditor = new GradientModal(value).el
 				} catch (E) {
 					this.valueEditor = null
 				}
@@ -221,12 +234,13 @@ export class EditorItem_Generic {
 						value = randomKey["data"]
 					}
 				}
-				let allowed_dupes = ["animation", "bezier"]
-				if (!name && allowed_dupes.includes(this.el.dataset.name)) {//&& (!this.el.parent.classList.contains("config-group") || allowed_dupes.includes(this.el.dataset.name)
+				let allowed_dupes = ["animation", "bezier", "gesture"]
+				if (!name && (allowed_dupes.includes(this.el.dataset.name) || !this.el.parentElement.classList.contains("config-group"))) {//&& (!this.el.parent.classList.contains("config-group") || allowed_dupes.includes(this.el.dataset.name)
 					name = this.el.dataset.name
 				} else {
 					let thisname = this.el.dataset.name
 					console.log({ allowed_dupes, thisname })
+					name = "generic"
 				}
 				let newGenericItem = await addItem("KEY", name, value, "", this.el.dataset.position, this.el.dataset.uuid, below)
 				let newGenericElement = new EditorItem_Generic({ name: newGenericItem["name"], uuid: newGenericItem["uuid"], value: newGenericItem["value"], comment: newGenericItem["comment"], position: this.el.dataset.position })

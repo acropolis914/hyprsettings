@@ -219,10 +219,11 @@ class ConfigParser:
 					)
 					self.stack[-1].addChildren(blank_line)
 					continue
-				if colon_index != -1 and equal_index != -1 and colon_index < equal_index:
-					# TODO:IMPLEMENT COLON GROUPS
-					# print(f"Line {line_content} has ':' before '='")
-					pass
+				# if colon_index != -1 and equal_index != -1 and colon_index < equal_index:
+				# 	# TODO:IMPLEMENT COLON GROUPS
+				# 	# print(f"Line {line_content} has ':' before '='")
+                #
+				# 	pass
 				elif re.match(r"^#\s*disabled\b", line_content.lstrip(), re.IGNORECASE):
 					# print(f"Line Content {line_content} is disabled")
 					line_content = re.sub(

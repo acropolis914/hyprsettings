@@ -33,6 +33,7 @@
 .ts-control input {
 	color: var(--text-1) !important;
 	caret-color: var(--text-1) !important;
+	height: 100%;
 	/* flex: 1 1 calc(50% - 1rem); */
 }
 

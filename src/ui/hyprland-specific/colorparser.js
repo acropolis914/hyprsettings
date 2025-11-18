@@ -1,9 +1,21 @@
 function hyprIntToRGBAString(colorInt) {
-	const hex = colorInt >>> 0;
-	const a = (hex > 0xffffff) ? ((hex >> 24) & 0xff) / 255 : 0;
-	const r = (hex >> 16) & 0xff;
-	const g = (hex >> 8) & 0xff;
-	const b = hex & 0xff;
+	const hex = colorInt >>> 0; // ensure unsigned
+	let r, g, b, a;
+
+	if (hex > 0xffffff) {
+		// 8-digit hex with alpha
+		a = ((hex >> 24) & 0xff) / 255;
+		r = (hex >> 16) & 0xff;
+		g = (hex >> 8) & 0xff;
+		b = hex & 0xff;
+	} else {
+		// 6-digit hex, fully opaque
+		a = 1;
+		r = (hex >> 16) & 0xff;
+		g = (hex >> 8) & 0xff;
+		b = hex & 0xff;
+	}
+
 	return `rgba(${r},${g},${b},${a})`;
 }
 
