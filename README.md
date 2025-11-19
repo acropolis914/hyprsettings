@@ -4,14 +4,15 @@ HyprSettings: a configurator for `hyprland.conf` that very loyally reconstructs 
 
 Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS libraries.
 
-<img width="1915" height="1046" alt="image" src="https://github.com/user-attachments/assets/ec4d850b-244f-40bc-a92a-5dc7909618d3" />
+<!-- <img width="1915" height="1046" alt="image" src="https://github.com/user-attachments/assets/ec4d850b-244f-40bc-a92a-5dc7909618d3" /> -->
+<img width="1915" height="1046" alt="image" src="https://github.com/user-attachments/assets/c7284cf1-c51a-4996-b60c-7ab1d9ae402c" />
 
-Hyprsettings in Everforest builtin theme by @ritualcasts
+
+Hyprsettings in Catppuccin, with the search bar and the color selector open. Cool ain't it?
 
 
-> New Feature: Globbing Support 🎉  
-> Globbing of `source` files has arrived! All allowed Hyprland formats, including `~/` expansion and glob patterns like `/*`, now work.  
-> Any files you include with lines like `source = path/to/other.conf` (including `~/...` and globbed paths) are automatically discovered and shown or merged in the UI. Multi file Hyprland setups are now first class in HyprSettings.
+> New Feature: Colors, Sliders, Search bar! 
+> How about we get some color picker and a search bar? Yes! It's already there! (I'm sooo happy not gonna lie)
 
 > Looking for Contributors 🙌  
 > I'd love help with: autocomplete color selectors, gradient selectors, a floating sidebar for Hyprland documentation, and other minor improvements. Open a discussion or issue if you're interested!
@@ -27,7 +28,9 @@ You can fork this repo, make changes, and submit pull requests. Please also subm
 - Preserves comments and their positions
 - Organized UI with logical tabs for easier navigation
 - Keyboard navigable controls throughout the UI
-- Multi file configs supported with `source` discovery, `~/` expansion, and globbing
+- Multi file configs supported with `source` discovery, `~/` expansion, '$variable' support , and globbing
+- Color Picker , gradient editor
+- Dynamic resizing
 - Theming support
 
 ## Table of Contents
@@ -38,7 +41,6 @@ You can fork this repo, make changes, and submit pull requests. Please also subm
     - [Quick Clone and Venv Setup](#quick-clone-and-venv-setup)
     - [NixOS Installation](#nixos-installation)
     - [Arch Linux (AUR Package)](#arch-linux-aur-package)
-    - [Legacy Manual Arch Installation (Deprecated)](#legacy-manual-arch-installation-deprecated)
   - [Testing the UI](#testing-the-ui)
   - [Configuration and Theming](#configuration-and-theming)
   - [Organizing Comments into Tabs](#organizing-comments-into-tabs)
@@ -96,18 +98,6 @@ After installation you can:
   ```
   bind = SUPER, I, Exec, hyprsettings
   ```
-
-### Legacy Manual Arch Installation (Deprecated)
-
-~~For Arch users, you can run the following single block to install dependencies and add a keybind to your Hyprland configuration:~~
-
-```bash
-~~sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
-git clone https://github.com/acropolis914/hyprsettings ~/hyprsettings
-echo 'bind = SUPER, I, Exec, python ~/hyprsettings/src/ui.py' >> ~/.config/hypr/hyprland.conf~~
-```
-
-> The above manual method is deprecated. Use the AUR package instead unless you are hacking locally.
 
 ## Testing the UI
 
