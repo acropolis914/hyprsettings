@@ -1,15 +1,15 @@
-import { saveWindowConfig } from "./utils.js"
-import { GLOBAL } from "./GLOBAL.js"
+import { saveWindowConfig } from './utils.js'
+import { GLOBAL } from './GLOBAL.js'
 
-let themeButton = document.getElementById("theme-toggle")
+let themeButton = document.getElementById('theme-toggle')
 let currentThemeIndex = 0
-var root = document.querySelector(":root")
-let headers = ["description", "link", "author", "variant"]
+var root = document.querySelector(':root')
+let headers = ['description', 'link', 'author', 'variant']
 
 export async function setupTheme() {
-	let currentTheme = GLOBAL["config"]["current_theme"]
-	document.documentElement.style.opacity = GLOBAL["config"]["transparency"] || "1" // fade in root to prevent FOUC
-	root.style.setProperty(`--font-primary`, GLOBAL["config"]["font"])
+	let currentTheme = GLOBAL['config']['current_theme']
+	document.documentElement.style.opacity = GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
+	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])
 	window.themes.forEach(theme => {
 		if (theme.name == currentTheme) {
 			currentThemeIndex = window.themes.findIndex(theme => theme.name === currentTheme)
@@ -19,18 +19,18 @@ export async function setupTheme() {
 				if (headers.includes(key)) {
 					return
 				}
-				root.style.setProperty(`--${key}`, value, "important")
+				root.style.setProperty(`--${key}`, value, 'important')
 			})
-			root.classList.remove("dark")
-			root.classList.remove("light")
+			root.classList.remove('dark')
+			root.classList.remove('light')
 			root.classList.add(theme.variant.toLowerCase())
-			GLOBAL["config"]["current_theme"] = theme.name
+			GLOBAL['config']['current_theme'] = theme.name
 		}
 	})
 	updateColoris()
 }
 
-themeButton.addEventListener("click", (e) => {
+themeButton.addEventListener('click', (e) => {
 	e.stopPropagation()
 	changeTheme()
 })
@@ -44,18 +44,18 @@ function changeTheme() {
 		if (headers.includes(key)) {
 			return
 		}
-		root.style.setProperty(`--${key}`, value, "important")
+		root.style.setProperty(`--${key}`, value, 'important')
 	})
-	GLOBAL["config"]["current_theme"] = theme.name
-	window.themeVariant = theme["variant"].toLowerCase()
+	GLOBAL['config']['current_theme'] = theme.name
+	window.themeVariant = theme['variant'].toLowerCase()
 	// console.log(window.themeVariant)
-	if (window.themeVariant === "dark") {
-		window.jsViewer.setAttribute("theme", "default-dark")
+	if (window.themeVariant === 'dark') {
+		window.jsViewer.setAttribute('theme', 'default-dark')
 	} else {
-		window.jsViewer.setAttribute("theme", "default-light")
+		window.jsViewer.setAttribute('theme', 'default-light')
 	}
-	root.classList.remove("dark")
-	root.classList.remove("light")
+	root.classList.remove('dark')
+	root.classList.remove('light')
 	root.classList.add(theme.variant.toLowerCase())
 	saveWindowConfig()
 	updateColoris()
@@ -63,10 +63,10 @@ function changeTheme() {
 
 function updateColoris() {
 	Coloris({// bind picker to THIS input only
-		theme: "default",
+		theme: 'pill',
 		alpha: true,        // enable opacity for RGBA
 		forceAlpha: true,
-		format: "rgb",
+		format: 'rgb',
 		swatches: sortSwatchesByValue(getSwatch())     // output rgba if alpha enabled
 	})
 }
@@ -78,7 +78,7 @@ export function getSwatch() {
 
 	const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
 	const colors = Object.values(currentTheme)
-		.filter(value => typeof value === "string" && hexRegex.test(value))
+		.filter(value => typeof value === 'string' && hexRegex.test(value))
 
 	// Ensure uniqueness
 	return [...new Set(colors)]
@@ -86,9 +86,9 @@ export function getSwatch() {
 
 
 function hexToRgb(hex) {
-	hex = hex.replace("#", "")
+	hex = hex.replace('#', '')
 	if (hex.length === 3) {
-		hex = hex.split("").map(c => c + c).join("")
+		hex = hex.split('').map(c => c + c).join('')
 	}
 	const bigint = parseInt(hex, 16)
 	const r = (bigint >> 16) & 255

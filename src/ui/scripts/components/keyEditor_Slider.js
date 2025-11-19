@@ -112,10 +112,3 @@ export class SliderModal {
 	}
 }
 
-// document.addEventListener("DOMContentLoaded", (e) => {
-// 	let testingScreen = document.querySelector(".testing-screen>#main-part")
-// 	let slider = new SliderModal(0, 10, false)
-// 	slider.el.style.width = "500px"
-// 	testingScreen.appendChild(slider.el)
-// 	slider.onChange(() => { console.log(slider.value) })
-// })

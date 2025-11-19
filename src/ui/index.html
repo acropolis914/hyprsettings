@@ -24,7 +24,14 @@
 		<link rel="stylesheet" href="scripts/jslib/coloris.css">
 	</head>
 	<body>
-		<header  id="main-header" onclick="location.reload()" title="Click to reinitialize session"> HyprSettings</header>
+		<header  id="main-header" onclicke="location.reload()" title="Click to reinitialize session"> HyprSettings
+			<div class="search-wrap">
+				<input type="search" id="search-bar" placeholder="Search…" autocomplete="off" />
+				<div class="results" id="results"></div>
+			</div>
+
+
+		</header>
 		<div id="main">
 			<aside id="sidebar">
 				<ul></ul>

@@ -114,6 +114,7 @@ export class EditorItem_Binds {
 		})
 
 		let key_el = this.el.querySelector('.keypress')
+		key_el.rows = 1
 		key_el.textContent = values[1].trim()
 		key_el.addEventListener('input', () => {
 			//

@@ -129,10 +129,23 @@ export class GradientModal {
 		this.angleEl.noUiSlider.set(angle)
 		this.textEditor.value = angle
 
-		// Create color inputs
 		colors.forEach(item => {
 			let colordiv = this.createColorPreview(item)
 			this.colorContainer.appendChild(colordiv)
+
+			const ro = new ResizeObserver(entries => {
+				const childCount = this.colorContainer.children.length
+				const neededWidth = childCount * 60   // expected total width
+				const actualWidth = this.colorContainer.clientWidth
+
+				if (actualWidth < neededWidth) {
+					this.colorContainer.classList.add('narrow-child')
+				} else {
+					this.colorContainer.classList.remove('narrow-child')
+				}
+			})
+
+			ro.observe(colordiv)
 		})
 		this.addGradientbutton = document.createElement('button')
 		this.addGradientbutton.classList.add('addGradientButton')
@@ -150,6 +163,7 @@ export class GradientModal {
 			this._notifyInputListeners()
 		})
 		this.colorContainer.append(this.addGradientbutton)
+
 		let sortable = Sortable.create(this.colorContainer, {
 			draggable: '.gradientColorInput',
 			handle: '.dragButton',
@@ -247,6 +261,8 @@ export class GradientModal {
 				colordiv.dispatchEvent(event)
 			}
 		})
+
+
 		Object.defineProperty(parentEl, 'value', {
 			get: () => colordiv.value,
 			set: (val) => {

@@ -7,11 +7,13 @@ import './ui_components/documentListeners.js'
 import './ui_components/onboarding.js'
 import './ui_components/testingScreen.js'
 import './components/keyEditor_Slider.js'
+import './ui_components/searchBar.js'
 import { GLOBAL } from './GLOBAL.js'
 import { jsViewerInit } from './ui_components/jsViewer.js'
 import { setupTheme } from './setupTheme.js'
 import { createDynamicTabs } from './ui_components/createDynamicTabs.js'
 import { renderSettings } from './settings.js'
+import { initializeSearchBar } from './ui_components/searchBar.js'
 
 window.Global = GLOBAL
 
@@ -60,6 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	await createDynamicTabs()
 	await setupData()
 	await renderSettings()
+	await initializeSearchBar()
 
 })
 

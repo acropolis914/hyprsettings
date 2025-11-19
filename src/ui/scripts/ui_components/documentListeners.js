@@ -40,6 +40,7 @@ GLOBAL['mainFocus'] = {}
 window.currentFocus = null
 
 hotkeys('*', (event) => {
+	let pressed = event.key
 	let focused = document.activeElement
 
 	if (event.key === 'Escape') {
@@ -182,6 +183,9 @@ hotkeys('*', (event) => {
 			newSelected.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 			GLOBAL['activeTab'] = newSelected.id
 			break
+		}
+		case('search'): {
+			GLOBAL['currentView'] = 'search'
 		}
 	}
 })
