@@ -101,6 +101,7 @@
   --purple: #cba6f7;
   --overlay: #7f849c;
   --shadow: #6c7086;
+  --font-primary: "CommitMono Nerd Font Mono" ;
 }
 
 /* --- Base & Resets ---*/
@@ -315,8 +316,13 @@ footer > * {
 .search-wrap {
   margin-left: auto;
   position: relative;
+  border-radius: var(--border-radius);
+}
+.search-wrap:is(:focus, :focus-visible, :focus-within) #search-bar {
+  border: 1px solid var(--accent);
 }
 .search-wrap #search-bar {
+  border-radius: var(--border-rad);
   padding: 2px;
   border: 0;
   margin: 0;
@@ -329,11 +335,10 @@ footer > * {
   display: none;
   position: absolute;
   right: 0rem;
-  top: calc(100% + e1rem);
+  top: calc(100% + 0.5rem);
   z-index: 10;
   background-color: var(--surface-0);
-  width: 100%;
-  word-break: break-all;
+  width: 50vw;
   padding: var(--spacing-unit);
   flex-direction: column;
   gap: var(--spacing-unit);
@@ -342,8 +347,12 @@ footer > * {
   border: 1px solid var(--accent);
   border-radius: var(--border-rad);
   font-size: 1.6rem;
-  height: 20rem;
+  height: 8rem;
   padding-left: 1rem;
+  transition: height 0.2s ease-in-out;
+}
+.search-wrap div#results:has(> div) {
+  height: 20rem;
 }
 .search-wrap div#results .result {
   display: flex;
@@ -372,6 +381,9 @@ footer > * {
   text-overflow: ellipsis;
   opacity: 0.8;
   font-size: 1.2rem;
+}
+.search-wrap div#results .result.selected {
+  border: 1px solid var(--accent);
 }
 
 /* --- Content Area Components ---*/

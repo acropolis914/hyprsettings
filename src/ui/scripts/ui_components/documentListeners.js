@@ -40,14 +40,32 @@ GLOBAL['mainFocus'] = {}
 window.currentFocus = null
 
 hotkeys('*', (event) => {
-	let pressed = event.key
+	let pressedKey = event.key
 	let focused = document.activeElement
 
 	if (event.key === 'Escape') {
 		event.preventDefault()
+		// switch (GLOBAL['currentView']) {
+		// 	case 'tabs':
+		// 		break
+		// 	case 'main':
+		// 		break
+		// 	case 'search':
+		// 		GLOBAL['currentView'] = GLOBAL['previousView']
+		// 		GLOBAL['currentView'].focus()
+		// 		break
+		// }
 	}
 	if (event.key === 'Tab') {
 		// event.preventDefault();
+	}
+	if (pressedKey === '/') {
+		if (GLOBAL['currentView'] !== 'search') {
+			event.preventDefault()
+			GLOBAL['previousView'] = GLOBAL['currentView']
+			GLOBAL['currentView'] = 'search'
+			document.getElementById('search-bar').focus()
+		}
 	}
 
 	if (event.key === 'ArrowRight' && GLOBAL['currentView'] === 'tabs') {
@@ -185,6 +203,7 @@ hotkeys('*', (event) => {
 			break
 		}
 		case('search'): {
+			GLOBAL['previousView'] = GLOBAL['currentView']
 			GLOBAL['currentView'] = 'search'
 		}
 	}
