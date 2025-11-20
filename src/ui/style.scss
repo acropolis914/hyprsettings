@@ -184,7 +184,7 @@ color $transition-speed-fast ease;
 	--purple: #cba6f7;
 	--overlay: #7f849c;
 	--shadow: #6c7086;
-	--font-primary: 'CommitMono Nerd Font Mono'
+	--font-primary: 'CommitMono Nerd Font Mono';
 }
 
 /* --- Base & Resets ---*/
@@ -321,15 +321,14 @@ header#main-header {
 		}
 
 		.sidebar-text {
-			transition: all .2s ease-in-out;
+			transition: all 0.2s ease-in-out;
 			max-width: 100%;
 			min-width: 0;
 		}
 
 		> div {
 			@include text-ellipsis;
-			transition: opacity 0.3s ease-in-out,
-			height 0.2s ease-in-out;
+			transition: opacity 0.3s ease-in-out, height 0.2s ease-in-out;
 			height: 2rem;
 		}
 	}
@@ -344,7 +343,6 @@ header#main-header {
 			padding-left: 1rem;
 			justify-content: center;
 			position: relative;
-
 
 			.sidebar-text {
 				//position: absolute;
@@ -451,19 +449,17 @@ footer {
 	margin-left: auto;
 	//margin-top: 0.7rem;
 	position: relative;
-	border-radius: var(--border-radius);
+	border-radius: var(--border-rad);
 
-	&:is(:focus,:focus-visible,:focus-within) {
+	&:is(:focus, :focus-visible, :focus-within) {
 		#search-bar {
 			border: 1px solid;
-			border-color: var(--accent)
+			border-color: var(--accent);
 			//border-top-color: transparent;
-
 		}
 
 		label {
 			color: var(--accent);
-
 		}
 	}
 
@@ -505,7 +501,7 @@ footer {
 		transition: height 0.2s ease-in-out;
 		//box-shadow: var(--surface);
 
-		&:has(>div) {
+		&:has(> div) {
 			height: 20rem;
 		}
 
@@ -602,9 +598,7 @@ h1#config-set-title {
 	border: 1px solid transparent;
 	padding: 0.5rem;
 	margin-bottom: var(--spacing-unit);
-	transition: margin 0.2s ease,
-	border 100ms ease-in-out,
-	scale 0.2s ease;
+	transition: margin 0.2s ease, border 100ms ease-in-out, scale 0.2s ease;
 	display: flex;
 	flex-direction: column;
 	font-size: 1.6rem;
@@ -632,7 +626,6 @@ h1#config-set-title {
 		@include config-group-focused('', var(--accent-success));
 	}
 
-
 	// --- SUB-COMPONENTS (Flat Structure) ---
 
 	// 1. Preview
@@ -647,8 +640,11 @@ h1#config-set-title {
 		}
 
 		span {
+			font-weight: bold;
+
 			&#key {
 				color: var(--accent);
+
 			}
 
 			&#value {
@@ -687,7 +683,6 @@ h1#config-set-title {
 			height: 3rem;
 			width: 100%;
 		}
-
 	}
 
 	// 3. Keybind Editor (Input styling only)
@@ -699,7 +694,6 @@ h1#config-set-title {
 
 		> textarea,
 		> input {
-
 			@include editor-input-reset;
 			@include text-ellipsis;
 			display: flex;
@@ -717,7 +711,6 @@ h1#config-set-title {
 			line-height: 2rem;
 			height: 3rem !important;
 		}
-
 	}
 
 	// 4. Comment Area (Specific Input)
@@ -775,7 +768,6 @@ h1#config-set-title {
 		}
 	}
 
-
 	// --- MODIFIER/STATE CLASSES ---
 
 	&.compact {
@@ -790,7 +782,6 @@ h1#config-set-title {
 	&.disabled {
 		.editor-item-preview {
 			padding-left: 6rem;
-
 
 			&::before {
 				height: 1.4rem;
@@ -870,18 +861,16 @@ h1#config-set-title {
 		display: grid;
 		gap: 1rem;
 		grid-auto-flow: column;
-		transition: grid-auto-flow 0.3s, grid-auto-rows 0.3s, grid-auto-columns 0.3s;
-
+		transition: grid-auto-flow 0.3s, grid-auto-rows 0.3s,
+		grid-auto-columns 0.3s;
 
 		&.narrow-child {
 			grid-auto-flow: row;
 		}
 
-
 		> * {
 			height: 2.3rem;
 		}
-
 
 		button.addGradientButton {
 			flex: 1 0 auto;
@@ -929,7 +918,6 @@ h1#config-set-title {
 
 				&.removeGradientButton {
 					right: 0.5rem;
-
 				}
 
 				&.dragButton {
@@ -956,7 +944,6 @@ h1#config-set-title {
 				//border: 1px solid var(--surface-2) !important;
 				//box-shadow: var(--surface-2) 0 3px;
 				transition: all 0.2s ease-in-out;
-
 			}
 		}
 	}
@@ -1114,7 +1101,8 @@ button#theme-toggle {
 	color: var(--text-1);
 	font-size: 2rem;
 	cursor: pointer;
-	transition: transform $transition-speed-normal ease, color $transition-speed-normal ease;
+	transition: transform $transition-speed-normal ease,
+	color $transition-speed-normal ease;
 
 	&:hover {
 		color: var(--accent);
@@ -1373,7 +1361,6 @@ span {
 	//border: 1px solid var(--red) !important;
 	//height: 2rem;
 }
-
 
 .sortable-drag {
 	//border: 1px solid var(--green) !important;

@@ -27,3 +27,4 @@ result-*
 node_modules
 setupscript.sh
 .idea/
+.env
