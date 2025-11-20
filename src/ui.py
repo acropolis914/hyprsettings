@@ -114,6 +114,24 @@ class Api:
 				self.window_config = config
 				version_migration()
 				return self.window_config
+	def get_builtin_themes(self):
+		file_path = thisfile_path/"ui"/"themes_builtin"
+		themes=[]
+		for file in os.listdir(file_path):
+			theme_file= Path(file_path/file)
+			if not theme_file.is_file():
+				continue
+			if not str(theme_file).endswith(".toml"):
+				continue
+			with open(theme_file, "r", encoding="utf-8") as theme:
+				file_content=theme.read()
+
+				theme_content = toml.parse(file_content)
+				print(f'Theme content: {theme_content}')
+				for theme_definition in theme_content.get("theme",[]):
+					themes.append(theme_definition)
+		return themes
+
 
 	def save_window_config(self, json_fromjs, part="config"):
 		print(f"Called save window {part}")
@@ -139,6 +157,7 @@ class Api:
 if __name__ == "__main__":
 	api = Api()
 	mimetypes.add_type("application/javascript", ".js")
+	print(Path(thisfile_path/"ui"/"index.html"))
 	window = webview.create_window(
 		"HyprSettings",
 		"ui/index.html",
@@ -152,4 +171,4 @@ if __name__ == "__main__":
 	webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
 	window.events.loaded += on_loaded
 	window.events.closed += on_closed
-	webview.start(gui="gtk", debug=True, private_mode=False, storage_path=str(cache_path), icon="icon-48.png",)
+	webview.start(gui="gtk", debug=True, private_mode=True, storage_path=str(cache_path), icon="icon-48.png",)

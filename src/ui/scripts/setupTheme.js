@@ -3,7 +3,7 @@ import { GLOBAL } from './GLOBAL.js'
 
 let themeButton = document.getElementById('theme-toggle')
 let currentThemeIndex = 0
-var root = document.querySelector(':root')
+const root = document.querySelector(':root')
 let headers = ['description', 'link', 'author', 'variant']
 
 export async function setupTheme() {

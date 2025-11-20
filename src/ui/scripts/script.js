@@ -38,6 +38,14 @@ async function load_config() {
 	}
 
 	window.themes = windowConfig.theme //just to globally access it for setupTheme
+	let builtin_themes = await window.pywebview.api.get_builtin_themes()
+	// console.log(builtin_themes)
+	for (let builtin_theme of builtin_themes) {
+		builtin_theme.name = `[builtin] ${builtin_theme.name}`
+		// console.log(builtin_theme)
+		window.themes.push(builtin_theme)
+	}
+
 	GLOBAL['config'] = {}
 	GLOBAL['persistence'] = {}
 	for (let key in windowConfig.config) {
@@ -57,6 +65,7 @@ async function load_config() {
 }
 
 export async function initialize() {
+	Array.from(document.scripts).forEach(s => console.log(s.src))
 	await load_config()
 	await setupTheme()
 	await createDynamicTabs()

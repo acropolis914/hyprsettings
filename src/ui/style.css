@@ -106,7 +106,7 @@
   --purple: #cba6f7;
   --overlay: #7f849c;
   --shadow: #6c7086;
-  --font-primary: 'CommitMono Nerd Font Mono' ;
+  --font-primary: 'CommitMono Nerd Font Mono';
 }
 
 /* --- Base & Resets ---*/
@@ -123,13 +123,6 @@ html {
   min-height: 0;
   min-width: 400px;
 }
-html,
-html body {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 *,
 *::before,
 *::after {
@@ -354,7 +347,7 @@ footer > * {
 .search-wrap {
   margin-left: auto;
   position: relative;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-rad);
 }
 .search-wrap:is(:focus, :focus-visible, :focus-within) #search-bar {
   border: 1px solid;
@@ -546,6 +539,9 @@ h1#config-set-title {
 }
 .editor-item .editor-item-preview i {
   color: var(--text-2);
+}
+.editor-item .editor-item-preview span {
+  font-weight: bold;
 }
 .editor-item .editor-item-preview span#key {
   color: var(--accent);
