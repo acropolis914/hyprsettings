@@ -13,6 +13,7 @@ export class EditorItem_Comments {
 		this.el.dataset.comment = comment
 		this.el.dataset.uuid = uuid
 		this.el.dataset.position = position
+		this.el.dataset.type = json['type']
 		this.editing = false
 		// let [name, value] = this.el.dataset.comment.replace(/^[ #]+/, '').split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
 		// if (name && value){

@@ -16,10 +16,16 @@ export async function initializeSearchBar() {
 		let searchItems = document.querySelectorAll('.editor-item')
 		searchItems.forEach(item => {
 			let itemProps = { ...item.dataset }
-			resultsPool.push(itemProps)
-			if (item.dataset.comment) {
-				console.log(itemProps)
+			if (item.classList.contains('config-group')) {
+				itemProps['type'] = 'GROUP'
 			}
+			if (itemProps.type === 'COMMENT' && itemProps.comment.trim().startsWith('#####')) {
+				return
+			}
+			resultsPool.push(itemProps)
+			// if (item.dataset.type === 'GROUP') {
+			// 	console.log(itemProps)
+			// }
 		})
 		// console.log(resultsPool)
 		const fuse = new Fuse(resultsPool, {
@@ -43,8 +49,8 @@ export async function initializeSearchBar() {
 			} else if (result.item.type.toLowerCase() === 'key') {
 				configLineDiv.innerHTML = `
 				  <span class="name">${result.item.name}</span>&nbsp;&nbsp;</br>
-				  <span class="value">${result.item.value}</span>&nbsp;
-				  <span class="comment">${result.item.comment || ''}</span>
+				  <span class="value">${result.item.value}</span>&nbsp;</br>
+				  <span class="comment" style ="font-size:1.2rem">${result.item.comment || ''}</span>
 				`
 			} else {
 				configLineDiv.innerHTML = `Group: <span class="name">${result.item.name}</span>`
@@ -52,7 +58,12 @@ export async function initializeSearchBar() {
 
 			const locationDiv = document.createElement('div')
 			locationDiv.className = 'location'
-			locationDiv.innerHTML = `${result.item.position.split(':').slice(1).join(' 󰄾 ')}`
+			try {
+				locationDiv.innerHTML = `${result.item.position.split(':').slice(1).join(' 󰄾 ')}`
+			} catch (e) {
+				console.error(e, result.item)
+			}
+
 			resultDiv.appendChild(configLineDiv)
 			resultDiv.appendChild(locationDiv)
 
@@ -64,18 +75,16 @@ export async function initializeSearchBar() {
 				}
 				if (e.key === 'ArrowDown') {
 					e.preventDefault()
-					console.log('ArrowDown is clicked finding next element')
+					// console.log('ArrowDown is clicked finding next element')
 					let next = resultDiv.nextElementSibling
 					while (next && next.tagName !== 'DIV') {
 						next = next.nextElementSibling
 					}
-					if (next) {
-						resultDiv.classList.remove('selected')
-						console.debug('Next element is focused')
-						next.focus({ preventScroll: true })
-					} else {
-						console.log('Nothing to focus')
+					if (!next) {
+						next = resultDiv.parentElement.firstElementChild
 					}
+					resultDiv.classList.remove('selected')
+					next.focus({ preventScroll: true })
 
 				}
 				if (e.key === 'ArrowUp') {
@@ -85,13 +94,12 @@ export async function initializeSearchBar() {
 					while (previous && previous.tagName !== 'DIV') {
 						previous = previous.previousElementSibling
 					}
-					if (previous) {
-						resultDiv.classList.remove('selected')
-						console.debug('Next element is focused')
-						previous.focus({ preventScroll: true })
-					} else {
-						console.log('Nothing to focus')
+					if (!previous) {
+						previous = resultDiv.parentElement.lastElementChild
 					}
+					resultDiv.classList.remove('selected')
+					console.debug('Next element is focused')
+					previous.focus({ preventScroll: true })
 
 				}
 			})
@@ -104,13 +112,17 @@ export async function initializeSearchBar() {
 				goto.scrollIntoView({ behavior: 'smooth', block: 'center' })
 				// goto.click()
 				// goto.style.outline = '1px solid red'
-				goto.style.scale = '1.05'
+
 				goto.focus()
 				goto.click()
-				setTimeout(() => {
-					goto.style.outline = '0px solid red'
-					goto.style.scale = '1.0'
-				}, 1000)
+				if (GLOBAL.config.ui_animations) {
+					goto.style.scale = '1.02'
+					setTimeout(() => {
+						goto.style.outline = '0px solid red'
+						goto.style.scale = '1.0'
+					}, 200)
+				}
+
 				searchResultEl.style.display = 'none'
 				searchResultEl.innerHTML = ''
 				searchBar.value = ''
@@ -173,8 +185,6 @@ export async function initializeSearchBar() {
 	hotkeys('*', (event) => {
 		const pressedKey = event.key
 		const target = event.target
-
-
 	})
 
 
