@@ -16,7 +16,6 @@ document.addEventListener('mousedown', e => {
 })
 
 const pressed = new Set()
-
 hotkeys('*', { keydown: true, keyup: true }, (event) => {
 	if (event.type === 'keydown') pressed.add(event.key)
 	if (event.type === 'keyup') {
@@ -34,7 +33,7 @@ hotkeys('*', { keydown: true, keyup: true }, (event) => {
 })
 
 
-GLOBAL.setKey('currentView', 'tabs')
+GLOBAL.setKey('currentView', 'tabs') //area of the document currently active
 GLOBAL['activeTab']
 GLOBAL['mainFocus'] = {}
 window.currentFocus = null
@@ -45,16 +44,6 @@ hotkeys('*', (event) => {
 
 	if (event.key === 'Escape') {
 		event.preventDefault()
-		// switch (GLOBAL['currentView']) {
-		// 	case 'tabs':
-		// 		break
-		// 	case 'main':
-		// 		break
-		// 	case 'search':
-		// 		GLOBAL['currentView'] = GLOBAL['previousView']
-		// 		GLOBAL['currentView'].focus()
-		// 		break
-		// }
 	}
 	if (event.key === 'Tab') {
 		// event.preventDefault();
@@ -81,7 +70,6 @@ hotkeys('*', (event) => {
 			if (prevFocus) {
 				window.currentFocus = prevFocus
 				prevFocus.focus({ preventScroll: true })
-				// window.currentView = "main"; //FIXME: Change to global
 				GLOBAL.setKey('currentView', 'main')
 			}
 		} else {
@@ -92,13 +80,12 @@ hotkeys('*', (event) => {
 				window.currentFocus = firstChild
 				firstChild.focus({ preventScroll: true })
 				GLOBAL['mainFocus'][GLOBAL['activeTab']] = firstChild.dataset.uuid || 0
-				// window.currentView = "main"; //FIXME Change to global
 				GLOBAL.setKey('currentView', 'main')
 			}
 		}
 	}
 
-	if (event.key === 'ArrowLeft' && GLOBAL['currentView'] === 'main') { //FIXME Change to global
+	if (event.key === 'ArrowLeft' && GLOBAL['currentView'] === 'main') {
 		const activeElem = document.activeElement
 		if (activeElem && activeElem.dataset.uuid != null) {
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = activeElem.dataset.uuid

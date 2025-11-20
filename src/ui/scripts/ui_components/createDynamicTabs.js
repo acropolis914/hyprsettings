@@ -2,7 +2,7 @@ import { saveWindowConfig } from '../utils.js'
 import { tabs } from '../configMap.js'
 import { GLOBAL } from '../GLOBAL.js'
 
-class ConfigTabs {
+class ConfigTab {
 	constructor(tab) {
 		// console.log(tab)
 		if (tab.name === 'separator') {
@@ -35,6 +35,9 @@ class ConfigTabs {
 		separator.classList.add('tab-separator')
 		separator.textContent = tab.label
 		separator.setAttribute('title', tab.label)
+		separator.addEventListener('contextmenu', (e) => {
+			e.preventDefault()
+		})
 		this.sidebar.appendChild(separator)
 	}
 
@@ -64,6 +67,9 @@ class ConfigTabs {
 		}
 		item.addEventListener('click', () => {
 			this.handleTabClick(this.id)
+		})
+		item.addEventListener('contextmenu', (e) => {
+			e.preventDefault()
 		})
 		// item.addEventListener("focus", (e) => {
 		// 	this.handleTabClick(this.id);
@@ -110,9 +116,14 @@ class ConfigTabs {
 }
 
 export async function createDynamicTabs() {
+	let sidebar = document.querySelector('aside#sidebar>ul')
+	sidebar.innerHTML = ''
+	document.querySelectorAll('.config-set').forEach((element) => {
+		element.remove()
+	})
 	for (let tab of tabs) {
 		// console.log(tab)
-		new ConfigTabs(tab)
+		new ConfigTab(tab)
 	}
 	if (GLOBAL['persistence']['last_tab']) {
 		let id = GLOBAL['persistence']['last_tab']

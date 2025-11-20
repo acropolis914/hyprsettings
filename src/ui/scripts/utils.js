@@ -166,3 +166,14 @@ export async function saveWindowConfig_Persistence() {
 		console.error('Failed to save config:', err)
 	}
 }
+
+export function splitWithRemainder(str, sep, limit) {
+	let parts = str.split(sep)
+	if (parts.length > limit) {
+		let firstParts = parts.slice(0, limit)
+		let remainder = parts.slice(limit).join(sep)
+		firstParts.push(remainder)
+		return firstParts
+	}
+	return parts
+}

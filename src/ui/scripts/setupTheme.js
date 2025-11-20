@@ -7,11 +7,12 @@ var root = document.querySelector(':root')
 let headers = ['description', 'link', 'author', 'variant']
 
 export async function setupTheme() {
+	window.refreshAllStylesheets = refreshAllStylesheets
 	let currentTheme = GLOBAL['config']['current_theme']
 	document.documentElement.style.opacity = GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
 	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])
 	window.themes.forEach(theme => {
-		if (theme.name == currentTheme) {
+		if (theme.name === currentTheme) {
 			currentThemeIndex = window.themes.findIndex(theme => theme.name === currentTheme)
 			window.themeVariant = theme.variant.toLowerCase()
 			console.log(`Initially setting ${theme.name} as theme from config`)
@@ -49,17 +50,46 @@ function changeTheme() {
 	GLOBAL['config']['current_theme'] = theme.name
 	window.themeVariant = theme['variant'].toLowerCase()
 	// console.log(window.themeVariant)
-	if (window.themeVariant === 'dark') {
-		window.jsViewer.setAttribute('theme', 'default-dark')
-	} else {
-		window.jsViewer.setAttribute('theme', 'default-light')
-	}
+	updateJsonViewerTheme()
 	root.classList.remove('dark')
 	root.classList.remove('light')
 	root.classList.add(theme.variant.toLowerCase())
 	saveWindowConfig()
 	updateColoris()
 }
+
+/**
+ * Refreshes all linked CSS stylesheets by forcing the browser to re-fetch them.
+ */
+export function updateJsonViewerTheme() {
+	if (window.themeVariant === 'dark') {
+		window.jsViewer.setAttribute('theme', 'default-dark')
+	} else {
+		window.jsViewer.setAttribute('theme', 'default-light')
+	}
+}
+
+export function refreshAllStylesheets() {
+	// Select all <link> tags that are stylesheets
+	const links = document.querySelectorAll('link[rel="stylesheet"]')
+
+	// Create a unique timestamp for cache busting
+	const newTimestamp = Date.now()
+
+	links.forEach(link => {
+		const currentHref = link.href
+
+		// Remove any existing query strings (?v=...) and fragment identifiers (#...)
+		const cleanHref = currentHref.replace(/(\?.*)|(#.*)/g, '')
+
+		// Update the href, forcing a cache bypass and re-load
+		link.href = cleanHref + '?v=' + newTimestamp
+	})
+}
+
+
+refreshAllStylesheets()
+
 
 function updateColoris() {
 	Coloris({// bind picker to THIS input only
@@ -83,7 +113,6 @@ export function getSwatch() {
 	// Ensure uniqueness
 	return [...new Set(colors)]
 }
-
 
 function hexToRgb(hex) {
 	hex = hex.replace('#', '')

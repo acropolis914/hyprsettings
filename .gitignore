@@ -6,7 +6,7 @@ dist/
 wheels/
 *.egg-info
 .venv/
-.vscode/
+#pywebviewspecific
 hsts/
 mediakeys/
 cache/
@@ -15,12 +15,15 @@ pywebview/
 .pywebview/
 .mypy_cache/
 storage/
-node_modules
-.vscode
-setupscript.sh
-.venv
-.idea/
+
+
+project_context.txt
 # Nix
 result
 result-*
 .direnv/
+
+.vscode/
+node_modules
+setupscript.sh
+.idea/

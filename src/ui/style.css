@@ -13,6 +13,11 @@
 /* --- Mixins ---*/
 /* Single-line text overflow*/
 /* Sidebar tab active state (for :hover, :active, .selected)*/
+@font-face {
+  font-family: "CommitMonoIconFont";
+  src: url("fonts/CommitMonoNerdFontMono-Regular.otf") format("opentype");
+  font-display: swap;
+}
 /* --- Placeholders ---*/
 .editor-item:has(> .editor-item-comment) > .editor-item-comment, .generic-editor-gradientmodal .angle-container input[type=text], .generic-editor-slidermodal input[type=text] {
   border: 0;
@@ -101,7 +106,7 @@
   --purple: #cba6f7;
   --overlay: #7f849c;
   --shadow: #6c7086;
-  --font-primary: "CommitMono Nerd Font Mono" ;
+  --font-primary: 'CommitMono Nerd Font Mono' ;
 }
 
 /* --- Base & Resets ---*/
@@ -116,6 +121,7 @@ html {
   box-sizing: border-box;
   overflow: hidden;
   min-height: 0;
+  min-width: 400px;
 }
 html,
 html body {
@@ -169,11 +175,30 @@ header#main-header {
   border-bottom: 1px solid var(--surface-border);
   border-radius: 0;
   font-weight: 800;
-  transition: transform 0.5s ease;
+  transition: transform 0.05s ease;
   display: flex;
   flex-direction: row;
   align-items: center;
 }
+header#main-header #header-title {
+  padding-left: 1rem;
+  align-items: center;
+  color: var(--accent);
+}
+header#main-header #header-title #icon {
+  font-family: "CommitMonoIconFont", monospace;
+  font-size: 2rem;
+}
+header#main-header #header-title {
+  transition: all 0.1s ease-in-out;
+}
+header#main-header #header-title:hover {
+  transform: scale(1.05) translateX(0.05rem);
+}
+header#main-header #header-title:active {
+  transform: scale(0.95);
+}
+
 #main {
   display: flex;
   flex: 1;
@@ -188,23 +213,34 @@ header#main-header {
   min-width: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  transition: width 1s ease-in-out;
+  transition: flex-basis 0.5s ease-out;
 }
 #sidebar ul {
   display: flex;
   list-style: none;
   flex-direction: column;
 }
+#sidebar ul li {
+  position: relative;
+}
 #sidebar ul .sidebar-icon {
   display: inline-flex;
   padding: var(--spacing-unit);
   font-size: 3rem;
   line-height: 1;
+  font-family: "CommitMonoIconFont", monospace;
+}
+#sidebar ul .sidebar-text {
+  transition: all 0.2s ease-in-out;
+  max-width: 100%;
+  min-width: 0;
 }
 #sidebar ul > div {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: opacity 0.3s ease-in-out, height 0.2s ease-in-out;
+  height: 2rem;
 }
 @media (max-width: 40rem) {
   #sidebar {
@@ -217,14 +253,15 @@ header#main-header {
     height: 3rem;
     padding-left: 1rem;
     justify-content: center;
+    position: relative;
   }
   #sidebar > ul > li .sidebar-text {
-    position: absolute;
-    opacity: 0;
-    transform: translateX(1rem);
+    max-width: 0 !important;
+    overflow: hidden !important;
   }
   #sidebar > ul > div {
     opacity: 0;
+    height: 0;
   }
   #sidebar #sidebar-icon.sidebar-icon {
     display: inline-block !important;
@@ -240,6 +277,7 @@ header#main-header {
   flex: 0 0 80%;
   flex-direction: column;
   min-height: 0;
+  transition: none !important;
 }
 @media (max-width: 40rem) {
   #content-area {
@@ -319,7 +357,19 @@ footer > * {
   border-radius: var(--border-radius);
 }
 .search-wrap:is(:focus, :focus-visible, :focus-within) #search-bar {
-  border: 1px solid var(--accent);
+  border: 1px solid;
+  border-color: var(--accent);
+}
+.search-wrap:is(:focus, :focus-visible, :focus-within) label {
+  color: var(--accent);
+}
+.search-wrap label {
+  font-size: 2.5rem;
+  transition: color 0.5s ease;
+  position: relative;
+  top: 4px;
+  left: 0.5rem;
+  color: var(--text-0);
 }
 .search-wrap #search-bar {
   border-radius: var(--border-rad);
@@ -330,6 +380,7 @@ footer > * {
   resize: none;
   color: var(--text-0);
   background-color: var(--surface-1);
+  padding-left: 0.5rem;
 }
 .search-wrap div#results {
   display: none;
@@ -339,6 +390,7 @@ footer > * {
   z-index: 10;
   background-color: var(--surface-0);
   width: 50vw;
+  min-width: 10rem;
   padding: var(--spacing-unit);
   flex-direction: column;
   gap: var(--spacing-unit);
@@ -360,6 +412,7 @@ footer > * {
   background-color: var(--surface-1);
   border-radius: var(--border-rad);
   padding-left: var(--spacing-unit);
+  outline: none;
 }
 .search-wrap div#results .result .config-line {
   white-space: nowrap;
@@ -391,12 +444,11 @@ footer > * {
   overflow-x: hidden;
   display: flex;
   height: 100%;
-  max-width: 100%;
+  min-width: 100%;
   width: 100%;
   margin-top: 1rem;
   padding-right: 2rem;
   padding-left: 2rem;
-  flex: 0 1 100%;
   flex-direction: column;
   min-height: 0;
   /* Specific styles for the #settings tab*/
@@ -434,7 +486,7 @@ h1#config-set-title {
   border: 1px solid transparent;
   padding: 0.5rem;
   margin-bottom: var(--spacing-unit);
-  transition: margin 0.2s ease, border 100ms ease-in-out;
+  transition: margin 0.2s ease, border 100ms ease-in-out, scale 0.2s ease;
   display: flex;
   flex-direction: column;
   font-size: 1.6rem;
@@ -848,7 +900,7 @@ h1#config-set-title {
   flex-direction: column;
   opacity: 1;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
-  transition: margin 0.3s ease;
+  transition: margin 0.3s ease, scale 0.2s ease;
 }
 .config-group > .config-group {
   margin-top: 1.5rem;
