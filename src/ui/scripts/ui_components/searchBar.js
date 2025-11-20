@@ -17,6 +17,9 @@ export async function initializeSearchBar() {
 		searchItems.forEach(item => {
 			let itemProps = { ...item.dataset }
 			resultsPool.push(itemProps)
+			if (item.dataset.comment) {
+				console.log(itemProps)
+			}
 		})
 		// console.log(resultsPool)
 		const fuse = new Fuse(resultsPool, {
@@ -129,19 +132,15 @@ export async function initializeSearchBar() {
 	}
 
 	searchBar.addEventListener('input', (e) => {
+		searchResultEl.style.display = 'flex'
 		search()
 	})
 	searchBar.addEventListener('click', (e) => {
+		e.stopPropagation()
 		GLOBAL['previousView'] = GLOBAL['currentView']
 		GLOBAL['currentView'] = 'search'
+		searchResultEl.style.display = 'flex'
 		search()
-	})
-
-	searchBar.addEventListener('blur', (e) => {
-		if (e._nodefocus) {
-			return
-		}
-		// searchResultEl.style.display = 'none'
 	})
 
 	searchBar.addEventListener('keydown', (e) => {
@@ -160,7 +159,6 @@ export async function initializeSearchBar() {
 		}
 	})
 	searchResultEl.addEventListener('focus', (e) => {
-		e._nodefocus = true
 		GLOBAL['currentView'] = 'search'
 		searchResultEl.style.display = 'flex'
 	})
@@ -168,6 +166,9 @@ export async function initializeSearchBar() {
 		if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
 			e.preventDefault()
 		}
+	})
+	document.addEventListener('click', (e) => {
+		searchResultEl.style.display = 'none'
 	})
 	hotkeys('*', (event) => {
 		const pressedKey = event.key

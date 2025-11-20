@@ -10,7 +10,7 @@ import './components/keyEditor_Slider.js'
 import './ui_components/searchBar.js'
 import { GLOBAL } from './GLOBAL.js'
 import { jsViewerInit } from './ui_components/jsViewer.js'
-import { setupTheme } from './setupTheme.js'
+import { refreshAllStylesheets, setupTheme, updateJsonViewerTheme } from './setupTheme.js'
 import { createDynamicTabs } from './ui_components/createDynamicTabs.js'
 import { renderSettings } from './settings.js'
 import { initializeSearchBar } from './ui_components/searchBar.js'
@@ -23,7 +23,7 @@ window.Global = GLOBAL
 async function setupData() {
 	await waitFor(() => window.pywebview?.api.init)
 	// @ts-ignore
-	GLOBAL['data']
+	// GLOBAL['data']
 	GLOBAL['data'] = await JSON.parse(await window.pywebview.api.init())
 	jsViewerInit()
 	new configRenderer(GLOBAL['data'])
@@ -56,14 +56,19 @@ async function load_config() {
 	}
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+export async function initialize() {
 	await load_config()
 	await setupTheme()
 	await createDynamicTabs()
 	await setupData()
 	await renderSettings()
 	await initializeSearchBar()
+	refreshAllStylesheets()
+}
 
+document.addEventListener('DOMContentLoaded', async () => {
+	await initialize()
+	window.initialize = initialize
 })
 
 window.addEventListener('error', e => {

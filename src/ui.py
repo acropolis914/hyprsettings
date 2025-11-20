@@ -88,13 +88,14 @@ class Api:
 		template = Path(thisfile_path / "default_config.toml")
 		temporary_font = self.list_fonts(mono=False, nerd=True)[1]
 
-		if not window_config_path.is_file():
+		if not window_config_path.is_file() or window_config_path.stat().st_size == 0:
 			print(f"Config file not found in {window_config_path}")
-			with open(
+			with open( 
 				template,
 				"r",
 			) as default_config:
 				default_config_text = default_config.read()
+
 			self.window_config = toml.parse(default_config_text)
 			self.window_config["config"]["font"] = temporary_font if temporary_font else "Monospace"
 			# add_missing_keys()
@@ -146,8 +147,9 @@ if __name__ == "__main__":
 		width=800,
 		height=600,
 		easy_drag=True,
+        min_size=(400,300)
 	)
 	webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
 	window.events.loaded += on_loaded
 	window.events.closed += on_closed
-	webview.start(gui="gtk", debug=True, private_mode=False, storage_path=str(cache_path), icon="icon-48.png")
+	webview.start(gui="gtk", debug=True, private_mode=False, storage_path=str(cache_path), icon="icon-48.png",)

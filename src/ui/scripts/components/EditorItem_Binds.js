@@ -1,6 +1,6 @@
 import { bindFlags, modkeys, dispatchers } from '../hyprland-specific/hyprlandBindDefinitions.js'
 import { ContextMenu } from './contextMenu.js'
-import { addItem, debounce, deleteKey, saveKey } from '../utils.js'
+import { addItem, debounce, deleteKey, saveKey, splitWithRemainder } from '../utils.js'
 import { GLOBAL } from '../GLOBAL.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 
@@ -54,7 +54,7 @@ export class EditorItem_Binds {
 	}
 
 	addElements(name, comment) {
-		let values = this.el.dataset.value.split(',', 4)
+		let values = splitWithRemainder(this.el.dataset.value, ',', 3)
 		const renderflags = {
 			option: function(data, escape) {
 				return `<div title="${data.description}">` + escape(data.text) + `</div>`

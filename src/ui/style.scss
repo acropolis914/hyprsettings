@@ -193,6 +193,7 @@ html {
 	box-sizing: border-box;
 	overflow: hidden;
 	min-height: 0;
+	min-width: 400px;
 
 	&,
 	body {
@@ -246,13 +247,26 @@ header#main-header {
 	border-bottom: 1px solid var(--surface-border);
 	border-radius: 0;
 	font-weight: 800;
-	transition: transform $transition-speed-normal ease;
+	transition: transform $transition-speed-fast ease;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	//background-color: var(--red);
 
 	&:hover {
 		//transform: scale(1.05) translateX(2.5rem);
+	}
+
+	#header-title {
+		transition: all 0.1s ease-in-out;
+
+		&:hover {
+			transform: scale(1.05) translateX(0.05rem);
+		}
+
+		&:active {
+			transform: scale(0.95);
+		}
 	}
 }
 
@@ -270,12 +284,17 @@ header#main-header {
 	min-width: 0;
 	overflow-y: auto;
 	overflow-x: hidden;
-	transition: width 1s ease-in-out;
+	transition: flex-basis 0.5s ease-out;
 
 	ul {
 		display: flex;
 		list-style: none;
 		flex-direction: column;
+
+		li {
+			position: relative;
+			//transition: all 1s ease-in-out;
+		}
 
 		.sidebar-icon {
 			display: inline-flex;
@@ -284,8 +303,17 @@ header#main-header {
 			line-height: 1;
 		}
 
+		.sidebar-text {
+			transition: all .2s ease-in-out;
+			max-width: 100%;
+			min-width: 0;
+		}
+
 		> div {
 			@include text-ellipsis;
+			transition: opacity 0.3s ease-in-out,
+			height 0.2s ease-in-out;
+			height: 2rem;
 		}
 	}
 
@@ -298,15 +326,21 @@ header#main-header {
 			height: 3rem;
 			padding-left: 1rem;
 			justify-content: center;
+			position: relative;
+
 
 			.sidebar-text {
-				position: absolute;
-				opacity: 0;
-				transform: translateX(1rem);
+				//position: absolute;
+				//opacity: 0;
+				//margin-left: 1rem;
+				//transform: translateX(50%);
+				max-width: 0 !important;
+				overflow: hidden !important;
 			}
 		}
 		> ul > div {
 			opacity: 0;
+			height: 0;
 		}
 		#sidebar-icon.sidebar-icon {
 			display: inline-block !important;
@@ -374,7 +408,7 @@ footer {
 
 	&.keyboard-selected {
 		&::after {
-			content: "";
+			content: '';
 			position: absolute;
 			left: 2px;
 			color: var(--text-contrast);
@@ -409,6 +443,11 @@ footer {
 		}
 	}
 
+	label {
+		//font-size: 3rem;
+		display: none;
+	}
+
 	#search-bar {
 		border-radius: var(--border-rad);
 		@include editor-input-reset
@@ -422,6 +461,7 @@ footer {
 		z-index: 10;
 		background-color: var(--surface-0);
 		width: 50vw;
+		min-width: 10rem;
 		padding: var(--spacing-unit);
 		flex-direction: column;
 		gap: var(--spacing-unit);
@@ -468,6 +508,7 @@ footer {
 				font-size: 1.2rem;
 			}
 		}
+
 		.result.selected {
 			border: 1px solid var(--accent);
 		}
@@ -480,14 +521,15 @@ footer {
 	overflow-x: hidden;
 	display: flex;
 	height: 100%;
-	max-width: 100%;
+	min-width: 100%;
 	width: 100%;
 	margin-top: 1rem;
 	padding-right: 2rem;
 	padding-left: 2rem;
-	flex: 0 1 100%;
+	//flex: 0 1 100%;
 	flex-direction: column;
 	min-height: 0;
+	//background-color: red;
 
 	/* Specific styles for the #settings tab*/
 	&#settings {
@@ -498,7 +540,7 @@ footer {
 			flex-direction: row;
 			align-items: center;
 
-			input[type="checkbox"] {
+			input[type='checkbox'] {
 				height: 2rem;
 				margin-right: var(--spacing-unit);
 				width: 2rem;
@@ -544,17 +586,17 @@ h1#config-set-title {
 
 	// Focused (Keyboard/Direct) - Non-Group
 	&:is(:focus, :focus-visible):not(.config-group) {
-		@include editor-focused("", var(--accent-success));
+		@include editor-focused('', var(--accent-success));
 	}
 
 	// Focused-Within (Child Element Active) - Non-Group
 	&:focus-within:not(:focus):not(.config-group) {
-		@include editor-focused("", var(--accent-warning));
+		@include editor-focused('', var(--accent-warning));
 	}
 
 	// Focused (Keyboard/Direct/Within) - Config Group
 	&:is(:focus, :focus-visible).config-group {
-		@include config-group-focused("", var(--accent-success));
+		@include config-group-focused('', var(--accent-success));
 	}
 
 
@@ -727,7 +769,7 @@ h1#config-set-title {
 				border-radius: var(--border-rad);
 				color: var(--accent-warning);
 				font-size: 1.2rem;
-				content: "Disabled";
+				content: 'Disabled';
 			}
 		}
 	}
@@ -749,7 +791,7 @@ h1#config-set-title {
 		@extend %slider-base;
 	}
 
-	input[type="text"] {
+	input[type='text'] {
 		@extend %input-clean;
 		margin-left: 1rem;
 		margin-bottom: 0;
@@ -783,7 +825,7 @@ h1#config-set-title {
 			//overflow: hidden;
 		}
 
-		input[type="text"] {
+		input[type='text'] {
 			@extend %input-clean;
 			width: 5%;
 			min-width: 4ch;
@@ -865,12 +907,12 @@ h1#config-set-title {
 					}
 
 					@media (max-width: 40rem) {
-						content: "X" !important;
+						content: 'X' !important;
 					}
 				}
 			}
 
-			input[type="text"] {
+			input[type='text'] {
 				width: 100%;
 				height: 100%;
 				background-clip: padding-box;
@@ -1188,7 +1230,7 @@ span {
 	.new::before {
 		position: absolute;
 		left: -7ch;
-		content: "New!";
+		content: 'New!';
 		background-color: var(--yellow);
 		color: var(--text-contrast);
 		padding: 0.1rem;

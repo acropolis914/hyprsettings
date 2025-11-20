@@ -101,7 +101,7 @@
   --purple: #cba6f7;
   --overlay: #7f849c;
   --shadow: #6c7086;
-  --font-primary: "CommitMono Nerd Font Mono" ;
+  --font-primary: 'CommitMono Nerd Font Mono' ;
 }
 
 /* --- Base & Resets ---*/
@@ -116,6 +116,7 @@ html {
   box-sizing: border-box;
   overflow: hidden;
   min-height: 0;
+  min-width: 400px;
 }
 html,
 html body {
@@ -169,11 +170,21 @@ header#main-header {
   border-bottom: 1px solid var(--surface-border);
   border-radius: 0;
   font-weight: 800;
-  transition: transform 0.5s ease;
+  transition: transform 0.05s ease;
   display: flex;
   flex-direction: row;
   align-items: center;
 }
+header#main-header #header-title {
+  transition: all 0.1s ease-in-out;
+}
+header#main-header #header-title:hover {
+  transform: scale(1.05) translateX(0.05rem);
+}
+header#main-header #header-title:active {
+  transform: scale(0.95);
+}
+
 #main {
   display: flex;
   flex: 1;
@@ -188,12 +199,15 @@ header#main-header {
   min-width: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  transition: width 1s ease-in-out;
+  transition: flex-basis 0.5s ease-out;
 }
 #sidebar ul {
   display: flex;
   list-style: none;
   flex-direction: column;
+}
+#sidebar ul li {
+  position: relative;
 }
 #sidebar ul .sidebar-icon {
   display: inline-flex;
@@ -201,10 +215,17 @@ header#main-header {
   font-size: 3rem;
   line-height: 1;
 }
+#sidebar ul .sidebar-text {
+  transition: all 0.2s ease-in-out;
+  max-width: 100%;
+  min-width: 0;
+}
 #sidebar ul > div {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: opacity 0.3s ease-in-out, height 0.2s ease-in-out;
+  height: 2rem;
 }
 @media (max-width: 40rem) {
   #sidebar {
@@ -217,14 +238,15 @@ header#main-header {
     height: 3rem;
     padding-left: 1rem;
     justify-content: center;
+    position: relative;
   }
   #sidebar > ul > li .sidebar-text {
-    position: absolute;
-    opacity: 0;
-    transform: translateX(1rem);
+    max-width: 0 !important;
+    overflow: hidden !important;
   }
   #sidebar > ul > div {
     opacity: 0;
+    height: 0;
   }
   #sidebar #sidebar-icon.sidebar-icon {
     display: inline-block !important;
@@ -321,6 +343,9 @@ footer > * {
 .search-wrap:is(:focus, :focus-visible, :focus-within) #search-bar {
   border: 1px solid var(--accent);
 }
+.search-wrap label {
+  display: none;
+}
 .search-wrap #search-bar {
   border-radius: var(--border-rad);
   padding: 2px;
@@ -339,6 +364,7 @@ footer > * {
   z-index: 10;
   background-color: var(--surface-0);
   width: 50vw;
+  min-width: 10rem;
   padding: var(--spacing-unit);
   flex-direction: column;
   gap: var(--spacing-unit);
@@ -391,12 +417,11 @@ footer > * {
   overflow-x: hidden;
   display: flex;
   height: 100%;
-  max-width: 100%;
+  min-width: 100%;
   width: 100%;
   margin-top: 1rem;
   padding-right: 2rem;
   padding-left: 2rem;
-  flex: 0 1 100%;
   flex-direction: column;
   min-height: 0;
   /* Specific styles for the #settings tab*/
