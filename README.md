@@ -60,7 +60,7 @@ cd hyprsettings
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install -U pip setuptools wheel
-python -m pip install tomlkit rich pywebview
+python -m pip install tomlkit rich pywebview packaging
 python src/ui.py
 ```
 
@@ -113,7 +113,7 @@ cd hyprsettings
 2. Install required system packages (make a venv if you want):
 
 ```bash
-sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich
+sudo pacman -Syu python python-gobject gtk3 python-pywebview python-tomlkit python-rich python-packaging
 ```
 
 3. Run the UI:
