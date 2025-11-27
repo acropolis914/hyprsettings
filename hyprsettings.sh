@@ -437,6 +437,7 @@ StartupNotify=true"
         dim "  Run '$APP_NAME' or check your menu."
         echo
     fi
+    exit 0
 }
 
 ### LOGIC BRANCHES
