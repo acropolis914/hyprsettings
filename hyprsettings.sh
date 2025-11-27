@@ -436,6 +436,7 @@ StartupNotify=true"
     if [[ "$is_uninstall" != "true" ]]; then
         dim "  Run '$APP_NAME' or check your menu."
         echo
+        exit 0
     fi
     exit 0
 }
