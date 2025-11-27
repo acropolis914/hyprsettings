@@ -31,8 +31,10 @@
             python3Packages.tomlkit
             python3Packages.rich
             python3Packages.pygobject3
+            python3Packages.packaging # Added dependency for 'packaging'
             gtk3
             gobject-introspection
+            webkitgtk
           ];
         };
       }

@@ -28,3 +28,7 @@ node_modules
 setupscript.sh
 .idea/
 .env
+
+*.code-workspace
+#run.sh
+pkg

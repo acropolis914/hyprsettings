@@ -39,7 +39,7 @@ nix run github:acropolis914/hyprsettings
 #### Install to user profile
 
 ```bash
-nix profile install github:acropolis914/hyprsettings
+nix profile add github:acropolis914/hyprsettings
 ```
 
 ### Method 2: Using traditional Nix
@@ -130,6 +130,7 @@ The result will be in `./result/bin/hyprsettings`.
 ## Dependencies
 
 All dependencies are handled automatically by Nix:
+
 - Python 3
 - PyWebView with GTK support
 - python-tomlkit

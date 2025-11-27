@@ -1,9 +1,10 @@
 [project]
 name = "hyprui"
-version = "0.1.0"
+version = "0.6.2"
 description = "Add your description here"
 requires-python = ">=3.14"
 dependencies = [
+    "packaging>=25.0",
     "pywebview[gtk]>=6.1",
     "rich>=14.2.0",
     "tomlkit>=0.13.3",

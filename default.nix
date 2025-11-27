@@ -1,11 +1,12 @@
 { lib
 , stdenv
 , python3
-, fetchFromGitHub
 , gtk3
+, webkitgtk_4_1
 , gobject-introspection
 , wrapGAppsHook3
 , makeWrapper
+, runtimeShell
 }:
 
 let
@@ -14,11 +15,23 @@ let
     tomlkit
     rich
     pygobject3
+    packaging
   ]);
+
+  maintainersLocal = {
+    acropolis914 = {
+      name = "acropolis914";
+      github = "acropolis914";
+    };
+    wiktormalyska = {
+      name = "wiktormalyska";
+      github = "wiktormalyska";
+    };
+  };
 in
 stdenv.mkDerivation rec {
   pname = "hyprsettings";
-  version = "0.5.0";
+  version = "0.6.2";
 
   src = ./.;
 
@@ -30,30 +43,49 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     gtk3
+    webkitgtk_4_1
     python
   ];
 
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/share/hyprsettings
-    cp -r src/* $out/share/hyprsettings/
-    
+    # 1. Install source
+    mkdir -p $out/lib/hyprsettings
+    cp -r ./* $out/lib/hyprsettings/
+
+    # 2. Generate run.sh
+    cat > $out/lib/hyprsettings/run.sh <<EOF
+#!${runtimeShell}
+cd "\$(dirname "\$0")"
+exec ${python}/bin/python3 src/ui.py "\$@"
+EOF
+    chmod +x $out/lib/hyprsettings/run.sh
+
+    # 3. Create wrapper
     mkdir -p $out/bin
-    makeWrapper ${python}/bin/python $out/bin/hyprsettings \
-      --add-flags "$out/share/hyprsettings/ui.py" \
-      --prefix PYTHONPATH : "$out/share/hyprsettings" \
-      --prefix GI_TYPELIB_PATH : "$GI_TYPELIB_PATH"
+    cat > $out/bin/hyprsettings <<EOF
+#!${runtimeShell}
+exec $out/lib/hyprsettings/run.sh "\$@"
+EOF
+    chmod +x $out/bin/hyprsettings
+
+    # 4. Wrap with paths AND fix EGL crash
+#    wrapProgram $out/bin/hyprsettings \
+#        --prefix PYTHONPATH : "$out/lib/hyprsettings" \
+#        --prefix GI_TYPELIB_PATH : "$GI_TYPELIB_PATH" \
+#        --prefix XDG_DATA_DIRS : "$XDG_DATA_DIRS" \
+#        --set WEBKIT_DISABLE_COMPOSITING_MODE 1
 
     runHook postInstall
   '';
 
   meta = with lib; {
     description = "A configurator for hyprland.conf built with Python and web technologies";
-    homepage = "https://github.com/wiktormalyska/hyprsettings-nixos";
+    homepage = "https://github.com/acropolis914/hyprsettings";
     license = licenses.gpl3Plus;
-    maintainers = [ ];
     platforms = platforms.linux;
     mainProgram = "hyprsettings";
+    maintainers = [ maintainersLocal.acropolis914 maintainersLocal.wiktormalyska ];
   };
 }

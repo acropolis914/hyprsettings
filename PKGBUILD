@@ -1,12 +1,12 @@
 # Maintainer: Paul Harvey <hed-phsuarnaba@smu.edu.ph>
 pkgname=hyprsettings-git
-pkgver=0.0.0   # placeholder; real version set by pkgver()
+pkgver=0.6.2
 pkgrel=1
 pkgdesc="Configurator for Hyprland (alpha, development version, git snapshot)"
 arch=('x86_64')
 url="https://github.com/acropolis914/hyprsettings"
 license=('GPL3')
-depends=('python' 'python-gobject' 'gtk3' 'python-pywebview' 'python-tomlkit' 'python-rich' 'webkit2gtk')
+depends=('python' 'python-gobject' 'gtk3' 'python-pywebview' 'python-tomlkit' 'python-rich' 'webkit2gtk' 'python-packaging')
 makedepends=('git')
 provides=('hyprsettings')
 conflicts=('hyprsettings')
@@ -15,47 +15,50 @@ md5sums=('SKIP')
 
 pkgver() {
   cd "$srcdir/$pkgname"
-  local desc tag ver rev commit
-  if desc=$(git describe --tags --long --match 'v*' --abbrev=7 2>/dev/null); then
-    # Example: v0.1.6alpha-20-ge8ad6b7
-    tag=${desc%%-*}                      # v0.1.6alpha
-    rev=${desc#*-}; rev=${rev%%-*}       # 20
-    commit=${desc##*-}; commit=${commit#g}  # e8ad6b7
-    ver=${tag#v}                         # 0.1.6alpha
-    printf "%s.r%s.g%s" "$ver" "$rev" "$commit"
-  else
-    printf "0.0.0.r%s.g%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-  fi
+  git fetch --tags
+  git describe --long --tags --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 package() {
-    # Directories
+    # 1. Install directories
+    install -dm755 "$pkgdir/usr/lib/$pkgname"
     install -dm755 "$pkgdir/usr/bin"
-    install -dm755 "$pkgdir/usr/lib/hyprsettings-git"
-    install -dm755 "$pkgdir/usr/share/applications"
-    install -dm755 "$pkgdir/usr/share/icons/hicolor/48x48/apps"
 
-    # Copy source tree
-    cp -a "$srcdir/$pkgname/." "$pkgdir/usr/lib/hyprsettings-git/"
+    # 2. Copy source code
+    cp -r --no-preserve=ownership "$srcdir/$pkgname"/* "$pkgdir/usr/lib/$pkgname/"
 
-    # Ensure main entry script is executable & has shebang
-    if ! grep -q '^#!' "$pkgdir/usr/lib/hyprsettings-git/src/ui.py"; then
-        sed -i '1i #!/usr/bin/env python3' "$pkgdir/usr/lib/hyprsettings-git/src/ui.py"
-    fi
-    chmod 755 "$pkgdir/usr/lib/hyprsettings-git/src/ui.py"
+    # Clean up git artifacts
+    rm -rf "$pkgdir/usr/lib/$pkgname/.git"
+    rm -rf "$pkgdir/usr/lib/$pkgname/.gitignore"
 
-    # Wrapper (always uses python3; safe even if ui.py exec bit missing)
-    cat > "$pkgdir/usr/bin/hyprsettings" <<'EOF'
+    # 3. Optimize Python (Compile Bytecode)
+    # The -d flag ensures the compiled files point to /usr/lib, not the temporary build dir
+    python -m compileall -d "/usr/lib/$pkgname" -q "$pkgdir/usr/lib/$pkgname"
+
+    # 4. Create Internal run.sh (Relative)
+    # This script runs ui.py relative to itself.
+    # We use 'dirname $0' so it works regardless of where /usr/lib is located.
+    cat > "$pkgdir/usr/lib/$pkgname/run.sh" <<EOF
 #!/usr/bin/env bash
-exec python3 /usr/lib/hyprsettings-git/src/ui.py "$@"
+cd "\$(dirname "\$0")"
+exec python3 src/ui.py "\$@"
+EOF
+    chmod 755 "$pkgdir/usr/lib/$pkgname/run.sh"
+
+    # 5. Create System Wrapper (Absolute)
+    # This is the only file with a hardcoded path.
+    cat > "$pkgdir/usr/bin/hyprsettings" <<EOF
+#!/usr/bin/env bash
+exec /usr/lib/$pkgname/run.sh "\$@"
 EOF
     chmod 755 "$pkgdir/usr/bin/hyprsettings"
 
-    # Desktop entry
-    cat > "$pkgdir/usr/share/applications/hyprsettings.desktop" <<'EOF'
+    # 6. Install Desktop Entry
+    install -dm755 "$pkgdir/usr/share/applications"
+    cat > "$pkgdir/usr/share/applications/hyprsettings.desktop" <<EOF
 [Desktop Entry]
 Name=HyprSettings
-Comment=Configurator for Hyprland
+Comment=A gui configurator for Hyprland
 Exec=hyprsettings
 Icon=hyprsettings
 Terminal=false
@@ -65,7 +68,10 @@ StartupNotify=true
 EOF
     chmod 644 "$pkgdir/usr/share/applications/hyprsettings.desktop"
 
-    # Icon
-    install -m644 "$srcdir/$pkgname/assets/icon-48.png" \
+    # 7. Install Icon
+    install -Dm644 "$srcdir/$pkgname/assets/icon-48.png" \
         "$pkgdir/usr/share/icons/hicolor/48x48/apps/hyprsettings.png"
+
+    # 8. Install License
+    install -Dm644 "$srcdir/$pkgname/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
