@@ -191,7 +191,7 @@ class Api:
 				print(e)
 
 		def add_missing_keys():
-			defaults = {"animations": True}
+			defaults = {"animations": True, "daemon": True}
 			config_lines = self.window_config["config"]
 			for key, val in defaults.items():
 				if key not in config_lines:
@@ -216,8 +216,10 @@ class Api:
 
 			self.window_config = toml.parse(default_config_text)
 			self.window_config["config"]["font"] = temporary_font if temporary_font else "Monospace"
-			# add_missing_keys()
+			add_missing_keys()
 			version_migration()
+			if self.window_config.get("daemon"):
+				daemon = True
 			with window_config_path.open("w") as config_file:
 				config_file.write(default_config_text)
 			return self.window_config
@@ -231,7 +233,13 @@ class Api:
 					return {"configuration-error": str(e)}
 				self.window_config = config
 				version_migration()
+				add_missing_keys()
+				if self.window_config.get("daemon"):
+					daemon = True
 				return self.window_config
+
+
+
 
 	def get_builtin_themes(self):
 		file_path = thisfile_path / "ui" / "themes_builtin"
@@ -281,38 +289,43 @@ if __name__ == "__main__":
 
 	if send_toggle():
 		exit(0)
+	try:
+		threading.Thread(target=start_socket_server, daemon=args.daemon).start()
+		daemon = args.daemon
+		verbose = args.verbose
+		if args.daemon:
+			print("Started HyprSettings in daemon mode from cli. Initially hiding window")
 
-	threading.Thread(target=start_socket_server, daemon=args.daemon).start()
-	daemon = args.daemon
-	verbose = args.verbose
-	if args.daemon:
-		print("Started HyprSettings in daemon mode. Initially hiding window")
+		api = Api()
+		mimetypes.add_type("application/javascript", ".js")
+		print(Path(thisfile_path / "ui" / "index.html"))
+		webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
+		window_instance = webview.create_window(
+			"HyprSettings",
+			"ui/index.html",
+			js_api=api,
+			transparent=True,
+			width=800,
+			height=600,
+			easy_drag=True,
+			min_size=(400, 300),
+			hidden=args.daemon,
+		)
+		window_visible = not args.daemon
+		window_instance.events.loaded += on_loaded
+		window_instance.events.closed += on_closed
 
-	api = Api()
-	mimetypes.add_type("application/javascript", ".js")
-	print(Path(thisfile_path / "ui" / "index.html"))
-	window_instance = webview.create_window(
-		"HyprSettings",
-		"ui/index.html",
-		js_api=api,
-		transparent=True,
-		width=800,
-		height=600,
-		easy_drag=True,
-		min_size=(400, 300),
-		hidden=args.daemon,
-	)
-	window_visible = not args.daemon
-	window_instance.events.loaded += on_loaded
-	window_instance.events.closed += on_closed
+		# if args.daemon:
+		# window_instance.hide()
 
-	# if args.daemon:
-	# window_instance.hide()
-
-	webview.start(
-		gui="gtk",
-		debug=True,
-		private_mode=True,
-		storage_path=str(cache_path),
-		icon="icon-48.png",
-	)
+		webview.start(
+			gui="gtk",
+			debug=True,
+			private_mode=True,
+			storage_path=str(cache_path),
+			icon="icon-48.png",
+		)
+	except Exception as e:
+		print("I am ded")
+		print(e)
+		os._exit(1)
