@@ -191,7 +191,7 @@ class Api:
 				print(e)
 
 		def add_missing_keys():
-			defaults = {"animations": True, "daemon": True}
+			defaults = {"daemon": True}
 			config_lines = self.window_config["config"]
 			for key, val in defaults.items():
 				if key not in config_lines:
