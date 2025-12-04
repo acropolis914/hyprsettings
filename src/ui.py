@@ -10,6 +10,8 @@ import socket
 import threading
 import argparse
 import time
+import sys
+import signal
 
 os.environ["GDK_BACKEND"] = "wayland"
 import webview
@@ -38,9 +40,30 @@ def print(*args, **kwargs):
 	_original_print("[ui-backend]", *args, **kwargs)
 
 
-def log(msg, prefix="LOG", only_verbose=False):
-	if verbose and only_verbose:
-		print(f"[{prefix}] {msg}")
+def log(msg, prefix="", only_verbose=False):
+	prefix = f"[{prefix}]" if prefix else ""
+	if not only_verbose or verbose:
+		print(f"{prefix} {msg}")
+
+
+class StderrInterceptor:
+	def __init__(self, original_stderr):
+		self.original_stderr = original_stderr
+
+	def write(self, message):
+		# Check for your error string
+		if "Error 71" in message:
+			print("[HOOK] Detected Wayland Error 71!")
+		# Still print to original stderr
+		self.original_stderr.write(message)
+
+	def flush(self):
+		self.original_stderr.flush()
+
+
+def handle_interrupt(signum, frame):
+	log("\n Sigint signal detected! Cleaning up...")
+	os._exit(0)
 
 
 def on_loaded(window):
@@ -49,11 +72,21 @@ def on_loaded(window):
 
 
 def on_closed(window):
-	if daemon:
+	global daemon
+	global window_visible
+	print("______________________________________________\n")
+	disabled_dmabuf = os.environ.get("WEBKIT_DISABLE_DMABUF_RENDERER")
+	if daemon and disabled_dmabuf != "1":
 		window_instance.hide()
 		window_visible = False
+		log("Called close window. Window is hidden since daemon is enabled")
+		print("______________________________________________")
 		return False
-	print("Window closed. Terminating process.")
+	if disabled_dmabuf == "1":
+		log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
+		log("Restoring from daemon will fail. Daemon setting is dishonored.")
+	print(" Window closed. Terminating process.")
+	print("______________________________________________")
 	os._exit(0)
 
 
@@ -73,7 +106,7 @@ def handle_client(conn):
 				.stdout.strip()
 				.strip('"')
 			)
-			# log(f"Active workspace from focused monitor: '{activeworkspace}'")
+			log(f"Active workspace from focused monitor: '{activeworkspace}'")
 
 			specialworkspace = (
 				subprocess.run(
@@ -85,12 +118,12 @@ def handle_client(conn):
 				.stdout.strip()
 				.strip('"')
 			)
-			# log(f"Special workspace from focused monitor: '{specialworkspace}'")
+			log(f"Special workspace from focused monitor: '{specialworkspace}'", only_verbose=True)
 
 			if specialworkspace:
 				log(f"Special workspace {specialworkspace} detected, overriding active workspace")
 				activeworkspace = specialworkspace
-			# log(f"Workspace to target: '{activeworkspace}'")
+			log(f"Workspace to target: '{activeworkspace}'", only_verbose=True)
 
 			# get hyprsettings window workspace
 			hyprsettings_window_workspace_name = subprocess.run(
@@ -99,7 +132,10 @@ def handle_client(conn):
 				capture_output=True,
 				text=True,
 			).stdout.strip()
-			# log(f"HyprSettings window currently on workspace: '{hyprsettings_window_workspace_name}'")
+			log(
+				f"HyprSettings window currently on workspace: '{hyprsettings_window_workspace_name}'",
+				only_verbose=True,
+			)
 
 			# main toggle logic
 			if window_visible and activeworkspace == hyprsettings_window_workspace_name:
@@ -116,6 +152,9 @@ def handle_client(conn):
 					capture_output=True,
 					text=True,
 				)
+				window_instance.restore()  # restore if minimized
+				window_instance.show()
+				window_visible = True
 				# log(f"Move stdout: '{move.stdout.strip()}'")
 				# log(f"Move stderr: '{move.stderr.strip()}'")
 
@@ -124,6 +163,8 @@ def handle_client(conn):
 				window_instance.restore()  # restore if minimized
 				window_instance.show()
 				window_visible = True
+	except Exception as e:
+		print(e)
 
 	finally:
 		conn.close()
@@ -149,6 +190,9 @@ def send_toggle():
 
 
 class Api:
+	def __init__(self):
+		self.window_config = None
+
 	def init(self):
 		return self.get_config()
 
@@ -165,33 +209,37 @@ class Api:
 		return makeUUID(length)
 
 	def read_window_config(self):
+		global daemon
+
 		def version_migration():
 			file_info = self.window_config["file_info"]
 			if Version(file_info["version"]) < Version(CURRENT_VERSION):
 				print(
 					f"Config version {file_info['version']} is older than current {CURRENT_VERSION}. Updating version, moving keys."
 				)
-			file_info["version"] = CURRENT_VERSION
-			persistence = self.window_config.get("persistence")
-			if persistence is None:
-				self.window_config["persistence"] = toml.table()
-			try:
-				# self.window_config["config"]["last_tab"]
-				self.window_config["persistence"]["last_tab"] = self.window_config["config"]["last_tab"]
-				self.window_config["config"].pop("last_tab")
-				self.window_config = self.window_config
-			except toml.exceptions.TOMLKitError as e:
-				print(e)
-			try:
-				# self.window_config["config"]["last_tab"]
-				self.window_config["persistence"]["first_run"] = self.window_config["config"]["first_run"]
-				self.window_config["config"].pop("first_run")
-				self.window_config = self.window_config
-			except toml.exceptions.TOMLKitError as e:
-				print(e)
+				file_info["version"] = CURRENT_VERSION
+				persistence = self.window_config.get("persistence")
+				if persistence is None:
+					self.window_config["persistence"] = toml.table()
+				try:
+					# self.window_config["config"]["last_tab"]
+					self.window_config["persistence"]["last_tab"] = self.window_config["config"]["last_tab"]
+					self.window_config["config"].pop("last_tab")
+					self.window_config = self.window_config
+				except Exception as exception:
+					log(
+						exception,
+					)
+				try:
+					# self.window_config["config"]["last_tab"]
+					self.window_config["persistence"]["first_run"] = self.window_config["config"]["first_run"]
+					self.window_config["config"].pop("first_run")
+					self.window_config = self.window_config
+				except Exception as exception:
+					print(exception, prefix="Config Version Migrator")
 
 		def add_missing_keys():
-			defaults = {"daemon": True}
+			defaults = {"daemon": False}
 			config_lines = self.window_config["config"]
 			for key, val in defaults.items():
 				if key not in config_lines:
@@ -205,7 +253,6 @@ class Api:
 		except IndexError:
 			print("No nerd font found. Using monospace.")
 			temporary_font = None
-
 		if not window_config_path.is_file() or window_config_path.stat().st_size == 0:
 			print(f"Config file not found in {window_config_path}")
 			with open(
@@ -218,7 +265,7 @@ class Api:
 			self.window_config["config"]["font"] = temporary_font if temporary_font else "Monospace"
 			add_missing_keys()
 			version_migration()
-			if self.window_config.get("daemon"):
+			if self.window_config["config"]["daemon"]:
 				daemon = True
 			with window_config_path.open("w") as config_file:
 				config_file.write(default_config_text)
@@ -234,12 +281,9 @@ class Api:
 				self.window_config = config
 				version_migration()
 				add_missing_keys()
-				if self.window_config.get("daemon"):
+				if self.window_config["config"]["daemon"]:
 					daemon = True
 				return self.window_config
-
-
-
 
 	def get_builtin_themes(self):
 		file_path = thisfile_path / "ui" / "themes_builtin"
@@ -284,11 +328,14 @@ class Api:
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="A loyal hyprland parser and gui editor for hyprland.conf")
 	parser.add_argument("-d", "--daemon", action="store_true", help="Run in background started for quick startup")
+	parser.add_argument("-u", "--ui", choices=["gtk", "qt"], default="gtk", help="Run the ui with qt")
 	parser.add_argument("-v", "--verbose", action="store_true", help="Get more descriptive logs")
 	args = parser.parse_args()
-
+	sys.stderr = StderrInterceptor(sys.stderr)
+	signal.signal(signal.SIGINT, handle_interrupt)
 	if send_toggle():
 		exit(0)
+
 	try:
 		threading.Thread(target=start_socket_server, daemon=args.daemon).start()
 		daemon = args.daemon
@@ -299,7 +346,7 @@ if __name__ == "__main__":
 		api = Api()
 		mimetypes.add_type("application/javascript", ".js")
 		print(Path(thisfile_path / "ui" / "index.html"))
-		webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
+		webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
 		window_instance = webview.create_window(
 			"HyprSettings",
 			"ui/index.html",
@@ -319,7 +366,7 @@ if __name__ == "__main__":
 		# window_instance.hide()
 
 		webview.start(
-			gui="gtk",
+			gui=args.ui,
 			debug=True,
 			private_mode=True,
 			storage_path=str(cache_path),

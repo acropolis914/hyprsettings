@@ -5,7 +5,7 @@ description = "Add your description here"
 requires-python = ">=3.14"
 dependencies = [
     "packaging>=25.0",
-    "pywebview[gtk]>=6.1",
+    "pywebview[gtk,qt]>=6.1",
     "rich>=14.2.0",
     "tomlkit>=0.13.3",
 ]
