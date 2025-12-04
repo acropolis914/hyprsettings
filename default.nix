@@ -58,7 +58,7 @@ stdenv.mkDerivation rec {
     cat > $out/lib/hyprsettings/run.sh <<EOF
 #!${runtimeShell}
 cd "\$(dirname "\$0")"
-exec ${python}/bin/python3 src/ui.py "\$@"
+exec ${python}/bin/python3 src/hyprsettings "\$@"
 EOF
     chmod +x $out/lib/hyprsettings/run.sh
 

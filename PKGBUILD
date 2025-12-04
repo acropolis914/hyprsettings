@@ -36,12 +36,12 @@ package() {
     python -m compileall -d "/usr/lib/$pkgname" -q "$pkgdir/usr/lib/$pkgname"
 
     # 4. Create Internal run.sh (Relative)
-    # This script runs ui.py relative to itself.
+    # This script runs hyprsettings relative to itself.
     # We use 'dirname $0' so it works regardless of where /usr/lib is located.
     cat > "$pkgdir/usr/lib/$pkgname/run.sh" <<EOF
 #!/usr/bin/env bash
 cd "\$(dirname "\$0")"
-exec python3 src/ui.py "\$@"
+exec python3 src/hyprsettings "\$@"
 EOF
     chmod 755 "$pkgdir/usr/lib/$pkgname/run.sh"
 

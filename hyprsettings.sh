@@ -338,7 +338,7 @@ run_actions() {
                 local run_script="$INSTALL_DIR/run.sh"
                 local run_content='#!/usr/bin/env bash
 . ".venv/bin/activate"
-python "src/ui.py" "$@"'
+python "src/hyprsettings" "$@"'
                 if [[ "$INSTALL_TYPE" == "system" ]]; then
                     echo "$run_content" | sudo tee "$run_script" > /dev/null
                     sudo chmod +x "$run_script"

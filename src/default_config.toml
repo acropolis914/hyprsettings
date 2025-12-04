@@ -8,9 +8,9 @@ user    = "HyprSettings" #change this to yours
 # Changing while HyprSettings is open
 # will save what is on memory as a side effect.
 [config] # Changing this to true will show the onboarding.
-dryrun                 = false                       # Dryrun will not save changes.
-compact                = true                        # Makes binds hide their fields by default.
-daemon                 = false                        #makes it run in the background. use `ps aux | grep ui.py` in cli to check/kill it
+dryrun  = false # Dryrun will not save changes.
+compact = true  # Makes binds hide their fields by default.
+daemon  = false #makes it run in the background. use `ps aux | grep hyprsettings` in cli to check/kill it
 # warning: when using nvidia, pywebview might fail with error 71 or not restore when hidden
 # if that's the case, please do not turn on daemon. Upstream pywebview needs a fix for it.
 show_line_comments     = true
