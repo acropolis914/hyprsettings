@@ -71,22 +71,23 @@ def on_loaded(window):
 	window.events.loaded -= on_loaded
 
 
-def on_closed(window):
+def on_closing(window):
 	global daemon
 	global window_visible
 	print("______________________________________________\n")
 	disabled_dmabuf = os.environ.get("WEBKIT_DISABLE_DMABUF_RENDERER")
-	if daemon and disabled_dmabuf != "1":
+	# print(f"DEBUG daemon={daemon} disabled_dmabuf={disabled_dmabuf!r}")
+	if daemon and (disabled_dmabuf is None or disabled_dmabuf != "1"):
 		window_instance.hide()
 		window_visible = False
 		log("Called close window. Window is hidden since daemon is enabled")
-		print("______________________________________________")
+		print("______________________________________________\n")
 		return False
 	if disabled_dmabuf == "1":
 		log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
 		log("Restoring from daemon will fail. Daemon setting is dishonored.")
 	print(" Window closed. Terminating process.")
-	print("______________________________________________")
+	print("______________________________________________\n")
 	os._exit(0)
 
 
@@ -328,6 +329,12 @@ class Api:
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="A loyal hyprland parser and gui editor for hyprland.conf")
 	parser.add_argument("-d", "--daemon", action="store_true", help="Run in background started for quick startup")
+	parser.add_argument(
+		"-H",
+		"--hidden",
+		action="store_true",
+		help="Makes it hidden at the start. Useful for autostarting with daemon",
+	)
 	parser.add_argument("-u", "--ui", choices=["gtk", "qt"], default="gtk", help="Run the ui with qt")
 	parser.add_argument("-v", "--verbose", action="store_true", help="Get more descriptive logs")
 	args = parser.parse_args()
@@ -341,11 +348,12 @@ if __name__ == "__main__":
 		daemon = args.daemon
 		verbose = args.verbose
 		if args.daemon:
-			print("Started HyprSettings in daemon mode from cli. Initially hiding window")
+			print("Started HyprSettings in daemon mode from cli.")
+	
 
 		api = Api()
 		mimetypes.add_type("application/javascript", ".js")
-		print(Path(thisfile_path / "ui" / "index.html"))
+		# print(Path(thisfile_path / "ui" / "index.html"))
 		webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
 		window_instance = webview.create_window(
 			"HyprSettings",
@@ -356,14 +364,11 @@ if __name__ == "__main__":
 			height=600,
 			easy_drag=True,
 			min_size=(400, 300),
-			hidden=args.daemon,
+			hidden=args.hidden,
 		)
 		window_visible = not args.daemon
 		window_instance.events.loaded += on_loaded
-		window_instance.events.closed += on_closed
-
-		# if args.daemon:
-		# window_instance.hide()
+		window_instance.events.closing += on_closing
 
 		webview.start(
 			gui=args.ui,
