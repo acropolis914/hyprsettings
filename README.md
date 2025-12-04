@@ -41,11 +41,12 @@ You can be as silly as you want and send me screenshots of it working on your de
 - [HyprSettings](#hyprsettings)
     - [Features](#features)
     - [Installation](#installation)
-        - [Quick Clone and Install](#quick-clone-and-install)
+        - [Quick Clone and Install](#quick-clone-and-install-recommended-for-local-use)
         - [NixOS Installation](#nixos-installation)
         - [Arch Linux (AUR Package)](#arch-linux-aur-package)
     - [Testing the UI (Development)](#testing-the-ui-development)
     - [Configuration and Theming](#configuration-and-theming)
+    - [Autostart and Daemon Mode](#autostart-and-daemon-mode)
     - [Organizing Comments into Tabs](#organizing-comments-into-tabs)
     - [Contributing](#contributing)
     - [A Personal Note](#a-personal-note)
@@ -121,38 +122,11 @@ After installation you can:
   ```
   bind = SUPER, I, Exec, hyprsettings
   ```
-
----
-
-## Testing the UI (Development)
-
-If you are developing locally instead of using the AUR package:
-
-1. Clone the repo (if you haven't already):
-
-<!-- end list -->
-
-```bash
-git clone https://github.com/acropolis914/hyprsettings
-cd hyprsettings
-```
-
-2. Install required dependencies and create a virtual environment:
-
-```bash
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install -U pip setuptools wheel tomlkit rich pywebview packaging
-```
-
-3. Run the UI:
-
-```bash
-sh run.sh
-```
-
-> **Note:** If you are running tests or working, you should use the `nix develop` shell (if you use Nix) or the
-> installer script (`sh hyprsettings.sh`) as your primary launch method.
+- (Optional) Autostart in background. (Wont work if GPU Only setup)
+  Add to your hyprland config:
+  ```hyprland.conf
+    exec-once = hyprsettings -d -H
+  ```
 
 ## Configuration and Theming
 
@@ -164,6 +138,20 @@ Hyprsettings will create a configuration file at:
 
 Theming works perfectly out of the box. The defaults should be fine, but if you like tweaking, you can explore and
 modify the file. Be careful, though I do not have extensive safeguards and fallbacks right now.
+
+## Autostart and Daemon mode
+> This will not work when you are on an nvidia only setting for your gpu. You have to have Integrated GPU too as GTK3
+> doesn't work well with NVIDIA only setups. Can't test with AMD. I dont have AMD.
+
+You can start hyprsettings with the `-d` argument to make it persist in the background. On closing, it will not actually close but instead hide it, and on calling it again, it will show the window again on your current ui, making it launch faster. It being a webview tho, will consume around 320mb. Fine if you have unlimited memory but not recommended for people with 8gb or less ram.
+
+You can also start it with `-H` (capital H)  or `--hidden` together with `-d` or `--daemon` on the hyprland.conf autostart section so it starts hidden and in daemon mode so the next time you need it, it's already started and will immediately show up.
+
+For example in your `hyprland.conf` :
+```hyprland.conf
+exec-once = hyprsettings -d -H
+```
+> Please note the capital H.
 
 ## Organizing Comments into Tabs
 
@@ -236,6 +224,38 @@ How to get started:
 4. Describe changes clearly (screenshots for UI tweaks help).
 
 No experience requirements. Beginners welcome.
+
+## Testing the UI (Development)
+
+If you are developing locally instead of using the AUR package:
+
+1. Clone the repo (if you haven't already):
+
+<!-- end list -->
+
+```bash
+git clone https://github.com/acropolis914/hyprsettings
+cd hyprsettings
+```
+
+2. Install required dependencies and create a virtual environment:
+
+```bash
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install -U pip setuptools wheel tomlkit rich pywebview packaging
+```
+
+3. Run the UI:
+
+```bash
+sh run.sh
+```
+
+> **Note:** If you are running tests or working, you should use the `nix develop` shell (if you use Nix) or the
+> installer script (`sh hyprsettings.sh`) as your primary launch method.
+
+---
 
 ## A Personal Note
 
