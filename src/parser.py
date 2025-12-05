@@ -4,9 +4,6 @@ from pathlib import Path
 from typing import Literal, get_args
 import json
 import uuid
-from glob import glob
-
-import rich.pretty as Pretty
 from rich.console import Console
 import rich
 import rich.traceback
@@ -14,13 +11,12 @@ import re
 import builtins
 
 rich.traceback.install(show_locals=True)
-
-
 _original_print = builtins.print
+console = Console()
 
 
 def print(*args, **kwargs):
-	_original_print("[parser]", *args, **kwargs)
+	console.print("[green]\[parser][/green]", *args, **kwargs)
 
 
 config_path = Path.home() / ".config" / "hypr" / "hyprland.conf"
