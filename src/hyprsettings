@@ -393,7 +393,7 @@ def main():
 		print(e)
 		os._exit(1)
 
-# ------------------- Main entry -------------------
+
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="A loyal hyprland parser and gui editor for hyprland.conf")
 	parser.add_argument("-d", "--daemon", action="store_true", help="Run in background started for quick startup")
@@ -401,7 +401,7 @@ if __name__ == "__main__":
 		"-H",
 		"--hidden",
 		action="store_true",
-		help="Makes it hidden at the start. Useful for autostarting with daemon",
+		help="Makes it hidden at the start. Useful for autostarting with daemon\n e.g. on your hyprland.conf (exec-once = hyprsettings -d -H)",
 	)
 	parser.add_argument("-u", "--ui", nargs=1, choices=["gtk", "qt"], default="gtk", help="Run the ui with qt backend (requires qt library)")
 	parser.add_argument("-v", "--verbose", action="store_true", help="Get more descriptive logs")
@@ -433,7 +433,6 @@ if __name__ == "__main__":
 		log('If you wish to use the existing hyprsettings background daemon, run hyprsettings with arg "-d"')
 		with redirect_stderr(LogFilter()):
 			main()
-			exit(0)
 
 	if args.daemon and port_open:
 		if send_toggle():
