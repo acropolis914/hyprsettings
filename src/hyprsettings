@@ -216,6 +216,11 @@ def send_toggle():
 	except (ConnectionRefusedError, socket.timeout):
 		return False
 
+def is_port_open(timeout=0.1):
+	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+		s.settimeout(timeout)
+		return s.connect_ex((HOST, PORT)) == 0
+
 
 class Api:
 	def __init__(self):
@@ -382,10 +387,12 @@ def main():
 			storage_path=str(cache_path),
 			icon="icon-48.png",
 		)
+		os._exit(0)
 	except Exception as e:
 		print("I am ded")
 		print(e)
 		os._exit(1)
+
 # ------------------- Main entry -------------------
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="A loyal hyprland parser and gui editor for hyprland.conf")
@@ -401,16 +408,34 @@ if __name__ == "__main__":
 	parser.add_argument(
 		"-k", "--kill", action="store_true", help="Use this arg to kill any running hyprsettings process"
 	)
+	parser.add_argument("--no-daemon", action="store_true", help="Kills the old process and starts a new session" )
 	signal.signal(signal.SIGINT, handle_interrupt)
 	args = parser.parse_args()
+	print_title()
 	if args.kill:
 		kill_hyprsettings()
+	# if args.no_daemon:
+	# 	result = os.system("pkill -f hyprsettings")
 	if args.hidden:
 		window_visible = False
-	if send_toggle():
-		exit(0)
-	print_title()
-	daemon = args.daemon
+	daemon = args.daemon and not args.no_daemon
 	verbose = args.verbose
+
+	port_open = is_port_open()
+
+	if args.no_daemon:
+		while is_port_open():
+			print(f"Existing hyprsettings port {PORT} is open but hyprsettings is called without daemon.")
+			PORT += 1
+		print(f"Starting a new temporary port {PORT} instead")
+		print('If you wish to use the current background hyprsettings, run hyprsettings with arg "-d"')
+		with redirect_stderr(LogFilter()):
+			main()
+			exit(0)
+
+	if args.daemon and port_open:
+		if send_toggle():
+			exit(0)
 	with redirect_stderr(LogFilter()):
 		main()
+
