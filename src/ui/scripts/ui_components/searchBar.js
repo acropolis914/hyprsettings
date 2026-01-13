@@ -1,5 +1,6 @@
 import Fuse from '../jslib/fuse.basic.min.mjs'
 import { GLOBAL } from '../GLOBAL.js'
+import { createOverlay, destroyOverlay } from './darken_overlay.js'
 
 let searchBar
 let searchResultEl
@@ -8,9 +9,12 @@ export async function initializeSearchBar() {
 	searchBar = document.getElementById('search-bar')
 	searchResultEl = document.querySelector('#results')
 
+
 	function search() {
 		searchResultEl.style.display = 'flex'
 		searchResultEl.innerHTML = ''
+
+
 
 		const resultsPool = []
 		let searchItems = document.querySelectorAll('.editor-item')
@@ -122,7 +126,7 @@ export async function initializeSearchBar() {
 						goto.style.scale = '1.0'
 					}, 200)
 				}
-
+				cleanUp()
 				searchResultEl.style.display = 'none'
 				searchResultEl.innerHTML = ''
 				searchBar.value = ''
@@ -152,6 +156,7 @@ export async function initializeSearchBar() {
 		GLOBAL['previousView'] = GLOBAL['currentView']
 		GLOBAL['currentView'] = 'search'
 		searchResultEl.style.display = 'flex'
+		createOverlay()
 		search()
 	})
 
@@ -159,16 +164,12 @@ export async function initializeSearchBar() {
 		if (e.key === 'Escape') {
 			e.preventDefault()
 			searchBar.blur()
-			
-			console.debug("CurrentView", GLOBAL["currentView"])
-			console.debug("PreviousView", GLOBAL["previousView"])
 
 			GLOBAL['currentView'] = GLOBAL['previousView']
 			GLOBAL['previousView'] = 'search'
 			searchResultEl.style.display = 'none'
+			destroyOverlay()
 
-			console.debug("CurrentView", GLOBAL["currentView"])
-			console.debug("PreviousView", GLOBAL["previousView"])
 		}
 		if (e.key === 'Enter') {
 			searchResultEl.firstChild.click()
@@ -194,6 +195,9 @@ export async function initializeSearchBar() {
 		const pressedKey = event.key
 		const target = event.target
 	})
-
+	function cleanUp(){
+		searchResultEl.style.display = 'none'
+		destroyOverlay()
+	}
 
 }

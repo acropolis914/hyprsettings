@@ -1,5 +1,6 @@
 import { GLOBAL } from '../GLOBAL.js'
 import { hideAllContextMenus } from '../utils.js'
+import { createOverlay } from './darken_overlay.js'
 
 document.addEventListener('keydown', (event) => {
 	if (event.key === 'F5') {
@@ -53,6 +54,8 @@ hotkeys('*', (event) => {
 			event.preventDefault()
 			GLOBAL['previousView'] = GLOBAL['currentView']
 			GLOBAL['currentView'] = 'search'
+			createOverlay()
+
 			document.getElementById('search-bar').focus()
 		}
 	}
@@ -152,7 +155,7 @@ hotkeys('*', (event) => {
 		}
 
 		case 'tabs': {
-			console.debug(GLOBAL['currentView'])
+			// console.debug(GLOBAL['currentView'])
 			const currentSelected = document.querySelector('.selected')
 			if (!currentSelected) break
 			const parent = currentSelected.parentElement
@@ -161,7 +164,7 @@ hotkeys('*', (event) => {
 			let index = children.indexOf(currentSelected)
 			let newIndex = index
 
-			console.debug(GLOBAL['currentView'])
+			// console.debug(GLOBAL['currentView'])
 			switch (event.key) {
 				case 'ArrowDown':
 					event.preventDefault()
@@ -178,7 +181,7 @@ hotkeys('*', (event) => {
 					}
 					break
 			}
-			console.debug(GLOBAL['currentView'])
+			// console.debug(GLOBAL['currentView'])
 			currentSelected.classList.remove('selected')
 			currentSelected.classList.remove('keyboard-selected')
 			const newSelected = children[newIndex]
@@ -187,7 +190,7 @@ hotkeys('*', (event) => {
 			newSelected.click()
 			newSelected.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 			GLOBAL['activeTab'] = newSelected.id
-			console.log(GLOBAL['currentView'])
+			// console.log(GLOBAL['currentView'])
 			break
 		}
 

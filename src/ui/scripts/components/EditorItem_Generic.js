@@ -112,9 +112,9 @@ export class EditorItem_Generic {
 
 		if (this.info) {
 			// console.log(this.info['type'])
-			let title = JSON.stringify(this.info['description'])
+			let description = JSON.stringify(this.info['description'])
 			let type = JSON.stringify(this.info['type'])
-			this.valueEditor.title = `${JSON.parse(title)} || ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
+			this.valueEditor.title = `${JSON.parse(description)}\n\n Type: ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
 		}
 
 

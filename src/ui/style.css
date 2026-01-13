@@ -390,7 +390,7 @@ footer > * {
   position: absolute;
   right: 0rem;
   top: calc(100% + 0.5rem);
-  z-index: 10;
+  z-index: 9;
   background-color: var(--surface-0);
   width: 50vw;
   min-width: 10rem;
@@ -523,11 +523,12 @@ h1#config-set-title {
   font-weight: bold;
 }
 
-.dmenu-overlay {
+.dmenu-overlay, #dmenu-overlay {
   position: absolute; /* covers the container */
   inset: 0; /* top:0; right:0; bottom:0; left:0 */
-  background-color: rgba(0, 0, 0, 0.3); /* semi-transparent dim */
+  background-color: rgba(100, 0, 0, 0.3); /* semi-transparent dim */
   z-index: 8; /* below dmenu */
+  transition: all 1s ease;
 }
 
 /* --- Editor Item ---*/

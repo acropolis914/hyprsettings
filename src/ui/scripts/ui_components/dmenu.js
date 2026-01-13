@@ -1,13 +1,12 @@
 import { GLOBAL } from '../GLOBAL.js'
+import { createOverlay, destroyOverlay } from './darken_overlay.js';
 
 export function selectFrom(options, addCustom = true) {
 	return new Promise((resolve, reject) => {
 		GLOBAL['previousView'] = GLOBAL['currentView']
 		GLOBAL['currentView'] = 'dmenu'
 
-		const overlay = document.createElement("div");
-		overlay.className = "dmenu-overlay";
-		document.getElementById("content-area").appendChild(overlay);
+		createOverlay()
 
 		const selectorParentEl = document.createElement("div");
 		selectorParentEl.className = "dmenu";
@@ -28,7 +27,7 @@ export function selectFrom(options, addCustom = true) {
 
 		function cleanup() {
 			selectorParentEl.remove();
-			overlay.parentNode.removeChild(overlay);
+			destroyOverlay()
 			// console.log(GLOBAL['currentView']);
 			GLOBAL['currentView'] = GLOBAL['previousView']
 			// console.log(GLOBAL['currentView']);
@@ -86,7 +85,7 @@ export function selectFrom(options, addCustom = true) {
 				}
 			});
 
-			selectorItem.addEventListener("focus", (e)=>{
+			selectorItem.addEventListener("focus", (e) => {
 				selectorItem.classList.add('selected')
 			});
 
