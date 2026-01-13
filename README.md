@@ -17,8 +17,8 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 - Theming support
 
 `*The cleanup however has a side effect that trims trailing spaces. This is by design.`
+<img width="960" height="720" alt="20251216_091407" src="https://github.com/user-attachments/assets/8262a29c-4968-4b37-886b-44802ac401de" />
 
-<img width="1915" height="1046" alt="image" src="[https://github.com/user-attachments/assets/c7284cf1-c51a-4996-b60c-7ab1d9ae402c](https://github.com/user-attachments/assets/c7284cf1-c51a-4996-b60c-7ab1d9ae402c)" />
 
 Hyprsettings in Embark theme, with the search bar and the color selector open. Cool ain't it?
 
