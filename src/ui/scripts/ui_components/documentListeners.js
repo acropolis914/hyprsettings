@@ -91,7 +91,6 @@ hotkeys('*', (event) => {
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = activeElem.dataset.uuid
 		}
 		window.currentFocus.blur()
-		window.currentView = 'tabs'
 		GLOBAL.setKey('currentView', 'tabs')
 		const selectedTab = document.querySelector(`.selected`)
 		if (selectedTab) {
@@ -136,7 +135,7 @@ hotkeys('*', (event) => {
 
 			activeElement.blur()
 			const newActiveElement = children[newIndex]
-			if (!activeElement) break
+			if (!newActiveElement) break
 			window.currentFocus = newActiveElement
 			newActiveElement.focus()
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = newActiveElement.dataset.uuid
@@ -153,14 +152,16 @@ hotkeys('*', (event) => {
 		}
 
 		case 'tabs': {
+			console.debug(GLOBAL['currentView'])
 			const currentSelected = document.querySelector('.selected')
 			if (!currentSelected) break
 			const parent = currentSelected.parentElement
 			if (!parent) break
-			const children = Array.from(parent.children)
+			let children = Array.from(parent.querySelectorAll('li'))
 			let index = children.indexOf(currentSelected)
 			let newIndex = index
 
+			console.debug(GLOBAL['currentView'])
 			switch (event.key) {
 				case 'ArrowDown':
 					event.preventDefault()
@@ -176,9 +177,8 @@ hotkeys('*', (event) => {
 						newIndex = (newIndex - 1 + children.length) % children.length
 					}
 					break
-				// (add other per-tabs keys if ever needed)
 			}
-
+			console.debug(GLOBAL['currentView'])
 			currentSelected.classList.remove('selected')
 			currentSelected.classList.remove('keyboard-selected')
 			const newSelected = children[newIndex]
@@ -187,11 +187,22 @@ hotkeys('*', (event) => {
 			newSelected.click()
 			newSelected.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 			GLOBAL['activeTab'] = newSelected.id
+			console.log(GLOBAL['currentView'])
 			break
 		}
-		case('search'): {
-			GLOBAL['previousView'] = GLOBAL['currentView']
-			GLOBAL['currentView'] = 'search'
+
+		case 'search': {
+			// GLOBAL['previousView'] = GLOBAL['currentView']
+			// GLOBAL['currentView'] = 'search'
+			break
+		}
+
+		case 'dmenu': {
+			break
+		}
+
+		case 'default': {
+			console.log("No current handler for this view: ", GLOBAL['currentView'])
 		}
 	}
 })

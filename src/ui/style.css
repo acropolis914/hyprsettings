@@ -284,6 +284,9 @@ header#main-header #header-title:active {
     flex: 0 0 90%;
   }
 }
+#content-area {
+  position: relative;
+}
 
 footer {
   display: flex;
@@ -477,6 +480,54 @@ h1#config-set-title {
   margin-bottom: var(--spacing-unit);
   color: var(--accent);
   padding-left: 1.5rem;
+}
+
+#dmenu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 9;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--accent);
+  background-color: var(--surface-0);
+  padding: var(--spacing-unit);
+  border-radius: var(--border-rad);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+#dmenu ul {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding-left: calc(var(--spacing-unit) * 1.5);
+  max-height: 30rem;
+}
+#dmenu ul li {
+  padding-left: var(--spacing-unit);
+  padding-right: var(--spacing-unit);
+  position: relative;
+  overflow: visible;
+}
+#dmenu ul li:focus {
+  background-color: var(--accent);
+  color: var(--text-contrast);
+  outline: none;
+}
+#dmenu ul li:focus::after {
+  content: "\f0da";
+  position: absolute;
+  left: -1.5rem;
+  color: var(--green);
+  font-weight: bold;
+}
+
+.dmenu-overlay {
+  position: absolute; /* covers the container */
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background-color: rgba(0, 0, 0, 0.3); /* semi-transparent dim */
+  z-index: 8; /* below dmenu */
 }
 
 /* --- Editor Item ---*/

@@ -159,9 +159,16 @@ export async function initializeSearchBar() {
 		if (e.key === 'Escape') {
 			e.preventDefault()
 			searchBar.blur()
+			
+			console.debug("CurrentView", GLOBAL["currentView"])
+			console.debug("PreviousView", GLOBAL["previousView"])
+
 			GLOBAL['currentView'] = GLOBAL['previousView']
 			GLOBAL['previousView'] = 'search'
 			searchResultEl.style.display = 'none'
+
+			console.debug("CurrentView", GLOBAL["currentView"])
+			console.debug("PreviousView", GLOBAL["previousView"])
 		}
 		if (e.key === 'Enter') {
 			searchResultEl.firstChild.click()
@@ -181,6 +188,7 @@ export async function initializeSearchBar() {
 	})
 	document.addEventListener('click', (e) => {
 		searchResultEl.style.display = 'none'
+		// GLOBAL['currentView'] = GLOBAL['previousView']
 	})
 	hotkeys('*', (event) => {
 		const pressedKey = event.key

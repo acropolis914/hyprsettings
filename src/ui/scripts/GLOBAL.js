@@ -9,9 +9,10 @@ export class GLOBAL {
 	}
 
 	static setKey(key, value) {
+		if (this[key] === value) return;
+
 		this[key] = value;
 
-		// fire listeners if any
 		const list = this._listeners.get(key);
 		if (list) {
 			for (const fn of list) fn(value);

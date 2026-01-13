@@ -18,8 +18,6 @@ import { initializeSearchBar } from './ui_components/searchBar.js'
 window.Global = GLOBAL
 
 // @ts-ignore
-
-
 async function setupData() {
 	await waitFor(() => window.pywebview?.api.init)
 	// @ts-ignore

@@ -31,6 +31,9 @@ export const keyNameStarts = [
 
 export let configGroups = [
 	['debug', 'miscellaneous'],
+	['opengl', 'miscellaneous'],
+	['windowrule', 'win-rules'],
+	['layerrule', 'layer-rules'],
 	['general', 'looknfeel'],
 	['decoration', 'looknfeel'],
 	['animations', 'animations'],

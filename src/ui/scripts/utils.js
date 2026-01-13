@@ -120,7 +120,7 @@ export async function addItem(type, name, value, comment, position, relative_uui
 	// console.log({ nodeIndex })
 	let newuuid = await window.pywebview.api.new_uuid()
 	let targetIndex = below ? nodeIndex + 1 : nodeIndex
-	console.log(value)
+	// console.log(value)
 	parent.children.splice(targetIndex, 0, {
 		type: type,
 		name: name,

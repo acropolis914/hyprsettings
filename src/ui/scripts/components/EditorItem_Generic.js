@@ -6,6 +6,7 @@ import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { SliderModal } from './keyEditor_Slider.js'
 import { GradientModal } from './keyEditor_Gradient.js'
 import { parseHyprColor } from '../hyprland-specific/colorparser.js'
+import { selectFrom } from '../ui_components/dmenu.js'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -110,6 +111,7 @@ export class EditorItem_Generic {
 		}
 
 		if (this.info) {
+			// console.log(this.info['type'])
 			let title = JSON.stringify(this.info['description'])
 			let type = JSON.stringify(this.info['type'])
 			this.valueEditor.title = `${JSON.parse(title)} || ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
@@ -228,48 +230,126 @@ export class EditorItem_Generic {
 
 	async add(type, below = true) {
 		switch (type) {
-			case ('KEY'):
+			case ('KEY'): {
+				console.group('ADD KEY');
+
+				console.debug('Current element:', this.el);
+				console.debug('dataset:', { ...this.el.dataset });
+				console.debug('parent classes:', this.el.parentElement?.classList?.value);
+
 				const existingSiblingKeys = Array.from(this.el.parentNode.children)
 					.filter(el => el.classList.contains('editor-item-generic'))
-					.map(el => el.dataset.name)
+					.map(el => el.dataset.name);
 
-				// console.log(existingSiblingKeys)
-				let availableKeys = findAdjacentConfigKeys(this.config_position, existingSiblingKeys) //TODO: Make a selector for this 
-				// console.log(availableKeys)
-				let randomKey = availableKeys[Math.round(Math.random() * availableKeys.length)]
-				let name
-				let value
+				console.debug('existingSiblingKeys:', existingSiblingKeys);
+
+				let availableKeys;
+				try {
+					availableKeys = findAdjacentConfigKeys(this.config_position, existingSiblingKeys);
+				} catch (e) {
+					console.error('findAdjacentConfigKeys threw:', e);
+				}
+				// console.table(availableKeys);
+
+				let randomKey;
+				if (Array.isArray(availableKeys) && availableKeys.length > 0) {
+					// const idx = Math.floor(Math.random() * availableKeys.length);
+					// randomKey = availableKeys[idx];
+					// console.debug('Random index:', idx);
+					randomKey = await selectFrom(availableKeys)
+				} else {
+					console.warn('availableKeys empty or invalid:', availableKeys);
+				}
+
+				console.debug('randomKey raw:', randomKey);
+
+				let name;
+				let value;
+
 				if (randomKey) {
-					name = randomKey.name
-					if (randomKey.type == 'CONFIG_OPTION_INT' || (randomKey.data.includes(',') && randomKey.data.split(',').length === 3)) {
-						value = randomKey['data'].split(',')[0].trim()
-					} else {
-						value = randomKey['data']
+					// console.debug('randomKey fields:', {
+					// 	name: randomKey.name,
+					// 	type: randomKey.type,
+					// 	data: randomKey.data
+					// });
+
+					name = randomKey.name;
+
+					try {
+						if (
+							randomKey.type === 'CONFIG_OPTION_INT' ||
+							(typeof randomKey.data === 'string' &&
+								randomKey.data.includes(',') &&
+								randomKey.data.split(',').length === 3)
+						) {
+							value = randomKey.data.split(',')[0].trim();
+						} else {
+							value = randomKey.data;
+						}
+					} catch (e) {
+						console.error('Value derivation failed:', e, randomKey);
 					}
-				}
-				let allowed_dupes = ['animation', 'bezier', 'gesture']
-				if (!name && (allowed_dupes.includes(this.el.dataset.name) || !this.el.parentElement.classList.contains('config-group'))) {//&& (!this.el.parent.classList.contains("config-group") || allowed_dupes.includes(this.el.dataset.name)
-					name = this.el.dataset.name
 				} else {
-					let thisname = this.el.dataset.name
-					console.log({ allowed_dupes, thisname })
-					name = 'generic'
+					console.debug('No randomKey selected.');
 				}
-				let newGenericItem = await addItem('KEY', name, value, '', this.el.dataset.position, this.el.dataset.uuid, below)
+
+				console.debug('Derived name/value BEFORE fallback:', { name, value });
+
+				const allowed_dupes = ['animation', 'bezier', 'gesture'];
+				const thisName = this.el.dataset.name;
+				const isAllowedDupe = allowed_dupes.includes(thisName);
+				const isInConfigGroup = this.el.parentElement?.classList?.contains('config-group');
+
+				console.debug('Fallback decision inputs:', {
+					nameIsFalsy: !name,
+					thisName,
+					isAllowedDupe,
+					isInConfigGroup
+				});
+
+				if (!name && (isAllowedDupe || !isInConfigGroup)) {
+					console.warn('Using dataset name due to dupe rules');
+					name = thisName;
+				} else if (!name) {
+					console.warn('Falling back to GENERIC');
+					name = 'generic';
+				}
+
+				console.debug('FINAL name/value:', { name, value });
+
+				let newGenericItem = await addItem(
+					'KEY',
+					name,
+					value,
+					'',
+					this.el.dataset.position,
+					this.el.dataset.uuid,
+					below
+				);
+
+				console.debug('addItem result:', newGenericItem);
+
 				let newGenericElement = new EditorItem_Generic({
-					name: newGenericItem['name'],
-					uuid: newGenericItem['uuid'],
-					value: newGenericItem['value'],
-					comment: newGenericItem['comment'],
+					name: newGenericItem.name,
+					uuid: newGenericItem.uuid,
+					value: newGenericItem.value,
+					comment: newGenericItem.comment,
 					position: this.el.dataset.position
-				})
+				});
+
 				if (below) {
-					this.el.after(newGenericElement.el)
+					this.el.after(newGenericElement.el);
 				} else {
-					this.el.before(newGenericElement.el)
+					this.el.before(newGenericElement.el);
 				}
-				newGenericElement.save()
-				break
+
+				newGenericElement.save();
+				newGenericElement.el.click();
+
+
+				console.groupEnd();
+				break;
+			}
 			case ('COMMENT'):
 				let newCommentItem = await addItem('COMMENT', 'comment', '', '# New comment', this.el.dataset.position, this.el.dataset.uuid, below)
 				let newCommentElement = new EditorItem_Comments({
@@ -285,6 +365,7 @@ export class EditorItem_Generic {
 					this.el.before(newCommentElement.el)
 				}
 				newCommentElement.save()
+				break
 		}
 	}
 
