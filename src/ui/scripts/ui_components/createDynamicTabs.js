@@ -125,6 +125,15 @@ export async function createDynamicTabs() {
 		// console.log(tab)
 		new ConfigTab(tab)
 	}
+	console.debug(GLOBAL["isDebugging"])
+	if (!(GLOBAL["isDebugging"] === true)) {
+		// console.debug(GLOBAL['isDebugging'])
+		let debugTab = sidebar.querySelector("li#debug")
+		debugTab.classList.add("hidden")
+	} else {
+		console.debug(GLOBAL["isDebugging"])
+	}
+
 	if (GLOBAL['persistence']['last_tab']) {
 		let id = GLOBAL['persistence']['last_tab']
 		let selected_tab = document.querySelector(`aside#sidebar>ul>#${id}`)

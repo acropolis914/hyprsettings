@@ -164,12 +164,7 @@ export async function initializeSearchBar() {
 	searchBar.addEventListener('keydown', (e) => {
 		if (e.key === 'Escape') {
 			e.preventDefault()
-			searchBar.blur()
-
-			GLOBAL['currentView'] = GLOBAL['previousView']
-			GLOBAL['previousView'] = 'search'
-			searchResultEl.style.display = 'none'
-			destroyOverlay()
+			cleanUp()
 
 		}
 		if (e.key === 'Enter') {
@@ -193,11 +188,14 @@ export async function initializeSearchBar() {
 			searchBar.focus();
 			searchBar.value += e.key;
 		}
+		if (e.key === 'Escape') {
+			cleanUp()
+		}
 	})
 	document.addEventListener('click', (e) => {
 		let clickedInsideSearchbar = searchBar.contains(e.target)
 		let clickedInsideSearchResults = searchResultEl.contains(e.target)
-		if (!clickedInsideSearchbar && !clickedInsideSearchResults) {
+		if (!clickedInsideSearchbar && !clickedInsideSearchResults && GLOBAL['currentView'] === 'search') {
 			cleanUp()
 		}
 
@@ -207,13 +205,17 @@ export async function initializeSearchBar() {
 		const pressedKey = event.key
 		const target = event.target
 	})
-	function cleanUp(){
+	function cleanUp() {
 		searchResultEl.style.display = 'none'
+		searchBar.value = ''
+		searchBar.blur()
 		destroyOverlay()
+		// console.log(GLOBAL['currentView'])
 		if (GLOBAL['previousView']) {
 			GLOBAL['currentView'] = GLOBAL['previousView']
 			GLOBAL['previousView'] = 'search'
 		}
+		// console.log(GLOBAL['currentView'])
 	}
 
 }

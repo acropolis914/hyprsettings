@@ -169,14 +169,14 @@ hotkeys('*', (event) => {
 				case 'ArrowDown':
 					event.preventDefault()
 					newIndex = (index === children.length - 1) ? 0 : index + 1
-					while (children[newIndex].tagName === 'DIV') {
+					while (children[newIndex].tagName === 'DIV' || children[newIndex].classList.contains("hidden")) {
 						newIndex = (newIndex + 1) % children.length
 					}
 					break
 				case 'ArrowUp':
 					event.preventDefault()
 					newIndex = (index === 0) ? children.length - 1 : index - 1
-					while (children[newIndex].tagName === 'DIV') {
+					while (children[newIndex].tagName === 'DIV' || children[newIndex].classList.contains("hidden")) {
 						newIndex = (newIndex - 1 + children.length) % children.length
 					}
 					break
