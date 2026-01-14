@@ -58,6 +58,17 @@ async function load_config() {
 	}
 }
 
+async function getDebugStatus() {
+	let debugIndicator = document.getElementById("debug-indicator")
+	const isDebug = await Backend.getDebugStatus()
+	console.debug(isDebug)
+	if (isDebug) {
+		debugIndicator.classList.remove("hidden")
+	} else {
+		debugIndicator.classList.add("hidden")
+	}
+}
+
 export async function initialize() {
 	Array.from(document.scripts).forEach(s => console.log(s.src))
 	await load_config()
@@ -66,6 +77,7 @@ export async function initialize() {
 	await setupData()
 	await renderSettings()
 	await initializeSearchBar()
+	getDebugStatus()
 	refreshAllStylesheets()
 }
 

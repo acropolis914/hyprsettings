@@ -189,6 +189,14 @@ header#main-header #header-title #icon {
   font-family: "CommitMonoIconFont", monospace;
   font-size: 2rem;
 }
+header#main-header #header-title #debug-indicator {
+  margin-left: calc(var(--spacing-unit) / 2);
+  padding-left: calc(var(--spacing-unit) / 2);
+  padding-right: calc(var(--spacing-unit) / 2);
+  color: var(--text-contrast);
+  background-color: var(--accent-warning);
+  border-radius: var(--border-radius) !important;
+}
 header#main-header #header-title {
   transition: all 0.1s ease-in-out;
 }

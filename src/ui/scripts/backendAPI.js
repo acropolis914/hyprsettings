@@ -18,8 +18,14 @@ export const Backend = {
 	async getHyprlandConfig(path = null) {
 		await waitFor(() => window.pywebview?.api.init)
 		let config = await window.pywebview.api.init()
-		console.debug(config)
+		// console.debug(config)
 		return config
 	},
 
+	async getDebugStatus() {
+		await waitFor(() => window.pywebview?.api.init)
+		let isDebug = JSON.parse(await window.pywebview.api.getDebugStatus());
+		console.debug(isDebug)
+		return isDebug
+	}
 }

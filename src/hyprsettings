@@ -370,6 +370,11 @@ class Api:
 		result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
 		return [f.strip() for f in result.stdout.splitlines() if f.strip()]
 
+	def getDebugStatus(self):
+		isDebugging = args.debug
+		# print("Debug mode: ", isDebugging)
+		return isDebugging
+
 
 def main():
 	global window_instance, window_visible
@@ -451,6 +456,9 @@ if __name__ == "__main__":
 		kill_hyprsettings()
 	if args.ui:
 		log(f"Using UI {args.ui}")
+	print("Debug mode: ", args.debug)
+	if args.debug:
+		log('[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!')
 	if args.hidden:
 		window_visible = False
 	if args.config:
@@ -470,10 +478,11 @@ if __name__ == "__main__":
 		log("Running in standalone no-daemon mode")
 		while is_port_open():
 			log(f"Existing hyprsettings port {PORT} is open but hyprsettings is called without daemon.")
-			log('If you wish to use the existing hyprsettings background daemon, run hyprsettings with arg "-d"')
+
 			PORT += 1
 		log(f"Starting a new temporary port {PORT} instead. Useful only during development or debugging.")
-		log(f"Using the daemon will use some of your ram indefinitely but will make hyprsettings open faster.")
+		log('If you wish to use the existing hyprsettings background daemon, run hyprsettings with arg "-d"')
+		log("Using the daemon will use some of your ram indefinitely but will make hyprsettings open faster.")
 		with redirect_stderr(LogFilter()):
 			main()
 
