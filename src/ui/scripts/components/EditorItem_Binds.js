@@ -54,18 +54,25 @@ export class EditorItem_Binds {
 	}
 
 	addElements(name, comment) {
+		let bindflag_additems = this.el.dataset.name.trim().substring(4).split('')
 		let values = splitWithRemainder(this.el.dataset.value, ',', 3)
+		this.hasDescription = bindflag_additems.includes('d')
+		if (this.hasDescription) {
+			console.debug(`${this.el.dataset.name} = ${this.el.dataset.value} has a description`)
+			values = splitWithRemainder(this.el.dataset.value, ',', 4)
+		}
+
 		const renderflags = {
-			option: function(data, escape) {
+			option: function (data, escape) {
 				return `<div title="${data.description}">` + escape(data.text) + `</div>`
 			},
-			item: function(data, escape) {
+			item: function (data, escape) {
 				return `<div title="${data.description}">` + escape(data.text) + `</div>`
 			}
 		}
 		//bindflags
 		let bindflag_select_el = this.el.querySelector('.bindflags')
-		let bindflag_additems = this.el.dataset.name.trim().substring(4).split('')
+
 		this.bindflagTS = new TomSelect(bindflag_select_el, {
 			options: bindFlags,
 			valueField: 'value',
@@ -88,6 +95,7 @@ export class EditorItem_Binds {
 				this.bindflagTS.addItem(element)
 			})
 		}
+
 
 		//modkeys
 		let modkey_select_el = this.el.querySelector('.modkey')
@@ -116,8 +124,28 @@ export class EditorItem_Binds {
 		let key_el = this.el.querySelector('.keypress')
 		key_el.rows = 1
 		key_el.textContent = values[1].trim()
-		key_el.addEventListener('input', () => {
-			//
+		key_el.addEventListener('keydown', (e) => {
+			if (e.key === ",") {
+				e.preventDefault(); // prevent the comma from being typed
+			}
+		})
+		key_el.addEventListener('input', (e) => {
+			if (!this.initial_load) {
+				this.update()
+			}
+		})
+
+		let description_el = this.el.querySelector('.description')
+		if (this.hasDescription) {
+			description_el.classList.remove("hidden")
+			description_el.textContent = values[2].trim()
+		}
+		description_el.addEventListener('keydown', (e) => {
+			if (e.key === ",") {
+				e.preventDefault(); // prevent the comma from being typed
+			}
+		});
+		description_el.addEventListener('input', (e) => {
 			if (!this.initial_load) {
 				this.update()
 			}
@@ -140,7 +168,8 @@ export class EditorItem_Binds {
 			render: renderflags
 		})
 
-		let dispatcher_additem = values[2].trim()
+		let dispatcher_additem = this.hasDescription ? values[3].trim() : values[2].trim()
+
 		if (this.hasDispatch(dispatcher_additem)) {
 			this.dispatcherTS.addItem(dispatcher_additem)
 		} else {
@@ -148,10 +177,14 @@ export class EditorItem_Binds {
 		}
 
 		let params_additem = values[3] ? values[3].trim() : null
+		if (this.hasDescription) {
+			params_additem = values[4] ? values[4].trim() : null
+		}
 		// this.paramTS.createItem(params_additem)
 		paramSelect_el.value = params_additem
 		paramSelect_el.addEventListener('input', () => {
 			//
+
 			if (!this.initial_load) {
 				this.update()
 			}
@@ -213,14 +246,21 @@ export class EditorItem_Binds {
 		let modKeys = this.modkeyTS.getValue()
 		let modKeyString = Array.isArray(modKeys) ? modKeys.join(' ') : modKeys
 		let keyPress = this.el.querySelector('.keypress').value
+		let description = this.el.querySelector('.description').value
 		let disPatcherString = this.dispatcherTS.getValue()
 		let paramString = this.el.querySelector('.params').value.trim()
 		let preview_el = this.el.querySelector('.editor-item-preview')
 		let comment = this.comment_el.value ? `# ${this.comment_el.value}` : ''
-		preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
-		this.preview = `${bindflagString} = ${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString} ${comment}`
 		this.el.dataset.name = bindflagString
-		this.el.dataset.value = `${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}`
+		if (this.hasDescription) {
+			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress},${description}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
+			// this.preview = `${bindflagString} = ${modKeyString}, ${keyPress},${description}, ${disPatcherString}, ${paramString} ${comment}`
+			this.el.dataset.value = `${modKeyString}, ${keyPress},${description}, ${disPatcherString}, ${paramString}`
+		} else {
+			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
+			// this.preview = `${bindflagString} = ${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString} ${comment}`
+			this.el.dataset.value = `${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}`
+		}
 		let saved_comment = this.comment_el.value
 		this.el.dataset.comment = saved_comment
 		if (!this.initial_load) {

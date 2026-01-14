@@ -14,7 +14,7 @@
 $transition-speed-fast: 0.05s;
 $transition-speed-normal: 0.5s;
 $transition-main: background-color $transition-speed-normal ease,
-color $transition-speed-fast ease;
+	color $transition-speed-fast ease;
 
 /* --- Mixins ---*/
 
@@ -80,8 +80,8 @@ color $transition-speed-fast ease;
 }
 
 @font-face {
-	font-family: 'CommitMonoIconFont';
-	src: url('fonts/CommitMonoNerdFontMono-Regular.otf') format('opentype');
+	font-family: "CommitMonoIconFont";
+	src: url("fonts/CommitMonoNerdFontMono-Regular.otf") format("opentype");
 	font-display: swap;
 }
 
@@ -184,7 +184,7 @@ color $transition-speed-fast ease;
 	--purple: #cba6f7;
 	--overlay: #7f849c;
 	--shadow: #6c7086;
-	--font-primary: 'CommitMono Nerd Font Mono';
+	--font-primary: "CommitMono Nerd Font Mono";
 }
 
 /* --- Base & Resets ---*/
@@ -270,14 +270,14 @@ header#main-header {
 		color: var(--accent);
 
 		#icon {
-			font-family: 'CommitMonoIconFont', monospace;
+			font-family: "CommitMonoIconFont", monospace;
 			font-size: 2rem;
 		}
 
-		#debug-indicator{
-			margin-left: calc(var(--spacing-unit) /2);
-			padding-left: calc(var(--spacing-unit) /2);
-			padding-right: calc(var(--spacing-unit) /2);
+		#debug-indicator {
+			margin-left: calc(var(--spacing-unit) / 2);
+			padding-left: calc(var(--spacing-unit) / 2);
+			padding-right: calc(var(--spacing-unit) / 2);
 			color: var(--text-contrast);
 
 			background-color: var(--accent-warning);
@@ -327,7 +327,7 @@ header#main-header {
 			padding: var(--spacing-unit);
 			font-size: 3rem;
 			line-height: 1;
-			font-family: 'CommitMonoIconFont', monospace;
+			font-family: "CommitMonoIconFont", monospace;
 		}
 
 		.sidebar-text {
@@ -390,12 +390,10 @@ header#main-header {
 	position: relative;
 }
 
-#content-area:has(#dmenu){
+#content-area:has(#dmenu) {
 	//background-color: var(--red);
 	//position: a;
 }
-
-
 
 footer {
 	display: flex;
@@ -440,7 +438,7 @@ footer {
 
 	&.keyboard-selected {
 		&::after {
-			content: '';
+			content: "";
 			position: absolute;
 			left: 2px;
 			color: var(--text-contrast);
@@ -586,7 +584,7 @@ footer {
 			flex-direction: row;
 			align-items: center;
 
-			input[type='checkbox'] {
+			input[type="checkbox"] {
 				height: 2rem;
 				margin-right: var(--spacing-unit);
 				width: 2rem;
@@ -632,7 +630,7 @@ h1#config-set-title {
 	min-width: 30rem;
 	transition: height 0.2s ease-in-out;
 
-	input{
+	input {
 		background: none;
 		border: none;
 		outline: none;
@@ -656,11 +654,7 @@ h1#config-set-title {
 		overflow-x: hidden;
 
 		// subtle "more below" hint
-		mask-image: linear-gradient(
-				    to bottom,
-				    black 88%,
-				    transparent 100%
-		);
+		mask-image: linear-gradient(to bottom, black 88%, transparent 100%);
 
 		li {
 			padding-left: var(--spacing-unit);
@@ -674,7 +668,7 @@ h1#config-set-title {
 				outline: none;
 
 				&::after {
-					content: '';
+					content: "";
 					position: absolute;
 					left: -1.5rem;
 					color: var(--green);
@@ -685,12 +679,12 @@ h1#config-set-title {
 	}
 }
 
-
-.dmenu-overlay, #dmenu-overlay {
-	position: absolute;        /* covers the container */
-	inset: 0;                  /* top:0; right:0; bottom:0; left:0 */
-	background-color: rgba(0,0,0,0.3); /* semi-transparent dim */
-	z-index: 8;               /* below dmenu */
+.dmenu-overlay,
+#dmenu-overlay {
+	position: absolute; /* covers the container */
+	inset: 0; /* top:0; right:0; bottom:0; left:0 */
+	background-color: rgba(0, 0, 0, 0.3); /* semi-transparent dim */
+	z-index: 8; /* below dmenu */
 	//backdrop-filter: blur(1px);
 	transition: all 1s ease;
 }
@@ -717,17 +711,17 @@ h1#config-set-title {
 
 	// Focused (Keyboard/Direct) - Non-Group
 	&:is(:focus, :focus-visible):not(.config-group) {
-		@include editor-focused('', var(--accent-success));
+		@include editor-focused("", var(--accent-success));
 	}
 
 	// Focused-Within (Child Element Active) - Non-Group
 	&:focus-within:not(:focus):not(.config-group) {
-		@include editor-focused('', var(--accent-warning));
+		@include editor-focused("", var(--accent-warning));
 	}
 
 	// Focused (Keyboard/Direct/Within) - Config Group
 	&:is(:focus, :focus-visible).config-group {
-		@include config-group-focused('', var(--accent-success));
+		@include config-group-focused("", var(--accent-success));
 	}
 
 	// --- SUB-COMPONENTS (Flat Structure) ---
@@ -748,7 +742,6 @@ h1#config-set-title {
 
 			&#key {
 				color: var(--accent);
-
 			}
 
 			&#value {
@@ -795,6 +788,7 @@ h1#config-set-title {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+		position: relative;
 
 		> textarea,
 		> input {
@@ -803,7 +797,7 @@ h1#config-set-title {
 			display: flex;
 			align-items: center;
 			height: 3rem !important;
-			width: 100%;
+			// width: 100%;
 			border-radius: var(--border-rad);
 		}
 
@@ -897,7 +891,7 @@ h1#config-set-title {
 				border-radius: var(--border-rad);
 				color: var(--accent-warning);
 				font-size: 1.2rem;
-				content: 'Disabled';
+				content: "Disabled";
 			}
 		}
 	}
@@ -919,7 +913,7 @@ h1#config-set-title {
 		@extend %slider-base;
 	}
 
-	input[type='text'] {
+	input[type="text"] {
 		@extend %input-clean;
 		margin-left: 1rem;
 		margin-bottom: 0;
@@ -953,7 +947,7 @@ h1#config-set-title {
 			//overflow: hidden;
 		}
 
-		input[type='text'] {
+		input[type="text"] {
 			@extend %input-clean;
 			width: 5%;
 			min-width: 4ch;
@@ -966,7 +960,7 @@ h1#config-set-title {
 		gap: 1rem;
 		grid-auto-flow: column;
 		transition: grid-auto-flow 0.3s, grid-auto-rows 0.3s,
-		grid-auto-columns 0.3s;
+			grid-auto-columns 0.3s;
 
 		&.narrow-child {
 			grid-auto-flow: row;
@@ -1032,12 +1026,12 @@ h1#config-set-title {
 					}
 
 					@media (max-width: 40rem) {
-						content: 'X' !important;
+						content: "X" !important;
 					}
 				}
 			}
 
-			input[type='text'] {
+			input[type="text"] {
 				width: 100%;
 				height: 100%;
 				background-clip: padding-box;
@@ -1175,7 +1169,7 @@ a {
 		text-decoration: underline;
 	}
 
-	&[style*='!important'] {
+	&[style*="!important"] {
 		color: var(--accent) !important;
 	}
 }
@@ -1206,7 +1200,7 @@ button#theme-toggle {
 	font-size: 2rem;
 	cursor: pointer;
 	transition: transform $transition-speed-normal ease,
-	color $transition-speed-normal ease;
+		color $transition-speed-normal ease;
 
 	&:hover {
 		color: var(--accent);
@@ -1355,7 +1349,7 @@ span {
 	.new::before {
 		position: absolute;
 		left: -7ch;
-		content: 'New!';
+		content: "New!";
 		background-color: var(--yellow);
 		color: var(--text-contrast);
 		padding: 0.1rem;
@@ -1384,7 +1378,7 @@ span {
 		* {
 			margin-bottom: 0;
 			text-shadow: 0 5px 20px 10px rgba(0, 0, 0, 1),
-			0 1px 5px rgba(0, 0, 0, 1);
+				0 1px 5px rgba(0, 0, 0, 1);
 			line-height: 1.85rem;
 			font-size: 1.5rem;
 		}

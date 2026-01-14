@@ -106,7 +106,7 @@
   --purple: #cba6f7;
   --overlay: #7f849c;
   --shadow: #6c7086;
-  --font-primary: 'CommitMono Nerd Font Mono';
+  --font-primary: "CommitMono Nerd Font Mono";
 }
 
 /* --- Base & Resets ---*/
@@ -546,7 +546,8 @@ h1#config-set-title {
   font-weight: bold;
 }
 
-.dmenu-overlay, #dmenu-overlay {
+.dmenu-overlay,
+#dmenu-overlay {
   position: absolute; /* covers the container */
   inset: 0; /* top:0; right:0; bottom:0; left:0 */
   background-color: rgba(0, 0, 0, 0.3); /* semi-transparent dim */
@@ -680,6 +681,7 @@ h1#config-set-title {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  position: relative;
 }
 .editor-item .keybind-editor > textarea,
 .editor-item .keybind-editor > input {
@@ -696,7 +698,6 @@ h1#config-set-title {
   display: flex;
   align-items: center;
   height: 3rem !important;
-  width: 100%;
   border-radius: var(--border-rad);
 }
 .editor-item .keybind-editor > textarea {
