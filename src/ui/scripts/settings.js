@@ -4,7 +4,7 @@ let settingsEl = document.querySelector(".config-set#settings")
 
 
 export async function renderSettings() {
-	await waitFor(() => window.pywebview?.api?.save_window_config)
+	
 	settingsEl = document.querySelector(".config-set#settings")
 	createHeaderCommentsVisibilitySetting()
 	createLineCommentsVisibilitySetting()

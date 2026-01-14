@@ -1,4 +1,4 @@
-import { waitFor } from "./utils.js";
+import { saveWindowConfig, waitFor } from "./utils.js";
 
 
 
@@ -27,5 +27,21 @@ export const Backend = {
 		let isDebug = JSON.parse(await window.pywebview.api.getDebugStatus());
 		console.debug(isDebug)
 		return isDebug
+	},
+
+	async getBuiltinThemes() {
+		return await window.pywebview.api.get_builtin_themes()
+	},
+
+	saveConfig(configJSON) {
+		window.pywebview.api.save_config(configJSON)
+	},
+
+	async newUUID() {
+		return window.pywebview.api.new_uuid()
+	},
+
+	async saveWindowConfig(json, label){
+		await window.pywebview.api.save_window_config(json,label)
 	}
 }

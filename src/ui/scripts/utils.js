@@ -1,3 +1,4 @@
+import { Backend } from './backendAPI.js'
 import { GLOBAL } from './GLOBAL.js'
 
 export async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
@@ -10,7 +11,7 @@ export async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
 
 export const debounce = (fn, wait = 100) => {
 	let timeout
-	return function(...args) {
+	return function (...args) {
 		const context = this
 		clearTimeout(timeout)
 		timeout = setTimeout(() => fn.apply(context, args), wait)
@@ -87,8 +88,8 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 	window.jsViewer.data = GLOBAL['data']
 
 	if (!GLOBAL['config'].dryrun) {
-		// console.log(`Node ${uuid} saved:`, node);
-		window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
+		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
+		Backend.saveConfig(JSON.stringify(GLOBAL['data']))
 	} else {
 		console.log(`Dryrun save ${uuid}:`, node)
 	}
@@ -104,7 +105,8 @@ export function deleteKey(uuid, position) {
 	if (!GLOBAL['config'].dryrun) {
 		console.log(`Node ${uuid} deleted:`, node)
 		parent.children.splice(nodeIndex, 1)
-		window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
+		Backend.saveConfig(JSON.stringify(GLOBAL['data']))
+		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
 		window.jsViewer.data = GLOBAL['data']
 	} else {
 		console.log(`Dryrun delete ${uuid}:`, node)
@@ -118,7 +120,7 @@ export async function addItem(type, name, value, comment, position, relative_uui
 	// console.log(parent)
 	let nodeIndex = parent.children.findIndex(node => node.uuid == relative_uuid)
 	// console.log({ nodeIndex })
-	let newuuid = await window.pywebview.api.new_uuid()
+	let newuuid = await Backend.newUUID()
 	let targetIndex = below ? nodeIndex + 1 : nodeIndex
 	// console.log(value)
 	parent.children.splice(targetIndex, 0, {
@@ -138,14 +140,12 @@ export function makeUUID(length = 8) {
 }
 
 export async function saveWindowConfig() {
-	// capture caller from stack
-	// const stack = new Error().stack.split("\n")
-	// const caller = stack[2]?.trim() || "(unknown caller)"
-	// console.log("saveWindowConfig called by:", caller)
 
 	try {
-		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['config']), 'config')
-		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
+		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['config']), 'config')
+		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
@@ -153,7 +153,7 @@ export async function saveWindowConfig() {
 
 export async function saveWindowConfig_Config() {
 	try {
-		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['config']), 'config')
+		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
@@ -161,7 +161,7 @@ export async function saveWindowConfig_Config() {
 
 export async function saveWindowConfig_Persistence() {
 	try {
-		await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}

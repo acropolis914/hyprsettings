@@ -32,7 +32,7 @@ async function load_config() {
 	}
 
 	window.themes = windowConfig.theme //just to globally access it for setupTheme
-	let builtin_themes = await window.pywebview.api.get_builtin_themes()
+	let builtin_themes = await Backend.getBuiltinThemes()
 	// console.log(builtin_themes)
 	for (let builtin_theme of builtin_themes) {
 		builtin_theme.name = `[builtin] ${builtin_theme.name}`
