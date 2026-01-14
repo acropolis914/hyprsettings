@@ -1,4 +1,14 @@
-# HyprSettings
+
+<h1 align="center" red>
+<pre>
+
+╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓
+✨   ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓   ✨
+╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛
+</pre>
+</h1>
+
+# 💧 HyprSettings : your loyal `hyprland.conf` editor!
 
 HyprSettings: a configurator for `hyprland.conf` that very loyally reconstructs your configs exactly(almost*) as you
 wrote them, including comments. It presents everything in an organized UI that is also keyboard navigable. Themable,
@@ -17,6 +27,8 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 - Theming support
 
 `*The cleanup however has a side effect that trims trailing spaces. This is by design.`
+
+
 <img width="960" height="720" alt="20251216_091407" src="https://github.com/user-attachments/assets/8262a29c-4968-4b37-886b-44802ac401de" />
 
 
