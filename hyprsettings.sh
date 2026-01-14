@@ -45,9 +45,15 @@ NC='\033[0m'
 info()    { echo -e "${GREEN}[✓]${NC} $*"; }
 warn()    { echo -e "${YELLOW}[! ]${NC} $*"; }
 error()   { echo -e "${RED}[✗]${NC} $*" >&2; }
-header()  { echo -e "\n${BOLD}${BLUE}══════════════════════════════════════════════════${NC}"; echo -e "${BOLD}${BLUE}  $*${NC}"; echo -e "${BOLD}${BLUE}══════════════════════════════════════════════════${NC}\n"; }
+header()  { echo -e "${BOLD}${BLUE}  $*${NC}";}
 subheader() { echo -e "\n${CYAN}── $* ──${NC}\n"; }
 dim()     { echo -e "${DIM}$*${NC}"; }
+link() {
+    local url="$1"
+    local text="$2"
+    # Light blue + underline
+    printf '\e[4;94m%s\e[0m\n' "$text ($url)"
+}
 
 spinner() {
     local pid=$1
@@ -252,8 +258,14 @@ check_sudo() {
 ### STARTUP
 
 startup_checks() {
-    header "HyprSettings Installer"
-    if [[ "$TEST_MODE" == "true" ]]; then echo -e "  ${YELLOW}⚠ TEST MODE${NC} — Installing as ${BOLD}$APP_NAME${NC}\n"; fi
+    header "
+ ╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓
+ ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓
+ ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛
+ \e[34m\e]8;;https://github.com/acropolis914/hyprsettings\e\\ github.com/acropolis914/hyprsettings\e]8;;\e\\
+    "
+    
+    if [[ "$TEST_MODE" == "true" ]]; then echo -e "${YELLOW}⚠ TEST MODE${NC} — Installing as ${BOLD}$APP_NAME${NC}\n"; fi
 
     check_in_repo
     if [[ "$IN_REPO" == "true" ]]; then info "Running from local repository"; dim "    $SCRIPT_DIR"; fi
@@ -337,8 +349,12 @@ run_actions() {
             run_script)
                 local run_script="$INSTALL_DIR/run.sh"
                 local run_content='#!/usr/bin/env bash
+set -e
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 . ".venv/bin/activate"
-python "src/hyprsettings" "$@"'
+exec python "src/hyprsettings" "$@"'
+
                 if [[ "$INSTALL_TYPE" == "system" ]]; then
                     echo "$run_content" | sudo tee "$run_script" > /dev/null
                     sudo chmod +x "$run_script"
@@ -431,14 +447,50 @@ StartupNotify=true"
     done
 
     echo
-    echo -e "  ${GREEN}${BOLD}✓ Done!${NC}"
+    subheader "${GREEN}${BOLD}✓ Done!${NC}"
     echo
+    # Helper for light blue underlined links
+
+
     if [[ "$is_uninstall" != "true" ]]; then
-        dim "  Run '$APP_NAME' or check your menu."
+        dim "Run '$APP_NAME' or check your menu."
         echo
+
+        # GitHub star prompt
+        printf 'Please consider starring this project on GitHub:\n'
+        printf '  ⭐ '
+        link "https://github.com/acropolis914/hyprsettings" "hyprsettings"
+        echo
+
+        printf 'Thank you for trying 💧hyprsettings!\n'
+        link "https://github.com/acropolis914/hyprsettings" "Made with ❣️ by AcroPolis914 — Project page"
+        echo
+
+        # Auto launch prompt
+        read -n1 -p "Do you want to launch $APP_NAME now? [Y/n]: " yn
+        echo
+        yn="${yn:-Y}"
+        if [[ "${yn^^}" == "Y" ]]; then
+            "$APP_NAME" &
+        fi
+
         exit 0
     fi
-    exit 0
+
+    # Uninstall closing message
+    if [[ "$is_uninstall" == "true" ]]; then
+        echo
+        dim "You can always come back and try it again by running:"
+        echo -e "\e[1mcurl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh\e[0m"
+        echo
+        printf 'Thank you for trying 💧hyprsettings!\n'
+        link "https://github.com/acropolis914/hyprsettings" "Made with ❣️ by AcroPolis914 — Project page"
+        echo
+
+        exit 0
+    fi
+
+
 }
 
 ### LOGIC BRANCHES
@@ -481,28 +533,53 @@ quick_install() {
 custom_install() {
     echo -e "\n  ${BOLD}Select Type:${NC}"
     echo -e "  1) User   ${DIM}($HOME/.local/share/$APP_NAME)${NC}"
-    if [[ "$IN_REPO" == "true" ]]; then echo -e "  2) Local  ${DIM}(In-place)${NC}"; fi
-    echo -e "  3) System ${DIM}(/usr/share/$APP_NAME)${NC}"
+
+    if [[ "$IN_REPO" == "true" ]]; then
+        echo -e "  2) Local  ${DIM}(In-place)${NC}"
+        echo -e "  3) System ${DIM}(/usr/share/$APP_NAME)${NC}"
+    else
+        echo -e "  2) System ${DIM}(/usr/share/$APP_NAME)${NC}"
+    fi
+
     echo -e "  0) Cancel"
 
     read -rp "  Select: " c
+
     case "$c" in
-        1) set_paths_user
-           if [[ -d "$INSTALL_DIR" ]]; then ACTIONS+=("delete_install_dir"); fi
-           [[ "$IN_REPO" == "true" ]] && { check_repo_sync; ACTIONS+=("copy_repo"); } || ACTIONS+=("clone_repo") ;;
-        2) [[ "$IN_REPO" != "true" ]] && return
-           set_paths_local ;;
-        3) check_sudo
-           set_paths_system
-           if [[ -d "$INSTALL_DIR" ]]; then ACTIONS+=("delete_install_dir"); fi
-           [[ "$IN_REPO" == "true" ]] && { check_repo_sync; ACTIONS+=("copy_repo"); } || ACTIONS+=("clone_repo") ;;
-        0) return ;;
-        *) return ;;
+        1)
+            set_paths_user
+            [[ -d "$INSTALL_DIR" ]] && ACTIONS+=("delete_install_dir")
+            [[ "$IN_REPO" == "true" ]] && { check_repo_sync; ACTIONS+=("copy_repo"); } || ACTIONS+=("clone_repo")
+            ;;
+        2)
+            if [[ "$IN_REPO" == "true" ]]; then
+                set_paths_local
+            else
+                check_sudo
+                set_paths_system
+                [[ -d "$INSTALL_DIR" ]] && ACTIONS+=("delete_install_dir")
+                ACTIONS+=("clone_repo")
+            fi
+            ;;
+        3)
+            [[ "$IN_REPO" != "true" ]] && return
+            check_sudo
+            set_paths_system
+            [[ -d "$INSTALL_DIR" ]] && ACTIONS+=("delete_install_dir")
+            ACTIONS+=("copy_repo")
+            ;;
+        0)
+            return
+            ;;
+        *)
+            return
+            ;;
     esac
 
     ACTIONS+=("venv" "run_script" "launcher" "desktop" "icon" "marker")
-    if confirm "Proceed?" Y; then run_actions; fi
+    confirm "Proceed?" Y && run_actions
 }
+
 
 ### MAIN MENU
 
