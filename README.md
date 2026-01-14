@@ -2,21 +2,19 @@
 
 <h1 align="center" red>
 <pre>
-
 ╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓
 ✨   ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓   ✨
 ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛
+💧 HyprSettings : your loyal `hyprland.conf` editor!
 </pre>
 </h1>
 
-# 💧 HyprSettings : your loyal `hyprland.conf` editor!
+Install now!
+```
+curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh -s -- --auto
+```
 
-HyprSettings: a configurator for `hyprland.conf` that very loyally reconstructs your configs exactly(almost*) as you
-wrote them, including comments. It presents everything in an organized UI that is also keyboard navigable. Themable,
-too!
-Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS libraries.
-
-## Features
+## ✨ Features
 
 - Faithful `hyprland.conf` configurator that reconstructs your config exactly* as written
 - Preserves comments* and their positions
@@ -26,25 +24,12 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 - Color Picker , gradient editor
 - Dynamic resizing
 - Theming support
-
+  
+HyprSettings: a configurator for `hyprland.conf` that very loyally reconstructs your configs exactly(almost*) as you
+wrote them, including comments. It presents everything in an organized UI that is also keyboard navigable. Themable,
+too!
+Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS libraries.
 `*The cleanup however has a side effect that trims trailing spaces. This is by design.`
-
-
-Hyprsettings in Embark theme, with the search bar and the color selector open. Cool ain't it?
-
-
-> Looking for Contributors 🙌  
-> I'd love help with: autocomplete color selectors, gradient selectors, a floating sidebar for Hyprland documentation,
-> and other minor improvements. Open a discussion or issue if you're interested!
-
-> [!IMPORTANT] **Important** \
-> This is in alpha state. As of release 0.6.2, it is working as expected, there are less bugs, more features, but still,
-> there are more to work on.
-
-You can fork this repo, make changes, and submit pull requests. Please also submit bugs, start discussions, etc. I'd
-love to hear from you!
-
-You can be as silly as you want and send me screenshots of it working on your desktop.(please haha)
 
 ## Table of Contents
 
@@ -62,11 +47,11 @@ You can be as silly as you want and send me screenshots of it working on your de
     - [A Personal Note](#a-personal-note)
         - [Notice on the use of AI](#notice-on-the-use-of-ai)
 
----
 
-## Installation
+## 📥 Installation
 
 ### Quick Clone and Install (Recommended for local use)
+> For Arch and Nix users, please scroll a bit further. They are available as packages for those systems already.
 
 The included installer script (`hyprsettings.sh`) handles cloning the repo, setting up a contained Python virtual
 environment (`.venv`), installing dependencies, and creating the necessary launcher links (`~/.local/bin/hyprsettings`).
@@ -74,7 +59,6 @@ environment (`.venv`), installing dependencies, and creating the necessary launc
 **Run the interactive installer directly:**
 
 ````bash
-# Note: This runs the script directly via curl | sh
 curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh
 `````
 
@@ -121,9 +105,6 @@ nix profile add github:acropolis914/hyprsettings
 ```bash
 yay -S hyprsettings-git
 ```
-
-Yay 🎉
-
 After installation you can:
 
 - Launch it from your application launcher (rofi, wofi, walker, fuzzel, etc.) by searching for “HyprSettings”.
@@ -138,7 +119,7 @@ After installation you can:
     exec-once = hyprsettings -d -H
   ```
 
-## Configuration and Theming
+## 🎨 Configuration and Theming
 
 Hyprsettings will create a configuration file at:
 
@@ -149,7 +130,7 @@ Hyprsettings will create a configuration file at:
 Theming works perfectly out of the box. The defaults should be fine, but if you like tweaking, you can explore and
 modify the file. Be careful, though I do not have extensive safeguards and fallbacks right now.
 
-## Autostart and Daemon mode
+## 👻 Autostart and Daemon mode
 > This will not work when you are on an nvidia only setting for your gpu. You have to have Integrated GPU too as GTK3
 > doesn't work well with NVIDIA only setups. Can't test with AMD. I dont have AMD.
 
@@ -163,7 +144,7 @@ exec-once = hyprsettings -d -H
 ```
 > Please note the capital H.
 
-## Organizing Comments into Tabs
+## 🗂️ Organizing Comments into Tabs
 
 > [\!NOTE]
 > Config keys are auto-sorted regardless of where they appear in your configuration files. The convention below only
@@ -235,7 +216,7 @@ How to get started:
 
 No experience requirements. Beginners welcome.
 
-## Testing the UI (Development)
+## ❄ Testing the UI (Development)
 
 If you are developing locally instead of using the AUR package:
 
@@ -267,7 +248,7 @@ sh run.sh
 
 ---
 
-## A Personal Note
+## 💬 A Personal Note
 
 Please note that this is my first publicly announced project, so be kind and help me improve it\! Start discussions if
 you want to chat with me about it.  
