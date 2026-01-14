@@ -78,7 +78,7 @@ def print_title():
  [bold][blue]╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓
  ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓
  ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛[/bold][/blue]
-version {CURRENT_VERSION} [link=https://github.com/acropolis914/hyprsettings] github:hyprsettings[/link]\n"""
+version {CURRENT_VERSION} [blue][link=https://github.com/acropolis914/hyprsettings] github.com/acropolis914/hyprsettings[/link][/blue]\n"""
 	console.print(art, style="")
 	# return art
 
@@ -247,7 +247,8 @@ class Api:
 
 	def get_config(self, path=None):
 		hyprland_config_path = path if path else HYPRLAND_CONFIG_PATH
-		config = ConfigParser(hyprland_config_path).root.to_json()
+		# print(args.verbose)
+		config = ConfigParser(hyprland_config_path, verbose=args.verbose).root.to_json()
 		return config
 
 	def save_config(self, json: str):
@@ -457,6 +458,7 @@ if __name__ == "__main__":
 	if args.ui:
 		log(f"Using UI {args.ui}")
 	print("Debug mode: ", args.debug)
+	print("Verbose:", args.verbose)
 	if args.debug:
 		log(
 			"[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!"
@@ -471,7 +473,10 @@ if __name__ == "__main__":
 			warn(f'Given config file is not a ".conf file". Using default config path {HYPRLAND_CONFIG_PATH}')
 
 	daemon = args.daemon and not args.no_daemon
-	verbose = args.verbose
+
+	if args.verbose:
+		verbose = args.verbose
+
 	port_open = is_port_open()
 
 	if args.no_daemon or not args.daemon:

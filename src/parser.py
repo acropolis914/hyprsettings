@@ -13,10 +13,19 @@ import builtins
 rich.traceback.install(show_locals=True)
 _original_print = builtins.print
 console = Console()
+global_verbose = False
 
 
 def print(*args, **kwargs):
 	console.print("[green]\[parser][/green]", *args, **kwargs)
+
+
+def log(msg, prefix="", only_verbose=False):
+	global global_verbose
+	# print(global_verbose)
+	prefix = f"[{prefix}]" if prefix else ""
+	if not only_verbose or global_verbose:
+		print(f"{prefix}{msg}")
 
 
 config_path = Path.home() / ".config" / "hypr" / "hyprland.conf"
@@ -178,10 +187,14 @@ def print_hyprland(config_list, print: bool = False, save: bool = False):
 
 
 class ConfigParser:
-	def __init__(self, path: Path):
+	def __init__(self, path: Path, verbose=False):
+		global global_verbose
+		global_verbose = verbose
+		# print(global_verbose)
 		self.root = Node("root", "GROUP")
 		self.stack = [self.root]
 		self.parse_config(path)
+
 
 	@classmethod
 	def load(cls, path: Path) -> Node:
@@ -218,7 +231,7 @@ class ConfigParser:
 				# if colon_index != -1 and equal_index != -1 and colon_index < equal_index:
 				# 	# TODO:IMPLEMENT COLON GROUPS
 				# 	# print(f"Line {line_content} has ':' before '='")
-                #
+				#
 				# 	pass
 				elif re.match(r"^#\s*disabled\b", line_content.lstrip(), re.IGNORECASE):
 					# print(f"Line Content {line_content} is disabled")
@@ -302,14 +315,13 @@ class ConfigParser:
 
 				if check.startswith("source"):
 					_, file_path = map(str.strip, line.split("=", 1))
-
 					if "$" in file_path:
-						print(f"Source {file_path} uses globals")
+						log(f"Source {file_path} uses globals", only_verbose=True)
 						for key, val in globals.items():
 							if key in file_path:
 								file_path = file_path.replace(key, val)
 								break
-						print(f"Sourcing {file_path} based on globals.")
+						log(f"Sourcing {file_path} based on globals.", only_verbose=True)
 
 					def glob_path(path):
 						path_str = path.rstrip("*")
@@ -321,29 +333,35 @@ class ConfigParser:
 								sources.append(Path(path_str, content).resolve())
 							elif Path(path_str, content).is_dir():
 								glob_path(str(Path(path_str, content)))
-							print(f"Added via glob: {Path(path_str, content).resolve()}")
+							log(
+								f"Added via glob: {Path(path_str, content).resolve()}",
+								only_verbose=True,
+							)
 
 					if file_path.startswith("~"):
 						file_path = str(Path(file_path).expanduser())
 						if file_path.endswith(".conf"):
 							sources.append(Path(file_path).resolve())
-							print(f"Added ~ conf: {file_path}")
+							log(f"Added ~ conf: {file_path}", only_verbose=True)
 						elif file_path.endswith("*"):
 							glob_path(file_path)
 
 					elif file_path.startswith("/"):
 						if file_path.endswith(".conf"):
 							sources.append(Path(file_path).resolve())
-							print(f"Added abs conf: {file_path}")
+							log(f"Added abs conf: {file_path}", only_verbose=True)
 						elif file_path.endswith("*"):
 							glob_path(file_path)
 					else:
 						resolved = (config_path.parent / file_path).resolve()
 						sources.append(resolved)
-						print(f"Added relative: {resolved}")
+						log(f"Added relative: {resolved}", only_verbose=True)
 
 			self.stack.pop()
 			if sources:
+				# global global_verbose
+				# print(global_verbose)
+				print("Reading files sourced in the main config file.")
 				for source in sources:
 					try:
 						self.parse_config(source)
