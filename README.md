@@ -1,3 +1,4 @@
+<img width="1568" height="792" alt="image" src="https://github.com/user-attachments/assets/25ffb079-0dfc-4445-b7c1-20609f4b26de" />
 
 <h1 align="center" red>
 <pre>
@@ -27,9 +28,6 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 - Theming support
 
 `*The cleanup however has a side effect that trims trailing spaces. This is by design.`
-
-
-<img width="960" height="720" alt="20251216_091407" src="https://github.com/user-attachments/assets/8262a29c-4968-4b37-886b-44802ac401de" />
 
 
 Hyprsettings in Embark theme, with the search bar and the color selector open. Cool ain't it?
