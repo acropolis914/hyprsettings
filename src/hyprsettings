@@ -450,7 +450,7 @@ if __name__ == "__main__":
 	parser.add_argument("--debug", action="store_true", help="Enable debug and devtools")
 	args = parser.parse_args()
 	signal.signal(signal.SIGINT, handle_interrupt)
-	print_title()
+	# print_title()
 
 	if args.kill:
 		kill_hyprsettings()
@@ -458,7 +458,9 @@ if __name__ == "__main__":
 		log(f"Using UI {args.ui}")
 	print("Debug mode: ", args.debug)
 	if args.debug:
-		log('[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!')
+		log(
+			"[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!"
+		)
 	if args.hidden:
 		window_visible = False
 	if args.config:
