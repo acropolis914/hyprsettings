@@ -151,6 +151,7 @@ export async function initializeSearchBar() {
 		searchResultEl.style.display = 'flex'
 		search()
 	})
+
 	searchBar.addEventListener('click', (e) => {
 		e.stopPropagation()
 		GLOBAL['previousView'] = GLOBAL['currentView']
@@ -186,9 +187,20 @@ export async function initializeSearchBar() {
 		if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
 			e.preventDefault()
 		}
+
+		if (/^[a-zA-Z_.]$/.test(e.key)) {
+			e.preventDefault();
+			searchBar.focus();
+			searchBar.value += e.key;
+		}
 	})
 	document.addEventListener('click', (e) => {
-		searchResultEl.style.display = 'none'
+		let clickedInsideSearchbar = searchBar.contains(e.target)
+		let clickedInsideSearchResults = searchResultEl.contains(e.target)
+		if (!clickedInsideSearchbar && !clickedInsideSearchResults) {
+			cleanUp()
+		}
+
 		// GLOBAL['currentView'] = GLOBAL['previousView']
 	})
 	hotkeys('*', (event) => {
@@ -198,6 +210,10 @@ export async function initializeSearchBar() {
 	function cleanUp(){
 		searchResultEl.style.display = 'none'
 		destroyOverlay()
+		if (GLOBAL['previousView']) {
+			GLOBAL['currentView'] = GLOBAL['previousView']
+			GLOBAL['previousView'] = 'search'
+		}
 	}
 
 }

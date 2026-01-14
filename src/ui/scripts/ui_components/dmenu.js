@@ -1,101 +1,236 @@
-import { GLOBAL } from '../GLOBAL.js'
+// dmenu.js
+import { GLOBAL } from '../GLOBAL.js';
 import { createOverlay, destroyOverlay } from './darken_overlay.js';
 
-export function selectFrom(options, addCustom = true) {
-	return new Promise((resolve, reject) => {
-		GLOBAL['previousView'] = GLOBAL['currentView']
-		GLOBAL['currentView'] = 'dmenu'
+/* ============================================================
+ * Generic DMenu (reusable, app-agnostic)
+ * ============================================================ */
+class DMenu {
+	constructor({
+				items = [],
+				onSelect = () => {},
+				onCancel = () => {},
+				promptText = '',
+				searchbar = true,
+				footer = '↑ ↓ Enter',
+			} = {}) {
+		this.items = items;
+		this.filteredItems = items;
+		this.onSelect = onSelect;
+		this.onCancel = onCancel;
+		this.promptText = promptText;
+		this.searchbar = searchbar;
+		this.footerText = footer;
 
-		createOverlay()
+		this.root = null;
+		this.listEl = null;
+		this.inputEl = null;
+	}
 
-		const selectorParentEl = document.createElement("div");
-		selectorParentEl.className = "dmenu";
-		selectorParentEl.id = "dmenu";
-		selectorParentEl.tabIndex = 0;
+	render() {
+		this.root = document.createElement('div');
+		this.root.className = 'dmenu';
+		this.root.id = 'dmenu';
+		this.root.tabIndex = 0;
 
-		const selectorLaberEl = document.createElement("div");
-		selectorLaberEl.className = "dmenu-prompt";
-		selectorLaberEl.id = "dmenu-prompt";
+		/* search bar (top) */
+		if (this.searchbar) {
+			this.inputEl = document.createElement('input');
+			this.inputEl.type = 'text';
+			this.inputEl.className = 'dmenu-search';
+			this.inputEl.placeholder = this.promptText;
 
+			this.inputEl.addEventListener('input', () => {
+				this._filter(this.inputEl.value);
+			});
 
-		const selectorEl = document.createElement("ul");
-		selectorEl.id = "dmenu-list";
-		selectorEl.className = "dmenu-list";
-		selectorEl.tabIndex = 0;
-
-		selectorParentEl.appendChild(selectorEl);
-
-		function cleanup() {
-			selectorParentEl.remove();
-			destroyOverlay()
-			// console.log(GLOBAL['currentView']);
-			GLOBAL['currentView'] = GLOBAL['previousView']
-			// console.log(GLOBAL['currentView']);
+			this.root.appendChild(this.inputEl);
 		}
 
-		options.forEach((element) => {
-			const selectorItem = document.createElement("li");
-			selectorItem.className = "dmenu-item";
-			selectorItem.tabIndex = 0;
-			selectorItem.textContent = element.name;
+		/* list */
+		this.listEl = document.createElement('ul');
+		this.listEl.className = 'dmenu-list';
+		this.listEl.tabIndex = 0;
+		this.root.appendChild(this.listEl);
 
-			function choose() {
-				cleanup();
-				resolve(element);
+		/* footer (bottom hint box) */
+		const footer = document.createElement('div');
+		footer.className = 'dmenu-footer';
+		footer.textContent = this.footerText;
+		this.root.appendChild(footer);
+
+		this._renderItems(this.items);
+
+		/* direct typing → searchbar */
+		this.root.addEventListener('keydown', e => {
+			if (!this.searchbar || !this.inputEl) return;
+
+			// letters + underscore only
+			if (/^[a-zA-Z_.]$/.test(e.key)) {
+				e.preventDefault();
+				this.inputEl.focus();
+				this.inputEl.value += e.key;
+				this._filter(this.inputEl.value);
 			}
 
-			selectorItem.addEventListener("click", choose);
-
-			selectorItem.addEventListener("keydown", (e) => {
-				if (e.key === "Enter") choose();
-				if (e.key === "Escape") {
-					cleanup();
-					reject(new Error("Selection cancelled"));
-				}
-
-				if (e.key === 'ArrowDown') {
-					e.preventDefault()
-					// console.log('ArrowDown is clicked finding next element')
-					let next = selectorItem.nextElementSibling
-					while (next && next.tagName !== 'LI') {
-						next = next.nextElementSibling
-					}
-					if (!next) {
-						next = selectorItem.parentElement.firstElementChild
-					}
-					selectorItem.classList.remove('selected')
-					next.focus({ preventScroll: true })
-					next.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-				}
-				if (e.key === 'ArrowUp') {
-					e.preventDefault()
-					console.log('ArrowDown is clicked finding next element')
-					let previous = selectorItem.previousElementSibling
-					while (previous && previous.tagName !== 'LI') {
-						previous = previous.previousElementSibling
-					}
-					if (!previous) {
-						previous = selectorItem.parentElement.lastElementChild
-					}
-					selectorItem.classList.remove('selected')
-					console.debug('Next element is focused')
-					previous.focus({ preventScroll: true })
-					previous.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-
-				}
-			});
-
-			selectorItem.addEventListener("focus", (e) => {
-				selectorItem.classList.add('selected')
-			});
-
-			selectorEl.appendChild(selectorItem);
+			if (e.key === 'Backspace') {
+				e.preventDefault();
+				this.inputEl.focus();
+				this.inputEl.value = this.inputEl.value.slice(0, -1);
+				this._filter(this.inputEl.value);
+			}
 		});
 
-		document
-			.getElementById("content-area")
-			.appendChild(selectorParentEl);
+		return this.root;
+	}
 
-		selectorEl.firstElementChild.focus();
+	_renderItems(items) {
+		this.listEl.innerHTML = '';
+		items.forEach(item => this._addItem(item));
+	}
+
+	_filter(query) {
+		const q = query.toLowerCase();
+		this.filteredItems = this.items.filter(item =>
+			(item.label ?? String(item)).toLowerCase().includes(q)
+		);
+
+		this._renderItems(this.filteredItems);
+		this.focusFirst();
+	}
+
+	_addItem(item) {
+		const li = document.createElement('li');
+		li.className = 'dmenu-item';
+		li.tabIndex = 0;
+		li.textContent = item.label ?? String(item);
+
+		const choose = () => this.onSelect(item);
+
+		li.addEventListener('click', choose);
+
+		li.addEventListener('focus', () => {
+			li.classList.add('selected');
+		});
+
+		li.addEventListener('blur', () => {
+			li.classList.remove('selected');
+		});
+
+		li.addEventListener('keydown', e => {
+			if (e.key === 'Enter') choose();
+			if (e.key === 'Escape') this.onCancel();
+
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				(this._next(li) ?? this.listEl.firstElementChild)?.focus();
+			}
+
+			if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				(this._prev(li) ?? this.listEl.lastElementChild)?.focus();
+			}
+		});
+
+		this.listEl.appendChild(li);
+	}
+
+	_next(el) {
+		let n = el.nextElementSibling;
+		while (n && n.tagName !== 'LI') n = n.nextElementSibling;
+		return n;
+	}
+
+	_prev(el) {
+		let p = el.previousElementSibling;
+		while (p && p.tagName !== 'LI') p = p.previousElementSibling;
+		return p;
+	}
+
+	focusFirst() {
+		this.listEl?.firstElementChild?.focus();
+	}
+
+	destroy() {
+		this.root?.remove();
+	}
+}
+
+/* ============================================================
+ * Backwards-compatible wrapper
+ * ============================================================ */
+export function selectFrom(options, addCustom = true) {
+	return new Promise((resolve, reject) => {
+		GLOBAL.previousView = GLOBAL.currentView;
+		GLOBAL.currentView = 'dmenu';
+
+		createOverlay();
+
+		let menu;
+
+		function cleanup() {
+			menu?.destroy();
+			destroyOverlay();
+			GLOBAL.currentView = GLOBAL.previousView;
+			document.removeEventListener('click', outsideClick);
+		}
+
+		menu = new DMenu({
+			items: options.map(o => ({
+				label: o.name,
+				value: o,
+			})),
+			onSelect: item => {
+				cleanup();
+				resolve(item.value);
+			},
+			onCancel: () => {
+				cleanup();
+				reject(new Error('Selection cancelled'));
+			},
+			promptText: "Type to search"
+		});
+
+		const root = menu.render();
+
+		function outsideClick(e) {
+			if (!root.contains(e.target)) {
+				cleanup();
+				reject(new Error('Selection cancelled'));
+			}
+		}
+
+		document.addEventListener('click', outsideClick);
+
+		document
+			.getElementById('content-area')
+			.appendChild(root);
+
+		menu.focusFirst();
 	});
 }
+
+/* ============================================================
+ * Sample usage (direct DMenu)
+ * ============================================================ */
+
+// const menu = new DMenu({
+// 	promptText: 'Choose an action',
+// 	footer: '↑ ↓ Enter  Esc cancel',
+// 	items: [
+// 		{ label: 'Open', id: 'open' },
+// 		{ label: 'Save', id: 'save' },
+// 		{ label: 'Quit', id: 'quit' },
+// 	],
+// 	onSelect: item => {
+// 		console.log('Selected:', item.id);
+// 		menu.destroy();
+// 	},
+// 	onCancel: () => {
+// 		console.log('Cancelled');
+// 		menu.destroy();
+// 	},
+// });
+//
+// document.body.appendChild(menu.render());
+// menu.focusFirst();

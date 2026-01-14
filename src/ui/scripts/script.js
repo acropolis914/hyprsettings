@@ -14,22 +14,18 @@ import { refreshAllStylesheets, setupTheme, updateJsonViewerTheme } from './setu
 import { createDynamicTabs } from './ui_components/createDynamicTabs.js'
 import { renderSettings } from './settings.js'
 import { initializeSearchBar } from './ui_components/searchBar.js'
-
+import { Backend } from './backendAPI.js'
 window.Global = GLOBAL
 
 // @ts-ignore
 async function setupData() {
-	await waitFor(() => window.pywebview?.api.init)
-	// @ts-ignore
-	// GLOBAL['data']
-	GLOBAL['data'] = await JSON.parse(await window.pywebview.api.init())
+	GLOBAL['data'] = JSON.parse(await Backend.getHyprlandConfig())
 	jsViewerInit()
 	new configRenderer(GLOBAL['data'])
 }
 
 async function load_config() {
-	await waitFor(() => window.pywebview?.api.init)
-	let windowConfig = await window.pywebview.api.read_window_config()
+	let windowConfig = await Backend.readWindowConfig()
 	if (windowConfig['configuration-error']) {
 		console.log('Configuration error: ', windowConfig['configuration-error'])
 		return

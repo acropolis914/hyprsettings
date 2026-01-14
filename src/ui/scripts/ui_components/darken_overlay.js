@@ -5,9 +5,11 @@ export function createOverlay() {
 }
 
 export function destroyOverlay() {
-	const overlay = document.getElementById("dmenu-overlay")
+	const overlays = document.querySelectorAll("#dmenu-overlay")
 	try{
-		overlay.parentNode.removeChild(overlay);
+		overlays.forEach(overlay => {
+			overlay.parentNode.removeChild(overlay);
+		})
 	} catch(err){
 
 	}

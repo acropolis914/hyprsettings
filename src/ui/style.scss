@@ -600,12 +600,16 @@ h1#config-set-title {
 	padding-left: 1.5rem;
 }
 
-#dmenu{
+#dmenu {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	z-index: 9;
 	transform: translate(-50%, -50%);
+	z-index: 9;
+
+	display: flex;
+	flex-direction: column;
+
 	border: 1px solid var(--accent);
 	background-color: var(--surface-0);
 	padding: var(--spacing-unit);
@@ -613,42 +617,69 @@ h1#config-set-title {
 	box-shadow: var(--shadow);
 	backdrop-filter: blur(10px);
 
-	ul{
+	// prevent it from exceeding viewport
+	max-height: calc(100vh - 4rem);
+	min-width: 30rem;
+	transition: height 0.2s ease-in-out;
+
+	input{
+		background: none;
+		border: none;
+		outline: none;
+		margin-bottom: var(--spacing-unit);
+		color: var(--accent);
+	}
+
+	ul {
 		display: flex;
 		flex-direction: column;
 		list-style: none;
-		overflow-x: scroll;
-		overflow-y: hidden ;
+
+		margin: 0;
 		padding-left: calc(var(--spacing-unit) * 1.5);
-		max-height: 30rem;
-		li{
+
+		// shrink to content until cap
+		max-height: 20rem;
+		min-height: 0;
+
+		overflow-y: auto;
+		overflow-x: hidden;
+
+		// subtle "more below" hint
+		mask-image: linear-gradient(
+				    to bottom,
+				    black 88%,
+				    transparent 100%
+		);
+
+		li {
 			padding-left: var(--spacing-unit);
 			padding-right: var(--spacing-unit);
 			position: relative;
-			overflow: visible;
-		}
-		li:focus{
-			background-color: var(--accent);
-			color: var(--text-contrast);
-			outline: none;
-			&::after {
-				content: '';
-				position: absolute;
-				left: -1.5rem;
-				color: var(--green);
-				font-weight: bold;
+			background-color: transparent;
+
+			&:focus {
+				background-color: var(--accent);
+				color: var(--text-contrast);
+				outline: none;
+
+				&::after {
+					content: '';
+					position: absolute;
+					left: -1.5rem;
+					color: var(--green);
+					font-weight: bold;
+				}
 			}
 		}
-
 	}
-
-
 }
+
 
 .dmenu-overlay, #dmenu-overlay {
 	position: absolute;        /* covers the container */
 	inset: 0;                  /* top:0; right:0; bottom:0; left:0 */
-	background-color: rgba(100,0,0,0.3); /* semi-transparent dim */
+	background-color: rgba(0,0,0,0.3); /* semi-transparent dim */
 	z-index: 8;               /* below dmenu */
 	//backdrop-filter: blur(1px);
 	transition: all 1s ease;

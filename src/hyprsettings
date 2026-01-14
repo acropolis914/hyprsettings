@@ -80,6 +80,7 @@ def print_title():
  ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛[/bold][/blue]
 version {CURRENT_VERSION} [link=https://github.com/acropolis914/hyprsettings] github:hyprsettings[/link]\n"""
 	console.print(art, style="")
+	# return art
 
 
 class LogFilter:
@@ -245,7 +246,7 @@ class Api:
 		return self.get_config()
 
 	def get_config(self, path=None):
-		hyprland_config_path = HYPRLAND_CONFIG_PATH
+		hyprland_config_path = path if path else HYPRLAND_CONFIG_PATH
 		config = ConfigParser(hyprland_config_path).root.to_json()
 		return config
 
@@ -397,7 +398,7 @@ def main():
 		window_instance.events.closing += on_closing
 		webview.start(
 			gui=args.ui[0],
-			debug=True,
+			debug=args.debug,
 			private_mode=True,
 			storage_path=str(cache_path),
 			icon="icon-48.png",
@@ -413,7 +414,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(
 		prog="hyprsettings",
 		description="A loyal hyprland parser and gui editor for hyprland.conf",
-		epilog=print_title,
+		epilog=print_title(),
 	)
 	parser.add_argument("-d", "--daemon", action="store_true", help="Run in background started for quick startup")
 	parser.add_argument(
@@ -441,6 +442,7 @@ if __name__ == "__main__":
 		help="Starts a new session without using existing daemon if it exists.",
 	)
 	parser.add_argument("-c", "--config", metavar="FILE", type=str, help="Configuration file")
+	parser.add_argument("--debug", action="store_true", help="Enable debug and devtools")
 	args = parser.parse_args()
 	signal.signal(signal.SIGINT, handle_interrupt)
 	print_title()
