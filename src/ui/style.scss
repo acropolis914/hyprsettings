@@ -1073,17 +1073,23 @@ h1#config-set-title {
 		grid-column: 1rem;
 		max-height: 30rem;
 		gap: var(--spacing-unit);
+		> * {
+			border-radius: var(--border-radius);
+			overflow: hidden;
+		}
 		.controls {
-			flex: 1;
+			flex: 0;
 			max-width: 20rem;
 			height: 100%;
+			display: none;
 		}
 		.curve-editor {
-			// aspect-ratio: 1;
+			aspect-ratio: 1/1;
 			flex: 2;
 			display: block; /* important: inline SVG defaults can shrink */
 			width: 100%; /* fill flex width */
 			height: 100%; /* fill flex height */
+			touch-action: none;
 		}
 		.curve-preview {
 			flex: 2;

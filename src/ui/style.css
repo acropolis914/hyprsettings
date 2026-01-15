@@ -933,16 +933,22 @@ h1#config-set-title {
   max-height: 30rem;
   gap: var(--spacing-unit);
 }
+.generic-editor-beziermodal .curve-editor-el > * {
+  border-radius: var(--border-radius);
+}
 .generic-editor-beziermodal .curve-editor-el .controls {
-  flex: 1;
+  flex: 0;
   max-width: 20rem;
   height: 100%;
+  display: none;
 }
 .generic-editor-beziermodal .curve-editor-el .curve-editor {
+  aspect-ratio: 1/1;
   flex: 2;
   display: block; /* important: inline SVG defaults can shrink */
   width: 100%; /* fill flex width */
   height: 100%; /* fill flex height */
+  touch-action: none;
 }
 .generic-editor-beziermodal .curve-editor-el .curve-preview {
   flex: 2;

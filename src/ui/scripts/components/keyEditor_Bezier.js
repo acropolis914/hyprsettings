@@ -50,7 +50,7 @@ export class BezierModal {
 
 		this.curveEditor = new BezierEditor({
 			parent: this.curveEditorEl,
-			grid: { major: 0.25, minor: 1 }
+			grid: { major: 0.50, minor: 0.1 }
 		});
 
 		this.curveEditor.points = points;
