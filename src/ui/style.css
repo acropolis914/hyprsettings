@@ -114,7 +114,7 @@ html {
   height: 100%;
   background-color: var(--surface-0);
   color: var(--text-0);
-  font-family: var(--font-primary) !important;
+  font-family: var(--font-primary), "CommitMonoIconFont", monospace !important;
   font-size: 52.5%;
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
@@ -190,6 +190,9 @@ header#main-header #header-title #icon {
   font-size: 2rem;
 }
 header#main-header #header-title #debug-indicator {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-left: calc(var(--spacing-unit) / 2);
   padding-left: calc(var(--spacing-unit) / 2);
   padding-right: calc(var(--spacing-unit) / 2);
@@ -308,6 +311,9 @@ footer {
 footer > * {
   font-size: 1rem;
 }
+footer #theme-toggle {
+  font-family: "CommitMonoIconFont";
+}
 
 /* =================================
    4. Components
@@ -377,9 +383,10 @@ footer > * {
 .search-wrap label {
   font-size: 2.5rem;
   transition: color 0.5s ease;
-  position: relative;
-  top: 4px;
-  left: 0.5rem;
+  position: absolute;
+  top: 50%;
+  left: -2rem;
+  transform: translateY(-50%);
   color: var(--text-0);
 }
 .search-wrap #search-bar {
@@ -899,6 +906,19 @@ h1#config-set-title {
   z-index: 2;
   border: 2px transparent solid;
   transition: all 0.2s ease-in-out;
+}
+
+.generic-editor-beziermodal {
+  display: flex;
+  flex-direction: column;
+}
+.generic-editor-beziermodal .bezier-name-input {
+  margin-bottom: var(--spacing-unit) !important;
+}
+.generic-editor-beziermodal .curve-editor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* --- Line Comment Item ---*/

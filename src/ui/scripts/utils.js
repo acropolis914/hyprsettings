@@ -135,9 +135,21 @@ export async function addItem(type, name, value, comment, position, relative_uui
 
 
 export function makeUUID(length = 8) {
-	const full = crypto.randomUUID().replace(/-/g, '')
+	let full
+
+	if (crypto?.randomUUID) {
+		full = crypto.randomUUID().replace(/-/g, '')
+	} else {
+		// fallback (not cryptographically strong, but stable)
+		full = ''
+		for (let i = 0; i < 32; i++) {
+			full += Math.floor(Math.random() * 16).toString(16)
+		}
+	}
+
 	return full.slice(0, length)
 }
+
 
 export async function saveWindowConfig() {
 

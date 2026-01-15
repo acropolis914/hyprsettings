@@ -192,7 +192,7 @@ html {
 	height: 100%;
 	background-color: var(--surface-0);
 	color: var(--text-0);
-	font-family: var(--font-primary) !important;
+	font-family: var(--font-primary), "CommitMonoIconFont", monospace !important;
 	font-size: 52.5%;
 	opacity: 0;
 	transition: opacity 0.2s ease-in-out;
@@ -275,6 +275,7 @@ header#main-header {
 		}
 
 		#debug-indicator {
+			@include text-ellipsis();
 			margin-left: calc(var(--spacing-unit) / 2);
 			padding-left: calc(var(--spacing-unit) / 2);
 			padding-right: calc(var(--spacing-unit) / 2);
@@ -407,6 +408,10 @@ footer {
 	> * {
 		font-size: 1rem;
 	}
+
+	#theme-toggle {
+		font-family: "CommitMonoIconFont";
+	}
 }
 
 /* =================================
@@ -484,9 +489,10 @@ footer {
 		font-size: 2.5rem;
 		//display: none;
 		transition: color 0.5s ease;
-		position: relative;
-		top: 4px;
-		left: 0.5rem;
+		position: absolute;
+		top: 50%;
+		left: -2rem;
+		transform: translateY(-50%);
 		color: var(--text-0);
 	}
 
@@ -1047,6 +1053,20 @@ h1#config-set-title {
 	}
 }
 
+.generic-editor-beziermodal {
+	display: flex;
+	flex-direction: column;
+
+	.bezier-name-input {
+		margin-bottom: var(--spacing-unit) !important;
+	}
+
+	.curve-editor {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
 /* --- Line Comment Item ---*/
 .editor-item:has(> .editor-item-comment) {
 	margin: 0;

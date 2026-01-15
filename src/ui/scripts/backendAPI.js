@@ -1,47 +1,104 @@
-import { saveWindowConfig, waitFor } from "./utils.js";
+import { GLOBAL } from "./GLOBAL.js";
+import { waitFor } from "./utils.js";
 
-
-
-async function waitForPyWebview() {
-	// simple poll until window.pywebview.api is available
-	while (!window.pywebview?.api) {
-		await new Promise(r => setTimeout(r, 50)); // wait 50ms
-	}
+async function fetchFlask(path, options = {}) {
+	const url = "/api/" + path;
+	const resp = await fetch(url, options);
+	return await resp.json();
 }
+
 export const Backend = {
 	async readWindowConfig() {
-		// await waitForPyWebview();
-		await waitFor(() => window.pywebview?.api.init)
-		return await window.pywebview.api.read_window_config()
+		switch (GLOBAL.backend) {
+			case "pywebview":
+				await waitFor(() => window.pywebview?.api.init);
+				return await window.pywebview.api.read_window_config();
+			case "flask":
+				return await fetchFlask("read_window_config");
+			default:
+				throw new Error("Unknown backend: " + GLOBAL.backend);
+		}
 	},
 
 	async getHyprlandConfig(path = null) {
-		await waitFor(() => window.pywebview?.api.init)
-		let config = await window.pywebview.api.init()
-		// console.debug(config)
-		return config
+		switch (GLOBAL.backend) {
+			case "pywebview":
+				await waitFor(() => window.pywebview?.api.init);
+				return await window.pywebview.api.init();
+			case "flask":
+				const query = path ? `?path=${encodeURIComponent(path)}` : "";
+				return await fetchFlask("get_config" + query);
+			default:
+				throw new Error("Unknown backend: " + GLOBAL.backend);
+		}
 	},
 
 	async getDebugStatus() {
-		await waitFor(() => window.pywebview?.api.init)
-		let isDebug = JSON.parse(await window.pywebview.api.getDebugStatus());
-		console.debug(isDebug)
-		return isDebug
+		switch (GLOBAL.backend) {
+			case "pywebview":
+				await waitFor(() => window.pywebview?.api.init);
+				return JSON.parse(await window.pywebview.api.getDebugStatus());
+			case "flask":
+				return await fetchFlask("get_debug_status");
+			default:
+				throw new Error("Unknown backend: " + GLOBAL.backend);
+		}
 	},
 
 	async getBuiltinThemes() {
-		return await window.pywebview.api.get_builtin_themes()
+		switch (GLOBAL.backend) {
+			case "pywebview":
+				return await window.pywebview.api.get_builtin_themes();
+			case "flask":
+				return await fetchFlask("get_builtin_themes");
+			default:
+				throw new Error("Unknown backend: " + GLOBAL.backend);
+		}
 	},
 
 	saveConfig(configJSON) {
-		window.pywebview.api.save_config(configJSON)
+		switch (GLOBAL.backend) {
+			case "pywebview":
+				window.pywebview.api.save_config(configJSON);
+				break;
+			case "flask":
+				fetchFlask("save_config", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: configJSON
+				});
+				break;
+			default:
+				throw new Error("Unknown backend: " + GLOBAL.backend);
+		}
 	},
 
-	async newUUID() {
-		return window.pywebview.api.new_uuid()
+	async newUUID(length = 8) {
+		switch (GLOBAL.backend) {
+			case "pywebview":
+				return await window.pywebview.api.new_uuid(length);
+			case "flask":
+				const data = await fetchFlask(`new_uuid?length=${length}`);
+				return data.uuid;
+			default:
+				throw new Error("Unknown backend: " + GLOBAL.backend);
+		}
 	},
 
-	async saveWindowConfig(json, label){
-		await window.pywebview.api.save_window_config(json,label)
+	async saveWindowConfig(json, label = "config") {
+		switch (GLOBAL.backend) {
+			case "pywebview":
+				await window.pywebview.api.save_window_config(json, label);
+				break;
+			case "flask":
+				await fetchFlask(`save_window_config?label=${label}`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(json)
+				});
+				break;
+			default:
+				throw new Error("Unknown backend: " + GLOBAL.backend);
+		}
 	}
-}
+};

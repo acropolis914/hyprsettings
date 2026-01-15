@@ -4,7 +4,9 @@ version = "0.6.2"
 description = "Add your description here"
 requires-python = ">=3.14"
 dependencies = [
+    "flask>=3.1.2",
     "packaging>=25.0",
+    "python-dotenv>=1.2.1",
     "pywebview[gtk,qt]>=6.1",
     "rich>=14.2.0",
     "tomlkit>=0.13.3",

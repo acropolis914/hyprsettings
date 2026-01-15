@@ -7,6 +7,7 @@ import { SliderModal } from './keyEditor_Slider.js'
 import { GradientModal } from './keyEditor_Gradient.js'
 import { parseHyprColor } from '../hyprland-specific/colorparser.js'
 import { selectFrom } from '../ui_components/dmenu.js'
+import { BezierModal } from './keyEditor_Bezier.js'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -98,6 +99,14 @@ export class EditorItem_Generic {
 				}
 			}
 		}
+		switch (this.el.dataset.name) {
+			case 'bezier':
+				// this.el.style.backgroundColor = "red"
+				// console.log({value})
+				// console.log({name, rest})
+				this.valueEditor = new BezierModal(value).el
+		}
+
 		if (!this.valueEditor) {
 			this.valueEditor = document.createElement('textarea')
 			this.valueEditor = document.createElement('textarea')
@@ -171,8 +180,13 @@ export class EditorItem_Generic {
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('dblclick', (e) => {
-			this.el.classList.toggle('compact')
-			this.contextMenu.hide()
+			if (this.el.dataset.name === "bezier" && this.valueEditor.contains(e.target)) {
+				// this.el.classList.toggle('compact')
+				// this.contextMenu.hide()
+			} else {
+				this.el.classList.toggle('compact')
+				this.contextMenu.hide()
+			}
 		})
 		this.el.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter') {
@@ -209,6 +223,7 @@ export class EditorItem_Generic {
 
 		this.valueEditor.addEventListener('input', () => {
 			this.el.dataset.value = this.valueEditor.value
+			// console.log(this.valueEditor)
 			this.update()
 		})
 

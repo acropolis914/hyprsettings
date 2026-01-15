@@ -16,6 +16,7 @@ import { renderSettings } from './settings.js'
 import { initializeSearchBar } from './ui_components/searchBar.js'
 import { Backend } from './backendAPI.js'
 window.Global = GLOBAL
+GLOBAL.setKey("backend", "flask")
 
 // @ts-ignore
 async function setupData() {
