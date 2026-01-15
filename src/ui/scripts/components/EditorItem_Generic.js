@@ -330,6 +330,10 @@ export class EditorItem_Generic {
 					name = 'generic';
 				}
 
+				if (name === "bezier") {
+					value = "sample, 0.65, 0.05, 0.33, 0.91"
+				}
+
 				console.debug('FINAL name/value:', { name, value });
 
 				let newGenericItem = await addItem(

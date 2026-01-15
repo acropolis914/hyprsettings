@@ -150,7 +150,7 @@ export class configRenderer {
 				if (json.name.trim().startsWith(key) && !excluded.includes(json.name.trim())) {
 					tabToAddTo = document.querySelector(`.config-set#${value}`)
 					if (json.name.startsWith('bind')) {
-						console.log()
+						// console.log()
 					}
 					break
 				}

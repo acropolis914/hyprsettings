@@ -108,6 +108,8 @@ class LogFilter:
 			return  # Drop Bottle/HTTP access logs
 		elif "Bottle v" in text and not verbose:
 			return  # Drop Bottle startup banner
+		elif "python-dotenv" in text:
+			return
 		else:
 			sys.__stdout__.write(text)
 
@@ -401,6 +403,8 @@ def home():
 @app.route("/<path:path>")
 def ui_files(path):
 	return send_from_directory("ui", path)
+
+
 
 
 @app.route("/api/init", methods=["GET"])

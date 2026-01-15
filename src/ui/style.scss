@@ -268,6 +268,7 @@ header#main-header {
 		padding-left: 1rem;
 		align-items: center;
 		color: var(--accent);
+		content: "Reload Configs";
 
 		#icon {
 			font-family: "CommitMonoIconFont", monospace;
@@ -1056,15 +1057,38 @@ h1#config-set-title {
 .generic-editor-beziermodal {
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 
 	.bezier-name-input {
+		@include editor-input-reset();
 		margin-bottom: var(--spacing-unit) !important;
 	}
 
-	.curve-editor {
+	.curve-editor-el {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		flex-direction: row;
+		// max-width: 100%;
+		grid-column: 1rem;
+		max-height: 30rem;
+		gap: var(--spacing-unit);
+		.controls {
+			flex: 1;
+			max-width: 20rem;
+			height: 100%;
+		}
+		.curve-editor {
+			// aspect-ratio: 1;
+			flex: 2;
+			display: block; /* important: inline SVG defaults can shrink */
+			width: 100%; /* fill flex width */
+			height: 100%; /* fill flex height */
+		}
+		.curve-preview {
+			flex: 2;
+			background-color: var(--surface-2);
+		}
 	}
 }
 /* --- Line Comment Item ---*/

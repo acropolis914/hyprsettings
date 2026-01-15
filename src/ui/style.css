@@ -184,6 +184,7 @@ header#main-header #header-title {
   padding-left: 1rem;
   align-items: center;
   color: var(--accent);
+  content: "Reload Configs";
 }
 header#main-header #header-title #icon {
   font-family: "CommitMonoIconFont", monospace;
@@ -911,14 +912,41 @@ h1#config-set-title {
 .generic-editor-beziermodal {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 .generic-editor-beziermodal .bezier-name-input {
+  padding: 2px;
+  border: 0;
+  margin: 0;
+  outline: none;
+  resize: none;
+  color: var(--text-0);
+  background-color: var(--surface-1);
   margin-bottom: var(--spacing-unit) !important;
 }
-.generic-editor-beziermodal .curve-editor {
+.generic-editor-beziermodal .curve-editor-el {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: row;
+  grid-column: 1rem;
+  max-height: 30rem;
+  gap: var(--spacing-unit);
+}
+.generic-editor-beziermodal .curve-editor-el .controls {
+  flex: 1;
+  max-width: 20rem;
+  height: 100%;
+}
+.generic-editor-beziermodal .curve-editor-el .curve-editor {
+  flex: 2;
+  display: block; /* important: inline SVG defaults can shrink */
+  width: 100%; /* fill flex width */
+  height: 100%; /* fill flex height */
+}
+.generic-editor-beziermodal .curve-editor-el .curve-preview {
+  flex: 2;
+  background-color: var(--surface-2);
 }
 
 /* --- Line Comment Item ---*/

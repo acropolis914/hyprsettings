@@ -125,13 +125,13 @@ export async function createDynamicTabs() {
 		// console.log(tab)
 		new ConfigTab(tab)
 	}
-	console.debug(GLOBAL["isDebugging"])
+	// console.debug(GLOBAL["isDebugging"])
 	if (!(GLOBAL["isDebugging"] === true)) {
 		// console.debug(GLOBAL['isDebugging'])
 		let debugTab = sidebar.querySelector("li#debug")
 		debugTab.classList.add("hidden")
 	} else {
-		console.debug(GLOBAL["isDebugging"])
+		// console.debug(GLOBAL["isDebugging"])
 	}
 
 	if (GLOBAL['persistence']['last_tab']) {

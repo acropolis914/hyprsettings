@@ -58,7 +58,7 @@ export class EditorItem_Binds {
 		let values = splitWithRemainder(this.el.dataset.value, ',', 3)
 		this.hasDescription = bindflag_additems.includes('d')
 		if (this.hasDescription) {
-			console.debug(`${this.el.dataset.name} = ${this.el.dataset.value} has a description`)
+			// console.debug(`${this.el.dataset.name} = ${this.el.dataset.value} has a description`)
 			values = splitWithRemainder(this.el.dataset.value, ',', 4)
 		}
 

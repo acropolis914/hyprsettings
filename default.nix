@@ -16,6 +16,8 @@ let
     rich
     pygobject3
     packaging
+    flask
+    python-dotenv
   ]);
 
   maintainersLocal = {
