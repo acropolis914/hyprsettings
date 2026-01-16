@@ -44,7 +44,10 @@ app = Flask(__name__)
 
 
 def start_server():
-	app.run(host="0.0.0.0", port=6969)
+	port = 6969
+	while is_port_open(port=port):
+		port += 1
+	app.run(host="0.0.0.0", port=port)
 
 
 # Variables
@@ -247,10 +250,46 @@ def send_toggle():
 		return False
 
 
-def is_port_open(timeout=0.1):
+def is_port_open(port, timeout=0.1):
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.settimeout(timeout)
-		return s.connect_ex((HOST, PORT)) == 0
+		return s.connect_ex((HOST, port)) == 0
+
+
+def createArgParse():
+	parser = argparse.ArgumentParser(
+		prog="hyprsettings",
+		description="A loyal hyprland parser and gui editor for hyprland.conf",
+		epilog=print_title(),
+	)
+	parser.add_argument("-d", "--daemon", action="store_true", help="Run in background started for quick startup")
+	parser.add_argument(
+		"-H",
+		"--hidden",
+		action="store_true",
+		help="Makes it hidden at the start. Useful for autostarting with daemon\n e.g. on your hyprland.conf (exec-once = hyprsettings -d -H)",
+	)
+	parser.add_argument(
+		"-u",
+		"--ui",
+		nargs=1,
+		choices=["gtk", "qt"],
+		default="gtk",
+		help="Run the ui with qt backend (requires qt library)",
+	)
+	parser.add_argument("-v", "--verbose", action="store_true", help="Get more descriptive logs")
+	parser.add_argument(
+		"-k", "--kill", action="store_true", help="Use this arg to kill any running hyprsettings process"
+	)
+	parser.add_argument(
+		"-N",
+		"--no-daemon",
+		action="store_true",
+		help="Starts a new session without using existing daemon if it exists.",
+	)
+	parser.add_argument("-c", "--config", metavar="FILE", type=str, help="Configuration file")
+	parser.add_argument("--debug", action="store_true", help="Enable debug and devtools")
+	return parser
 
 
 class Api:
@@ -405,8 +444,6 @@ def ui_files(path):
 	return send_from_directory("ui", path)
 
 
-
-
 @app.route("/api/init", methods=["GET"])
 def api_init():
 	return jsonify(api.init())
@@ -480,7 +517,7 @@ def main():
 		# 	hidden=args.hidden,
 		# )
 		window_instance = webview.create_window(
-			"PyWebView & Flask",
+			"HyprSettings",
 			"http://localhost:6969/",
 			js_api=api,
 			transparent=True,
@@ -508,38 +545,7 @@ def main():
 
 
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(
-		prog="hyprsettings",
-		description="A loyal hyprland parser and gui editor for hyprland.conf",
-		epilog=print_title(),
-	)
-	parser.add_argument("-d", "--daemon", action="store_true", help="Run in background started for quick startup")
-	parser.add_argument(
-		"-H",
-		"--hidden",
-		action="store_true",
-		help="Makes it hidden at the start. Useful for autostarting with daemon\n e.g. on your hyprland.conf (exec-once = hyprsettings -d -H)",
-	)
-	parser.add_argument(
-		"-u",
-		"--ui",
-		nargs=1,
-		choices=["gtk", "qt"],
-		default="gtk",
-		help="Run the ui with qt backend (requires qt library)",
-	)
-	parser.add_argument("-v", "--verbose", action="store_true", help="Get more descriptive logs")
-	parser.add_argument(
-		"-k", "--kill", action="store_true", help="Use this arg to kill any running hyprsettings process"
-	)
-	parser.add_argument(
-		"-N",
-		"--no-daemon",
-		action="store_true",
-		help="Starts a new session without using existing daemon if it exists.",
-	)
-	parser.add_argument("-c", "--config", metavar="FILE", type=str, help="Configuration file")
-	parser.add_argument("--debug", action="store_true", help="Enable debug and devtools")
+	parser = createArgParse()
 	args = parser.parse_args()
 	signal.signal(signal.SIGINT, handle_interrupt)
 	# print_title()
@@ -568,15 +574,14 @@ if __name__ == "__main__":
 	if args.verbose:
 		verbose = args.verbose
 
-	port_open = is_port_open()
+	port_open = is_port_open(PORT)
 
 	if args.no_daemon or not args.daemon:
 		if args.daemon:
 			log('Damn. Running "--no-daemon" and "--daemon" at the same time? Why?')
 		log("Running in standalone no-daemon mode")
-		while is_port_open():
+		while is_port_open(PORT):
 			log(f"Existing hyprsettings port {PORT} is open but hyprsettings is called without daemon.")
-
 			PORT += 1
 		log(f"Starting a new temporary port {PORT} instead. Useful only during development or debugging.")
 		log('If you wish to use the existing hyprsettings background daemon, run hyprsettings with arg "-d"')

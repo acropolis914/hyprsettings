@@ -33,7 +33,7 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "hyprsettings";
-  version = "0.6.2";
+  version = "0.7.3";
 
   src = ./.;
 

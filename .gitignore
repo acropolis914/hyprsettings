@@ -1,34 +1,58 @@
-# Python-generated files
+# === Python artifacts ===
 __pycache__/
 *.py[oc]
+*.egg-info
 build/
 dist/
 wheels/
-*.egg-info
 .venv/
-#pywebviewspecific
+
+# === Python tooling caches ===
+.mypy_cache/
+.pywebview/
+
+# === pywebview app caches ===
 hsts/
 mediakeys/
 cache/
 domcache/
 pywebview/
-.pywebview/
-.mypy_cache/
 storage/
 
-
+# === Project-local files ===
 project_context.txt
-# Nix
+
+# === Nix ===
 result
 result-*
 .direnv/
 
+# === Editors/IDEs ===
 .vscode/
-node_modules
-setupscript.sh
 .idea/
+*.code-workspace
+
+# === Node ===
+node_modules
+
+# === Env & secrets ===
 .env
 
-*.code-workspace
-#run.sh
+# === Personal/local scripts ===
+setupscript.sh   # keep ignored; personal env setup
+
+# === Optional build/output dirs ===
 pkg
+
+# === OS / misc noise (recommended) ===
+.DS_Store
+Thumbs.db
+
+# === Test/coverage (recommended) ===
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# === Logs (recommended) ===
+*.log

@@ -15,6 +15,7 @@ import { createDynamicTabs } from './ui_components/createDynamicTabs.js'
 import { renderSettings } from './settings.js'
 import { initializeSearchBar } from './ui_components/searchBar.js'
 import { Backend } from './backendAPI.js'
+import './consoleInterceptor.js'
 window.Global = GLOBAL
 GLOBAL.setKey("backend", "flask")
 
@@ -63,14 +64,17 @@ async function getDebugStatus() {
 	let debugIndicator = document.getElementById("debug-indicator")
 	let isDebug
 	try {
+		console.log("Contacting backend if debug mode is on")
 		isDebug = await Backend.getDebugStatus()
 	} catch (e) {
+		console.log("Error while contacting backend: ", e)
 		isDebug = false
 	}
 	// console.debug({ isDebug })
 	GLOBAL.setKey("isDebugging", isDebug)
 	// console.log(GLOBAL["isDebugging"])
 	if (isDebug) {
+		console.log("Debug mode is turned on.")
 		debugIndicator.classList.remove("hidden")
 	} else {
 		debugIndicator.classList.add("hidden")
@@ -78,7 +82,7 @@ async function getDebugStatus() {
 }
 
 export async function initialize() {
-	Array.from(document.scripts).forEach(s => console.log(s.src))
+	// Array.from(document.scripts).forEach(s => console.log(s.src))
 	await load_config()
 	await getDebugStatus()
 	await setupTheme()
