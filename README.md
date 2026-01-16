@@ -21,15 +21,20 @@ curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh
 - Organized UI with logical tabs for easier navigation
 - Keyboard navigable controls throughout the UI
 - Multi file configs supported with `source` discovery, `~/` expansion, '$variable' support , and globbing
-- Color Picker , gradient editor
+- Color Picker, gradient editor, bezier editor
 - Dynamic resizing
 - Theming support
+
+<img width="1444" height="442" alt="image" src="https://github.com/user-attachments/assets/135d9cc6-9f9e-4ffc-bcd3-b3895f4da25a" />
+
   
 HyprSettings: a configurator for `hyprland.conf` that very loyally reconstructs your configs exactly(almost*) as you
 wrote them, including comments. It presents everything in an organized UI that is also keyboard navigable. Themable,
 too!
 Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS libraries.
+<br>
 `*The cleanup however has a side effect that trims trailing spaces. This is by design.`
+<img width="1434" height="394" alt="image" src="https://github.com/user-attachments/assets/8b9c7c35-4d55-4b98-bf7f-71cb256b4ee5" />
 
 ## Table of Contents
 
