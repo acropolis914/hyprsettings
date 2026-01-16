@@ -80,8 +80,8 @@ $transition-main: background-color $transition-speed-normal ease,
 }
 
 @font-face {
-	font-family: "CommitMonoIconFont";
-	src: url("fonts/CommitMonoNerdFontMono-Regular.otf") format("opentype");
+	font-family: 'CommitMonoIconFont';
+	src: url('fonts/CommitMonoNerdFontMono-Regular.otf') format('opentype');
 	font-display: swap;
 }
 
@@ -184,7 +184,7 @@ $transition-main: background-color $transition-speed-normal ease,
 	--purple: #cba6f7;
 	--overlay: #7f849c;
 	--shadow: #6c7086;
-	--font-primary: "CommitMono Nerd Font Mono";
+	--font-primary: 'CommitMono Nerd Font Mono';
 }
 
 /* --- Base & Resets ---*/
@@ -192,7 +192,7 @@ html {
 	height: 100%;
 	background-color: var(--surface-0);
 	color: var(--text-0);
-	font-family: var(--font-primary), "CommitMonoIconFont", monospace !important;
+	font-family: var(--font-primary), 'CommitMonoIconFont', monospace !important;
 	font-size: 52.5%;
 	opacity: 0;
 	transition: opacity 0.2s ease-in-out;
@@ -268,10 +268,10 @@ header#main-header {
 		padding-left: 1rem;
 		align-items: center;
 		color: var(--accent);
-		content: "Reload Configs";
+		content: 'Reload Configs';
 
 		#icon {
-			font-family: "CommitMonoIconFont", monospace;
+			font-family: 'CommitMonoIconFont', monospace;
 			font-size: 2rem;
 		}
 
@@ -329,7 +329,7 @@ header#main-header {
 			padding: var(--spacing-unit);
 			font-size: 3rem;
 			line-height: 1;
-			font-family: "CommitMonoIconFont", monospace;
+			font-family: 'CommitMonoIconFont', monospace;
 		}
 
 		.sidebar-text {
@@ -411,7 +411,7 @@ footer {
 	}
 
 	#theme-toggle {
-		font-family: "CommitMonoIconFont";
+		font-family: 'CommitMonoIconFont';
 	}
 }
 
@@ -444,7 +444,7 @@ footer {
 
 	&.keyboard-selected {
 		&::after {
-			content: "";
+			content: '';
 			position: absolute;
 			left: 2px;
 			color: var(--text-contrast);
@@ -591,7 +591,7 @@ footer {
 			flex-direction: row;
 			align-items: center;
 
-			input[type="checkbox"] {
+			input[type='checkbox'] {
 				height: 2rem;
 				margin-right: var(--spacing-unit);
 				width: 2rem;
@@ -675,7 +675,7 @@ h1#config-set-title {
 				outline: none;
 
 				&::after {
-					content: "";
+					content: '';
 					position: absolute;
 					left: -1.5rem;
 					color: var(--green);
@@ -718,17 +718,17 @@ h1#config-set-title {
 
 	// Focused (Keyboard/Direct) - Non-Group
 	&:is(:focus, :focus-visible):not(.config-group) {
-		@include editor-focused("", var(--accent-success));
+		@include editor-focused('', var(--accent-success));
 	}
 
 	// Focused-Within (Child Element Active) - Non-Group
 	&:focus-within:not(:focus):not(.config-group) {
-		@include editor-focused("", var(--accent-warning));
+		@include editor-focused('', var(--accent-warning));
 	}
 
 	// Focused (Keyboard/Direct/Within) - Config Group
 	&:is(:focus, :focus-visible).config-group {
-		@include config-group-focused("", var(--accent-success));
+		@include config-group-focused('', var(--accent-success));
 	}
 
 	// --- SUB-COMPONENTS (Flat Structure) ---
@@ -898,8 +898,104 @@ h1#config-set-title {
 				border-radius: var(--border-rad);
 				color: var(--accent-warning);
 				font-size: 1.2rem;
-				content: "Disabled";
+				content: 'Disabled';
 			}
+		}
+	}
+}
+
+// Placeholders for reuse
+%about-section {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	align-items: center;
+}
+
+%about-label {
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--text-1);
+}
+
+%about-body {
+	color: var(--text-1, #ccc);
+	font-size: 1.2rem;
+}
+
+.editor-item-about {
+	background-color: transparent;
+	align-items: center;
+	opacity: 1;
+	transition: height 1s ease-in-out;
+	.title {
+		white-space: pre;
+		color: var(--accent);
+		font-weight: 600;
+		font-size: larger;
+		line-height: 2rem;
+		text-align: center;
+	}
+
+	.info {
+		@extend %about-section;
+		align-items: center;
+		gap: 0.75rem;
+		width: 100%;
+	}
+
+	.version {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-weight: 600;
+		color: var(--text-0, #fff);
+
+		a {
+			color: var(--accent);
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.credits {
+		@extend %about-section;
+
+		.credits-title {
+			@extend %about-label;
+		}
+
+		.credits-body {
+			@extend %about-body;
+		}
+	}
+
+	.technologies {
+		@extend %about-section;
+		gap: 0.5rem;
+
+		.tech-group {
+			@extend %about-section;
+
+			.tech-title {
+				@extend %about-label;
+			}
+
+			.tech-list {
+				@extend %about-body;
+			}
+		}
+	}
+
+	// Compact mode hides credits and technologies
+	&.compact {
+		.credits,
+		.technologies {
+			display: none;
 		}
 	}
 }
@@ -920,7 +1016,7 @@ h1#config-set-title {
 		@extend %slider-base;
 	}
 
-	input[type="text"] {
+	input[type='text'] {
 		@extend %input-clean;
 		margin-left: 1rem;
 		margin-bottom: 0;
@@ -954,7 +1050,7 @@ h1#config-set-title {
 			//overflow: hidden;
 		}
 
-		input[type="text"] {
+		input[type='text'] {
 			@extend %input-clean;
 			width: 5%;
 			min-width: 4ch;
@@ -1033,12 +1129,12 @@ h1#config-set-title {
 					}
 
 					@media (max-width: 40rem) {
-						content: "X" !important;
+						content: 'X' !important;
 					}
 				}
 			}
 
-			input[type="text"] {
+			input[type='text'] {
 				width: 100%;
 				height: 100%;
 				background-clip: padding-box;
@@ -1219,7 +1315,7 @@ a {
 		text-decoration: underline;
 	}
 
-	&[style*="!important"] {
+	&[style*='!important'] {
 		color: var(--accent) !important;
 	}
 }
@@ -1399,7 +1495,7 @@ span {
 	.new::before {
 		position: absolute;
 		left: -7ch;
-		content: "New!";
+		content: 'New!';
 		background-color: var(--yellow);
 		color: var(--text-contrast);
 		padding: 0.1rem;

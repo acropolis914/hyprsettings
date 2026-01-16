@@ -106,7 +106,7 @@
   --purple: #cba6f7;
   --overlay: #7f849c;
   --shadow: #6c7086;
-  --font-primary: "CommitMono Nerd Font Mono";
+  --font-primary: 'CommitMono Nerd Font Mono';
 }
 
 /* --- Base & Resets ---*/
@@ -793,6 +793,66 @@ h1#config-set-title {
   content: "Disabled";
 }
 
+.editor-item-about .technologies .tech-group, .editor-item-about .technologies, .editor-item-about .credits, .editor-item-about .info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.editor-item-about .technologies .tech-group .tech-title, .editor-item-about .credits .credits-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-1);
+}
+
+.editor-item-about .technologies .tech-group .tech-list, .editor-item-about .credits .credits-body {
+  color: var(--text-1, #ccc);
+  font-size: 1.2rem;
+}
+
+.editor-item-about {
+  background-color: transparent;
+  align-items: center;
+  opacity: 1;
+  transition: height 1s ease-in-out;
+}
+.editor-item-about .title {
+  white-space: pre;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: larger;
+  line-height: 2rem;
+  text-align: center;
+}
+.editor-item-about .info {
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+.editor-item-about .version {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+  color: var(--text-0, #fff);
+}
+.editor-item-about .version a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.editor-item-about .version a:hover {
+  text-decoration: underline;
+}
+.editor-item-about .technologies {
+  gap: 0.5rem;
+}
+.editor-item-about.compact .credits,
+.editor-item-about.compact .technologies {
+  display: none;
+}
+
 .generic-editor:has(.generic-editor-gradientmodal) {
   background-color: transparent;
 }
@@ -935,6 +995,7 @@ h1#config-set-title {
 }
 .generic-editor-beziermodal .curve-editor-el > * {
   border-radius: var(--border-radius);
+  overflow: hidden;
 }
 .generic-editor-beziermodal .curve-editor-el .controls {
   flex: 0;

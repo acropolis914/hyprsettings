@@ -23,7 +23,6 @@ class ConfigTab {
 
 		this.shown = tab.default
 
-
 		this.sidebar = document.querySelector('aside#sidebar>ul')
 		this.configview = document.querySelector('#content-area')
 		this.makeSidebarItem()
@@ -102,12 +101,22 @@ class ConfigTab {
 		document.querySelectorAll('.sidebar-item').forEach((element) => {
 			element.id === id
 				? element.classList.add('selected')
-				: element.classList.remove('selected', 'keyboard-selected')
+				: element.classList.remove(
+						'selected',
+						'keyboard-selected'
+				  )
 		})
-		const sidebarItem = document.querySelector(`aside#sidebar>ul>#${id}`)
+		const sidebarItem = document.querySelector(
+			`aside#sidebar>ul>#${id}`
+		)
 		const sidebarItemTitle = sidebarItem.dataset.label
 		const configSetTitle = document.querySelector('#config-set-title')
 		configSetTitle.textContent = sidebarItemTitle
+		if (sidebarItemTitle.toLowerCase() === 'settings') {
+			configSetTitle.classList.add('hidden')
+		} else {
+			configSetTitle.classList.remove('hidden')
+		}
 		GLOBAL['persistence']['last_tab'] = id
 		GLOBAL.setKey('currentView', 'tabs')
 		GLOBAL['activeTab'] = id
@@ -126,10 +135,10 @@ export async function createDynamicTabs() {
 		new ConfigTab(tab)
 	}
 	// console.debug(GLOBAL["isDebugging"])
-	if (!(GLOBAL["isDebugging"] === true)) {
+	if (!(GLOBAL['isDebugging'] === true)) {
 		// console.debug(GLOBAL['isDebugging'])
-		let debugTab = sidebar.querySelector("li#debug")
-		debugTab.classList.add("hidden")
+		let debugTab = sidebar.querySelector('li#debug')
+		debugTab.classList.add('hidden')
 	} else {
 		// console.debug(GLOBAL["isDebugging"])
 	}
@@ -141,7 +150,6 @@ export async function createDynamicTabs() {
 			selected_tab.click()
 		}
 		GLOBAL['activeTab'] = id
-
 	} else {
 		console.log(GLOBAL)
 	}

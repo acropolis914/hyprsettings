@@ -10,19 +10,19 @@ export class SliderModal {
 		this.el.classList.add('generic-editor-slidermodal')
 		this.sliderEl = document.createElement('div')
 		this.sliderEl.classList.add('slider-styled')
-		this.sliderEl.id = ('slider-square')
+		this.sliderEl.id = 'slider-square'
 		this.el.appendChild(this.sliderEl)
 
 		// this.sliderEl = document.createElement("input")
 		// this.sliderEl.setAttribute("type", range)
 		let divisor = (max - min) * 2
-		let steps = float ? ((max - min) / divisor) : 1
+		let steps = float ? (max - min) / divisor : 1
 		this.slider = noUiSlider.create(this.sliderEl, {
 			start: 0,
 			range: {
-				'min': min,
-				'max': max
-			}
+				min: min,
+				max: max,
+			},
 		})
 
 		this.textEditor = document.createElement('input')
@@ -30,8 +30,14 @@ export class SliderModal {
 		this.textEditor.setAttribute('size', float ? '5' : '3')
 		this.el.appendChild(this.textEditor)
 
-		const debouncedUpdateSlider = debounce(() => this.updateSlider(), 300)
-		const debouncedUpdateTextValue = debounce(() => this.updateSlider(), 50)
+		const debouncedUpdateSlider = debounce(
+			() => this.updateSlider(),
+			300
+		)
+		const debouncedUpdateTextValue = debounce(
+			() => this.updateSlider(),
+			50
+		)
 
 		let updating = false
 		this.textEditor.addEventListener('input', () => {
@@ -55,7 +61,9 @@ export class SliderModal {
 		this.sliderEl.noUiSlider.on('update', () => {
 			if (updating) return
 			if (!float) {
-				this.textEditor.value = Math.round(this.sliderEl.noUiSlider.get())
+				this.textEditor.value = Math.round(
+					this.sliderEl.noUiSlider.get()
+				)
 			} else {
 				this.textEditor.value = this.sliderEl.noUiSlider.get()
 			}
@@ -66,9 +74,8 @@ export class SliderModal {
 
 		Object.defineProperty(this.el, 'value', {
 			get: () => this.value,
-			set: (val) => this.value = val
+			set: (val) => (this.value = val),
 		})
-
 	}
 
 	_notifyInputListeners() {
@@ -87,7 +94,9 @@ export class SliderModal {
 	}
 
 	get value() {
-		value = this.float ? this.sliderEl.noUiSlider.get() : Math.round(this.sliderEl.noUiSlider.get())
+		let value = this.float
+			? this.sliderEl.noUiSlider.get()
+			: Math.round(this.sliderEl.noUiSlider.get())
 		return value
 	}
 
@@ -111,4 +120,3 @@ export class SliderModal {
 		target.replaceWith(this.el)
 	}
 }
-

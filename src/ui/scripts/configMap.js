@@ -14,11 +14,12 @@ export let tabids = [
 	['look and feel', 'looknfeel'],
 	['animations', 'animations'],
 	['input', 'input'],
-	['debug', 'debug']
+	['debug', 'debug'],
 ]
 export const keyNameStarts = [
 	['$', 'globals'],
 	['windowrule', 'win-rules'],
+	['submap', 'keybinds'],
 	['bind', 'keybinds'],
 	['layerrule', 'layer-rules'],
 	['workspace', 'workspaces', ['workspace_wraparound']],
@@ -26,7 +27,7 @@ export const keyNameStarts = [
 	['permission', 'persmissions'],
 	['exec', 'autostart'],
 	['layerrule', 'layerrules'],
-	['source', 'general']
+	['source', 'general'],
 ]
 
 export let configGroups = [
@@ -43,7 +44,7 @@ export let configGroups = [
 	['cursor', 'input'],
 	['binds', 'input'],
 	['ecosystem', 'permissions'],
-	['group', 'win-rules']
+	['group', 'win-rules'],
 ]
 
 export let tabs = [
@@ -67,5 +68,5 @@ export let tabs = [
 	{ name: 'Miscellaneous', id: 'miscellaneous', icon: '' }, // nf-md-more_horiz
 	{ name: 'separator', label: 'Utility & Debugging' },
 	{ name: 'Settings', id: 'settings', icon: '' }, // nf-md-tune
-	{ name: 'Debug / Testing', id: 'debug', icon: '' } // nf-md-bug_report
+	{ name: 'Debug / Testing', id: 'debug', icon: '' }, // nf-md-bug_report
 ]
