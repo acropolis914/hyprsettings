@@ -27,7 +27,7 @@ from parser import ConfigParser, Node, makeUUID, print_hyprland
 
 # ------------------- Constants -------------------
 os.environ["GDK_BACKEND"] = "wayland"
-CURRENT_VERSION = "0.7.1"
+CURRENT_VERSION = "0.7.3"
 HOST = "127.0.0.1"
 PORT = 65432
 thisfile_path = Path(__file__).parent.resolve()
