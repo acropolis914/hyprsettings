@@ -1,6 +1,7 @@
 import { GLOBAL } from './GLOBAL.js'
 import { makeUUID, saveWindowConfig, waitFor } from './utils.js'
 let settingsEl = document.querySelector('.config-set#settings')
+let VERSION = '0.7.5'
 
 export async function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
@@ -121,7 +122,7 @@ function createAbout({ compact = false } = {}) {
 	const versionEl = document.createElement('div')
 	versionEl.classList.add('version')
 	const versionText = document.createElement('span')
-	versionText.textContent = 'v 0.7.4'
+	versionText.textContent = VERSION
 	const versionDot = document.createElement('span')
 	versionDot.textContent = ' · '
 	const githubUrl = 'https://github.com/acropolis914/hyprsettings'
@@ -200,13 +201,13 @@ function createAbout({ compact = false } = {}) {
 function createLineCommentsVisibilitySetting() {
 	function onCheck() {
 		let commentItems = document.querySelectorAll(
-			'.editor-item:has(>.editor-item-comment):not(.block-comment)'
+			'.editor-item:has(>.editor-item-comment):not(.block-comment)',
 		)
 		commentItems.forEach((i) => i.classList.remove('settings-hidden'))
 	}
 	function onUncheck() {
 		let commentItems = document.querySelectorAll(
-			'.editor-item:has(>.editor-item-comment):not(.block-comment)'
+			'.editor-item:has(>.editor-item-comment):not(.block-comment)',
 		)
 		commentItems.forEach((i) => i.classList.add('settings-hidden'))
 	}
@@ -217,7 +218,7 @@ function createLineCommentsVisibilitySetting() {
 		'show_line_comments',
 		true,
 		{ onCheck, onUncheck },
-		(tooltip = tooltip)
+		(tooltip = tooltip),
 	)
 }
 
@@ -239,7 +240,7 @@ function createHeaderCommentsVisibilitySetting() {
 		'show_header_comments',
 		false,
 		{ onCheck, onUncheck },
-		tooltip
+		tooltip,
 	)
 }
 
@@ -261,7 +262,7 @@ function createItemPreviewCommentVisibilitySetting() {
 		'show_config_line_comments',
 		true,
 		{ onCheck, onUncheck },
-		tooltip
+		tooltip,
 	)
 }
 
@@ -283,7 +284,7 @@ function createSidebarIconsVisibilitySetting() {
 		'show_sidebar_icons',
 		true,
 		{ onCheck, onUncheck },
-		tooltip
+		tooltip,
 	)
 }
 
@@ -305,7 +306,7 @@ function createCompactViewSetting() {
 		'compact',
 		true,
 		{ onCheck, onUncheck },
-		tooltip
+		tooltip,
 	)
 }
 
@@ -323,6 +324,6 @@ function createAnimationsToggleSetting() {
 		'ui_animations',
 		true,
 		{ onCheck, onUncheck },
-		tooltip
+		tooltip,
 	)
 }

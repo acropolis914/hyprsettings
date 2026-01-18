@@ -18,6 +18,9 @@ TARGETS: list[tuple[str, str, Callable[[re.Match, str], str]]] = [
 	("src/hyprsettings", r'^(CURRENT_VERSION\s*=\s*")([^"]*)(")', lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
 ]
 
+# need to add pyproject.toml
+# need to add settings.js
+#need to add uv.lock 
 PKGBUILD_MIRROR = Path("../hyprsettings-git/PKGBUILD")
 
 
