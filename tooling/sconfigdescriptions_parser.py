@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# this script is used to extract config descriptions from the hyprwm repo
+# used to detect types and autocompletes in the ui.
 #     SConfigOptionDescription{
 #         .value       = "general:border_size",
 #         .description = "size of the border around windows",
@@ -9,11 +11,8 @@
 from pathlib import Path
 import rich.traceback
 import json
-from rich import print
 import rich.pretty
-from rich.json import JSON
 import re
-import tomlkit
 
 rich.traceback.install(show_locals=True)
 
@@ -105,24 +104,23 @@ def get_config_descriptions(file_path) -> list:
 file_path = f"{Path(__file__).resolve().parent}/ConfigDescriptions.txt"
 config_list = get_config_descriptions(file_path)
 for obj in config_list:
-      if obj["description"]:
-            obj["description"] = obj["description"].strip('"').replace("\\n", "")
-            
+	if obj["description"]:
+		obj["description"] = obj["description"].strip('"').replace("\\n", "")
+
 # jsonstring = json.dumps(config_list, indent=4)
 # print(jsonstring)
 with open("hyprland_config_descriptions.js", "w+", encoding="utf-8") as description_file:
 	description_file.write("export const config_descriptions = ")
 	json.dump(config_list, description_file, indent=2, ensure_ascii=False)
 	description_file.write(";")
- 
- # RUN THIS AND THEN REPLACE MANUALLY ALL \" with nothing
+
+	# RUN THIS AND THEN REPLACE MANUALLY ALL \" with nothing
 # print(
 # 	tomlkit.dumps(
 # 		{"config": [{k: (v if v is not None else "") for k, v in d.items()} for d in json.loads(jsonstring)]}
 # 	)
 # )
 # print(tomlkit.dumps({'config': json.loads(jsonstring)}))
-
 
 
 # then fix the data on the outpit js

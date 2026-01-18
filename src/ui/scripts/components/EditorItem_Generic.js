@@ -31,11 +31,13 @@ import { BezierModal } from './keyEditor_Bezier.js'
 export class EditorItem_Generic {
 	constructor(json, disabled = false) {
 		this.inital_load = true
+
 		let name = json['name']
 		let uuid = json['uuid']
 		let value = json['value']
 		let comment = json['comment']
 		let position = json['position']
+
 		this.saveDebounced = debounce(() => this.save(), 15)
 		const template = document.getElementById('generic-template')
 		this.el = template.content.firstElementChild.cloneNode(true)
@@ -66,36 +68,49 @@ export class EditorItem_Generic {
 		this.config_position = position.split(':').slice(2).join(':')
 		this.info = findConfigDescription(this.config_position, name)
 		if (this.info) {
-			if (this.info['type'] === 'CONFIG_OPTION_INT' || this.info['type'] === 'CONFIG_OPTION_FLOAT') {
-				// console.log(this.el.dataset.name, "is an int with range", this.info.data)
-				const [defaultValue, min, max] = this.info['data'].split(',').map(item => item.trim()).map(Number)
-				let data = this.info['data']
-				// console.log({ min, max, data })
-				this.valueEditor = new SliderModal(min, max, this.info['type'] === 'CONFIG_OPTION_INT' ? false : true).el
-				this.valueEditor.value = value
-			} else if (this.info['type'] === 'CONFIG_OPTION_COLOR') {
-				try {
-
-					this.valueEditor = document.createElement('input')
-					this.valueEditor.setAttribute('type', 'text')
-					this.valueEditor.setAttribute('data-coloris', '')
-					if (parseInt(value)) {
-						value = Number(value)
-					}
-					this.valueEditor.value = parseHyprColor(value)
-					this.valueEditor.style.backgroundColor = this.valueEditor.value
-					this.valueEditor.style.color = 'transparent'
-					this.valueEditor.addEventListener('input', () => {
-						this.valueEditor.style.backgroundColor = this.valueEditor.value
-					})
-				} catch (E) {
-					this.valueEditor = null
+			this.el.dataset.infoType = this.info['type']
+			switch (this.info['type']) {
+				case 'CONFIG_OPTION_INT':
+				case 'CONFIG_OPTION_FLOAT':  {
+					// console.log(this.el.dataset.name, "is an int with range", this.info.data)
+					const [defaultValue, min, max] = this.info['data'].split(',').map(item => item.trim()).map(Number)
+					let data = this.info['data']
+					// console.log({ min, max, data })
+					this.valueEditor = new SliderModal(min, max, this. info['type'] === 'CONFIG_OPTION_INT' ? false : true).el
+					this.valueEditor.value = value
+					break
 				}
-			} else if (this.info['type'] === 'CONFIG_OPTION_GRADIENT') {
-				try {
-					this.valueEditor = new GradientModal(value).el
-				} catch (E) {
-					this.valueEditor = null
+
+				case 'CONFIG_OPTION_COLOR': {
+					try {
+						this.valueEditor = document.createElement('input')
+						this.valueEditor.setAttribute('type', 'text')
+						this.valueEditor.setAttribute('data-coloris', '')
+						if (parseInt(value)) {
+							value = Number(value)
+						}
+						this.valueEditor.value = parseHyprColor(value)
+						this.valueEditor.style.backgroundColor = this.valueEditor. value
+						this.valueEditor. style.color = 'transparent'
+						this.valueEditor.addEventListener('input', () => {
+							this.valueEditor.style.backgroundColor = this.valueEditor.value
+						})
+					} catch (E) {
+						this.valueEditor = null
+					}
+					break
+				}
+
+				case 'CONFIG_OPTION_GRADIENT': {
+					try {
+						this.valueEditor = new GradientModal(value).el
+					} catch (E) {
+						this.valueEditor = null
+					}
+					break
+				}
+				case 'CONFIG_OPTION_BOOL': {
+					break
 				}
 			}
 		}
@@ -123,7 +138,14 @@ export class EditorItem_Generic {
 			// console.log(this.info['type'])
 			let description = JSON.stringify(this.info['description'])
 			let type = JSON.stringify(this.info['type'])
-			this.valueEditor.title = `${JSON.parse(description)}\n\n Type: ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
+
+			let title = `${JSON.parse(description)}\n\n Type: ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
+			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
+				const [defaultValue, min, max] = this.info['data'].split(',').map(item => item.trim()).map(Number)
+				title += `\n Default: ${defaultValue} • Min: ${min} • Max: ${max}`
+			}
+			this.valueEditor.title = title
+
 		}
 
 
@@ -172,7 +194,11 @@ export class EditorItem_Generic {
 
 	addListeners() {
 		this.el.addEventListener('click', (e) => {
-			this.el.classList.remove('compact')
+			if(this.flipValueIfBool()) {
+				// this.contextMenu.hide()
+			} else {
+				this.el.classList.remove('compact')
+			}
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('contextmenu', (e) => {
@@ -183,6 +209,8 @@ export class EditorItem_Generic {
 			if (this.el.dataset.name === "bezier" && this.valueEditor.contains(e.target)) {
 				// this.el.classList.toggle('compact')
 				// this.contextMenu.hide()
+			} else if(this.el.dataset.infoType === "CONFIG_OPTION_BOOL") {
+				// this.contextMenu.hide()
 			} else {
 				this.el.classList.toggle('compact')
 				this.contextMenu.hide()
@@ -190,6 +218,10 @@ export class EditorItem_Generic {
 		})
 		this.el.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter') {
+				// console.log("Pressed enter")
+				if(this.flipValueIfBool()){
+					return
+				}
 				this.el.classList.toggle('compact')
 				this.contextMenu.el.classList.toggle('hidden')
 			}
@@ -209,7 +241,7 @@ export class EditorItem_Generic {
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('blur', () => {
-			this.contextMenu.hide()
+			// this.contextMenu.hide()
 			// this.el.classList.add("compact")
 		})
 		this.keyEditor.addEventListener('input', () => {
@@ -225,6 +257,12 @@ export class EditorItem_Generic {
 			this.el.dataset.value = this.valueEditor.value
 			// console.log(this.valueEditor)
 			this.update()
+		})
+
+		this.valueEditor.addEventListener('click', (e) => {
+			if(this.flipValueIfBool()){
+				e.preventDefault()
+			}
 		})
 
 		this.valueEditor.addEventListener('change', () => {
@@ -396,6 +434,21 @@ export class EditorItem_Generic {
 		}
 		this.el.dataset.value = this.valueEditor.value
 		this.update()
+	}
+
+	flipValueIfBool(){
+		if (this.el.dataset.infoType === 'CONFIG_OPTION_BOOL') {
+			if (this.valueEditor.value === "true" || this.valueEditor.value === "false") {
+				this.valueEditor.value = this.valueEditor.value === "true" ? "false" : "true"
+			}
+			
+			this.el.dataset.value = this.valueEditor.value
+			console.log(this.inital_load)
+			this.update()
+			return true
+		} else {
+			return false
+		}
 	}
 
 	delete() {

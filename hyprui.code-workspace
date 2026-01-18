@@ -1,11 +1,14 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": ".",
 		},
 		{
-			"path": "../../../.config/hypr"
-		}
+			"path": "../../../.config/hypr",
+		},
+		{
+			"path": "../git-clones/Hyprland",
+		},
 	],
 	"settings": {
 		"files.associations": {
@@ -68,7 +71,7 @@
 			"array": "cpp",
 			"filesystem": "cpp",
 			"span": "cpp",
-			"*.inc": "cpp"
-		}
-	}
+			"*.inc": "cpp",
+		},
+	},
 }

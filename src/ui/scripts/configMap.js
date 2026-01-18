@@ -45,6 +45,7 @@ export let configGroups = [
 	['binds', 'input'],
 	['ecosystem', 'permissions'],
 	['group', 'win-rules'],
+	['misc', 'miscellaneous'],
 ]
 
 export let tabs = [

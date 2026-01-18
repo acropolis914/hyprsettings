@@ -514,7 +514,12 @@ h1#config-set-title {
   backdrop-filter: blur(10px);
   max-height: calc(100vh - 4rem);
   min-width: 30rem;
+  width: 30rem;
   transition: height 0.2s ease-in-out;
+}
+#dmenu .dmenu-footer {
+  font-size: 1rem;
+  align-items: flex-end;
 }
 #dmenu input {
   background: none;
@@ -538,8 +543,12 @@ h1#config-set-title {
 #dmenu ul li {
   padding-left: var(--spacing-unit);
   padding-right: var(--spacing-unit);
+  padding-bottom: calc(var(--spacing-unit) * 0.25);
   position: relative;
   background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
 }
 #dmenu ul li:focus {
   background-color: var(--accent);
@@ -550,8 +559,22 @@ h1#config-set-title {
   content: "\f0da";
   position: absolute;
   left: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--green);
   font-weight: bold;
+}
+#dmenu ul li .dmenu-item-label {
+  font-weight: bold;
+}
+#dmenu ul li .dmenu-item-description {
+  max-width: 100%;
+  color: var(--text-contrast);
+  font-size: 1.2rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1rem;
+  opacity: 0.9;
 }
 
 .dmenu-overlay,
@@ -818,6 +841,11 @@ h1#config-set-title {
   opacity: 1;
   transition: height 1s ease-in-out;
 }
+@media (max-width: 33rem) {
+  .editor-item-about {
+    scale: 0.8;
+  }
+}
 .editor-item-about .title {
   white-space: pre;
   color: var(--accent);
@@ -837,6 +865,11 @@ h1#config-set-title {
   gap: 0.25rem;
   font-weight: 600;
   color: var(--text-0, #fff);
+}
+@media (max-width: 33rem) {
+  .editor-item-about .version {
+    flex-direction: column;
+  }
 }
 .editor-item-about .version a {
   color: var(--accent);
@@ -1098,6 +1131,9 @@ h1#config-set-title {
 }
 .config-group > .config-group {
   margin-top: 1.5rem;
+}
+.config-group.rule {
+  background-color: var(--surface-0);
 }
 
 /* the floating label on the border */

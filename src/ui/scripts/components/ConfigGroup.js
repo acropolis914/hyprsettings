@@ -11,6 +11,9 @@ export class ConfigGroup {
 		if (json['comment']) {
 			this.group_el.dataset.comment = json['comment']
 		}
+		if(this.group_el.dataset.name === "windowrule"  || this.group_el.dataset.name === "layerrule") {
+			this.group_el.classList.add('rule')
+		}
 		this.group_el.addEventListener('keydown', (e) => {
 			// if (e.key == "Enter") {
 			// 	e.preventDefault()
