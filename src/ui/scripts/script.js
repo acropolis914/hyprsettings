@@ -35,10 +35,8 @@ async function load_config() {
 
 	window.themes = windowConfig.theme //just to globally access it for setupTheme
 	let builtin_themes = await Backend.getBuiltinThemes()
-	// console.log(builtin_themes)
 	for (let builtin_theme of builtin_themes) {
 		builtin_theme.name = `[builtin] ${builtin_theme.name}`
-		// console.log(builtin_theme)
 		window.themes.push(builtin_theme)
 	}
 
@@ -70,9 +68,7 @@ async function getDebugStatus() {
 		console.log("Error while contacting backend: ", e)
 		isDebug = false
 	}
-	// console.debug({ isDebug })
 	GLOBAL.setKey("isDebugging", isDebug)
-	// console.log(GLOBAL["isDebugging"])
 	if (isDebug) {
 		console.log("Debug mode is turned on.")
 		debugIndicator.classList.remove("hidden")
@@ -90,7 +86,7 @@ export async function initialize() {
 	await setupData()
 	await renderSettings()
 	await initializeSearchBar()
-	refreshAllStylesheets()
+	// refreshAllStylesheets()
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

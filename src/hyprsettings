@@ -32,6 +32,7 @@ PORT = 65432
 thisfile_path = Path(__file__).parent.resolve()
 cache_path = Path.home() / ".cache" / "hyprsettings" / ".pywebview"
 HYPRLAND_CONFIG_PATH = Path.home() / ".config" / "hypr" / "hyprland.conf"
+fifo_path = Path.home() / ".cache" / "hyprsettings" / "logs.fifo"
 _original_print = builtins.print
 console = Console()
 traceback.install(show_locals=True)
@@ -62,10 +63,26 @@ def print(*args, **kwargs):
 	console.print("[blue][UIBackend][/blue]", *args, **kwargs)
 
 
+_last_log_message = None
+_last_log_count = 1
+
+
 def log(msg, prefix="", only_verbose=False):
-	prefix = f"[{prefix}]" if prefix else ""
+	global _last_log_message, _last_log_count
+
+	prefix_str = f"[{prefix}]" if prefix else ""
+	full_message = f"{prefix_str}{msg}"
+
 	if not only_verbose or verbose:
-		print(f"{prefix}{msg}")
+		if full_message == _last_log_message:
+			_last_log_count += 1
+			# Clear previous line and reprint with counter
+			console.file.write("\033[F\033[K")
+			console.print(f"[blue][UIBackend][/blue] {full_message} [dim](×{_last_log_count})[/dim]")
+		else:
+			console.print(f"[blue][UIBackend][/blue] {full_message}")
+			_last_log_message = full_message
+			_last_log_count = 1
 
 
 def warn(msg):
@@ -113,9 +130,13 @@ class LogFilter:
 		elif "python-dotenv" in text:
 			return
 		elif text.startswith(" * "):
-			print(text)
-			new_text = text.lstrip(" * ")
-			log(new_text, "flask")
+			# print(text)
+			# new_text = text.lstrip(" * ")
+			# log(new_text, "flask")
+			return
+		elif text.startswith("[pywebview]"):
+			new_text = text.replace("[pywebview]", "")
+			log(new_text, "[green]pywebview[/green]")
 		else:
 			sys.__stdout__.write(text)
 
@@ -262,6 +283,7 @@ def is_port_open(port, timeout=0.1):
 		return s.connect_ex((HOST, port)) == 0
 
 
+
 def createArgParse():
 	parser = argparse.ArgumentParser(
 		prog="hyprsettings",
@@ -321,7 +343,7 @@ class Api:
 
 	def save_config(self, json: str):
 		print_hyprland(Node.from_json(json).to_hyprland(indent_level=0, save=True))
-		print("Saved to hyprland files")
+		log("Saved to hyprland files")
 
 	def new_uuid(self, length: int = 8):
 		return makeUUID(length)
@@ -523,6 +545,7 @@ def main():
 		threading.Thread(target=start_socket_server, daemon=args.daemon).start()
 		if daemon:
 			print("Started HyprSettings in daemon mode from cli.")
+			# setup_log_fifo()
 
 		mimetypes.add_type("application/javascript", ".js")
 		# print(Path(thisfile_path / "ui" / "index.html"))
@@ -614,6 +637,8 @@ if __name__ == "__main__":
 
 	if args.daemon and port_open:
 		if send_toggle():
+			# subprocess.run(["cat", str(fifo_path)])
+			# subprocess.run(["tail", "-f", str(fifo_path)])
 			exit(0)
 
 	gotoMain()

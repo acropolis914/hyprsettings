@@ -2,6 +2,7 @@ import { debounce } from '../utils.js';
 
 export class BezierModal {
 	constructor(initialValue) {
+		this.initialLoad = true
 		this._listeners = [];
 		this._updating = false;
 
@@ -12,8 +13,8 @@ export class BezierModal {
 		this.el.classList.add('generic-editor-beziermodal');
 
 		// Debounced emit for performance
-		this._debouncedEmit = debounce(() => this._emit(), 300);
-		this._debouncedNotifyInputListeners = debounce(() => this._notifyInputListeners(), 300);
+		this._debouncedEmit = debounce(() => this._emit(), 5);
+		this._debouncedNotifyInputListeners = debounce(() => this._notifyInputListeners(), 5);
 
 		// ---- Text editor ----
 		this.textEditor = document.createElement('input');
@@ -60,6 +61,7 @@ export class BezierModal {
 
 		this.curveEditor.onchange = (pts) => {
 			if (this._updating) return;
+			if(this.initialLoad) return;
 			this._updating = true;
 			this._debouncedAnimatePreview()
 			this._debouncedEmit();
@@ -77,6 +79,8 @@ export class BezierModal {
 			get: () => this.value,
 			set: (val) => (this.value = val)
 		});
+		this.initialLoad = false
+
 	}
 
 	parseValue(value) {
@@ -90,11 +94,13 @@ export class BezierModal {
 		this.curveEditorPreview.animate(curvepoints, 1000, 2000)
 	}
 	_notifyInputListeners() {
+		if(this.initialLoad) return;
 		const event = new Event('input', { bubbles: true });
 		this.el.dispatchEvent(event);
 	}
 
 	_emit() {
+		if(this.initialLoad) return;
 		for (const fn of this._listeners) fn(this.value);
 	}
 
