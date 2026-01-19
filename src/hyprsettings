@@ -44,11 +44,13 @@ app = Flask(__name__)
 
 
 def start_server():
-	port = 6969
-	while is_port_open(port=port):
-		port += 1
-	console.print(f"[Flask] You can access the ui on [blue][link=localhost:{port}]localhost:{port}[/link][/blue]")
-	app.run(host="0.0.0.0", port=port)
+    port = 6969
+    while is_port_open(port=port):
+        port += 1
+    console.print(
+        f"[Flask] You can access the ui on [blue][link=localhost:{port}]localhost:{port}[/link][/blue]"
+    )
+    app.run(host="0.0.0.0", port=port)
 
 
 # Variables
@@ -60,7 +62,7 @@ verbose = False
 
 # UTILITY FUNCTIONS
 def print(*args, **kwargs):
-	console.print("[blue][UIBackend][/blue]", *args, **kwargs)
+    console.print("[blue][UIBackend][/blue]", *args, **kwargs)
 
 
 _last_log_message = None
@@ -68,411 +70,432 @@ _last_log_count = 1
 
 
 def log(msg, prefix="", only_verbose=False):
-	global _last_log_message, _last_log_count
+    global _last_log_message, _last_log_count
 
-	prefix_str = f"[{prefix}]" if prefix else ""
-	full_message = f"{prefix_str}{msg}"
+    prefix_str = f"[{prefix}]" if prefix else ""
+    full_message = f"{prefix_str}{msg}"
 
-	if not only_verbose or verbose:
-		if full_message == _last_log_message:
-			_last_log_count += 1
-			# Clear previous line and reprint with counter
-			console.file.write("\033[F\033[K")
-			console.print(f"[blue][UIBackend][/blue] {full_message} [dim](×{_last_log_count})[/dim]")
-		else:
-			console.print(f"[blue][UIBackend][/blue] {full_message}")
-			_last_log_message = full_message
-			_last_log_count = 1
+    if not only_verbose or verbose:
+        if full_message == _last_log_message:
+            _last_log_count += 1
+            # Clear previous line and reprint with counter
+            console.file.write("\033[F\033[K")
+            console.print(
+                f"[blue][UIBackend][/blue] {full_message} [dim](×{_last_log_count})[/dim]"
+            )
+        else:
+            console.print(f"[blue][UIBackend][/blue] {full_message}")
+            _last_log_message = full_message
+            _last_log_count = 1
 
 
 def warn(msg):
-	log(f"[red]{msg}[red]")
+    log(f"[red]{msg}[red]")
 
 
 def handle_interrupt(signum, frame):
-	log("\n Sigint signal detected! Cleaning up...")
-	os._exit(0)
+    log("\n Sigint signal detected! Cleaning up...")
+    os._exit(0)
 
 
 def kill_hyprsettings():
-	log("Killing all hyprsettings instances")
-	result = subprocess.run(["pkill", "-f", "hyprsettings"])
+    log("Killing all hyprsettings instances")
+    result = subprocess.run(["pkill", "-f", "hyprsettings"])
 
-	if result.returncode == 0:
-		log("Hyprsettings killed")
-	else:
-		log("No actively running hyprsettings found.")
-	exit(0)
+    if result.returncode == 0:
+        log("Hyprsettings killed")
+    else:
+        log("No actively running hyprsettings found.")
+    exit(0)
 
 
 def print_title():
-	art = f"""\
+    art = f"""\
 	
  [bold][blue]╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓
  ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓
  ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛[/bold][/blue]
 version {CURRENT_VERSION} [blue][link=https://github.com/acropolis914/hyprsettings] github.com/acropolis914/hyprsettings[/link][/blue]\n"""
-	console.print(art, style="")
-	# return art
+    console.print(art, style="")
+    # return art
 
 
 class LogFilter:
-	def write(self, text):
-		if not text.strip():
-			return
-		# 2. Filter the library noise (if/elif/else logic)
-		if "[pywebview]" in text:
-			pass
-		elif "GET /" in text and "HTTP" in text and not verbose:
-			return  # Drop Bottle/HTTP access logs
-		elif "Bottle v" in text and not verbose:
-			return  # Drop Bottle startup banner
-		elif "python-dotenv" in text:
-			return
-		elif text.startswith(" * "):
-			# print(text)
-			# new_text = text.lstrip(" * ")
-			# log(new_text, "flask")
-			return
-		elif text.startswith("[pywebview]"):
-			new_text = text.replace("[pywebview]", "")
-			log(new_text, "[green]pywebview[/green]")
-		else:
-			sys.__stdout__.write(text)
+    def write(self, text):
+        if not text.strip():
+            return
+        # 2. Filter the library noise (if/elif/else logic)
+        if "[pywebview]" in text:
+            pass
+        elif "GET /" in text and "HTTP" in text and not verbose:
+            return  # Drop Bottle/HTTP access logs
+        elif "Bottle v" in text and not verbose:
+            return  # Drop Bottle startup banner
+        elif "python-dotenv" in text:
+            return
+        elif text.startswith(" * "):
+            # print(text)
+            # new_text = text.lstrip(" * ")
+            # log(new_text, "flask")
+            return
+        elif text.startswith("[pywebview]"):
+            new_text = text.replace("[pywebview]", "")
+            log(new_text, "[green]pywebview[/green]")
+        else:
+            sys.__stdout__.write(text)
 
-	def flush(self):
-		sys.__stdout__.flush()
+    def flush(self):
+        sys.__stdout__.flush()
 
 
 # WINDOW FUNCTIONS
 def on_loaded(window):
-	print("DOM is ready")
-	window.events.loaded -= on_loaded
+    print("DOM is ready")
+    window.events.loaded -= on_loaded
 
 
 def on_closing(window):
-	global daemon
-	global window_visible
-	# print("______________________________________________\n")
-	disabled_dmabuf = os.environ.get("WEBKIT_DISABLE_DMABUF_RENDERER")
-	# print(f"DEBUG daemon={daemon} disabled_dmabuf={disabled_dmabuf!r}")
-	if daemon and (disabled_dmabuf is None or disabled_dmabuf != "1"):
-		window_instance.hide()
-		window_visible = False
-		log("[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]")
-		# print("______________________________________________\n")
-		return False
-	if disabled_dmabuf == "1":
-		log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
-		log("Restoring from daemon will fail. Daemon setting is dishonored.")
-	print("Window closed. Terminating process.")
-	# print("______________________________________________\n")
-	os._exit(0)
+    global daemon
+    global window_visible
+    # print("______________________________________________\n")
+    disabled_dmabuf = os.environ.get("WEBKIT_DISABLE_DMABUF_RENDERER")
+    # print(f"DEBUG daemon={daemon} disabled_dmabuf={disabled_dmabuf!r}")
+    if daemon and (disabled_dmabuf is None or disabled_dmabuf != "1"):
+        window_instance.hide()
+        window_visible = False
+        log(
+            "[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]"
+        )
+        # print("______________________________________________\n")
+        return False
+    if disabled_dmabuf == "1":
+        log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
+        log("Restoring from daemon will fail. Daemon setting is dishonored.")
+    print("Window closed. Terminating process.")
+    # print("______________________________________________\n")
+    os._exit(0)
 
 
 # ------------------- Socket toggle functions -------------------
 def handle_client(conn):
-	global window_instance, window_visible
-	try:
-		data = conn.recv(1024)
-		if data.decode() == "TOGGLE" and window_instance:
-			activeworkspace = (
-				subprocess.run(
-					"hyprctl monitors -j | jq '.[] | select(.focused==true) | .activeWorkspace.name'",
-					shell=True,
-					capture_output=True,
-					text=True,
-				)
-				.stdout.strip()
-				.strip('"')
-			)
-			log(f"Active workspace from focused monitor: '{activeworkspace}'")
+    global window_instance, window_visible
+    try:
+        data = conn.recv(1024)
+        if data.decode() == "TOGGLE" and window_instance:
+            activeworkspace = (
+                subprocess.run(
+                    "hyprctl monitors -j | jq '.[] | select(.focused==true) | .activeWorkspace.name'",
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                )
+                .stdout.strip()
+                .strip('"')
+            )
+            log(f"Active workspace from focused monitor: '{activeworkspace}'")
 
-			specialworkspace = (
-				subprocess.run(
-					"hyprctl monitors -j | jq '.[] | select(.focused==true) | .specialWorkspace.name'",
-					shell=True,
-					capture_output=True,
-					text=True,
-				)
-				.stdout.strip()
-				.strip('"')
-			)
-			log(
-				f"Special workspace from focused monitor: '{specialworkspace}'",
-				only_verbose=True,
-			)
+            specialworkspace = (
+                subprocess.run(
+                    "hyprctl monitors -j | jq '.[] | select(.focused==true) | .specialWorkspace.name'",
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                )
+                .stdout.strip()
+                .strip('"')
+            )
+            log(
+                f"Special workspace from focused monitor: '{specialworkspace}'",
+                only_verbose=True,
+            )
 
-			if specialworkspace:
-				log(f"Special workspace {specialworkspace} detected, overriding active workspace")
-				activeworkspace = specialworkspace
-			log(f"Workspace to target: '{activeworkspace}'", only_verbose=True)
+            if specialworkspace:
+                log(
+                    f"Special workspace {specialworkspace} detected, overriding active workspace"
+                )
+                activeworkspace = specialworkspace
+            log(f"Workspace to target: '{activeworkspace}'", only_verbose=True)
 
-			# get hyprsettings window workspace
-			hyprsettings_window_workspace_name = subprocess.run(
-				"hyprctl -j clients | jq -r '.[] | select(.initialClass==\"hyprsettings\") | .workspace.name'",
-				shell=True,
-				capture_output=True,
-				text=True,
-			).stdout.strip()
-			log(
-				f"HyprSettings window currently on workspace: '{hyprsettings_window_workspace_name}'",
-				only_verbose=True,
-			)
+            # get hyprsettings window workspace
+            hyprsettings_window_workspace_name = subprocess.run(
+                "hyprctl -j clients | jq -r '.[] | select(.initialClass==\"hyprsettings\") | .workspace.name'",
+                shell=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            log(
+                f"HyprSettings window currently on workspace: '{hyprsettings_window_workspace_name}'",
+                only_verbose=True,
+            )
 
-			# main toggle logic
-			if window_visible and activeworkspace == hyprsettings_window_workspace_name:
-				log(f"Window visible AND on current workspace ({activeworkspace}) → hiding")
-				window_instance.hide()
-				window_visible = False
+            # main toggle logic
+            if window_visible and activeworkspace == hyprsettings_window_workspace_name:
+                log(
+                    f"Window visible AND on current workspace ({activeworkspace}) → hiding"
+                )
+                window_instance.hide()
+                window_visible = False
 
-			elif window_visible and activeworkspace != hyprsettings_window_workspace_name:
-				log(
-					f"Window visible BUT on different workspace ({hyprsettings_window_workspace_name}) → moving"
-				)
-				move = subprocess.run(
-					[
-						"hyprctl",
-						"dispatch",
-						"movetoworkspace",
-						f"{activeworkspace},initialclass:hyprsettings",
-					],
-					capture_output=True,
-					text=True,
-				)
-				window_instance.restore()  # restore if minimized
-				window_instance.show()
-				window_visible = True
-				# log(f"Move stdout: '{move.stdout.strip()}'")
-				# log(f"Move stderr: '{move.stderr.strip()}'")
+            elif (
+                window_visible and activeworkspace != hyprsettings_window_workspace_name
+            ):
+                log(
+                    f"Window visible BUT on different workspace ({hyprsettings_window_workspace_name}) → moving"
+                )
+                move = subprocess.run(
+                    [
+                        "hyprctl",
+                        "dispatch",
+                        "movetoworkspace",
+                        f"{activeworkspace},initialclass:hyprsettings",
+                    ],
+                    capture_output=True,
+                    text=True,
+                )
+                window_instance.restore()  # restore if minimized
+                window_instance.show()
+                window_visible = True
+                # log(f"Move stdout: '{move.stdout.strip()}'")
+                # log(f"Move stderr: '{move.stderr.strip()}'")
 
-			else:
-				log("Window not visible → restoring and showing")
-				window_instance.restore()  # restore if minimized
-				window_instance.show()
-				window_visible = True
-	except Exception as e:
-		print(e)
+            else:
+                log("Window not visible → restoring and showing")
+                window_instance.restore()  # restore if minimized
+                window_instance.show()
+                window_visible = True
+    except Exception as e:
+        print(e)
 
-	finally:
-		conn.close()
+    finally:
+        conn.close()
 
 
 def start_socket_server():
-	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as window_socket:
-		window_socket.bind((HOST, PORT))
-		window_socket.listen()
-		while True:
-			conn, addr = window_socket.accept()
-			threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as window_socket:
+        window_socket.bind((HOST, PORT))
+        window_socket.listen()
+        while True:
+            conn, addr = window_socket.accept()
+            threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
 
 
 def send_toggle():
-	try:
-		with socket.create_connection((HOST, PORT), timeout=0.1) as s:
-			s.sendall(b"TOGGLE")
-			print("Toggled existing window by daemon instead of  spawning a new one.")
-			return True
-	except (ConnectionRefusedError, socket.timeout):
-		return False
+    try:
+        with socket.create_connection((HOST, PORT), timeout=0.1) as s:
+            s.sendall(b"TOGGLE")
+            print("Toggled existing window by daemon instead of  spawning a new one.")
+            return True
+    except (ConnectionRefusedError, socket.timeout):
+        return False
 
 
 def is_port_open(port, timeout=0.1):
-	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-		s.settimeout(timeout)
-		return s.connect_ex((HOST, port)) == 0
-
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(timeout)
+        return s.connect_ex((HOST, port)) == 0
 
 
 def createArgParse():
-	parser = argparse.ArgumentParser(
-		prog="hyprsettings",
-		description="A loyal hyprland parser and gui editor for hyprland.conf",
-		epilog=print_title(),
-	)
-	parser.add_argument(
-		"-d",
-		"--daemon",
-		action="store_true",
-		help="Run in background started for quick startup",
-	)
-	parser.add_argument(
-		"-H",
-		"--hidden",
-		action="store_true",
-		help="Makes it hidden at the start. Useful for autostarting with daemon\n e.g. on your hyprland.conf (exec-once = hyprsettings -d -H)",
-	)
-	parser.add_argument(
-		"-u",
-		"--ui",
-		nargs=1,
-		choices=["gtk", "qt"],
-		default="gtk",
-		help="Run the ui with qt backend (requires qt library)",
-	)
-	parser.add_argument("-v", "--verbose", action="store_true", help="Get more descriptive logs")
-	parser.add_argument(
-		"-k",
-		"--kill",
-		action="store_true",
-		help="Use this arg to kill any running hyprsettings process",
-	)
-	parser.add_argument(
-		"-N",
-		"--no-daemon",
-		action="store_true",
-		help="Starts a new session without using existing daemon if it exists.",
-	)
-	parser.add_argument("-c", "--config", metavar="FILE", type=str, help="Configuration file")
-	parser.add_argument("--debug", action="store_true", help="Enable debug and devtools")
-	return parser
+    parser = argparse.ArgumentParser(
+        prog="hyprsettings",
+        description="A loyal hyprland parser and gui editor for hyprland.conf",
+        epilog=print_title(),
+    )
+    parser.add_argument(
+        "-d",
+        "--daemon",
+        action="store_true",
+        help="Run in background started for quick startup",
+    )
+    parser.add_argument(
+        "-H",
+        "--hidden",
+        action="store_true",
+        help="Makes it hidden at the start. Useful for autostarting with daemon\n e.g. on your hyprland.conf (exec-once = hyprsettings -d -H)",
+    )
+    parser.add_argument(
+        "-u",
+        "--ui",
+        nargs=1,
+        choices=["gtk", "qt"],
+        default="gtk",
+        help="Run the ui with qt backend (requires qt library)",
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Get more descriptive logs"
+    )
+    parser.add_argument(
+        "-k",
+        "--kill",
+        action="store_true",
+        help="Use this arg to kill any running hyprsettings process",
+    )
+    parser.add_argument(
+        "-N",
+        "--no-daemon",
+        action="store_true",
+        help="Starts a new session without using existing daemon if it exists.",
+    )
+    parser.add_argument(
+        "-c", "--config", metavar="FILE", type=str, help="Configuration file"
+    )
+    parser.add_argument(
+        "--debug", action="store_true", help="Enable debug and devtools"
+    )
+    return parser
 
 
 class Api:
-	def __init__(self):
-		self.window_config = None
+    def __init__(self):
+        self.window_config = None
 
-	def init(self):
-		return self.get_config()
+    def init(self):
+        return self.get_config()
 
-	def get_config(self, path=None):
-		hyprland_config_path = path if path else HYPRLAND_CONFIG_PATH
-		# print(args.verbose)
-		config = ConfigParser(hyprland_config_path, verbose=args.verbose).root.to_json()
-		return config
+    def get_config(self, path=None):
+        hyprland_config_path = path if path else HYPRLAND_CONFIG_PATH
+        # print(args.verbose)
+        config = ConfigParser(hyprland_config_path, verbose=args.verbose).root.to_json()
+        return config
 
-	def save_config(self, json: str):
-		print_hyprland(Node.from_json(json).to_hyprland(indent_level=0, save=True))
-		log("Saved to hyprland files")
+    def save_config(self, json: str):
+        print_hyprland(Node.from_json(json).to_hyprland(indent_level=0, save=True))
+        log("Saved to hyprland files")
 
-	def new_uuid(self, length: int = 8):
-		return makeUUID(length)
+    def new_uuid(self, length: int = 8):
+        return makeUUID(length)
 
-	def read_window_config(self):
-		global daemon
+    def read_window_config(self):
+        global daemon
 
-		def version_migration():
-			file_info = self.window_config["file_info"]
-			if Version(file_info["version"]) < Version(CURRENT_VERSION):
-				print(
-					f"Config version {file_info['version']} is older than current {CURRENT_VERSION}. Updating version, moving keys."
-				)
-				file_info["version"] = CURRENT_VERSION
-				persistence = self.window_config.get("persistence")
-				if persistence is None:
-					self.window_config["persistence"] = toml.table()
-				try:
-					# self.window_config["config"]["last_tab"]
-					self.window_config["persistence"]["last_tab"] = self.window_config["config"]["last_tab"]
-					self.window_config["config"].pop("last_tab")
-					self.window_config = self.window_config
-				except Exception as exception:
-					log(
-						str(exception) + "in hyprsettings.toml[config]",
-						prefix="Config Version Migrator",
-					)
-				try:
-					# self.window_config["config"]["last_tab"]
-					self.window_config["persistence"]["first_run"] = self.window_config["config"]["first_run"]
-					self.window_config["config"].pop("first_run")
-					self.window_config = self.window_config
-				except Exception as exception:
-					log(
-						str(exception) + "in hyprsettings.toml[config]",
-						prefix="Config Version Migrator",
-					)
+        def version_migration():
+            file_info = self.window_config["file_info"]
+            if Version(file_info["version"]) < Version(CURRENT_VERSION):
+                print(
+                    f"Config version {file_info['version']} is older than current {CURRENT_VERSION}. Updating version, moving keys."
+                )
+                file_info["version"] = CURRENT_VERSION
+                persistence = self.window_config.get("persistence")
+                if persistence is None:
+                    self.window_config["persistence"] = toml.table()
+                try:
+                    # self.window_config["config"]["last_tab"]
+                    self.window_config["persistence"]["last_tab"] = self.window_config[
+                        "config"
+                    ]["last_tab"]
+                    self.window_config["config"].pop("last_tab")
+                    self.window_config = self.window_config
+                except Exception as exception:
+                    log(
+                        str(exception) + "in hyprsettings.toml[config]",
+                        prefix="Config Version Migrator",
+                    )
+                try:
+                    # self.window_config["config"]["last_tab"]
+                    self.window_config["persistence"]["first_run"] = self.window_config[
+                        "config"
+                    ]["first_run"]
+                    self.window_config["config"].pop("first_run")
+                    self.window_config = self.window_config
+                except Exception as exception:
+                    log(
+                        str(exception) + "in hyprsettings.toml[config]",
+                        prefix="Config Version Migrator",
+                    )
 
-		def add_missing_keys():
-			defaults = {"daemon": False}
-			config_lines = self.window_config["config"]
-			for key, val in defaults.items():
-				if key not in config_lines:
-					config_lines[key] = val
+        def add_missing_keys():
+            defaults = {"daemon": False}
+            config_lines = self.window_config["config"]
+            for key, val in defaults.items():
+                if key not in config_lines:
+                    config_lines[key] = val
 
-		window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"
-		template = Path(thisfile_path / "default_config.toml")
+        window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"
+        template = Path(thisfile_path / "default_config.toml")
 
-		if not window_config_path.is_file() or window_config_path.stat().st_size == 0:
-			temporary_font = None
-			try:
-				temporary_font = self.list_fonts(mono=False, nerd=True)[1]
-			except IndexError:
-				log("No nerd font found. Using monospace.")
-			temporary_font = None
+        if not window_config_path.is_file() or window_config_path.stat().st_size == 0:
+            temporary_font = None
+            try:
+                temporary_font = self.list_fonts(mono=False, nerd=True)[1]
+            except IndexError:
+                log("No nerd font found. Using monospace.")
+            temporary_font = None
 
-			print(f"Config file not found in {window_config_path}")
-			with open(
-				template,
-				"r",
-			) as default_config:
-				default_config_text = default_config.read()
+            print(f"Config file not found in {window_config_path}")
+            with open(
+                template,
+                "r",
+            ) as default_config:
+                default_config_text = default_config.read()
 
-			self.window_config = toml.parse(default_config_text)
-			self.window_config["config"]["font"] = temporary_font if temporary_font else "Monospace"
-			add_missing_keys()
-			version_migration()
-			if self.window_config["config"]["daemon"]:
-				daemon = True
-			with window_config_path.open("w") as config_file:
-				config_file.write(default_config_text)
-			return self.window_config
-		else:
-			with window_config_path.open("r", encoding="utf-8") as config_file:
-				config = None
-				try:
-					config = toml.parse(config_file.read())
-				except toml.exceptions.TOMLKitError as e:
-					print(e)
-					return {"configuration-error": str(e)}
-				self.window_config = config
-				version_migration()
-				add_missing_keys()
-				if self.window_config["config"]["daemon"]:
-					daemon = True
-				return self.window_config
+            self.window_config = toml.parse(default_config_text)
+            self.window_config["config"]["font"] = (
+                temporary_font if temporary_font else "Monospace"
+            )
+            add_missing_keys()
+            version_migration()
+            if self.window_config["config"]["daemon"]:
+                daemon = True
+            with window_config_path.open("w") as config_file:
+                config_file.write(default_config_text)
+            return self.window_config
+        else:
+            with window_config_path.open("r", encoding="utf-8") as config_file:
+                config = None
+                try:
+                    config = toml.parse(config_file.read())
+                except toml.exceptions.TOMLKitError as e:
+                    print(e)
+                    return {"configuration-error": str(e)}
+                self.window_config = config
+                version_migration()
+                add_missing_keys()
+                if self.window_config["config"]["daemon"]:
+                    daemon = True
+                return self.window_config
 
-	def get_builtin_themes(self):
-		file_path = thisfile_path / "ui" / "themes_builtin"
-		themes = []
-		for file in os.listdir(file_path):
-			theme_file = Path(file_path / file)
-			if not theme_file.is_file():
-				continue
-			if not str(theme_file).endswith(".toml"):
-				continue
-			with open(theme_file, "r", encoding="utf-8") as theme:
-				file_content = theme.read()
+    def get_builtin_themes(self):
+        file_path = thisfile_path / "ui" / "themes_builtin"
+        themes = []
+        for file in os.listdir(file_path):
+            theme_file = Path(file_path / file)
+            if not theme_file.is_file():
+                continue
+            if not str(theme_file).endswith(".toml"):
+                continue
+            with open(theme_file, "r", encoding="utf-8") as theme:
+                file_content = theme.read()
 
-				theme_content = toml.parse(file_content)
-				# print(f'Theme content: {theme_content}')
-				for theme_definition in theme_content.get("theme", []):
-					themes.append(theme_definition)
-		return themes
+                theme_content = toml.parse(file_content)
+                # print(f'Theme content: {theme_content}')
+                for theme_definition in theme_content.get("theme", []):
+                    themes.append(theme_definition)
+        return themes
 
-	def save_window_config(self, json_fromjs, part="config"):
-		# print(f"Called save window {part}")
-		config_from_json = json.loads(json_fromjs)
-		for key in config_from_json:
-			self.window_config[part][key] = config_from_json[key]
-		window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"
-		with open(window_config_path, "w", encoding="utf-8") as config_file:
-			config_tosave = toml.dumps(self.window_config)
-			config_file.write(config_tosave)
+    def save_window_config(self, json_fromjs, part="config"):
+        # print(f"Called save window {part}")
+        config_from_json = json.loads(json_fromjs)
+        for key in config_from_json:
+            self.window_config[part][key] = config_from_json[key]
+        window_config_path = Path.home() / ".config" / "hypr" / "hyprsettings.toml"
+        with open(window_config_path, "w", encoding="utf-8") as config_file:
+            config_tosave = toml.dumps(self.window_config)
+            config_file.write(config_tosave)
 
-	def list_fonts(self, mono=False, nerd=False):
-		cmd = "fc-list --format='%{family}\n'"
-		if mono:
-			cmd = "fc-list :spacing=100 --format='%{family}\n'"
-		if nerd:
-			cmd += " | grep -i 'Nerd'"
-		cmd += " | sort -u"
-		result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-		return [f.strip() for f in result.stdout.splitlines() if f.strip()]
+    def list_fonts(self, mono=False, nerd=False):
+        cmd = "fc-list --format='%{family}\n'"
+        if mono:
+            cmd = "fc-list :spacing=100 --format='%{family}\n'"
+        if nerd:
+            cmd += " | grep -i 'Nerd'"
+        cmd += " | sort -u"
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        return [f.strip() for f in result.stdout.splitlines() if f.strip()]
 
-	def getDebugStatus(self):
-		isDebugging = args.debug
-		# print("Debug mode: ", isDebugging)
-		return isDebugging
+    def getDebugStatus(self):
+        isDebugging = args.debug
+        # print("Debug mode: ", isDebugging)
+        return isDebugging
 
 
 api = Api()
@@ -480,165 +503,175 @@ api = Api()
 
 @app.route("/")
 def home():
-	return send_from_directory("ui", "index.html")
+    return send_from_directory("ui", "index.html")
 
 
 @app.route("/<path:path>")
 def ui_files(path):
-	return send_from_directory("ui", path)
+    return send_from_directory("ui", path)
 
 
 @app.route("/api/init", methods=["GET"])
 def api_init():
-	return jsonify(api.init())
+    return jsonify(api.init())
 
 
 @app.route("/api/get_config", methods=["GET"])
 def api_get_config():
-	path = request.args.get("path")
-	return jsonify(api.get_config(path=path))
+    path = request.args.get("path")
+    return jsonify(api.get_config(path=path))
 
 
 @app.route("/api/save_config", methods=["POST"])
 def api_save_config():
-	data = request.get_json()
-	api.save_config(json.dumps(data))
-	return jsonify({"status": "ok"})
+    data = request.get_json()
+    api.save_config(json.dumps(data))
+    return jsonify({"status": "ok"})
 
 
 @app.route("/api/new_uuid", methods=["GET"])
 def api_new_uuid():
-	length = request.args.get("length", default=8, type=int)
-	return jsonify({"uuid": api.new_uuid(length)})
+    length = request.args.get("length", default=8, type=int)
+    return jsonify({"uuid": api.new_uuid(length)})
 
 
 @app.route("/api/read_window_config", methods=["GET"])
 def api_read_window_config():
-	return jsonify(api.read_window_config())
+    return jsonify(api.read_window_config())
 
 
 @app.route("/api/save_window_config", methods=["POST"])
 def api_save_window_config():
-	data = request.get_json()
-	label = request.args.get("label", "config")
-	api.save_window_config(data, part=label)
-	return jsonify({"status": "ok"})
+    data = request.get_json()
+    label = request.args.get("label", "config")
+    api.save_window_config(data, part=label)
+    return jsonify({"status": "ok"})
 
 
 @app.route("/api/get_builtin_themes", methods=["GET"])
 def api_get_builtin_themes():
-	return jsonify(api.get_builtin_themes())
+    return jsonify(api.get_builtin_themes())
 
 
 @app.route("/api/get_debug_status", methods=["GET"])
 def api_get_debug_status():
-	return jsonify(api.getDebugStatus())
+    return jsonify(api.getDebugStatus())
 
 
 def main():
-	global window_instance, window_visible
-	t = threading.Thread(target=start_server)
-	t.daemon = True
-	t.start()
+    global window_instance, window_visible
+    t = threading.Thread(target=start_server)
+    t.daemon = True
+    t.start()
 
-	try:
-		threading.Thread(target=start_socket_server, daemon=args.daemon).start()
-		if daemon:
-			print("Started HyprSettings in daemon mode from cli.")
-			# setup_log_fifo()
+    try:
+        threading.Thread(target=start_socket_server, daemon=args.daemon).start()
+        if daemon:
+            print("Started HyprSettings in daemon mode from cli.")
+            # setup_log_fifo()
 
-		mimetypes.add_type("application/javascript", ".js")
-		# print(Path(thisfile_path / "ui" / "index.html"))
-		# webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
-		# window_instance = webview.create_window(
-		# 	"HyprSettings",
-		# 	"ui/index.html",
-		# 	js_api=api,
-		# 	transparent=True,
-		# 	width=800,
-		# 	height=600,
-		# 	easy_drag=True,
-		# 	min_size=(400, 300),
-		# 	hidden=args.hidden,
-		# )
-		window_instance = webview.create_window(
-			"HyprSettings",
-			"http://localhost:6969/",
-			js_api=api,
-			transparent=True,
-			width=800,
-			height=600,
-			easy_drag=True,
-			min_size=(400, 300),
-			hidden=args.hidden,
-		)
-		window_visible = not args.daemon
-		window_instance.events.loaded += on_loaded
-		window_instance.events.closing += on_closing
-		webview.start(
-			gui=args.ui[0],
-			debug=args.debug,
-			private_mode=True,
-			storage_path=str(cache_path),
-			icon="icon-48.png",
-		)
-		os._exit(0)
-	except Exception as e:
-		print("I am ded")
-		print(e)
-		os._exit(1)
+        mimetypes.add_type("application/javascript", ".js")
+        # print(Path(thisfile_path / "ui" / "index.html"))
+        # webview.settings["OPEN_DEVTOOLS_IN_DEBUG"] = False
+        # window_instance = webview.create_window(
+        # 	"HyprSettings",
+        # 	"ui/index.html",
+        # 	js_api=api,
+        # 	transparent=True,
+        # 	width=800,
+        # 	height=600,
+        # 	easy_drag=True,
+        # 	min_size=(400, 300),
+        # 	hidden=args.hidden,
+        # )
+        window_instance = webview.create_window(
+            "HyprSettings",
+            "http://localhost:6969/",
+            js_api=api,
+            transparent=True,
+            width=800,
+            height=600,
+            easy_drag=True,
+            min_size=(400, 300),
+            hidden=args.hidden,
+        )
+        window_visible = not args.daemon
+        window_instance.events.loaded += on_loaded
+        window_instance.events.closing += on_closing
+        webview.start(
+            gui=args.ui[0],
+            debug=args.debug,
+            private_mode=True,
+            storage_path=str(cache_path),
+            icon="icon-48.png",
+        )
+        os._exit(0)
+    except Exception as e:
+        print("I am ded")
+        print(e)
+        os._exit(1)
 
 
 if __name__ == "__main__":
-	parser = createArgParse()
-	args = parser.parse_args()
-	signal.signal(signal.SIGINT, handle_interrupt)
+    parser = createArgParse()
+    args = parser.parse_args()
+    signal.signal(signal.SIGINT, handle_interrupt)
 
-	if args.kill:
-		kill_hyprsettings()
-	if args.ui:
-		log(f"Using UI {args.ui}")
-	print("Debug mode: ", args.debug)
-	print("Verbose:", args.verbose)
-	if args.debug:
-		log(
-			"[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!"
-		)
-	if args.hidden:
-		window_visible = False
-	if args.config:
-		log(f"Given custom config path: {args.config}")
-		if str(args.config).endswith(".conf"):
-			HYPRLAND_CONFIG_PATH = Path(str(args.config).strip('"').strip("'"))
-		else:
-			warn(f'Given config file is not a ".conf file". Using default config path {HYPRLAND_CONFIG_PATH}')
+    if args.kill:
+        kill_hyprsettings()
+    if args.ui:
+        log(f"Using UI {args.ui}")
+    print("Debug mode: ", args.debug)
+    print("Verbose:", args.verbose)
+    if args.debug:
+        log(
+            "[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!"
+        )
+    if args.hidden:
+        window_visible = False
+    if args.config:
+        log(f"Given custom config path: {args.config}")
+        if str(args.config).endswith(".conf"):
+            HYPRLAND_CONFIG_PATH = Path(str(args.config).strip('"').strip("'"))
+        else:
+            warn(
+                f'Given config file is not a ".conf file". Using default config path {HYPRLAND_CONFIG_PATH}'
+            )
 
-	daemon = args.daemon and not args.no_daemon
+    daemon = args.daemon and not args.no_daemon
 
-	if args.verbose:
-		verbose = args.verbose
+    if args.verbose:
+        verbose = args.verbose
 
-	port_open = is_port_open(PORT)
+    port_open = is_port_open(PORT)
 
-	def gotoMain():
-		with redirect_stderr(LogFilter()):
-			main()
+    def gotoMain():
+        with redirect_stderr(LogFilter()):
+            main()
 
-	if args.no_daemon or not args.daemon:
-		if args.daemon:
-			log('Damn. Running "--no-daemon" and "--daemon" at the same time? Why?')
-		log("Running in standalone no-daemon mode")
-		while is_port_open(PORT):
-			log(f"Existing hyprsettings port {PORT} is open but hyprsettings is called without daemon.")
-			PORT += 1
-		log(f"Starting a new temporary port {PORT} instead. Useful only during development or debugging.")
-		log('If you wish to use the existing hyprsettings background daemon, run hyprsettings with arg "-d"')
-		log("Using the daemon will use some of your ram indefinitely but will make hyprsettings open faster.")
+    if args.no_daemon or not args.daemon:
+        if args.daemon:
+            log('Damn. Running "--no-daemon" and "--daemon" at the same time? Why?')
+        log("Running in standalone no-daemon mode")
+        while is_port_open(PORT):
+            log(
+                f"Existing hyprsettings port {PORT} is open but hyprsettings is called without daemon."
+            )
+            PORT += 1
+        log(
+            f"Starting a new temporary port {PORT} instead. Useful only during development or debugging."
+        )
+        log(
+            'If you wish to use the existing hyprsettings background daemon, run hyprsettings with arg "-d"'
+        )
+        log(
+            "Using the daemon will use some of your ram indefinitely but will make hyprsettings open faster."
+        )
 
-	if args.daemon and port_open:
-		if send_toggle():
-			# subprocess.run(["cat", str(fifo_path)])
-			# subprocess.run(["tail", "-f", str(fifo_path)])
-			exit(0)
+    if args.daemon and port_open:
+        if send_toggle():
+            # subprocess.run(["cat", str(fifo_path)])
+            # subprocess.run(["tail", "-f", str(fifo_path)])
+            exit(0)
 
-	gotoMain()
+    gotoMain()
