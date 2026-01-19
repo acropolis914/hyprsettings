@@ -91,16 +91,16 @@ export const Backend = {
 		}
 	},
 
-	async saveWindowConfig(json, label = 'config') {
+	saveWindowConfig(json, label = 'config') {
 		switch (GLOBAL.backend) {
 			case 'pywebview':
-				await window.pywebview.api.save_window_config(
+				window.pywebview.api.save_window_config(
 					json,
 					label
 				)
 				break
 			case 'flask':
-				await fetchFlask(`save_window_config?label=${label}`, {
+				fetchFlask(`save_window_config?label=${label}`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(json),

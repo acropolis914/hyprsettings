@@ -834,6 +834,9 @@ h1#config-set-title {
 			height: 3rem !important;
 			// width: 100%;
 			border-radius: var(--border-rad);
+			&:disabled {
+				opacity: .5;
+			}
 		}
 
 		> textarea {

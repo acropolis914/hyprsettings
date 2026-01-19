@@ -317,10 +317,16 @@ export class EditorItem_Binds {
 		if (this.el.dataset.disabled == 'false') {
 			this.el.dataset.disabled = true
 			this.el.classList.add('disabled')
+			this.el.querySelectorAll("textarea").forEach(el => {
+				el.disabled = true
+			})
 			this.save()
 		} else {
 			this.el.dataset.disabled = false
 			this.el.classList.remove('disabled')
+			this.el.querySelectorAll("textarea").forEach(el => {
+				el.disabled = false
+			})
 			this.save()
 		}
 

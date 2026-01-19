@@ -154,8 +154,8 @@ export function makeUUID(length = 8) {
 export async function saveWindowConfig() {
 
 	try {
-		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
-		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
+		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
 		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['config']), 'config')
 		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {

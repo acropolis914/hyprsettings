@@ -437,13 +437,15 @@ export class EditorItem_Generic {
 	}
 
 	flipValueIfBool(){
-		if (this.el.dataset.infoType === 'CONFIG_OPTION_BOOL') {
+		if (this.el.dataset.infoType === 'CONFIG_OPTION_BOOL' || this.el.dataset.value === "on" || this.el.dataset.value === "off") {
 			if (this.valueEditor.value === "true" || this.valueEditor.value === "false") {
 				this.valueEditor.value = this.valueEditor.value === "true" ? "false" : "true"
+			} else if (this.el.dataset.value === "on" || this.el.dataset.value === "off"){
+				this.valueEditor.value = this.valueEditor.value === "on" ? "off" : "on"
 			}
 			
 			this.el.dataset.value = this.valueEditor.value
-			console.log(this.inital_load)
+			// console.log(this.inital_load)
 			this.update()
 			return true
 		} else {

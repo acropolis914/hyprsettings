@@ -30,35 +30,41 @@ export class configRenderer {
 
 	async parse(json) {
 		//Comment Stacking for three line label comments from default hyprland.conf
-		if (
+		const self = this
+		function renderCommentStack(){
+			for (let i = 0; i < self.comment_stack.length; i++) {
+				let comment_item = new EditorItem_Comments(
+					self.comment_stack[i]
+				)
+				comment_item.el.classList.add('block-comment')
+				if (!GLOBAL['config']['show_header_comments']) {
+					comment_item.el.classList.add(
+						'settings-hidden'
+					)
+				}
+				comment_item.addToParent(
+					self.current_container.at(-1)
+				)
+			}
+			self.comment_stack = []
+		}
+		if ( // is a comment that looks like the start of a comment block
 			json['type'] === 'COMMENT' &&
-			json['comment'].startsWith('####') &&
-			(this.comment_stack.length == 0 ||
-				this.comment_stack.length == 2)
+			(json['comment'].startsWith('####')||
+				json['comment'].startsWith('# ====')) &&
+			(this.comment_stack.length === 0 ||
+				this.comment_stack.length === 2)
 		) {
+			// console.debug({json})
 			this.comment_stack.push(json)
 			// @ts-ignore
 			if (this.comment_stack.length === 3) {
-				for (let i = 0; i < this.comment_stack.length; i++) {
-					let comment_item = new EditorItem_Comments(
-						this.comment_stack[i]
-					)
-					comment_item.el.classList.add('block-comment')
-					if (!GLOBAL['config']['show_header_comments']) {
-						comment_item.el.classList.add(
-							'settings-hidden'
-						)
-					}
-					comment_item.addToParent(
-						this.current_container.at(-1)
-					)
-				}
-				this.comment_stack = []
+				renderCommentStack()
 			}
-		} else if (
+		} else if ( //if there is a comment block start and there is another comment
 			json['type'] === 'COMMENT' &&
-			json['comment'].includes('### ') &&
-			this.comment_stack.length === 1
+			// json['comment'].includes('### ') &&
+			this.comment_stack.length > 0
 		) {
 			this.comment_stack.push(json)
 			let comment = json['comment']
@@ -91,27 +97,13 @@ export class configRenderer {
 				}
 			}
 		} // end of comment stacks
+
 		//inline comments
-		else if (json['type'] === 'COMMENT') {
+		else if (json['type'] === 'COMMENT' && this.comment_stack.length === 0) {
+			// console.debug({json})
 			if (this.comment_stack.length > 0) {
 				//catch for when there is a comment stack that didnt end
-				for (let i = 0; i < this.comment_stack.length; i++) {
-					let comment_item = new EditorItem_Comments(
-						this.comment_stack[i]
-					)
-					//
-					comment_item.el.classList.add('block-comment')
-					if (!GLOBAL['config']['show_header_comments']) {
-						comment_item.el.classList.add(
-							'settings-hidden'
-						)
-					}
-
-					comment_item.addToParent(
-						this.current_container.at(-1)
-					)
-				}
-				this.comment_stack = []
+				renderCommentStack()
 			}
 			let comment_item = new EditorItem_Comments(json, false)
 			if (!GLOBAL['config']['show_line_comments']) {
@@ -145,7 +137,8 @@ export class configRenderer {
 			// blankline.classList.add("blank-line")
 			// blankline.textContent = "THIS IS A BLANK LINE"
 			// this.current_container.at(-1).appendChild(blankline)
-		} //fugly
+			/////fugly
+		}
 		else if (json['type'] === 'GROUP') {
 			if (
 				json['position'] &&

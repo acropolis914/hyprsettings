@@ -731,6 +731,10 @@ h1#config-set-title {
   height: 3rem !important;
   border-radius: var(--border-rad);
 }
+.editor-item .keybind-editor > textarea:disabled,
+.editor-item .keybind-editor > input:disabled {
+  opacity: 0.5;
+}
 .editor-item .keybind-editor > textarea {
   padding: 2px;
   border: 0;
