@@ -138,8 +138,10 @@ class Node:
 				group_content.append(f"{indent * indent_level}" + "}" + f" {groupeend_comment}")
 
 				return "\n".join(group_content)
+		elif len(self.children) == 0:
+			log(f"{self.name} is empty.")
 		else:
-			print(f"{self.name} cannot be formatted to a hyprland file")
+			log(f"{self.name} has encountered an unknown error.")
 		return ""
 
 	@staticmethod
@@ -194,7 +196,6 @@ class ConfigParser:
 		self.root = Node("root", "GROUP")
 		self.stack = [self.root]
 		self.parse_config(path)
-
 
 	@classmethod
 	def load(cls, path: Path) -> Node:
