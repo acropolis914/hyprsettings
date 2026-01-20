@@ -17,36 +17,73 @@ export let tabids = [
 	['debug', 'debug'],
 ]
 export const keyNameStarts = [
-	['$', 'globals'],
-	['windowrule', 'win-rules'],
-	['submap', 'keybinds'],
-	['bind', 'keybinds'],
-	['layerrule', 'layer-rules'],
-	['workspace', 'workspaces', ['workspace_wraparound']],
-	['env', 'envars'],
-	['permission', 'persmissions'],
+	// autostart
 	['exec', 'autostart'],
-	['layerrule', 'layerrules'],
-	['source', 'general'],
-]
 
-export let configGroups = [
-	['debug', 'miscellaneous'],
-	['opengl', 'miscellaneous'],
-	['windowrule', 'win-rules'],
+	// envars
+	['env', 'envars'],
+
+	// general
+	['source', 'general'],
+
+	// globals
+	['$', 'globals'],
+
+	// keybinds
+	['bind', 'keybinds'],
+	['submap', 'keybinds'],
+
+	// layer rules
 	['layerrule', 'layer-rules'],
-	['general', 'looknfeel'],
-	['decoration', 'looknfeel'],
+
+	// layerrules (duplicate key, different category)
+	['layerrule', 'layerrules'],
+
+	// monitor
+	['monitor', 'monitor'],
+
+	// persmissions (misspelling preserved)
+	['permission', 'persmissions'],
+
+	// win rules
+	['windowrule', 'win-rules'],
+
+	// workspaces
+	['workspace', 'workspaces', ['workspace_wraparound']],
+];
+
+export const configGroups = [
+	// animations
 	['animations', 'animations'],
-	['xwayland', 'win-rules'],
-	['input', 'input'],
-	['device', 'input'],
-	['cursor', 'input'],
+
+	// input
 	['binds', 'input'],
+	['cursor', 'input'],
+	['device', 'input'],
+	['input', 'input'],
+
+	// look and feel
+	['decoration', 'looknfeel'],
+	['general', 'looknfeel'],
+	['dwindle', 'looknfeel'],
+	['master', 'looknfeel'],
+
+	// permissions
 	['ecosystem', 'permissions'],
-	['group', 'win-rules'],
+
+	// miscellaneous
+	['debug', 'miscellaneous'],
 	['misc', 'miscellaneous'],
-]
+	['opengl', 'miscellaneous'],
+
+	// layer rules
+	['layerrule', 'layer-rules'],
+
+	// window rules
+	['group', 'win-rules'],
+	['windowrule', 'win-rules'],
+	['xwayland', 'win-rules'],
+];
 
 export let tabs = [
 	{ name: 'General', id: 'general', default: true, icon: '' }, // nf-md-settings

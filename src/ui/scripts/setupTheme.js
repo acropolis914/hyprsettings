@@ -2,45 +2,41 @@ import { saveWindowConfig } from './utils.js'
 import { GLOBAL } from './GLOBAL.js'
 
 let themeButton = document.getElementById('theme-toggle')
-let currentThemeIndex = 0
+GLOBAL['currentThemeIndex'] = 0
 const root = document.querySelector(':root')
 let headers = ['description', 'link', 'author', 'variant']
+// refreshAllStylesheets()
+
 
 export async function setupTheme() {
-	window.refreshAllStylesheets = refreshAllStylesheets
+	// window.refreshAllStylesheets = refreshAllStylesheets
 	let currentTheme = GLOBAL['config']['current_theme']
 	document.documentElement.style.opacity = GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
 	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])
-	window.themes.forEach(theme => {
-		if (theme.name === currentTheme) {
-			currentThemeIndex = window.themes.findIndex(theme => theme.name === currentTheme)
-			window.themeVariant = theme.variant.toLowerCase()
-			console.log(`Initially setting ${theme.name} as theme from config`)
-			Object.entries(theme).forEach(([key, value]) => {
-				if (headers.includes(key)) {
-					return
-				}
-				root.style.setProperty(`--${key}`, value, 'important')
-			})
-			root.classList.remove('dark')
-			root.classList.remove('light')
-			root.classList.add(theme.variant.toLowerCase())
-			GLOBAL['config']['current_theme'] = theme.name
-		}
-	})
+
+	const index = window.themes.findIndex(t => t.name === currentTheme)
+	if (index !== -1) {
+		const theme = window.themes[index]
+		GLOBAL.currentThemeIndex = index
+		console.log(`Initially setting ${theme.name} as theme from config`)
+		applyThemeVars(theme)
+	} else {
+		console.log(`No theme found matching ${currentTheme}, defaulting to first theme`)
+		applyThemeVars(window.themes[0])
+		GLOBAL.currentThemeIndex = 0
+	}
 	updateColoris()
 }
 
 themeButton.addEventListener('click', (e) => {
 	e.stopPropagation()
-	changeTheme()
+	GLOBAL['currentThemeIndex'] += 1
+	GLOBAL['currentThemeIndex'] = GLOBAL['currentThemeIndex'] % (window.themes.length)
+	let theme = window.themes[GLOBAL['currentThemeIndex']]
+	changeTheme(theme)
 })
 
-function changeTheme() {
-	currentThemeIndex += 1
-	currentThemeIndex = currentThemeIndex % (window.themes.length)
-	let theme = window.themes[currentThemeIndex]
-	console.log(`Changing theme to ${theme.name}`)
+function applyThemeVars(theme) {
 	Object.entries(theme).forEach(([key, value]) => {
 		if (headers.includes(key)) {
 			return
@@ -48,47 +44,46 @@ function changeTheme() {
 		root.style.setProperty(`--${key}`, value, 'important')
 	})
 	GLOBAL['config']['current_theme'] = theme.name
-	window.themeVariant = theme['variant'].toLowerCase()
-	// console.log(window.themeVariant)
-	updateJsonViewerTheme()
+	window.themeVariant = theme.variant.toLowerCase()
 	root.classList.remove('dark')
 	root.classList.remove('light')
 	root.classList.add(theme.variant.toLowerCase())
+}
+
+function changeTheme(theme) {
+	console.log(`Changing theme to ${theme.name}`)
+	applyThemeVars(theme)
 	saveWindowConfig()
+	updateJsonViewerTheme(theme.variant.toLowerCase())
 	updateColoris()
 }
 
-/**
- * Refreshes all linked CSS stylesheets by forcing the browser to re-fetch them.
- */
-export function updateJsonViewerTheme() {
-	if (window.themeVariant === 'dark') {
+
+export function updateJsonViewerTheme(themeVariant) {
+	if (themeVariant === 'dark') {
 		window.jsViewer.setAttribute('theme', 'default-dark')
 	} else {
 		window.jsViewer.setAttribute('theme', 'default-light')
 	}
 }
 
+/**
+ * Refreshes all linked CSS stylesheets by forcing the browser to re-fetch them.
+ */
 export function refreshAllStylesheets() {
-	// Select all <link> tags that are stylesheets
 	const links = document.querySelectorAll('link[rel="stylesheet"]')
-
-	// Create a unique timestamp for cache busting
 	const newTimestamp = Date.now()
-
 	links.forEach(link => {
 		const currentHref = link.href
-
 		// Remove any existing query strings (?v=...) and fragment identifiers (#...)
 		const cleanHref = currentHref.replace(/(\?.*)|(#.*)/g, '')
-
 		// Update the href, forcing a cache bypass and re-load
 		link.href = cleanHref + '?v=' + newTimestamp
 	})
 }
 
 
-refreshAllStylesheets()
+
 
 
 function updateColoris() {
@@ -109,7 +104,6 @@ export function getSwatch() {
 	const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
 	const colors = Object.values(currentTheme)
 		.filter(value => typeof value === 'string' && hexRegex.test(value))
-
 	// Ensure uniqueness
 	return [...new Set(colors)]
 }

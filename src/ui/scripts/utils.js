@@ -74,11 +74,7 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 	node['uuid'] = uuid
 	node['position'] = position
 	node['value'] = value
-	if (disabled) {
-		node['disabled'] = true
-	} else {
-		node['disabled'] = false
-	}
+	node['disabled'] = disabled;
 	if (comment) {
 		node['comment'] = comment
 	} else if (node.hasOwnProperty('comment')) {
@@ -151,8 +147,7 @@ export function makeUUID(length = 8) {
 }
 
 
-export async function saveWindowConfig() {
-
+export function saveWindowConfig() {
 	try {
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')

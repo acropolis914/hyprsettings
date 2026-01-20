@@ -1,8 +1,8 @@
-import { hideAllContextMenus, waitFor } from './utils.js'
+// import { hideAllContextMenus, waitFor } from './utils.js'
 import { EditorItem_Generic } from './components/EditorItem_Generic.js'
 import { EditorItem_Comments } from './components/EditorItem_Comments.js'
 import { EditorItem_Binds } from './components/EditorItem_Binds.js'
-import { tabids, keyNameStarts, configGroups } from './configMap.js'
+import { tabids, keyNameStarts, configGroups } from './hyprland-specific/configMap.js'
 import { ConfigGroup } from './components/ConfigGroup.js'
 import { GLOBAL } from './GLOBAL.js'
 
@@ -19,7 +19,7 @@ export class configRenderer {
 		this.parse(this.json)
 		document.querySelectorAll('.editor-item').forEach((element) => {
 			element.addEventListener('click', (e) => {
-				let target = e.target
+				// let target = e.target
 				GLOBAL.setKey('currentView', 'main')
 				// @ts-ignore
 				GLOBAL['mainFocus'][GLOBAL['activeTab']] =

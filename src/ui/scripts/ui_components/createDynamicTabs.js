@@ -1,5 +1,5 @@
 import { saveWindowConfig } from '../utils.js'
-import { tabs } from '../configMap.js'
+import { tabs } from '../hyprland-specific/configMap.js'
 import { GLOBAL } from '../GLOBAL.js'
 
 class ConfigTab {
