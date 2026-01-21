@@ -18,14 +18,14 @@ export const config_descriptions = [
     "path": "general",
     "type": "CONFIG_OPTION_STRING_SHORT",
     "data": "5",
-    "description": "gaps between windowssupports css style gaps (top, right, bottom, left -> 5 10 15 20)"
+    "description": "gaps between windows\nsupports css style gaps (top, right, bottom, left -> 5 10 15 20)"
   },
   {
     "name": "gaps_out",
     "path": "general",
     "type": "CONFIG_OPTION_STRING_SHORT",
     "data": "20",
-    "description": "gaps between windows and monitor edgessupports css style gaps (top, right, bottom, left -> 5 10 15 20)"
+    "description": "gaps between windows and monitor edges\nsupports css style gaps (top, right, bottom, left -> 5 10 15 20)"
   },
   {
     "name": "float_gaps",
