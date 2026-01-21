@@ -90,7 +90,7 @@ class Node:
 		return json.dumps(self.to_dict(), indent=4)
 
 	def to_hyprland(self, indent_level: int = 0, save=False) -> list | str:
-		save = False
+		# save = False
 		indent = "  "
 
 		if self.type == "KEY":
@@ -130,12 +130,12 @@ class Node:
 					else:
 						file_content = child.to_hyprland()
 						content.append(file_content)
-						return "\n".join(content)
+				contents = "\n".join(content)
 				if save:
 					path = self.resolved_path
-					contents = "\n".join(content)
 					with open(Path(path), "w", encoding="UTF-8") as f:
 						f.write(contents)
+				return contents
 
 			if self.type == "GROUP" and self.name != "root":
 				group_content: list = []
