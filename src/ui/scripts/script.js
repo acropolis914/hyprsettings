@@ -86,11 +86,12 @@ export async function initialize() {
 	getDebugStatus()
 	renderSettings()
 	initializeSearchBar()
-	// refreshAllStylesheets()
+
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
 	await initialize()
+	refreshAllStylesheets()
 	window.initialize = initialize
 })
 

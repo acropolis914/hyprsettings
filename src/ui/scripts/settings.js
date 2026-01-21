@@ -1,5 +1,7 @@
 import { GLOBAL } from './GLOBAL.js'
-import { makeUUID, saveWindowConfig, waitFor } from './utils.js'
+import { changeTheme, incrementCurrentTheme } from './setupTheme.js'
+import { makeUUID, saveWindowConfig } from './utils.js'
+
 let settingsEl = document.querySelector('.config-set#settings')
 let VERSION = '0.7.5'
 
@@ -11,6 +13,7 @@ export async function renderSettings() {
 	createItemPreviewCommentVisibilitySetting()
 	createSidebarIconsVisibilitySetting()
 	createAnimationsToggleSetting()
+	createThemeSelectorSetting()
 }
 
 /**
@@ -139,10 +142,10 @@ function createAbout({ compact = false } = {}) {
 	creditsEl.classList.add('credits')
 	const creditsTitle = document.createElement('div')
 	creditsTitle.classList.add('credits-title')
-	creditsTitle.textContent = 'Credits'
+	creditsTitle.textContent = 'Contributors'
 	const creditsBody = document.createElement('div')
 	creditsBody.classList.add('credits-body')
-	creditsBody.textContent = 'Built with care by acropolis914.'
+	creditsBody.innerHTML = 'Built with care by acropolis914.<br>With help from wiktormalyska, ritualcasts, blunebear.'
 	creditsEl.append(creditsTitle, creditsBody)
 	infoBoxEl.appendChild(creditsEl)
 
@@ -154,20 +157,21 @@ function createAbout({ compact = false } = {}) {
 	langsEl.classList.add('tech-group')
 	const langsTitle = document.createElement('div')
 	langsTitle.classList.add('tech-title')
-	langsTitle.textContent = 'Languages / Core'
+	langsTitle.textContent = ' Python'
 	const langsList = document.createElement('div')
 	langsList.classList.add('tech-list')
-	langsList.textContent = 'Python, JavaScript'
+	langsList.textContent = 'Pywebview • Flask • Rich'
 	langsEl.append(langsTitle, langsList)
 
 	const libsEl = document.createElement('div')
 	libsEl.classList.add('tech-group')
 	const libsTitle = document.createElement('div')
 	libsTitle.classList.add('tech-title')
-	libsTitle.textContent = 'Libraries / Frameworks'
+	libsTitle.textContent = ' Javascript and Web'
 	const libsList = document.createElement('div')
 	libsList.classList.add('tech-list')
-	libsList.textContent = 'Flask, PyWebview'
+	libsList.textContent = 'TomSelect, Coloris, Fuse.js, Eruda, Sortable, noUISlider'
+	libsList.textContent = libsList.textContent.replaceAll(",", " •")
 	libsEl.append(libsTitle, libsList)
 
 	techEl.append(langsEl, libsEl)
@@ -326,4 +330,59 @@ function createAnimationsToggleSetting() {
 		{ onCheck, onUncheck },
 		tooltip,
 	)
+}
+
+
+function createThemeSelectorSetting() {
+	console.log('Creating theme selector setting (coming soon)')
+	let settingContainer = document.createElement('div')
+	let tooltip = 'Select the application theme'
+	settingContainer.setAttribute('title', tooltip)
+	settingContainer.id = 'theme-selector-setting'
+	settingContainer.classList.add('setting-container')
+	settingContainer.classList.add('editor-item')
+	settingContainer.setAttribute('tabindex', 0)
+	settingContainer.dataset.uuid = makeUUID()
+
+	let label = document.createElement('label')
+	// this.label.setAttribute('for', config_key)
+	label.textContent = "Theme"
+	// settingContainer.appendChild(this.checkbox)
+	settingContainer.appendChild(label)
+
+
+	let selectEl = document.createElement('select')
+	window.themes.forEach(theme =>{
+		let optionEl = document.createElement('option')
+		optionEl.value = theme.name
+		let optionName = String(theme.name)
+		optionEl.textContent = optionName.includes("[builtin]") ? theme.name.replace("[builtin]", " ") : ` ${theme.name}`
+		selectEl.appendChild(optionEl)
+	})
+	let currentTheme = GLOBAL['config']['theme']
+
+	settingContainer.appendChild(selectEl)
+	// this.addListeners()
+	settingsEl.appendChild(settingContainer)
+
+	selectEl.addEventListener('change', e => {
+		let selectedThemeName = e.target.value
+		let selectedTheme = window.themes.find(t => t.name === selectedThemeName)
+		console.log(`Changing theme to ${selectedThemeName} from settings`)
+		if (selectedTheme){
+			console.log(`Changing theme to ${selectedTheme.name} from settings`)
+			changeTheme(selectedTheme)
+		}
+	})
+
+	settingContainer.addEventListener('keydown', (e) => {
+		if (e.key === 'Enter') {
+			incrementCurrentTheme()
+		}
+	})
+	settingContainer.addEventListener('click', (e) => {
+		if (e.target !== selectEl) {
+			incrementCurrentTheme()
+		}
+	})
 }

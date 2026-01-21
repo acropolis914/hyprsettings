@@ -837,6 +837,8 @@ h1#config-set-title {
 .editor-item-about .technologies .tech-group .tech-list, .editor-item-about .credits .credits-body {
   color: var(--text-1, #ccc);
   font-size: 1.2rem;
+  justify-content: center;
+  text-align: center;
 }
 
 .editor-item-about {
@@ -1116,6 +1118,16 @@ h1#config-set-title {
   outline-offset: 2px !important;
 }
 
+.editor-item#theme-selector-setting select {
+  margin-left: auto;
+  margin-right: 1rem;
+  position: relative;
+}
+.editor-item#theme-selector-setting select option {
+  background-color: #111;
+  color: #fff;
+}
+
 .config-group {
   background-color: var(--surface-1);
   background-blend-mode: multiply;
@@ -1215,6 +1227,14 @@ button#theme-toggle:hover {
   display: none !important;
   visibility: hidden;
   flex: 0;
+}
+
+select {
+  appearance: none;
+  color: inherit;
+  background-color: transparent;
+  outline: none;
+  border: 0px;
 }
 
 code {

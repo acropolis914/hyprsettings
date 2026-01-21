@@ -28,13 +28,19 @@ export async function setupTheme() {
 	updateColoris()
 }
 
+
+
 themeButton.addEventListener('click', (e) => {
 	e.stopPropagation()
+	incrementCurrentTheme()
+})
+
+export function incrementCurrentTheme() {
 	GLOBAL['currentThemeIndex'] += 1
 	GLOBAL['currentThemeIndex'] = GLOBAL['currentThemeIndex'] % (window.themes.length)
 	let theme = window.themes[GLOBAL['currentThemeIndex']]
 	changeTheme(theme)
-})
+}
 
 function applyThemeVars(theme) {
 	Object.entries(theme).forEach(([key, value]) => {
@@ -50,8 +56,12 @@ function applyThemeVars(theme) {
 	root.classList.add(theme.variant.toLowerCase())
 }
 
-function changeTheme(theme) {
+export function changeTheme(theme) {
 	console.log(`Changing theme to ${theme.name}`)
+	let settingsThemeChanger = document.getElementById('theme-selector-setting')
+	let settingsThemeChangerSelect = settingsThemeChanger.querySelector('select')
+	settingsThemeChangerSelect.value = theme.name
+	// settingsThemeChanger.value = theme.name
 	applyThemeVars(theme)
 	saveWindowConfig()
 	updateJsonViewerTheme(theme.variant.toLowerCase())

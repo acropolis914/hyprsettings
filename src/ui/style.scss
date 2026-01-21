@@ -953,6 +953,8 @@ h1#config-set-title {
 %about-body {
 	color: var(--text-1, #ccc);
 	font-size: 1.2rem;
+	justify-content: center;
+	text-align: center;
 }
 
 .editor-item-about {
@@ -1301,6 +1303,27 @@ h1#config-set-title {
 	outline-offset: 2px !important;
 }
 
+.editor-item#theme-selector-setting{
+	select{
+		margin-left:auto;
+		margin-right:1rem;
+		position: relative;
+	}
+
+	select option {
+		background-color: #111;
+		color: #fff;
+	}
+	//&::after{
+	//	content: "󰅀";
+	//
+	//	position: absolute;
+	//	top: 50%;
+	//	right: 1rem;
+	//	transform: translateY(-50%);
+	//}
+}
+
 .config-group {
 	background-color: var(--surface-1);
 	background-blend-mode: multiply;
@@ -1409,6 +1432,14 @@ button#theme-toggle {
 	display: none !important;
 	visibility: hidden;
 	flex: 0;
+}
+
+select{
+	appearance: none;
+	color: inherit;
+	background-color: transparent;
+	outline: none;
+	border: 0px;
 }
 
 code {
