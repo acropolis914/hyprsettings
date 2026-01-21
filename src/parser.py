@@ -49,6 +49,7 @@ class Node:
 		position=None,
 		disabled=False,
 		line_number: int | None = None,
+		resolved_path: str | None = None,
 	):
 		allowed_types = get_args(NodeType)
 		assert type_ in allowed_types, f"Invalid node type {type_}. Must be one of {allowed_types}"
@@ -61,6 +62,7 @@ class Node:
 		self.uuid = makeUUID(8)
 		self.disabled = disabled
 		self.line_number = line_number
+		self.resolved_path = resolved_path
 
 	def addChildren(self, child):
 		self.children.append(child)
@@ -80,12 +82,15 @@ class Node:
 			dict["disabled"] = self.disabled
 		if self.line_number:
 			dict["line_number"] = self.line_number
+		if self.resolved_path:
+			dict["resolved_path"] = self.resolved_path
 		return dict
 
 	def to_json(self) -> str:
 		return json.dumps(self.to_dict(), indent=4)
 
 	def to_hyprland(self, indent_level: int = 0, save=False) -> list | str:
+		save = False
 		indent = "  "
 
 		if self.type == "KEY":
@@ -101,27 +106,37 @@ class Node:
 			else:
 				return f"{indent * indent_level} {self.comment}"
 		if self.children:
-			if self.type == "GROUP" and self.name == "root":
+			if self.type == "GROUP" and self.name == "root":  # implied that the type is file
 				stack = []
 				for file in self.children:
 					new_file = {}
 					new_file["name"] = str(file.name)
 					new_file["path"] = file.value
+					new_file["resolved_path"] = file.resolved_path
 					new_file["content"] = file.to_hyprland()
 					stack.append(new_file)
-				if save:
-					for file_data in stack:
-						path = file_data["path"]
-						contents = file_data["content"]
-						with open(path, "w", encoding="UTF-8") as f:
-							f.write(contents)
+				# if save:
+				# 	for file_data in stack:
+				# 		path = file_data["path"]
+				# 		contents = file_data["content"]
+				# 		with open(path, "w", encoding="UTF-8") as f:
+				# 			f.write(contents)
 				return stack
 			if self.type == "FILE":
 				content = []
 				for child in self.children:
-					file_content = child.to_hyprland()
-					content.append(file_content)
-				return "\n".join(content)
+					if child.type == "FILE":
+						child.to_hyprland()
+					else:
+						file_content = child.to_hyprland()
+						content.append(file_content)
+						return "\n".join(content)
+				if save:
+					path = self.resolved_path
+					contents = "\n".join(content)
+					with open(Path(path), "w", encoding="UTF-8") as f:
+						f.write(contents)
+
 			if self.type == "GROUP" and self.name != "root":
 				group_content: list = []
 				comment = f" # {self.comment}" if self.comment else ""
@@ -205,7 +220,7 @@ class ConfigParser:
 
 	def parse_config(self, config_path):
 		with open(config_path, "r", encoding="UTF-8") as config_file:
-			new_file_node = Node(Path(config_path).name, "FILE", str(config_path))
+			new_file_node = Node(Path(config_path).name, "FILE", str(config_path), resolved_path=config_path)
 			self.stack[-1].addChildren(new_file_node)
 			self.stack.append(new_file_node)
 			sources = []
@@ -367,14 +382,6 @@ class ConfigParser:
 							log(f"Added ~ conf: {file_path}", only_verbose=True)
 						elif file_path.endswith("*"):
 							glob_path(file_path)
-
-					# if file_path.startswith("~"):
-					# 	file_path = str(Path(file_path).expanduser())
-					# 	if file_path.endswith(".conf"):
-					# 		sources.append(Path(file_path).resolve())
-					# 		log(f"Added ~ conf: {file_path}", only_verbose=True)
-					# 	elif file_path.endswith("*"):
-					# 		glob_path(file_path)
 
 					elif file_path.startswith("/"):
 						if file_path.endswith(".conf"):
