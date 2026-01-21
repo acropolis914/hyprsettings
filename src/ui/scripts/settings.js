@@ -145,7 +145,8 @@ function createAbout({ compact = false } = {}) {
 	creditsTitle.textContent = 'Contributors'
 	const creditsBody = document.createElement('div')
 	creditsBody.classList.add('credits-body')
-	creditsBody.innerHTML = 'Built with care by acropolis914.<br>With help from wiktormalyska, ritualcasts,  <a href="https://github.com/Nurysso/Hecate" target="blank" title="Go check out his hyprland project called Hecate!">nurysso.</a>'
+	creditsBody.innerHTML =
+		'Built with care by acropolis914.<br>With help from wiktormalyska, ritualcasts,  <a href="https://github.com/Nurysso/Hecate" target="_blank" title="Go check out his hyprland project called Hecate!" style="color:var(--accent)">nurysso.</a>'
 	creditsEl.append(creditsTitle, creditsBody)
 	infoBoxEl.appendChild(creditsEl)
 
@@ -170,8 +171,9 @@ function createAbout({ compact = false } = {}) {
 	libsTitle.textContent = ' Javascript and Web'
 	const libsList = document.createElement('div')
 	libsList.classList.add('tech-list')
-	libsList.textContent = 'TomSelect, Coloris, Fuse.js, Eruda, Sortable, noUISlider'
-	libsList.textContent = libsList.textContent.replaceAll(",", " •")
+	libsList.textContent =
+		'TomSelect, Coloris, Fuse.js, Eruda, Sortable, noUISlider'
+	libsList.textContent = libsList.textContent.replaceAll(',', ' •')
 	libsEl.append(libsTitle, libsList)
 
 	techEl.append(langsEl, libsEl)
@@ -187,9 +189,9 @@ function createAbout({ compact = false } = {}) {
 		}
 	})
 
-	aboutEl.addEventListener('click', () => {
-		openGithub()
-	})
+	// aboutEl.addEventListener('click', () => {
+	// 	openGithub()
+	// })
 
 	aboutEl.addEventListener('focusin', () => {
 		aboutEl.classList.remove('compact')
@@ -332,7 +334,6 @@ function createAnimationsToggleSetting() {
 	)
 }
 
-
 function createThemeSelectorSetting() {
 	console.log('Creating theme selector setting (coming soon)')
 	let settingContainer = document.createElement('div')
@@ -346,17 +347,18 @@ function createThemeSelectorSetting() {
 
 	let label = document.createElement('label')
 	// this.label.setAttribute('for', config_key)
-	label.textContent = "Theme"
+	label.textContent = 'Theme'
 	// settingContainer.appendChild(this.checkbox)
 	settingContainer.appendChild(label)
 
-
 	let selectEl = document.createElement('select')
-	window.themes.forEach(theme =>{
+	window.themes.forEach((theme) => {
 		let optionEl = document.createElement('option')
 		optionEl.value = theme.name
 		let optionName = String(theme.name)
-		optionEl.textContent = optionName.includes("[builtin]") ? theme.name.replace("[builtin]", " ") : ` ${theme.name}`
+		optionEl.textContent = optionName.includes('[builtin]')
+			? theme.name.replace('[builtin]', ' ')
+			: ` ${theme.name}`
 		selectEl.appendChild(optionEl)
 	})
 	let currentTheme = GLOBAL['config']['theme']
@@ -365,12 +367,16 @@ function createThemeSelectorSetting() {
 	// this.addListeners()
 	settingsEl.appendChild(settingContainer)
 
-	selectEl.addEventListener('change', e => {
+	selectEl.addEventListener('change', (e) => {
 		let selectedThemeName = e.target.value
-		let selectedTheme = window.themes.find(t => t.name === selectedThemeName)
+		let selectedTheme = window.themes.find(
+			(t) => t.name === selectedThemeName,
+		)
 		console.log(`Changing theme to ${selectedThemeName} from settings`)
-		if (selectedTheme){
-			console.log(`Changing theme to ${selectedTheme.name} from settings`)
+		if (selectedTheme) {
+			console.log(
+				`Changing theme to ${selectedTheme.name} from settings`,
+			)
 			changeTheme(selectedTheme)
 		}
 	})
