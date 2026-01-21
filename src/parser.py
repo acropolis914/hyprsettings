@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import Literal, get_args
 import json
 import uuid
-from rich.console import Console
 import rich
+from rich.console import Console
 import rich.traceback
 import re
 import builtins
@@ -30,8 +30,6 @@ def log(msg, prefix="", only_verbose=False):
 
 
 config_path = Path.home() / ".config" / "hypr" / "hyprland.conf"
-console = Console()
-
 NodeType = Literal["KEY", "GROUP", "COMMENT", "BLANK", "FILE", "GROUPEND"]
 
 
@@ -126,7 +124,7 @@ class Node:
 				content = []
 				for child in self.children:
 					if child.type == "FILE":
-						child.to_hyprland()
+						child.to_hyprland(0, save)
 					else:
 						file_content = child.to_hyprland()
 						content.append(file_content)
@@ -170,6 +168,7 @@ class Node:
 			position=data.get("position"),
 			disabled=data.get("disabled"),
 			line_number=data.get("line_number"),
+			resolved_path=data.get("resolved_path"),
 		)
 		if "uuid" in data:
 			node.uuid = data["uuid"]
@@ -220,7 +219,7 @@ class ConfigParser:
 
 	def parse_config(self, config_path):
 		with open(config_path, "r", encoding="UTF-8") as config_file:
-			new_file_node = Node(Path(config_path).name, "FILE", str(config_path), resolved_path=config_path)
+			new_file_node = Node(Path(config_path).name, "FILE", str(config_path), resolved_path=str(config_path))
 			self.stack[-1].addChildren(new_file_node)
 			self.stack.append(new_file_node)
 			sources = []
@@ -229,8 +228,8 @@ class ConfigParser:
 				# for line_content in config_file:
 				check: str = self.sanitize(line_content)
 				line, comment = self.get_parts(line_content, "#")
-				colon_index = line_content.find(":")
-				equal_index = line_content.find("=")
+				# colon_index = line_content.find(":")
+				# equal_index = line_content.find("=")
 				position = ":".join(node.name for node in self.stack)
 				# print(line_content)
 				if not check and not comment:
