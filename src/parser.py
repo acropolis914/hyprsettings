@@ -387,7 +387,6 @@ class ConfigParser:
 						sources.append(resolved)
 						log(f"Added relative: {resolved}", only_verbose=True)
 
-			self.stack.pop()
 			if sources:
 				# global global_verbose
 				# print(global_verbose)
@@ -401,6 +400,8 @@ class ConfigParser:
 						print(f"Error reading sourced file {source}: {type(e).__name__}: {e}")
 						if global_verbose:
 							traceback.print_exc()
+
+			self.stack.pop()
 
 	def sanitize(self, string: str) -> str:
 		no_comments = string.split("#", 1)[0]
