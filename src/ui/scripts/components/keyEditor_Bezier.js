@@ -109,6 +109,7 @@ export class BezierModal {
 	}
 
 	get value() {
+
 		const name = this.textEditor.value;
 		const points = this.curveEditor.points.map(p => Math.round(p * 100) / 100).join(',');
 		return `${name}, ${points}`;
@@ -120,8 +121,10 @@ export class BezierModal {
 		this._updating = true;
 		this.textEditor.value = name;
 		this.curveEditor.points = points.map(p => Math.round(p * 100) / 100);
-		this._debouncedEmit();
-		this._debouncedNotifyInputListeners();
+		if (!this.initialLoad){
+			this._debouncedEmit();
+			this._debouncedNotifyInputListeners();
+		}
 		this._updating = false;
 	}
 
