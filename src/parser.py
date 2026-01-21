@@ -401,7 +401,8 @@ class ConfigParser:
 						if global_verbose:
 							traceback.print_exc()
 
-			self.stack.pop()
+			if len(self.stack) > 0:
+				self.stack.pop()
 
 	def sanitize(self, string: str) -> str:
 		no_comments = string.split("#", 1)[0]
