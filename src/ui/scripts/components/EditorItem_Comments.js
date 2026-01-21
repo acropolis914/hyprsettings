@@ -20,7 +20,7 @@ export class EditorItem_Comments {
 		// }
 		let position_title = json['position']
 			.replace('root:', '')
-			.replaceAll(':', '   ')
+			.replaceAll(':', ' 󰄾 ')
 		this.el.title = `  Location: ${position_title}`
 		this.el.classList.add('editor-item')
 		this.el.setAttribute('tabindex', 0)

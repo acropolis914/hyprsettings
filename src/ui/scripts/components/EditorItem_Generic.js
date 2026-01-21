@@ -51,7 +51,7 @@ export class EditorItem_Generic {
 		}
 		let position_title = json['position']
 			.replace('root:', '')
-			.replaceAll(':', '   ')
+			.replaceAll(':', ' 󰄾 ')
 		this.el.title = `  Location: ${position_title}`
 		this.el.dataset.name = name
 		this.el.dataset.uuid = uuid
@@ -176,7 +176,9 @@ export class EditorItem_Generic {
 			let type = JSON.stringify(this.info['type'])
 
 			let description_title = `${JSON.parse(description)}\n\n Type: ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
-			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
+			description_title =
+				description_title.charAt(0).toUpperCase() +
+				description_title.slice(1)
 			if (
 				JSON.parse(type) === 'CONFIG_OPTION_INT' ||
 				JSON.parse(type) === 'CONFIG_OPTION_FLOAT'
