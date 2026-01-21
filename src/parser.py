@@ -311,7 +311,7 @@ class ConfigParser:
 						line_number=line_index,
 					)
 					if name.startswith("$"):
-						globals[name] = value
+						globals[name] = os.path.expandvars(value) if value else value
 					self.stack[-1].addChildren(node)
 
 				if check.startswith("source"):
@@ -375,8 +375,8 @@ class ConfigParser:
 				for source in sources:
 					try:
 						self.parse_config(source)
-					except Exception:
-						print(f"File {source} not found. Skipping", Exception)
+					except:
+						print(f"File {source} not found. Skipping")
 
 	def sanitize(self, string: str) -> str:
 		no_comments = string.split("#", 1)[0]
