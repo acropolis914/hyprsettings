@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import traceback
 from pathlib import Path
 from typing import Literal, get_args
 import json
@@ -398,6 +399,8 @@ class ConfigParser:
 						print(f"File {source} not found. Skipping")
 					except Exception as e:
 						print(f"Error reading sourced file {source}: {type(e).__name__}: {e}")
+						if global_verbose:
+							traceback.print_exc()
 
 	def sanitize(self, string: str) -> str:
 		no_comments = string.split("#", 1)[0]
