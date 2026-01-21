@@ -65,7 +65,14 @@ export class EditorItem_Generic {
 		this.keyEditor = document.createElement('textarea')
 		this.keyEditor.rows = 1
 		this.keyEditor.id = 'generic-key'
-		this.config_position = position.split(':').slice(2).join(':')
+		// this.config_position = position.split(':').slice(2).join(':')
+		this.config_position = position
+						.split(':')
+						.slice(1) // Remove 'root'
+						.map(s => s.trim())
+						.filter(s => !s.endsWith('.conf'))
+						.join(':');
+		console.log(this.config_position)
 		this.info = findConfigDescription(this.config_position, name)
 		if (this.info) {
 			this.el.dataset.infoType = this.info['type']
