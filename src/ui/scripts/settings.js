@@ -145,7 +145,7 @@ function createAbout({ compact = false } = {}) {
 	creditsTitle.textContent = 'Contributors'
 	const creditsBody = document.createElement('div')
 	creditsBody.classList.add('credits-body')
-	creditsBody.innerHTML = 'Built with care by acropolis914.<br>With help from wiktormalyska, ritualcasts, blunebear.'
+	creditsBody.innerHTML = 'Built with care by acropolis914.<br>With help from wiktormalyska, ritualcasts,  <a href="https://github.com/Nurysso/Hecate" target="blank" title="Go check out his hyprland project called Hecate!">nurysso.</a>'
 	creditsEl.append(creditsTitle, creditsBody)
 	infoBoxEl.appendChild(creditsEl)
 
