@@ -29,26 +29,28 @@ os.environ["GDK_BACKEND"] = "wayland"
 CURRENT_VERSION = "0.7.5"
 HOST = "127.0.0.1"
 PORT = 65432
+FLASK_PORT = 6969
+app = Flask(__name__)
+
 thisfile_path = Path(__file__).parent.resolve()
 cache_path = Path.home() / ".cache" / "hyprsettings" / ".pywebview"
 HYPRLAND_CONFIG_PATH = Path.home() / ".config" / "hypr" / "hyprland.conf"
-fifo_path = Path.home() / ".cache" / "hyprsettings" / "logs.fifo"
 _original_print = builtins.print
 console = Console()
 traceback.install(show_locals=True)
 werlog = logging.getLogger("werkzeug")
 werlog.setLevel(logging.ERROR)
 
+
 # Flask trials
-app = Flask(__name__)
-
-
 def start_server():
-	port = 6969
-	while is_port_open(port=port):
-		port += 1
-	console.print(f"[Flask] You can access the ui on [blue][link=localhost:{port}]localhost:{port}[/link][/blue]")
-	app.run(host="0.0.0.0", port=port)
+	global FLASK_PORT
+	while is_port_open(port=FLASK_PORT):
+		FLASK_PORT += 1
+	console.print(
+		f"[Flask] You can access the ui on [blue][link=localhost:{FLASK_PORT}]localhost:{FLASK_PORT}[/link][/blue]"
+	)
+	app.run(host="0.0.0.0", port=FLASK_PORT, use_reloader=False)
 
 
 # Variables
@@ -59,7 +61,7 @@ verbose = False
 
 
 # UTILITY FUNCTIONS
-def print(*args, **kwargs):
+def ui_print(*args, **kwargs):
 	console.print("[blue][UIBackend][/blue]", *args, **kwargs)
 
 
@@ -76,11 +78,11 @@ def log(msg, prefix="", only_verbose=False):
 	if not only_verbose or verbose:
 		if full_message == _last_log_message:
 			_last_log_count += 1
-			# Clear previous line and reprint with counter
+
 			console.file.write("\033[F\033[K")
-			console.print(f"[blue][UIBackend][/blue] {full_message} [dim](×{_last_log_count})[/dim]")
+			ui_print(f"{full_message} [dim](×{_last_log_count})[/dim]")
 		else:
-			console.print(f"[blue][UIBackend][/blue] {full_message}")
+			ui_print(f"{full_message}")
 			_last_log_message = full_message
 			_last_log_count = 1
 
@@ -91,7 +93,7 @@ def warn(msg):
 
 def handle_interrupt(signum, frame):
 	log("\n Sigint signal detected! Cleaning up...")
-	os._exit(0)
+	exit(0)
 
 
 def kill_hyprsettings():
@@ -102,7 +104,7 @@ def kill_hyprsettings():
 		log("Hyprsettings killed")
 	else:
 		log("No actively running hyprsettings found.")
-	exit(0)
+	sys.exit(0)
 
 
 def print_title():
@@ -537,7 +539,7 @@ def api_get_debug_status():
 
 
 def main():
-	global window_instance, window_visible
+	global window_instance, window_visible, FLASK_PORT
 	t = threading.Thread(target=start_server)
 	t.daemon = True
 	t.start()
@@ -564,7 +566,7 @@ def main():
 		# )
 		window_instance = webview.create_window(
 			"HyprSettings",
-			"http://localhost:6969/",
+			f"http://localhost:{FLASK_PORT}/",
 			js_api=api,
 			transparent=True,
 			width=800,
@@ -583,7 +585,7 @@ def main():
 			storage_path=str(cache_path),
 			icon="icon-48.png",
 		)
-		os._exit(0)
+		sys.exit(0)
 	except Exception as e:
 		print("I am ded")
 		print(e)
@@ -619,7 +621,7 @@ if __name__ == "__main__":
 	if args.verbose:
 		verbose = args.verbose
 
-	port_open = is_port_open(PORT)
+	port_open: bool = is_port_open(PORT)
 
 	def gotoMain():
 		with redirect_stderr(LogFilter()):
@@ -638,8 +640,6 @@ if __name__ == "__main__":
 
 	if args.daemon and port_open:
 		if send_toggle():
-			# subprocess.run(["cat", str(fifo_path)])
-			# subprocess.run(["tail", "-f", str(fifo_path)])
 			exit(0)
 
 	gotoMain()

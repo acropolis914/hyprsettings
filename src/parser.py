@@ -17,7 +17,7 @@ global_verbose = False
 
 
 def print(*args, **kwargs):
-	console.print("[green]\[parser][/green]", *args, **kwargs)
+	console.print("[green]\\[parser][/green]", *args, **kwargs)
 
 
 def log(msg, prefix="", only_verbose=False):
@@ -323,6 +323,7 @@ class ConfigParser:
 								file_path = file_path.replace(key, val)
 								break
 						log(f"Sourcing {file_path} based on globals.", only_verbose=True)
+						file_path = os.path.expandvars(file_path)
 
 					def glob_path(path):
 						path_str = path.rstrip("*")
@@ -347,6 +348,14 @@ class ConfigParser:
 						elif file_path.endswith("*"):
 							glob_path(file_path)
 
+					# if file_path.startswith("~"):
+					# 	file_path = str(Path(file_path).expanduser())
+					# 	if file_path.endswith(".conf"):
+					# 		sources.append(Path(file_path).resolve())
+					# 		log(f"Added ~ conf: {file_path}", only_verbose=True)
+					# 	elif file_path.endswith("*"):
+					# 		glob_path(file_path)
+
 					elif file_path.startswith("/"):
 						if file_path.endswith(".conf"):
 							sources.append(Path(file_path).resolve())
@@ -366,8 +375,8 @@ class ConfigParser:
 				for source in sources:
 					try:
 						self.parse_config(source)
-					except:
-						print(f"File [{source}] not found. Skipping")
+					except Exception:
+						print(f"File {source} not found. Skipping", Exception)
 
 	def sanitize(self, string: str) -> str:
 		no_comments = string.split("#", 1)[0]
