@@ -311,7 +311,26 @@ class ConfigParser:
 						line_number=line_index,
 					)
 					if name.startswith("$"):
-						globals[name] = os.path.expandvars(value) if value else value
+						if "$" in value:
+							log(f"Global {name} uses globals in its value {value}", only_verbose=True)
+							for key, val in globals.items():
+								if key in value:
+									value = value.replace(key, val)
+									log(
+										f"Replaced {name} value to {value} based on globals.",
+										only_verbose=True,
+									)
+									break
+							old_value = value
+							value = os.path.expandvars(value)
+							if value != old_value:
+								log(
+									f"Expanded {old_value} to {value} based on os variables.",
+									only_verbose=True,
+								)
+							globals[name] = value
+						else:
+							globals[name] = value
 					self.stack[-1].addChildren(node)
 
 				if check.startswith("source"):
