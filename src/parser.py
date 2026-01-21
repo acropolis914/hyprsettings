@@ -111,7 +111,7 @@ class Node:
 					new_file["name"] = str(file.name)
 					new_file["path"] = file.value
 					new_file["resolved_path"] = file.resolved_path
-					new_file["content"] = file.to_hyprland()
+					new_file["content"] = file.to_hyprland(0, save)
 					stack.append(new_file)
 				# if save:
 				# 	for file_data in stack:
