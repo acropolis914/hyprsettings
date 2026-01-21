@@ -18,13 +18,18 @@ export class EditorItem_Comments {
 		// let [name, value] = this.el.dataset.comment.replace(/^[ #]+/, '').split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
 		// if (name && value){
 		// }
-		this.el.title = position.replace('root:', '').replaceAll(':', '   ')
+		let position_title = json['position']
+			.replace('root:', '')
+			.replaceAll(':', '   ')
+		this.el.title = `  Location: ${position_title}`
 		this.el.classList.add('editor-item')
 		this.el.setAttribute('tabindex', 0)
 		if (hidden) {
 			this.el.classList.add('settings-hidden')
 		}
-		this.textarea = this.el.appendChild(document.createElement('textarea'))
+		this.textarea = this.el.appendChild(
+			document.createElement('textarea'),
+		)
 		// this.textarea.contentEditable = "true"
 		this.textarea.setAttribute('rows', '1')
 		this.textarea.classList.add('editor-item-comment')
@@ -32,9 +37,17 @@ export class EditorItem_Comments {
 		this.saveDebounced = debounce(() => this.save(), 100)
 		this.textarea.addEventListener('input', () => this.update())
 		this.contextMenu = new ContextMenu([
-			{ label: 'Add Above', icon: '󰅃', action: () => this.add(false) },
+			{
+				label: 'Add Above',
+				icon: '󰅃',
+				action: () => this.add(false),
+			},
 			{ label: 'Add Below', icon: '󰅀', action: () => this.add() },
-			{ label: 'Delete Key', icon: '󰗩', action: () => this.delete() }
+			{
+				label: 'Delete Key',
+				icon: '󰗩',
+				action: () => this.delete(),
+			},
 		])
 		this.el.appendChild(this.contextMenu.el)
 		this.addListeners()
@@ -47,7 +60,6 @@ export class EditorItem_Comments {
 		if (!this.initial_load) {
 			this.saveDebounced()
 		}
-
 	}
 
 	addListeners() {
@@ -81,7 +93,6 @@ export class EditorItem_Comments {
 					setTimeout(() => this.gotoNext(), 1)
 					this.editing = false
 				}
-
 			}
 			if (e.key === 'Escape') {
 				e.preventDefault()
@@ -95,7 +106,6 @@ export class EditorItem_Comments {
 				e.stopPropagation()
 				// this.editing = false
 				this.gotoNext(true)
-
 			}
 			//testing signed commit
 			if (e.key === 'ArrowDown') {
@@ -114,11 +124,12 @@ export class EditorItem_Comments {
 		this.textarea.addEventListener('focus', (e) => {
 			this.editing = true
 		})
-
 	}
 
 	gotoNext(down = true) {
-		let nextSibling = down ? this.el.nextElementSibling : this.el.previousElementSibling
+		let nextSibling = down
+			? this.el.nextElementSibling
+			: this.el.previousElementSibling
 		if (!nextSibling) {
 			if (down) {
 				nextSibling = this.el.parentNode.firstElementChild
@@ -131,14 +142,25 @@ export class EditorItem_Comments {
 	}
 
 	async add(below = true) {
-		let newCommentItem = await addItem('COMMENT', 'comment', '', '# New comment', this.el.dataset.position, this.el.dataset.uuid, below)
-		let newCommentElement = new EditorItem_Comments({
-			name: newCommentItem['comment'],
-			uuid: newCommentItem['uuid'],
-			value: newCommentItem['value'],
-			comment: newCommentItem['comment'],
-			position: this.el.dataset.position
-		}, false)
+		let newCommentItem = await addItem(
+			'COMMENT',
+			'comment',
+			'',
+			'# New comment',
+			this.el.dataset.position,
+			this.el.dataset.uuid,
+			below,
+		)
+		let newCommentElement = new EditorItem_Comments(
+			{
+				name: newCommentItem['comment'],
+				uuid: newCommentItem['uuid'],
+				value: newCommentItem['value'],
+				comment: newCommentItem['comment'],
+				position: this.el.dataset.position,
+			},
+			false,
+		)
 		if (below) {
 			this.el.after(newCommentElement.el)
 		} else {
@@ -157,15 +179,32 @@ export class EditorItem_Comments {
 	}
 
 	save() {
-		if (!this.el.dataset.comment.trim().startsWith('#') && this.el.dataset.comment.split('=').length > 1) {
+		if (
+			!this.el.dataset.comment.trim().startsWith('#') &&
+			this.el.dataset.comment.split('=').length > 1
+		) {
 			console.log('detected comment to key transformation')
-			let [name, value] = this.el.dataset.comment.split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
-			let [new_value, comment] = value.split(/#(.*)/).slice(0, 2).map(p => (p.trim()))
+			let [name, value] = this.el.dataset.comment
+				.split(/=(.*)/)
+				.slice(0, 2)
+				.map((p) => p.trim())
+			let [new_value, comment] = value
+				.split(/#(.*)/)
+				.slice(0, 2)
+				.map((p) => p.trim())
 			let uuid = this.el.dataset.uuid
 			let type = 'KEY'
 			let position = this.el.dataset.position
 			if (name && value) {
-				saveKey(type, name, uuid, position, value, comment = comment, false)
+				saveKey(
+					type,
+					name,
+					uuid,
+					position,
+					value,
+					(comment = comment),
+					false,
+				)
 			}
 		} else {
 			let type = 'COMMENT'

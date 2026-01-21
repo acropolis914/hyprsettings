@@ -38,19 +38,22 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 
 ## Table of Contents
 
-- [HyprSettings](#hyprsettings)
-    - [Features](#features)
-    - [Installation](#installation)
-        - [Quick Clone and Install](#quick-clone-and-install-recommended-for-local-use)
-        - [NixOS Installation](#nixos-installation)
-        - [Arch Linux (AUR Package)](#arch-linux-aur-package)
-    - [Testing the UI (Development)](#testing-the-ui-development)
-    - [Configuration and Theming](#configuration-and-theming)
-    - [Autostart and Daemon Mode](#autostart-and-daemon-mode)
-    - [Organizing Comments into Tabs](#organizing-comments-into-tabs)
-    - [Contributing](#contributing)
-    - [A Personal Note](#a-personal-note)
-        - [Notice on the use of AI](#notice-on-the-use-of-ai)
+- [✨ Features](#-features)
+- [Table of Contents](#table-of-contents)
+- [📥 Installation](#-installation)
+  - [Quick Clone and Install (Recommended for local use)](#quick-clone-and-install-recommended-for-local-use)
+        - [To install without an interactive prompt (useful for automation):](#to-install-without-an-interactive-prompt-useful-for-automation)
+  - [NixOS Installation](#nixos-installation)
+    - [Try without installing](#try-without-installing)
+    - [Install to user profile](#install-to-user-profile)
+  - [Arch Linux (AUR Package)](#arch-linux-aur-package)
+- [🎨 Configuration and Theming](#-configuration-and-theming)
+- [👻 Autostart and Daemon mode](#-autostart-and-daemon-mode)
+- [🗂️ Organizing Comments into Tabs](#️-organizing-comments-into-tabs)
+- [Contributing](#contributing)
+- [❄ Testing the UI (Development)](#-testing-the-ui-development)
+- [💬 A Personal Note](#-a-personal-note)
+  - [Notice on the use of AI](#notice-on-the-use-of-ai)
 
 
 ## 📥 Installation
@@ -89,7 +92,7 @@ curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh
 
 For NixOS users, this repository includes full Nix packaging support with both flakes and traditional Nix.
 
-See [NIX\_INSTALLATION.md](https://www.google.com/search?q=NIX_INSTALLATION.md) for detailed installation instructions.
+See [NIX\_INSTALLATION.md](NIX_INSTALLATION.md) for detailed installation instructions.
 
 #### Try without installing
 
