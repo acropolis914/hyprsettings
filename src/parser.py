@@ -394,8 +394,10 @@ class ConfigParser:
 				for source in sources:
 					try:
 						self.parse_config(source)
-					except:
+					except FileNotFoundError:
 						print(f"File {source} not found. Skipping")
+					except Exception as e:
+						print(f"Error reading sourced file {source}: {type(e).__name__}: {e}")
 
 	def sanitize(self, string: str) -> str:
 		no_comments = string.split("#", 1)[0]
