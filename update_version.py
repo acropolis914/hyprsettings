@@ -12,15 +12,15 @@ from rich.console import Console
 console = Console()
 
 # Each target: (relative_path, regex_pattern, replacement_fn)
+# Each target: (relative_path, regex_pattern, replacement_fn)
 TARGETS: list[tuple[str, str, Callable[[re.Match, str], str]]] = [
-	("PKGBUILD", r"^(pkgver=)(.*)$", lambda m, ver: f"{m.group(1)}{ver}"),
-	("default.nix", r'^(  version = ")([^"]*)(";)', lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
-	("src/hyprsettings", r'^(CURRENT_VERSION\s*=\s*")([^"]*)(")', lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
+    ("PKGBUILD", r"^(pkgver=)(.*)$", lambda m, ver: f"{m.group(1)}{ver}"),
+    ("default.nix", r'^(  version = ")([^"]*)(";)', lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
+    ("src/hyprsettings", r'^(CURRENT_VERSION\s*=\s*")([^"]*)(")', lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
+    ("pyproject.toml", r'^(version\s*=\s*")([^"]*)(")', lambda m, ver: f'{m.group(1)}{ver}{m.group(3)}'),
+    ("src/ui/settings.js", r"^(let VERSION\s*=\s*')([^']*)(')", lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
+    ("uv.lock", r"^(version\s*=\s*)(.*)$", lambda m, ver: f"{m.group(1)}{ver}"),
 ]
-
-# need to add pyproject.toml
-# need to add settings.js
-# need to add uv.lock
 
 PKGBUILD_MIRROR = Path("../hyprsettings-git/PKGBUILD")
 
