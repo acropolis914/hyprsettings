@@ -1,15 +1,15 @@
 import { saveWindowConfig } from './utils.js'
 import { GLOBAL } from './GLOBAL.js'
 
-let themeButton = document.getElementById('theme-toggle')
 GLOBAL['currentThemeIndex'] = 0
+let themeButton = document.getElementById('theme-toggle')
 const root = document.querySelector(':root')
 let headers = ['description', 'link', 'author', 'variant']
-// refreshAllStylesheets()
+
+
 
 
 export async function setupTheme() {
-	// window.refreshAllStylesheets = refreshAllStylesheets
 	let currentTheme = GLOBAL['config']['current_theme']
 	document.documentElement.style.opacity = GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
 	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])

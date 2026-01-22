@@ -81,9 +81,9 @@ export async function initialize() {
 	// Array.from(document.scripts).forEach(s => console.log(s.src))
 	await load_config()
 	await setupTheme()
+	await getDebugStatus()
 	await createDynamicTabs()
 	await setupData()
-	getDebugStatus()
 	renderSettings()
 	initializeSearchBar()
 

@@ -2,16 +2,21 @@
 //[HeaderCommentBlockName(case insensitive),tabID
 export let tabids = [
 	['general', 'general'],
+	['general layout', 'general'], //dank
 	['monitor', 'monitor'],
 	['keybindings', 'keybinds'],
 	['miscellaneous', 'miscellaneous'],
+	['misc', 'miscellaneous'], //dank
 	['programs', 'globals'],
 	['windows and workspaces', 'win-rules'],
+	['window rules', 'win-rules'], //dank
 	['layer rules', 'layer-rules'],
 	['autostart', 'autostart'],
+	['startup apps', 'autostart'],
 	['variables', 'envars'],
 	['permissions', 'permissions'],
 	['look and feel', 'looknfeel'],
+	['decoration', 'looknfeel'], //dank
 	['animations', 'animations'],
 	['input', 'input'],
 	['debug', 'debug'],

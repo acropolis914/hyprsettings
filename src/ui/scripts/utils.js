@@ -28,21 +28,34 @@ export function hideAllContextMenus() {
 
 /**
  * Description
- * @param {JSON} root
- * @param {String} path
- * @returns {JSON}
+ * @param {JSON|Array} root
+ * @param {String[]} path
+ * @returns {Object|null}
  */
-function findParent(root, path) {
+function findParent(root, path, childuuid=null) {
+	// console.log(`Finding parent for path: ${path}`)
 	let node = root
 	for (let i = 1; i < path.length; i++) {
 		const key = path[i]
 		if (!node.children) {
-			console.log(`Node ${node} has no children`)
+			// console.log(`Node ${node["name"]} has no children`)
 			return null
 		}
-		node = node.children.find(child => child.name === key)
+		parent = node["name"]
+		node = node.children.filter(child => child.name === key)
+		if (node.length > 1) {
+			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
+			if (Array.isArray(node)) {
+				let possibleParents = node.filter(node => Array.isArray(node.children))
+				let parent = possibleParents.filter(parentNode => parentNode.children.some(child => child.uuid === childuuid))
+				return parent[0]
+			}
+		} else if (node.length === 1) {
+			node = node[0]
+		}
+		// console.log(`Node ${node["name"]} has children. Looking for ${key}`)
 		if (!node) {
-			console.log(`No parent node ${node} found`)
+			// console.log(`No parent node ${node} found`)
 			return null
 		}
 	}
@@ -63,7 +76,9 @@ function findParent(root, path) {
 export function saveKey(type, name, uuid, position, value, comment = null, disabled = false) {
 	let root = GLOBAL['data']
 	let path = position.split(':')
-	let parent = findParent(root, path)
+	let file = path.slice(1).filter(path => path.includes(".conf")).at(-1)
+	console.log("Changed file:", file)
+	let parent = findParent(root, path, uuid)
 	let node = parent.children.find(node => node.uuid === uuid)
 	if (node && node.type === 'KEY') {
 		// console.log(node)
@@ -85,7 +100,7 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 
 	if (!GLOBAL['config'].dryrun) {
 		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
-		Backend.saveConfig(JSON.stringify(GLOBAL['data']))
+		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 	} else {
 		console.log(`Dryrun save ${uuid}:`, node)
 	}
@@ -95,7 +110,7 @@ export function deleteKey(uuid, position) {
 	console.log(`Deleting ${position} => with uuid ${uuid}`)
 	let root = GLOBAL['data']
 	let path = position.split(':')
-	let parent = findParent(root, path)
+	let parent = findParent(root, path, uuid)
 	let node = parent.children.find(node => node.uuid === uuid)
 	let nodeIndex = parent.children.findIndex(node => node.uuid === uuid)
 	if (!GLOBAL['config'].dryrun) {
@@ -112,7 +127,7 @@ export function deleteKey(uuid, position) {
 export async function addItem(type, name, value, comment, position, relative_uuid, below = true) {
 	let root = GLOBAL['data']
 	let path = position.split(':')
-	let parent = findParent(root, path)
+	let parent = findParent(root, path, relative_uuid)
 	// console.log(parent)
 	let nodeIndex = parent.children.findIndex(node => node.uuid == relative_uuid)
 	// console.log({ nodeIndex })

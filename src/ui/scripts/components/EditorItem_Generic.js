@@ -78,7 +78,7 @@ export class EditorItem_Generic {
 			.map((s) => s.trim())
 			.filter((s) => !s.endsWith('.conf'))
 			.join(':')
-		console.log(this.config_position)
+		// console.log(this.config_position)
 		this.info = findConfigDescription(this.config_position, name)
 		if (this.info) {
 			this.el.dataset.infoType = this.info['type']

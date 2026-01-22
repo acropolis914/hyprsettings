@@ -1,19 +1,9 @@
-import argparse
-
-from src.hyprsettings import print_title
-
-
-def createArgParse():
-	parser = argparse.ArgumentParser(
-		prog="hyprsettings",
-		description="A loyal hyprland parser and gui editor for hyprland.conf",
-		epilog=print_title(),
-	)
+def createArgParse(parser):
 	parser.add_argument(
 		"-d",
 		"--daemon",
 		action="store_true",
-		help="Run in background started for quick startup",
+		help="If not running, run as a daemon in the background. If already running, connect to the existing daemon.",
 	)
 
 	# parser.add_argument("-b", "--browser", action="store_true", help="Run in browser mode only")
@@ -44,6 +34,10 @@ def createArgParse():
 		action="store_true",
 		help="Starts a new session without using existing daemon if it exists.",
 	)
+	parser.add_argument(
+		"--no-window", action="store_true", help="Do not spawn a webview window. Access the ui via browser."
+	)
 	parser.add_argument("-c", "--config", metavar="FILE", type=str, help="Configuration file")
 	parser.add_argument("--debug", action="store_true", help="Enable debug and devtools")
+
 	return parser

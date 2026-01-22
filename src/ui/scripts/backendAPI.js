@@ -60,16 +60,16 @@ export const Backend = {
 		}
 	},
 
-	saveConfig(configJSON) {
+	saveConfig(configJSON, changedFiles=[]) {
 		switch (GLOBAL.backend) {
 			case 'pywebview':
-				window.pywebview.api.save_config(configJSON)
+				window.pywebview.api.save_config(configJSON, changedFiles)
 				break
 			case 'flask':
 				fetchFlask('save_config', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: configJSON,
+					body: JSON.stringify({ config: configJSON, changedFiles })
 				})
 				break
 			default:

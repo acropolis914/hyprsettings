@@ -14,6 +14,5 @@ export function jsViewerInit() {
 	let debugWindow = document.querySelector('.config-set#debug')
 	debugWindow.appendChild(label)
 	debugWindow.appendChild(window.jsViewer)
-
-	updateJsonViewerTheme()
+	updateJsonViewerTheme(window.themeVariant)
 }

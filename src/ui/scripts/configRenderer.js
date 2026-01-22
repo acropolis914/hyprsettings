@@ -7,6 +7,9 @@ import { ConfigGroup } from './components/ConfigGroup.js'
 import { GLOBAL } from './GLOBAL.js'
 
 export class configRenderer {
+	/**
+     * @param {string} json
+     */
 	constructor(json) {
 		this.json = json
 		this.current_container = []
@@ -28,6 +31,9 @@ export class configRenderer {
 		})
 	}
 
+	/**
+     * @param {string} json
+     */
 	async parse(json) {
 		//Comment Stacking for three line label comments from default hyprland.conf
 		const self = this
@@ -158,7 +164,9 @@ export class configRenderer {
 					}
 				}
 				//
-				let group_el = new ConfigGroup(json).return() // if (this.comment_queue.length > 0) {
+				let group_el = new ConfigGroup(json).return()
+
+				// if (this.comment_queue.length > 0) {
 				// 	for (let i = 0; i < this.comment_queue.length; i++) {
 				// 		let comment_item = this.comment_queue[0]
 				// 		comment_item.addToParent(this.current_container.at(-1))
@@ -176,11 +184,13 @@ export class configRenderer {
 						break
 					}
 				}
+
 				if (!matched) {
 					this.current_container
 						.at(-1)
 						.appendChild(group_el)
 				}
+
 				this.current_container.push(group_el)
 			}
 		} else if (
@@ -205,7 +215,6 @@ export class configRenderer {
 				}
 
 				let tabToAddTo
-
 				for (const [key, value, exclude] of keyNameStarts) {
 					if (
 						this.current_container
