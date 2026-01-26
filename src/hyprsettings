@@ -235,10 +235,17 @@ def on_closing(window):
         )
         # print("______________________________________________\n")
         return False
+    # else:
+    #     window_instance.hide()
+    #     window_visible = False
+    #     log(
+    #         "[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]"
+    #     )
+    #     return False
     if disabled_dmabuf == "1":
         log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
         log("Restoring from daemon will fail. Daemon setting is dishonored.")
-    print("Window closed. Terminating process.")
+    ui_print("Window closed. Terminating process.")
     # print("______________________________________________\n")
     os._exit(0)
 
@@ -610,12 +617,16 @@ def main():
         # 	min_size=(400, 300),
         # 	hidden=args.hidden,
         # )
+        ui_link = f"http://localhost:{FLASK_PORT}/"
+        if args.bun_dev:
+            ui_link = "http://localhost:3000/"
+            
 
         if not args.no_window:
             log("Starting webview window...")
             window_instance = webview.create_window(
                 "HyprSettings",
-                f"http://localhost:{FLASK_PORT}/",
+                ui_link,
                 # js_api=api,
                 transparent=True,
                 width=800,
@@ -669,6 +680,7 @@ if __name__ == "__main__":
 
     if args.kill:
         kill_hyprsettings()
+
     if args.ui:
         log(f"Using UI {args.ui}")
     log(f"Debug mode: {args.debug}")

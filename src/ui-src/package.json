@@ -1,25 +1,26 @@
 {
-  "name": "hyprsettings-ui",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "sass": "^1.97.3",
-    "vite": "^7.3.1"
-  },
-  "dependencies": {
-    "lit": "^3.0.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "trustedDependencies": [
-    "@parcel/watcher",
-    "esbuild"
-  ]
+	"name": "hyprsettings-ui",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"clean-font": "glyphhanger --delay=5000 --whitelist=\"U+E000-U+F8FF,U+F0000-U+FFFFD,U+F233,U+F007\" --formats=woff2 --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:6969/"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"sass": "^1.97.3",
+		"vite": "^7.3.1"
+	},
+	"dependencies": {
+		"lit": "^3.0.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"trustedDependencies": [
+		"@parcel/watcher",
+		"esbuild"
+	]
 }

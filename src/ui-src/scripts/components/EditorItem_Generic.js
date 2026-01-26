@@ -409,6 +409,7 @@ export class EditorItem_Generic {
 				)
 
 				let availableKeys
+				console.debug(this.config_position)
 				try {
 					availableKeys = findAdjacentConfigKeys(
 						this.config_position,

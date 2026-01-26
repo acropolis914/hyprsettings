@@ -92,6 +92,8 @@ export function refreshAllStylesheets() {
 	})
 }
 
+window.refreshAllStylesheets = refreshAllStylesheets // for debugging
+
 
 
 

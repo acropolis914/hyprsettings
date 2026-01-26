@@ -10,27 +10,42 @@ import './components/keyEditor_Slider.js'
 import './ui_components/searchBar.js'
 import { GLOBAL } from './GLOBAL.js'
 import { jsViewerInit } from './ui_components/jsViewer.js'
-import { refreshAllStylesheets, setupTheme, updateJsonViewerTheme } from './setupTheme.js'
+import {
+	refreshAllStylesheets,
+	setupTheme,
+	updateJsonViewerTheme,
+} from './setupTheme.js'
 import { createDynamicTabs } from './ui_components/createDynamicTabs.js'
 import { renderSettings } from './settings.js'
 import { initializeSearchBar } from './ui_components/searchBar.js'
 import { Backend } from './backendAPI.js'
-import "../stylesheets/style.scss"
+import '../stylesheets/style.scss'
+import { create } from './jslib/nouislider.min.mjs'
+import {
+	createLoadingOverlay,
+	destroyOverlay,
+} from './ui_components/darken_overlay.js'
 // import './consoleInterceptor.js'
 window.Global = GLOBAL
-GLOBAL.setKey("backend", "flask")
+GLOBAL.setKey('backend', 'flask')
 
 // @ts-ignore
 async function setupData() {
-	GLOBAL['data'] = JSON.parse(await Backend.getHyprlandConfig())
+	GLOBAL.data = JSON.parse(await Backend.getHyprlandConfig())
+
 	jsViewerInit()
-	new configRenderer(GLOBAL['data'])
+	new configRenderer(GLOBAL.data)
+	destroyOverlay()
+	return GLOBAL.data
 }
 
 async function load_config() {
 	let windowConfig = await Backend.readWindowConfig()
 	if (windowConfig['configuration-error']) {
-		console.log('Configuration error: ', windowConfig['configuration-error'])
+		console.log(
+			'Configuration error: ',
+			windowConfig['configuration-error'],
+		)
 		return
 	}
 
@@ -60,34 +75,34 @@ async function load_config() {
 }
 
 async function getDebugStatus() {
-	let debugIndicator = document.getElementById("debug-indicator")
+	let debugIndicator = document.getElementById('debug-indicator')
 	let isDebug
 	try {
-		console.log("Contacting backend if debug mode is on")
+		console.log('Contacting backend if debug mode is on')
 		isDebug = await Backend.getDebugStatus()
 	} catch (e) {
-		console.log("Error while contacting backend: ", e)
+		console.log('Error while contacting backend: ', e)
 		isDebug = false
 	}
-	GLOBAL.setKey("isDebugging", isDebug)
+	GLOBAL.setKey('isDebugging', isDebug)
 	if (isDebug) {
-		console.log("Debug mode is turned on.")
-		debugIndicator.classList.remove("hidden")
+		console.log('Debug mode is turned on.')
+		debugIndicator.classList.remove('hidden')
 	} else {
-		debugIndicator.classList.add("hidden")
+		debugIndicator.classList.add('hidden')
 	}
 }
 
 export async function initialize() {
 	// Array.from(document.scripts).forEach(s => console.log(s.src))
+	createLoadingOverlay()
 	await load_config()
 	await setupTheme()
 	await getDebugStatus()
 	await createDynamicTabs()
-	await setupData()
+	setupData()
 	renderSettings()
 	initializeSearchBar()
-
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -96,12 +111,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 	window.initialize = initialize
 })
 
-window.addEventListener('error', e => {
-	console.error('🔥', e.error?.stack || `${e.message}\n${e.filename}:${e.lineno}`)
+window.addEventListener('error', (e) => {
+	console.error(
+		'🔥',
+		e.error?.stack || `${e.message}\n${e.filename}:${e.lineno}`,
+	)
 })
 
-window.addEventListener('unhandledrejection', e => {
-	console.error('🚨 Unhandled Promise rejection:', e.reason?.stack || e.reason)
+window.addEventListener('unhandledrejection', (e) => {
+	console.error(
+		'🚨 Unhandled Promise rejection:',
+		e.reason?.stack || e.reason,
+	)
 })
-
-

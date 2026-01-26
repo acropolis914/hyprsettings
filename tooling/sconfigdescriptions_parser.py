@@ -79,6 +79,7 @@ def get_config_descriptions(file_path) -> list:
 				value = line.split("=", 1)[1].strip().strip(",")
 				match = re.search(r"\{(.+)\}", value)
 				data = match.group(1).strip("") if match else None  # doesnt work good with split_bias
+				
 				is_editing_description = False
 			elif is_editing_description:
 				# print(line)
