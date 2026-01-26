@@ -1,6 +1,7 @@
 import { saveWindowConfig } from '../utils.js'
 import { tabs } from '../hyprland-specific/configMap.js'
 import { GLOBAL } from '../GLOBAL.js'
+let initialLoad = true
 
 class ConfigTab {
 	constructor(tab) {
@@ -14,7 +15,7 @@ class ConfigTab {
 		this.name = tab.name
 		this.icon = tab.icon
 		let exists = document.querySelector(
-			`aside#sidebar>ul>li#${this.id}`
+			`aside#sidebar>ul>li#${this.id}`,
 		)
 		if (exists) {
 			console.warn(`A tab with id ${tab.id} already exists.`)
@@ -103,11 +104,11 @@ class ConfigTab {
 				? element.classList.add('selected')
 				: element.classList.remove(
 						'selected',
-						'keyboard-selected'
-				  )
+						'keyboard-selected',
+					)
 		})
 		const sidebarItem = document.querySelector(
-			`aside#sidebar>ul>#${id}`
+			`aside#sidebar>ul>#${id}`,
 		)
 		const sidebarItemTitle = sidebarItem.dataset.label
 		const configSetTitle = document.querySelector('#config-set-title')
@@ -120,7 +121,9 @@ class ConfigTab {
 		GLOBAL['persistence']['last_tab'] = id
 		GLOBAL.setKey('currentView', 'tabs')
 		GLOBAL['activeTab'] = id
-		saveWindowConfig()
+		if (!initialLoad) {
+			saveWindowConfig()
+		}
 	}
 }
 
@@ -153,4 +156,5 @@ export async function createDynamicTabs() {
 	} else {
 		console.log(GLOBAL)
 	}
+	initialLoad = false
 }
