@@ -6,7 +6,7 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
-		"clean-font": "glyphhanger --delay=5000 --whitelist=\"U+E000-U+F8FF,U+F0000-U+FFFFD,U+F233,U+F007\" --formats=woff2 --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:6969/"
+		"clean-font": "glyphhanger --delay=5000 --whitelist=\"U+E000-U+F8FF,U+F0000-U+FFFFD\" --formats=woff2 --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:6969/"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
