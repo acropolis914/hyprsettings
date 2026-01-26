@@ -49,7 +49,9 @@ def createArgParse(parser):
         "--debug", action="store_true", help="Enable debug and devtools"
     )
     parser.add_argument(
-        "--bun-dev", action="store_true", help="Use the bun development server (localhost:3000)"
+        "--bun-dev",
+        action="store_true",
+        help="Use the bun development server (localhost:3000). WARNING: THIS IS FOR DEVELOPMENT ONLY",
     )
 
     return parser
