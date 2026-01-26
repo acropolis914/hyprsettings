@@ -29,7 +29,7 @@ from python.argument_parser import createArgParse
 os.environ["GDK_BACKEND"] = "wayland"
 os.environ["FLASK_SKIP_DOTENV"] = "1"
 
-CURRENT_VERSION = "0.8.0"
+CURRENT_VERSION = "0.8.1"
 HOST = "127.0.0.1"
 PORT = 65432
 FLASK_PORT = 6969
