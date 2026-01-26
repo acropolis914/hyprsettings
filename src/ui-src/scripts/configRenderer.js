@@ -190,7 +190,6 @@ export class configRenderer {
 						.at(-1)
 						.appendChild(group_el)
 				}
-
 				this.current_container.push(group_el)
 			}
 		} else if (

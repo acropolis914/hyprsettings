@@ -51,11 +51,10 @@ def start_flask_server():
     global FLASK_PORT
     while is_port_open(port=FLASK_PORT):
         FLASK_PORT += 1
-
-    app.run(host="0.0.0.0", port=FLASK_PORT, use_reloader=False)
     console.print(
         f"[green][Flask][/green] You can access the ui on [blue][link=localhost:{FLASK_PORT}]localhost:{FLASK_PORT}[/link][/blue]"
     )
+    app.run(host="0.0.0.0", port=FLASK_PORT, use_reloader=False)
 
 
 # Variables
@@ -70,6 +69,10 @@ verbose = False
 # UTILITY FUNCTIONS
 def ui_print(*args, **kwargs):
     console.print("[blue][UIBackend][/blue]", *args, **kwargs)
+
+
+def warn(msg):
+    log(f"[red]{msg}[red]")
 
 
 _last_log_message = None
@@ -94,15 +97,11 @@ def log(msg, prefix="", only_verbose=False):
             _last_log_count = 1
 
 
-def warn(msg):
-    log(f"[red]{msg}[red]")
-
-
 def handle_interrupt(signum, frame):
     global window_thread, flask_thread
     log("Sigint signal detected! Cleaning up...")
-    stop_event = threading.Event()
-    stop_event.set()
+    # stop_event = threading.Event()
+    # stop_event.set()
     # if window_thread and window_thread.is_alive():
     # 	window_thread.join(timeout=2)
     # if flask_thread and flask_thread.is_alive():
@@ -218,7 +217,7 @@ class LogFilter:
 
 # WINDOW FUNCTIONS
 def on_loaded(window):
-    log("DOM is ready")
+    # log("DOM is ready")
     window.events.loaded -= on_loaded
 
 
@@ -378,9 +377,12 @@ class Api:
         config = ConfigParser(hyprland_config_path, verbose=args.verbose).root.to_json()
         return config
 
-    def save_config(self, json: str, changedFiles:list = []):
-        print_hyprland(Node.from_json(json).to_hyprland(indent_level=0, save=True, changedFiles=changedFiles))
-      #   log("Saved to hyprland files")
+    def save_config(self, json: str, changedFiles: list = []):
+        print_hyprland(
+            Node.from_json(json).to_hyprland(
+                indent_level=0, save=True, changedFiles=changedFiles
+            )
+        )
 
     def new_uuid(self, length: int = 8):
         return makeUUID(length)
@@ -545,8 +547,8 @@ def api_get_config():
 @app.route("/api/save_config", methods=["POST"])
 def api_save_config():
     data = request.get_json()
-    config, changedFiles = data['config'], data['changedFiles']
-#     log(data)
+    config, changedFiles = data["config"], data["changedFiles"]
+    #     log(data)
     api.save_config(config, changedFiles)
     return jsonify({"status": "ok"})
 
@@ -614,7 +616,7 @@ def main():
             window_instance = webview.create_window(
                 "HyprSettings",
                 f"http://localhost:{FLASK_PORT}/",
-                js_api=api,
+                # js_api=api,
                 transparent=True,
                 width=800,
                 height=600,
@@ -635,9 +637,15 @@ def main():
             sys.exit(0)
         else:
             log("Opening in browser mode only as per --no-window arg")
-            log("[red][bold] Warning [/bold][/red] Using firefox-based browsers feel [red]slower[/red]")
-            log("If you experience loading times > 2 seconds, consider using a chromium-based browser.")
-            log("Even I, acropolis, who uses Zen Browser, can't deny that (ノToT)ノ ~┻┻")
+            log(
+                "[red][bold] Warning [/bold][/red] Using firefox-based browsers feel [red]slower[/red]"
+            )
+            log(
+                "If you experience loading times > 2 seconds, consider using a chromium-based browser."
+            )
+            log(
+                "Even I, acropolis, who uses Zen Browser, can't deny that (ノToT)ノ ~┻┻"
+            )
             log(f"Opening http://localhost:{FLASK_PORT}/ in default browser")
             subprocess.run(["xdg-open", f"http://localhost:{FLASK_PORT}/"])
             while True:
@@ -679,7 +687,7 @@ if __name__ == "__main__":
                 f'Given config file is not a ".conf file". Using default config path {HYPRLAND_CONFIG_PATH}'
             )
     daemon: bool = args.no_daemon or args.daemon
-#     print(f"Daemon mode: {daemon}")
+    #     print(f"Daemon mode: {daemon}")
     if args.debug:
         log(
             "[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!"

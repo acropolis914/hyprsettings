@@ -56,3 +56,10 @@ htmlcov/
 
 # === Logs (recommended) ===
 *.log
+# UI-src/ node and dist
+# UI build and node modules for ui-src
+/src/ui-src/node_modules
+/src/ui-src/dist
+/src/ui-src/.vite
+# (optional) ignore built output if you don't want to commit it:
+# /src/ui
