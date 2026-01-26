@@ -289,6 +289,15 @@ export class EditorItem_Binds {
 					},
 				)
 			}
+			if (e.key === 'd') {
+				if (
+					e.target.tagName === 'TEXTAREA' ||
+					e.target.tagName === 'INPUT'
+				) {
+					return
+				}
+				this.disable()
+			}
 		})
 		this.el.addEventListener('focus', (e) => {
 			this.contextMenu.show()
