@@ -15,6 +15,7 @@ import { createDynamicTabs } from './ui_components/createDynamicTabs.js'
 import { renderSettings } from './settings.js'
 import { initializeSearchBar } from './ui_components/searchBar.js'
 import { Backend } from './backendAPI.js'
+import "../stylesheets/style.scss"
 // import './consoleInterceptor.js'
 window.Global = GLOBAL
 GLOBAL.setKey("backend", "flask")

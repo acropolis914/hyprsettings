@@ -1,0 +1,4578 @@
+{
+  "model": [
+    {
+      "key": "pc86",
+      "value": "Generic 86-key PC"
+    },
+    {
+      "key": "pc101",
+      "value": "Generic 101-key PC"
+    },
+    {
+      "key": "pc102",
+      "value": "Generic 102-key PC"
+    },
+    {
+      "key": "pc104",
+      "value": "Generic 104-key PC"
+    },
+    {
+      "key": "pc104alt",
+      "value": "Generic 104-key PC with L-shaped Enter key"
+    },
+    {
+      "key": "pc105",
+      "value": "Generic 105-key PC"
+    },
+    {
+      "key": "a4techKB21",
+      "value": "A4Tech KB-21"
+    },
+    {
+      "key": "a4techKBS8",
+      "value": "A4Tech KBS-8"
+    },
+    {
+      "key": "a4_rfkb23",
+      "value": "A4Tech Wireless Desktop RFKB-23"
+    },
+    {
+      "key": "airkey",
+      "value": "Acer AirKey V"
+    },
+    {
+      "key": "acer_c300",
+      "value": "Acer C300"
+    },
+    {
+      "key": "acer_ferrari4k",
+      "value": "Acer Ferrari 4000"
+    },
+    {
+      "key": "acer_laptop",
+      "value": "Acer laptop"
+    },
+    {
+      "key": "scorpius",
+      "value": "Advance Scorpius KI"
+    },
+    {
+      "key": "apple",
+      "value": "Apple"
+    },
+    {
+      "key": "applealu_ansi",
+      "value": "Apple Aluminium (ANSI)"
+    },
+    {
+      "key": "applealu_iso",
+      "value": "Apple Aluminium (ISO)"
+    },
+    {
+      "key": "applealu_jis",
+      "value": "Apple Aluminium (JIS)"
+    },
+    {
+      "key": "asus_laptop",
+      "value": "Asus laptop"
+    },
+    {
+      "key": "azonaRF2300",
+      "value": "Azona RF2300 Wireless Internet"
+    },
+    {
+      "key": "benqx",
+      "value": "BenQ X-Touch"
+    },
+    {
+      "key": "benqx730",
+      "value": "BenQ X-Touch 730"
+    },
+    {
+      "key": "benqx800",
+      "value": "BenQ X-Touch 800"
+    },
+    {
+      "key": "abnt2",
+      "value": "Brazilian ABNT2"
+    },
+    {
+      "key": "brother",
+      "value": "Brother Internet"
+    },
+    {
+      "key": "btc5090",
+      "value": "BTC 5090"
+    },
+    {
+      "key": "btc5113rf",
+      "value": "BTC 5113RF Multimedia"
+    },
+    {
+      "key": "btc5126t",
+      "value": "BTC 5126T"
+    },
+    {
+      "key": "btc6301urf",
+      "value": "BTC 6301URF"
+    },
+    {
+      "key": "btc9000",
+      "value": "BTC 9000"
+    },
+    {
+      "key": "btc9000a",
+      "value": "BTC 9000A"
+    },
+    {
+      "key": "btc9001ah",
+      "value": "BTC 9001AH"
+    },
+    {
+      "key": "btc9019u",
+      "value": "BTC 9019U"
+    },
+    {
+      "key": "btc9116u",
+      "value": "BTC 9116U Mini Wireless Internet and Gaming"
+    },
+    {
+      "key": "cherryblue",
+      "value": "Cherry Blue Line CyBo@rd"
+    },
+    {
+      "key": "cherrybluea",
+      "value": "Cherry Blue Line CyBo@rd (alt.)"
+    },
+    {
+      "key": "cherrybunlim",
+      "value": "Cherry B.UNLIMITED"
+    },
+    {
+      "key": "cherrycyboard",
+      "value": "Cherry CyBo@rd USB-Hub"
+    },
+    {
+      "key": "cherrycmexpert",
+      "value": "Cherry CyMotion Expert"
+    },
+    {
+      "key": "cymotionlinux",
+      "value": "Cherry CyMotion Master Linux"
+    },
+    {
+      "key": "cherryblueb",
+      "value": "Cherry CyMotion Master XPress"
+    },
+    {
+      "key": "chicony",
+      "value": "Chicony Internet"
+    },
+    {
+      "key": "chicony9885",
+      "value": "Chicony KB-9885"
+    },
+    {
+      "key": "chicony0108",
+      "value": "Chicony KU-0108"
+    },
+    {
+      "key": "chicony0420",
+      "value": "Chicony KU-0420"
+    },
+    {
+      "key": "chromebook",
+      "value": "Chromebook"
+    },
+    {
+      "key": "compalfl90",
+      "value": "Compal FL90"
+    },
+    {
+      "key": "armada",
+      "value": "Compaq Armada laptop"
+    },
+    {
+      "key": "compaqeak8",
+      "value": "Compaq Easy Access"
+    },
+    {
+      "key": "compaqik7",
+      "value": "Compaq Internet (7 keys)"
+    },
+    {
+      "key": "compaqik13",
+      "value": "Compaq Internet (13 keys)"
+    },
+    {
+      "key": "compaqik18",
+      "value": "Compaq Internet (18 keys)"
+    },
+    {
+      "key": "ipaq",
+      "value": "Compaq iPaq"
+    },
+    {
+      "key": "presario",
+      "value": "Compaq Presario laptop"
+    },
+    {
+      "key": "creativedw7000",
+      "value": "Creative Desktop Wireless 7000"
+    },
+    {
+      "key": "dell",
+      "value": "Dell"
+    },
+    {
+      "key": "dell101",
+      "value": "Dell 101-key PC"
+    },
+    {
+      "key": "latitude",
+      "value": "Dell Latitude laptop"
+    },
+    {
+      "key": "inspiron",
+      "value": "Dell Inspiron 6000/8000 laptop"
+    },
+    {
+      "key": "precision_m",
+      "value": "Dell Precision M laptop"
+    },
+    {
+      "key": "dellm65",
+      "value": "Dell Precision M65 laptop"
+    },
+    {
+      "key": "dellsk8125",
+      "value": "Dell SK-8125"
+    },
+    {
+      "key": "dellsk8135",
+      "value": "Dell SK-8135"
+    },
+    {
+      "key": "dellusbmm",
+      "value": "Dell USB Multimedia"
+    },
+    {
+      "key": "dexxa",
+      "value": "Dexxa Wireless Desktop"
+    },
+    {
+      "key": "diamond",
+      "value": "Diamond 9801/9802"
+    },
+    {
+      "key": "dtk2000",
+      "value": "DTK2000"
+    },
+    {
+      "key": "emachines",
+      "value": "eMachines m6800 laptop"
+    },
+    {
+      "key": "ennyah_dkb1008",
+      "value": "Ennyah DKB-1008"
+    },
+    {
+      "key": "everex",
+      "value": "Everex STEPnote"
+    },
+    {
+      "key": "fscaa1667g",
+      "value": "Fujitsu-Siemens Amilo laptop"
+    },
+    {
+      "key": "genius",
+      "value": "Genius Comfy KB-16M/Multimedia KWD-910"
+    },
+    {
+      "key": "geniuscomfy",
+      "value": "Genius Comfy KB-12e"
+    },
+    {
+      "key": "geniuscomfy2",
+      "value": "Genius Comfy KB-21e-Scroll"
+    },
+    {
+      "key": "geniuskb19e",
+      "value": "Genius KB-19e NB"
+    },
+    {
+      "key": "geniuskkb2050hs",
+      "value": "Genius KKB-2050HS"
+    },
+    {
+      "key": "gyration",
+      "value": "Gyration"
+    },
+    {
+      "key": "hhk",
+      "value": "Happy Hacking"
+    },
+    {
+      "key": "hpi6",
+      "value": "Hewlett-Packard Internet"
+    },
+    {
+      "key": "hpmini110",
+      "value": "Hewlett-Packard Mini 110 laptop"
+    },
+    {
+      "key": "hpnx9020",
+      "value": "Hewlett-Packard nx9020"
+    },
+    {
+      "key": "hp5xx",
+      "value": "Hewlett-Packard Omnibook 500"
+    },
+    {
+      "key": "hp500fa",
+      "value": "Hewlett-Packard Omnibook 500 FA"
+    },
+    {
+      "key": "hp6000",
+      "value": "Hewlett-Packard Omnibook 6000/6100"
+    },
+    {
+      "key": "hpxe3gc",
+      "value": "Hewlett-Packard Omnibook XE3 GC"
+    },
+    {
+      "key": "hpxe3gf",
+      "value": "Hewlett-Packard Omnibook XE3 GF"
+    },
+    {
+      "key": "hpxt1000",
+      "value": "Hewlett-Packard Omnibook XT1000"
+    },
+    {
+      "key": "hpdv5",
+      "value": "Hewlett-Packard Pavilion dv5"
+    },
+    {
+      "key": "hpzt11xx",
+      "value": "Hewlett-Packard Pavilion ZT1100"
+    },
+    {
+      "key": "hp250x",
+      "value": "Hewlett-Packard SK-2501 Multimedia"
+    },
+    {
+      "key": "honeywell_euroboard",
+      "value": "Honeywell Euroboard"
+    },
+    {
+      "key": "rapidaccess",
+      "value": "IBM Rapid Access"
+    },
+    {
+      "key": "rapidaccess2",
+      "value": "IBM Rapid Access II"
+    },
+    {
+      "key": "ibm_spacesaver",
+      "value": "IBM Space Saver"
+    },
+    {
+      "key": "thinkpad",
+      "value": "IBM ThinkPad 560Z/600/600E/A22E"
+    },
+    {
+      "key": "thinkpad60",
+      "value": "IBM ThinkPad R60/T60/R61/T61"
+    },
+    {
+      "key": "thinkpadz60",
+      "value": "IBM ThinkPad Z60m/Z60t/Z61m/Z61t"
+    },
+    {
+      "key": "jp106",
+      "value": "Japanese 106-key"
+    },
+    {
+      "key": "flexpro",
+      "value": "Keytronic FlexPro"
+    },
+    {
+      "key": "kinesis",
+      "value": "Kinesis"
+    },
+    {
+      "key": "kr106",
+      "value": "Korean 106-key"
+    },
+    {
+      "key": "logitech_base",
+      "value": "Logitech"
+    },
+    {
+      "key": "logiaccess",
+      "value": "Logitech Access"
+    },
+    {
+      "key": "logicd",
+      "value": "Logitech Cordless Desktop"
+    },
+    {
+      "key": "logicda",
+      "value": "Logitech Cordless Desktop (alt.)"
+    },
+    {
+      "key": "logiex110",
+      "value": "Logitech Cordless Desktop EX110"
+    },
+    {
+      "key": "logicd_it",
+      "value": "Logitech Cordless Desktop iTouch"
+    },
+    {
+      "key": "logiclx300",
+      "value": "Logitech Cordless Desktop LX-300"
+    },
+    {
+      "key": "logicd_nav",
+      "value": "Logitech Cordless Desktop Navigator"
+    },
+    {
+      "key": "logicd_opt",
+      "value": "Logitech Cordless Desktop Optical"
+    },
+    {
+      "key": "logidinovo",
+      "value": "Logitech diNovo"
+    },
+    {
+      "key": "logidinovoedge",
+      "value": "Logitech diNovo Edge"
+    },
+    {
+      "key": "logitech_g15",
+      "value": "Logitech G15 extra keys via G15daemon"
+    },
+    {
+      "key": "logiik",
+      "value": "Logitech Internet"
+    },
+    {
+      "key": "logii350",
+      "value": "Logitech Internet 350"
+    },
+    {
+      "key": "logimel",
+      "value": "Logitech Internet 350"
+    },
+    {
+      "key": "logicink",
+      "value": "Logitech Internet Navigator"
+    },
+    {
+      "key": "itouch",
+      "value": "Logitech iTouch"
+    },
+    {
+      "key": "logiitc",
+      "value": "Logitech iTouch Cordless Y-RB6"
+    },
+    {
+      "key": "logiinkse",
+      "value": "Logitech iTouch Internet Navigator SE"
+    },
+    {
+      "key": "logiinkseusb",
+      "value": "Logitech iTouch Internet Navigator SE USB"
+    },
+    {
+      "key": "logiultrax",
+      "value": "Logitech Ultra-X"
+    },
+    {
+      "key": "logiultraxc",
+      "value": "Logitech Ultra-X Cordless Media Desktop"
+    },
+    {
+      "key": "mx1998",
+      "value": "Memorex MX1998"
+    },
+    {
+      "key": "mx2500",
+      "value": "Memorex MX2500 EZ-Access"
+    },
+    {
+      "key": "mx2750",
+      "value": "Memorex MX2750"
+    },
+    {
+      "key": "microsoftccurve2k",
+      "value": "Microsoft Comfort Curve 2000"
+    },
+    {
+      "key": "microsoftinet",
+      "value": "Microsoft Internet"
+    },
+    {
+      "key": "microsoftprose",
+      "value": "Microsoft Internet Pro (Swedish)"
+    },
+    {
+      "key": "microsoft",
+      "value": "Microsoft Natural"
+    },
+    {
+      "key": "microsoftelite",
+      "value": "Microsoft Natural Elite"
+    },
+    {
+      "key": "microsoft4000",
+      "value": "Microsoft Natural Ergonomic 4000"
+    },
+    {
+      "key": "microsoft7000",
+      "value": "Microsoft Natural Wireless Ergonomic 7000"
+    },
+    {
+      "key": "microsoftpro",
+      "value": "Microsoft Natural Pro/Internet Pro"
+    },
+    {
+      "key": "microsoftprousb",
+      "value": "Microsoft Natural Pro USB/Internet Pro"
+    },
+    {
+      "key": "microsoftprooem",
+      "value": "Microsoft Natural Pro OEM"
+    },
+    {
+      "key": "microsoftoffice",
+      "value": "Microsoft Office Keyboard"
+    },
+    {
+      "key": "microsoftsurface",
+      "value": "Microsoft Surface"
+    },
+    {
+      "key": "microsoftmult",
+      "value": "Microsoft Wireless Multimedia 1.0A"
+    },
+    {
+      "key": "sk1300",
+      "value": "NEC SK-1300"
+    },
+    {
+      "key": "sk2500",
+      "value": "NEC SK-2500"
+    },
+    {
+      "key": "sk6200",
+      "value": "NEC SK-6200"
+    },
+    {
+      "key": "sk7100",
+      "value": "NEC SK-7100"
+    },
+    {
+      "key": "omnikey101",
+      "value": "Northgate OmniKey 101"
+    },
+    {
+      "key": "olpc",
+      "value": "OLPC"
+    },
+    {
+      "key": "oretec",
+      "value": "Ortek Multimedia/Internet MCK-800"
+    },
+    {
+      "key": "pc98",
+      "value": "PC-98"
+    },
+    {
+      "key": "ppkb",
+      "value": "PinePhone Keyboard"
+    },
+    {
+      "key": "propeller",
+      "value": "Propeller Voyager KTEZ-1000"
+    },
+    {
+      "key": "qtronix",
+      "value": "QTronix Scorpius 98N+"
+    },
+    {
+      "key": "samsung4500",
+      "value": "Samsung SDM 4500P"
+    },
+    {
+      "key": "samsung4510",
+      "value": "Samsung SDM 4510P"
+    },
+    {
+      "key": "sanwaskbkg3",
+      "value": "Sanwa Supply SKB-KG3"
+    },
+    {
+      "key": "silvercrest",
+      "value": "Silvercrest Multimedia Wireless"
+    },
+    {
+      "key": "apex300",
+      "value": "SteelSeries Apex 300 (Apex RAW)"
+    },
+    {
+      "key": "sun_type6_jp",
+      "value": "Sun Type 6 (Japanese)"
+    },
+    {
+      "key": "sun_type6_jp_usb",
+      "value": "Sun Type 6 USB (Japanese)"
+    },
+    {
+      "key": "sun_type6_unix_usb",
+      "value": "Sun Type 6 USB (Unix)"
+    },
+    {
+      "key": "sun_type6_usb",
+      "value": "Sun Type 6/7 USB"
+    },
+    {
+      "key": "sun_type6_euro_usb",
+      "value": "Sun Type 6/7 USB (European)"
+    },
+    {
+      "key": "sun_type7_usb",
+      "value": "Sun Type 7 USB"
+    },
+    {
+      "key": "sun_type7_euro_usb",
+      "value": "Sun Type 7 USB (European)"
+    },
+    {
+      "key": "sun_type7_jp_usb",
+      "value": "Sun Type 7 USB (Japanese)/Japanese 106-key"
+    },
+    {
+      "key": "sun_type7_unix_usb",
+      "value": "Sun Type 7 USB (Unix)"
+    },
+    {
+      "key": "sp_inet",
+      "value": "Super Power Multimedia"
+    },
+    {
+      "key": "sven",
+      "value": "SVEN Ergonomic 2500"
+    },
+    {
+      "key": "sven303",
+      "value": "SVEN Slim 303"
+    },
+    {
+      "key": "symplon",
+      "value": "Symplon PaceBook tablet"
+    },
+    {
+      "key": "targa_v811",
+      "value": "Targa Visionary 811"
+    },
+    {
+      "key": "toshiba_s3000",
+      "value": "Toshiba Satellite S3000"
+    },
+    {
+      "key": "teck227",
+      "value": "Truly Ergonomic 227"
+    },
+    {
+      "key": "teck229",
+      "value": "Truly Ergonomic 229"
+    },
+    {
+      "key": "trustda",
+      "value": "Trust Direct Access"
+    },
+    {
+      "key": "trust_slimline",
+      "value": "Trust Slimline"
+    },
+    {
+      "key": "trust",
+      "value": "Trust Wireless Classic"
+    },
+    {
+      "key": "tm2020",
+      "value": "TypeMatrix EZ-Reach 2020"
+    },
+    {
+      "key": "tm2030PS2",
+      "value": "TypeMatrix EZ-Reach 2030 PS2"
+    },
+    {
+      "key": "tm2030USB",
+      "value": "TypeMatrix EZ-Reach 2030 USB"
+    },
+    {
+      "key": "tm2030USB-102",
+      "value": "TypeMatrix EZ-Reach 2030 USB (102/105:EU mode)"
+    },
+    {
+      "key": "tm2030USB-106",
+      "value": "TypeMatrix EZ-Reach 2030 USB (106:JP mode)"
+    },
+    {
+      "key": "unitekkb1925",
+      "value": "Unitek KB-1925"
+    },
+    {
+      "key": "vsonku306",
+      "value": "ViewSonic KU-306 Internet"
+    },
+    {
+      "key": "winbook",
+      "value": "Winbook Model XP5"
+    },
+    {
+      "key": "yahoo",
+      "value": "Yahoo! Internet"
+    }
+  ],
+  "layout": [
+    {
+      "key": "al",
+      "value": "Albanian"
+    },
+    {
+      "key": "et",
+      "value": "Amharic"
+    },
+    {
+      "key": "am",
+      "value": "Armenian"
+    },
+    {
+      "key": "ara",
+      "value": "Arabic"
+    },
+    {
+      "key": "eg",
+      "value": "Arabic (Egypt)"
+    },
+    {
+      "key": "iq",
+      "value": "Arabic (Iraq)"
+    },
+    {
+      "key": "ma",
+      "value": "Arabic (Morocco)"
+    },
+    {
+      "key": "sy",
+      "value": "Arabic (Syria)"
+    },
+    {
+      "key": "az",
+      "value": "Azerbaijani"
+    },
+    {
+      "key": "ml",
+      "value": "Bambara"
+    },
+    {
+      "key": "bd",
+      "value": "Bangla"
+    },
+    {
+      "key": "by",
+      "value": "Belarusian"
+    },
+    {
+      "key": "be",
+      "value": "Belgian"
+    },
+    {
+      "key": "dz",
+      "value": "Berber (Algeria, Latin)"
+    },
+    {
+      "key": "ba",
+      "value": "Bosnian"
+    },
+    {
+      "key": "brai",
+      "value": "Braille"
+    },
+    {
+      "key": "bg",
+      "value": "Bulgarian"
+    },
+    {
+      "key": "mm",
+      "value": "Burmese"
+    },
+    {
+      "key": "cn",
+      "value": "Chinese"
+    },
+    {
+      "key": "hr",
+      "value": "Croatian"
+    },
+    {
+      "key": "cz",
+      "value": "Czech"
+    },
+    {
+      "key": "dk",
+      "value": "Danish"
+    },
+    {
+      "key": "af",
+      "value": "Dari"
+    },
+    {
+      "key": "mv",
+      "value": "Dhivehi"
+    },
+    {
+      "key": "nl",
+      "value": "Dutch"
+    },
+    {
+      "key": "bt",
+      "value": "Dzongkha"
+    },
+    {
+      "key": "au",
+      "value": "English (Australia)"
+    },
+    {
+      "key": "cm",
+      "value": "English (Cameroon)"
+    },
+    {
+      "key": "gh",
+      "value": "English (Ghana)"
+    },
+    {
+      "key": "nz",
+      "value": "English (New Zealand)"
+    },
+    {
+      "key": "ng",
+      "value": "English (Nigeria)"
+    },
+    {
+      "key": "za",
+      "value": "English (South Africa)"
+    },
+    {
+      "key": "gb",
+      "value": "English (UK)"
+    },
+    {
+      "key": "us",
+      "value": "English (US)"
+    },
+    {
+      "key": "epo",
+      "value": "Esperanto"
+    },
+    {
+      "key": "ee",
+      "value": "Estonian"
+    },
+    {
+      "key": "fo",
+      "value": "Faroese"
+    },
+    {
+      "key": "ph",
+      "value": "Filipino"
+    },
+    {
+      "key": "fi",
+      "value": "Finnish"
+    },
+    {
+      "key": "fr",
+      "value": "French"
+    },
+    {
+      "key": "ca",
+      "value": "French (Canada)"
+    },
+    {
+      "key": "cd",
+      "value": "French (Democratic Republic of the Congo)"
+    },
+    {
+      "key": "tg",
+      "value": "French (Togo)"
+    },
+    {
+      "key": "ge",
+      "value": "Georgian"
+    },
+    {
+      "key": "de",
+      "value": "German"
+    },
+    {
+      "key": "at",
+      "value": "German (Austria)"
+    },
+    {
+      "key": "ch",
+      "value": "German (Switzerland)"
+    },
+    {
+      "key": "gr",
+      "value": "Greek"
+    },
+    {
+      "key": "il",
+      "value": "Hebrew"
+    },
+    {
+      "key": "hu",
+      "value": "Hungarian"
+    },
+    {
+      "key": "is",
+      "value": "Icelandic"
+    },
+    {
+      "key": "in",
+      "value": "Indian"
+    },
+    {
+      "key": "id",
+      "value": "Indonesian (Latin)"
+    },
+    {
+      "key": "ie",
+      "value": "Irish"
+    },
+    {
+      "key": "it",
+      "value": "Italian"
+    },
+    {
+      "key": "jp",
+      "value": "Japanese"
+    },
+    {
+      "key": "kz",
+      "value": "Kazakh"
+    },
+    {
+      "key": "kh",
+      "value": "Khmer (Cambodia)"
+    },
+    {
+      "key": "kr",
+      "value": "Korean"
+    },
+    {
+      "key": "kg",
+      "value": "Kyrgyz"
+    },
+    {
+      "key": "la",
+      "value": "Lao"
+    },
+    {
+      "key": "lv",
+      "value": "Latvian"
+    },
+    {
+      "key": "lt",
+      "value": "Lithuanian"
+    },
+    {
+      "key": "mk",
+      "value": "Macedonian"
+    },
+    {
+      "key": "my",
+      "value": "Malay (Jawi, Arabic Keyboard)"
+    },
+    {
+      "key": "mt",
+      "value": "Maltese"
+    },
+    {
+      "key": "md",
+      "value": "Moldavian"
+    },
+    {
+      "key": "mn",
+      "value": "Mongolian"
+    },
+    {
+      "key": "me",
+      "value": "Montenegrin"
+    },
+    {
+      "key": "np",
+      "value": "Nepali"
+    },
+    {
+      "key": "gn",
+      "value": "N'Ko (AZERTY)"
+    },
+    {
+      "key": "no",
+      "value": "Norwegian"
+    },
+    {
+      "key": "ir",
+      "value": "Persian"
+    },
+    {
+      "key": "pl",
+      "value": "Polish"
+    },
+    {
+      "key": "pt",
+      "value": "Portuguese"
+    },
+    {
+      "key": "br",
+      "value": "Portuguese (Brazil)"
+    },
+    {
+      "key": "ro",
+      "value": "Romanian"
+    },
+    {
+      "key": "ru",
+      "value": "Russian"
+    },
+    {
+      "key": "rs",
+      "value": "Serbian"
+    },
+    {
+      "key": "lk",
+      "value": "Sinhala (phonetic)"
+    },
+    {
+      "key": "sk",
+      "value": "Slovak"
+    },
+    {
+      "key": "si",
+      "value": "Slovenian"
+    },
+    {
+      "key": "es",
+      "value": "Spanish"
+    },
+    {
+      "key": "latam",
+      "value": "Spanish (Latin American)"
+    },
+    {
+      "key": "ke",
+      "value": "Swahili (Kenya)"
+    },
+    {
+      "key": "tz",
+      "value": "Swahili (Tanzania)"
+    },
+    {
+      "key": "se",
+      "value": "Swedish"
+    },
+    {
+      "key": "tw",
+      "value": "Taiwanese"
+    },
+    {
+      "key": "tj",
+      "value": "Tajik"
+    },
+    {
+      "key": "th",
+      "value": "Thai"
+    },
+    {
+      "key": "bw",
+      "value": "Tswana"
+    },
+    {
+      "key": "tm",
+      "value": "Turkmen"
+    },
+    {
+      "key": "tr",
+      "value": "Turkish"
+    },
+    {
+      "key": "ua",
+      "value": "Ukrainian"
+    },
+    {
+      "key": "pk",
+      "value": "Urdu (Pakistan)"
+    },
+    {
+      "key": "uz",
+      "value": "Uzbek"
+    },
+    {
+      "key": "vn",
+      "value": "Vietnamese"
+    },
+    {
+      "key": "sn",
+      "value": "Wolof"
+    },
+    {
+      "key": "custom",
+      "value": "A user-defined custom Layout"
+    }
+  ],
+  "variant": [
+    {
+      "name": "plisi",
+      "country": "al",
+      "description": "Albanian (Plisi)"
+    },
+    {
+      "name": "veqilharxhi",
+      "country": "al",
+      "description": "Albanian (Veqilharxhi)"
+    },
+    {
+      "name": "phonetic",
+      "country": "am",
+      "description": "Armenian (phonetic)"
+    },
+    {
+      "name": "phonetic-alt",
+      "country": "am",
+      "description": "Armenian (alt. phonetic)"
+    },
+    {
+      "name": "eastern",
+      "country": "am",
+      "description": "Armenian (eastern)"
+    },
+    {
+      "name": "eastern-alt",
+      "country": "am",
+      "description": "Armenian (alt. eastern)"
+    },
+    {
+      "name": "western",
+      "country": "am",
+      "description": "Armenian (western)"
+    },
+    {
+      "name": "digits",
+      "country": "ara",
+      "description": "Arabic (Eastern Arabic numerals)"
+    },
+    {
+      "name": "azerty",
+      "country": "ara",
+      "description": "Arabic (AZERTY)"
+    },
+    {
+      "name": "azerty_digits",
+      "country": "ara",
+      "description": "Arabic (AZERTY, Eastern Arabic numerals)"
+    },
+    {
+      "name": "buckwalter",
+      "country": "ara",
+      "description": "Arabic (Buckwalter)"
+    },
+    {
+      "name": "mac",
+      "country": "ara",
+      "description": "Arabic (Macintosh)"
+    },
+    {
+      "name": "mac-phonetic",
+      "country": "ara",
+      "description": "Arabic (Macintosh, phonetic)"
+    },
+    {
+      "name": "olpc",
+      "country": "ara",
+      "description": "Arabic (OLPC)"
+    },
+    {
+      "name": "ku",
+      "country": "iq",
+      "description": "Kurdish (Iraq, Latin Q)"
+    },
+    {
+      "name": "ku_alt",
+      "country": "iq",
+      "description": "Kurdish (Iraq, Latin Alt-Q)"
+    },
+    {
+      "name": "ku_f",
+      "country": "iq",
+      "description": "Kurdish (Iraq, F)"
+    },
+    {
+      "name": "ku_ara",
+      "country": "iq",
+      "description": "Kurdish (Iraq, Arabic-Latin)"
+    },
+    {
+      "name": "tifinagh",
+      "country": "ma",
+      "description": "Berber (Morocco, Tifinagh)"
+    },
+    {
+      "name": "tifinagh-alt",
+      "country": "ma",
+      "description": "Berber (Morocco, Tifinagh alt.)"
+    },
+    {
+      "name": "tifinagh-alt-phonetic",
+      "country": "ma",
+      "description": "Berber (Morocco, Tifinagh phonetic, alt.)"
+    },
+    {
+      "name": "tifinagh-extended",
+      "country": "ma",
+      "description": "Berber (Morocco, Tifinagh extended)"
+    },
+    {
+      "name": "tifinagh-phonetic",
+      "country": "ma",
+      "description": "Berber (Morocco, Tifinagh phonetic)"
+    },
+    {
+      "name": "tifinagh-extended-phonetic",
+      "country": "ma",
+      "description": "Berber (Morocco, Tifinagh extended phonetic)"
+    },
+    {
+      "name": "french",
+      "country": "ma",
+      "description": "French (Morocco)"
+    },
+    {
+      "name": "rif",
+      "country": "ma",
+      "description": "Tarifit"
+    },
+    {
+      "name": "syc",
+      "country": "sy",
+      "description": "Syriac"
+    },
+    {
+      "name": "syc_phonetic",
+      "country": "sy",
+      "description": "Syriac (phonetic)"
+    },
+    {
+      "name": "ku",
+      "country": "sy",
+      "description": "Kurdish (Syria, Latin Q)"
+    },
+    {
+      "name": "ku_alt",
+      "country": "sy",
+      "description": "Kurdish (Syria, Latin Alt-Q)"
+    },
+    {
+      "name": "ku_f",
+      "country": "sy",
+      "description": "Kurdish (Syria, F)"
+    },
+    {
+      "name": "cyrillic",
+      "country": "az",
+      "description": "Azerbaijani (Cyrillic)"
+    },
+    {
+      "name": "fr-oss",
+      "country": "ml",
+      "description": "French (Mali, alt.)"
+    },
+    {
+      "name": "us-mac",
+      "country": "ml",
+      "description": "English (Mali, US, Macintosh)"
+    },
+    {
+      "name": "us-intl",
+      "country": "ml",
+      "description": "English (Mali, US, intl.)"
+    },
+    {
+      "name": "probhat",
+      "country": "bd",
+      "description": "Bangla (Probhat)"
+    },
+    {
+      "name": "legacy",
+      "country": "by",
+      "description": "Belarusian (legacy)"
+    },
+    {
+      "name": "latin",
+      "country": "by",
+      "description": "Belarusian (Latin)"
+    },
+    {
+      "name": "intl",
+      "country": "by",
+      "description": "Belarusian (intl.)"
+    },
+    {
+      "name": "phonetic",
+      "country": "by",
+      "description": "Belarusian (phonetic)"
+    },
+    {
+      "name": "ru",
+      "country": "by",
+      "description": "Russian (Belarus)"
+    },
+    {
+      "name": "oss",
+      "country": "be",
+      "description": "Belgian (alt.)"
+    },
+    {
+      "name": "oss_latin9",
+      "country": "be",
+      "description": "Belgian (Latin-9 only, alt.)"
+    },
+    {
+      "name": "iso-alternate",
+      "country": "be",
+      "description": "Belgian (ISO, alt.)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "be",
+      "description": "Belgian (no dead keys)"
+    },
+    {
+      "name": "wang",
+      "country": "be",
+      "description": "Belgian (Wang 724 AZERTY)"
+    },
+    {
+      "name": "ber",
+      "country": "dz",
+      "description": "Berber (Algeria, Tifinagh)"
+    },
+    {
+      "name": "azerty-deadkeys",
+      "country": "dz",
+      "description": "Kabyle (AZERTY, with dead keys)"
+    },
+    {
+      "name": "qwerty-gb-deadkeys",
+      "country": "dz",
+      "description": "Kabyle (QWERTY, UK, with dead keys)"
+    },
+    {
+      "name": "qwerty-us-deadkeys",
+      "country": "dz",
+      "description": "Kabyle (QWERTY, US, with dead keys)"
+    },
+    {
+      "name": "ar",
+      "country": "dz",
+      "description": "Arabic (Algeria)"
+    },
+    {
+      "name": "alternatequotes",
+      "country": "ba",
+      "description": "Bosnian (with guillemets)"
+    },
+    {
+      "name": "unicode",
+      "country": "ba",
+      "description": "Bosnian (with Bosnian digraphs)"
+    },
+    {
+      "name": "unicodeus",
+      "country": "ba",
+      "description": "Bosnian (US, with Bosnian digraphs)"
+    },
+    {
+      "name": "us",
+      "country": "ba",
+      "description": "Bosnian (US)"
+    },
+    {
+      "name": "left_hand",
+      "country": "brai",
+      "description": "Braille (one-handed, left)"
+    },
+    {
+      "name": "left_hand_invert",
+      "country": "brai",
+      "description": "Braille (one-handed, left, inverted thumb)"
+    },
+    {
+      "name": "right_hand",
+      "country": "brai",
+      "description": "Braille (one-handed, right)"
+    },
+    {
+      "name": "right_hand_invert",
+      "country": "brai",
+      "description": "Braille (one-handed, right, inverted thumb)"
+    },
+    {
+      "name": "phonetic",
+      "country": "bg",
+      "description": "Bulgarian (traditional phonetic)"
+    },
+    {
+      "name": "bas_phonetic",
+      "country": "bg",
+      "description": "Bulgarian (new phonetic)"
+    },
+    {
+      "name": "bekl",
+      "country": "bg",
+      "description": "Bulgarian (enhanced)"
+    },
+    {
+      "name": "zawgyi",
+      "country": "mm",
+      "description": "Burmese (Zawgyi)"
+    },
+    {
+      "name": "mnw",
+      "country": "mm",
+      "description": "Mon"
+    },
+    {
+      "name": "mnw-a1",
+      "country": "mm",
+      "description": "Mon (A1)"
+    },
+    {
+      "name": "shn",
+      "country": "mm",
+      "description": "Shan"
+    },
+    {
+      "name": "zgt",
+      "country": "mm",
+      "description": "Shan (Zawgyi)"
+    },
+    {
+      "name": "altgr-pinyin",
+      "country": "cn",
+      "description": "Hanyu Pinyin Letters (with AltGr dead keys)"
+    },
+    {
+      "name": "mon_trad",
+      "country": "cn",
+      "description": "Mongolian (Bichig)"
+    },
+    {
+      "name": "mon_trad_todo",
+      "country": "cn",
+      "description": "Mongolian (Todo)"
+    },
+    {
+      "name": "mon_trad_xibe",
+      "country": "cn",
+      "description": "Mongolian (Xibe)"
+    },
+    {
+      "name": "mon_trad_manchu",
+      "country": "cn",
+      "description": "Mongolian (Manchu)"
+    },
+    {
+      "name": "mon_trad_galik",
+      "country": "cn",
+      "description": "Mongolian (Galik)"
+    },
+    {
+      "name": "mon_todo_galik",
+      "country": "cn",
+      "description": "Mongolian (Todo Galik)"
+    },
+    {
+      "name": "mon_manchu_galik",
+      "country": "cn",
+      "description": "Mongolian (Manchu Galik)"
+    },
+    {
+      "name": "tib",
+      "country": "cn",
+      "description": "Tibetan"
+    },
+    {
+      "name": "tib_asciinum",
+      "country": "cn",
+      "description": "Tibetan (with ASCII numerals)"
+    },
+    {
+      "name": "ug",
+      "country": "cn",
+      "description": "Uyghur"
+    },
+    {
+      "name": "alternatequotes",
+      "country": "hr",
+      "description": "Croatian (with guillemets)"
+    },
+    {
+      "name": "unicode",
+      "country": "hr",
+      "description": "Croatian (with Croatian digraphs)"
+    },
+    {
+      "name": "unicodeus",
+      "country": "hr",
+      "description": "Croatian (US, with Croatian digraphs)"
+    },
+    {
+      "name": "us",
+      "country": "hr",
+      "description": "Croatian (US)"
+    },
+    {
+      "name": "bksl",
+      "country": "cz",
+      "description": "Czech (extra backslash)"
+    },
+    {
+      "name": "qwerty",
+      "country": "cz",
+      "description": "Czech (QWERTY)"
+    },
+    {
+      "name": "qwerty_bksl",
+      "country": "cz",
+      "description": "Czech (QWERTY, extra backslash)"
+    },
+    {
+      "name": "winkeys",
+      "country": "cz",
+      "description": "Czech (QWERTZ, Windows)"
+    },
+    {
+      "name": "winkeys-qwerty",
+      "country": "cz",
+      "description": "Czech (QWERTY, Windows)"
+    },
+    {
+      "name": "qwerty-mac",
+      "country": "cz",
+      "description": "Czech (QWERTY, Macintosh)"
+    },
+    {
+      "name": "ucw",
+      "country": "cz",
+      "description": "Czech (UCW, only accented letters)"
+    },
+    {
+      "name": "dvorak-ucw",
+      "country": "cz",
+      "description": "Czech (US, Dvorak, UCW support)"
+    },
+    {
+      "name": "rus",
+      "country": "cz",
+      "description": "Russian (Czechia, phonetic)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "dk",
+      "description": "Danish (no dead keys)"
+    },
+    {
+      "name": "winkeys",
+      "country": "dk",
+      "description": "Danish (Windows)"
+    },
+    {
+      "name": "mac",
+      "country": "dk",
+      "description": "Danish (Macintosh)"
+    },
+    {
+      "name": "mac_nodeadkeys",
+      "country": "dk",
+      "description": "Danish (Macintosh, no dead keys)"
+    },
+    {
+      "name": "dvorak",
+      "country": "dk",
+      "description": "Danish (Dvorak)"
+    },
+    {
+      "name": "ps",
+      "country": "af",
+      "description": "Pashto"
+    },
+    {
+      "name": "uz",
+      "country": "af",
+      "description": "Uzbek (Afghanistan)"
+    },
+    {
+      "name": "fa-olpc",
+      "country": "af",
+      "description": "Dari (Afghanistan, OLPC)"
+    },
+    {
+      "name": "ps-olpc",
+      "country": "af",
+      "description": "Pashto (Afghanistan, OLPC)"
+    },
+    {
+      "name": "uz-olpc",
+      "country": "af",
+      "description": "Uzbek (Afghanistan, OLPC)"
+    },
+    {
+      "name": "us",
+      "country": "nl",
+      "description": "Dutch (US)"
+    },
+    {
+      "name": "mac",
+      "country": "nl",
+      "description": "Dutch (Macintosh)"
+    },
+    {
+      "name": "std",
+      "country": "nl",
+      "description": "Dutch (standard)"
+    },
+    {
+      "name": "french",
+      "country": "cm",
+      "description": "French (Cameroon)"
+    },
+    {
+      "name": "qwerty",
+      "country": "cm",
+      "description": "Cameroon Multilingual (QWERTY, intl.)"
+    },
+    {
+      "name": "azerty",
+      "country": "cm",
+      "description": "Cameroon (AZERTY, intl.)"
+    },
+    {
+      "name": "dvorak",
+      "country": "cm",
+      "description": "Cameroon (Dvorak, intl.)"
+    },
+    {
+      "name": "mmuock",
+      "country": "cm",
+      "description": "Mmuock"
+    },
+    {
+      "name": "generic",
+      "country": "gh",
+      "description": "English (Ghana, multilingual)"
+    },
+    {
+      "name": "gillbt",
+      "country": "gh",
+      "description": "English (Ghana, GILLBT)"
+    },
+    {
+      "name": "akan",
+      "country": "gh",
+      "description": "Akan"
+    },
+    {
+      "name": "avn",
+      "country": "gh",
+      "description": "Avatime"
+    },
+    {
+      "name": "ewe",
+      "country": "gh",
+      "description": "Ewe"
+    },
+    {
+      "name": "fula",
+      "country": "gh",
+      "description": "Fula"
+    },
+    {
+      "name": "ga",
+      "country": "gh",
+      "description": "Ga"
+    },
+    {
+      "name": "hausa",
+      "country": "gh",
+      "description": "Hausa (Ghana)"
+    },
+    {
+      "name": "mao",
+      "country": "nz",
+      "description": "Maori"
+    },
+    {
+      "name": "hausa",
+      "country": "ng",
+      "description": "Hausa (Nigeria)"
+    },
+    {
+      "name": "igbo",
+      "country": "ng",
+      "description": "Igbo"
+    },
+    {
+      "name": "yoruba",
+      "country": "ng",
+      "description": "Yoruba"
+    },
+    {
+      "name": "extd",
+      "country": "gb",
+      "description": "English (UK, extended, Windows)"
+    },
+    {
+      "name": "intl",
+      "country": "gb",
+      "description": "English (UK, intl., with dead keys)"
+    },
+    {
+      "name": "dvorak",
+      "country": "gb",
+      "description": "English (UK, Dvorak)"
+    },
+    {
+      "name": "dvorakukp",
+      "country": "gb",
+      "description": "English (UK, Dvorak, with UK punctuation)"
+    },
+    {
+      "name": "mac",
+      "country": "gb",
+      "description": "English (UK, Macintosh)"
+    },
+    {
+      "name": "mac_intl",
+      "country": "gb",
+      "description": "English (UK, Macintosh, intl.)"
+    },
+    {
+      "name": "colemak",
+      "country": "gb",
+      "description": "English (UK, Colemak)"
+    },
+    {
+      "name": "colemak_dh",
+      "country": "gb",
+      "description": "English (UK, Colemak-DH)"
+    },
+    {
+      "name": "gla",
+      "country": "gb",
+      "description": "Scottish Gaelic"
+    },
+    {
+      "name": "pl",
+      "country": "gb",
+      "description": "Polish (British keyboard)"
+    },
+    {
+      "name": "euro",
+      "country": "us",
+      "description": "English (US, euro on 5)"
+    },
+    {
+      "name": "intl",
+      "country": "us",
+      "description": "English (US, intl., with dead keys)"
+    },
+    {
+      "name": "alt-intl",
+      "country": "us",
+      "description": "English (US, alt. intl.)"
+    },
+    {
+      "name": "altgr-intl",
+      "country": "us",
+      "description": "English (intl., with AltGr dead keys)"
+    },
+    {
+      "name": "mac",
+      "country": "us",
+      "description": "English (Macintosh, ABC, ANSI)"
+    },
+    {
+      "name": "mac-iso",
+      "country": "us",
+      "description": "English (Macintosh, ABC, ISO)"
+    },
+    {
+      "name": "colemak",
+      "country": "us",
+      "description": "English (Colemak)"
+    },
+    {
+      "name": "colemak_dh",
+      "country": "us",
+      "description": "English (Colemak-DH)"
+    },
+    {
+      "name": "colemak_dh_wide",
+      "country": "us",
+      "description": "English (Colemak-DH Wide)"
+    },
+    {
+      "name": "colemak_dh_ortho",
+      "country": "us",
+      "description": "English (Colemak-DH Ortholinear)"
+    },
+    {
+      "name": "colemak_dh_iso",
+      "country": "us",
+      "description": "English (Colemak-DH ISO)"
+    },
+    {
+      "name": "colemak_dh_wide_iso",
+      "country": "us",
+      "description": "English (Colemak-DH Wide ISO)"
+    },
+    {
+      "name": "dvorak",
+      "country": "us",
+      "description": "English (Dvorak)"
+    },
+    {
+      "name": "dvorak-intl",
+      "country": "us",
+      "description": "English (Dvorak, intl., with dead keys)"
+    },
+    {
+      "name": "dvorak-alt-intl",
+      "country": "us",
+      "description": "English (Dvorak, alt. intl.)"
+    },
+    {
+      "name": "dvorak-l",
+      "country": "us",
+      "description": "English (Dvorak, one-handed, left)"
+    },
+    {
+      "name": "dvorak-r",
+      "country": "us",
+      "description": "English (Dvorak, one-handed, right)"
+    },
+    {
+      "name": "dvorak-classic",
+      "country": "us",
+      "description": "English (classic Dvorak)"
+    },
+    {
+      "name": "dvp",
+      "country": "us",
+      "description": "English (programmer Dvorak)"
+    },
+    {
+      "name": "dvorak-mac",
+      "country": "us",
+      "description": "English (Dvorak, Macintosh, ANSI)"
+    },
+    {
+      "name": "dvorak-mac-iso",
+      "country": "us",
+      "description": "English (Dvorak, Macintosh, ISO)"
+    },
+    {
+      "name": "norman",
+      "country": "us",
+      "description": "English (Norman)"
+    },
+    {
+      "name": "symbolic",
+      "country": "us",
+      "description": "English (US, Symbolic)"
+    },
+    {
+      "name": "workman",
+      "country": "us",
+      "description": "English (Workman)"
+    },
+    {
+      "name": "workman-intl",
+      "country": "us",
+      "description": "English (Workman, intl., with dead keys)"
+    },
+    {
+      "name": "olpc2",
+      "country": "us",
+      "description": "English (the divide/multiply toggle the layout)"
+    },
+    {
+      "name": "chr",
+      "country": "us",
+      "description": "Cherokee"
+    },
+    {
+      "name": "haw",
+      "country": "us",
+      "description": "Hawaiian"
+    },
+    {
+      "name": "rus",
+      "country": "us",
+      "description": "Russian (US, phonetic)"
+    },
+    {
+      "name": "hbs",
+      "country": "us",
+      "description": "Serbo-Croatian (US)"
+    },
+    {
+      "name": "legacy",
+      "country": "epo",
+      "description": "Esperanto (legacy)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "ee",
+      "description": "Estonian (no dead keys)"
+    },
+    {
+      "name": "dvorak",
+      "country": "ee",
+      "description": "Estonian (Dvorak)"
+    },
+    {
+      "name": "us",
+      "country": "ee",
+      "description": "Estonian (US)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "fo",
+      "description": "Faroese (no dead keys)"
+    },
+    {
+      "name": "qwerty-bay",
+      "country": "ph",
+      "description": "Filipino (QWERTY, Baybayin)"
+    },
+    {
+      "name": "capewell-dvorak",
+      "country": "ph",
+      "description": "Filipino (Capewell-Dvorak, Latin)"
+    },
+    {
+      "name": "capewell-dvorak-bay",
+      "country": "ph",
+      "description": "Filipino (Capewell-Dvorak, Baybayin)"
+    },
+    {
+      "name": "capewell-qwerf2k6",
+      "country": "ph",
+      "description": "Filipino (Capewell-QWERF 2006, Latin)"
+    },
+    {
+      "name": "capewell-qwerf2k6-bay",
+      "country": "ph",
+      "description": "Filipino (Capewell-QWERF 2006, Baybayin)"
+    },
+    {
+      "name": "colemak",
+      "country": "ph",
+      "description": "Filipino (Colemak, Latin)"
+    },
+    {
+      "name": "colemak-bay",
+      "country": "ph",
+      "description": "Filipino (Colemak, Baybayin)"
+    },
+    {
+      "name": "dvorak",
+      "country": "ph",
+      "description": "Filipino (Dvorak, Latin)"
+    },
+    {
+      "name": "dvorak-bay",
+      "country": "ph",
+      "description": "Filipino (Dvorak, Baybayin)"
+    },
+    {
+      "name": "winkeys",
+      "country": "fi",
+      "description": "Finnish (Windows)"
+    },
+    {
+      "name": "classic",
+      "country": "fi",
+      "description": "Finnish (classic)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "fi",
+      "description": "Finnish (classic, no dead keys)"
+    },
+    {
+      "name": "mac",
+      "country": "fi",
+      "description": "Finnish (Macintosh)"
+    },
+    {
+      "name": "smi",
+      "country": "fi",
+      "description": "Northern Saami (Finland)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "fr",
+      "description": "French (no dead keys)"
+    },
+    {
+      "name": "oss",
+      "country": "fr",
+      "description": "French (alt.)"
+    },
+    {
+      "name": "oss_nodeadkeys",
+      "country": "fr",
+      "description": "French (alt., no dead keys)"
+    },
+    {
+      "name": "oss_latin9",
+      "country": "fr",
+      "description": "French (alt., Latin-9 only)"
+    },
+    {
+      "name": "latin9",
+      "country": "fr",
+      "description": "French (legacy, alt.)"
+    },
+    {
+      "name": "latin9_nodeadkeys",
+      "country": "fr",
+      "description": "French (legacy, alt., no dead keys)"
+    },
+    {
+      "name": "azerty",
+      "country": "fr",
+      "description": "French (AZERTY)"
+    },
+    {
+      "name": "afnor",
+      "country": "fr",
+      "description": "French (AZERTY, AFNOR)"
+    },
+    {
+      "name": "bepo",
+      "country": "fr",
+      "description": "French (BEPO)"
+    },
+    {
+      "name": "bepo_latin9",
+      "country": "fr",
+      "description": "French (BEPO, Latin-9 only)"
+    },
+    {
+      "name": "bepo_afnor",
+      "country": "fr",
+      "description": "French (BEPO, AFNOR)"
+    },
+    {
+      "name": "dvorak",
+      "country": "fr",
+      "description": "French (Dvorak)"
+    },
+    {
+      "name": "ergol",
+      "country": "fr",
+      "description": "French (Ergo\u2011L)"
+    },
+    {
+      "name": "ergol_iso",
+      "country": "fr",
+      "description": "French (Ergo\u2011L, ISO variant)"
+    },
+    {
+      "name": "mac",
+      "country": "fr",
+      "description": "French (Macintosh)"
+    },
+    {
+      "name": "us",
+      "country": "fr",
+      "description": "French (US)"
+    },
+    {
+      "name": "bre",
+      "country": "fr",
+      "description": "Breton (France)"
+    },
+    {
+      "name": "oci",
+      "country": "fr",
+      "description": "Occitan"
+    },
+    {
+      "name": "geo",
+      "country": "fr",
+      "description": "Georgian (France, AZERTY Tskapo)"
+    },
+    {
+      "name": "fr-dvorak",
+      "country": "ca",
+      "description": "French (Canada, Dvorak)"
+    },
+    {
+      "name": "fr-legacy",
+      "country": "ca",
+      "description": "French (Canada, legacy)"
+    },
+    {
+      "name": "multix",
+      "country": "ca",
+      "description": "Canadian (CSA)"
+    },
+    {
+      "name": "eng",
+      "country": "ca",
+      "description": "English (Canada)"
+    },
+    {
+      "name": "ike",
+      "country": "ca",
+      "description": "Inuktitut"
+    },
+    {
+      "name": "ergonomic",
+      "country": "ge",
+      "description": "Georgian (ergonomic)"
+    },
+    {
+      "name": "mess",
+      "country": "ge",
+      "description": "Georgian (MESS)"
+    },
+    {
+      "name": "os",
+      "country": "ge",
+      "description": "Ossetian (Georgia)"
+    },
+    {
+      "name": "ru",
+      "country": "ge",
+      "description": "Russian (Georgia)"
+    },
+    {
+      "name": "deadacute",
+      "country": "de",
+      "description": "German (dead acute)"
+    },
+    {
+      "name": "deadgraveacute",
+      "country": "de",
+      "description": "German (dead grave acute)"
+    },
+    {
+      "name": "deadtilde",
+      "country": "de",
+      "description": "German (dead tilde)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "de",
+      "description": "German (no dead keys)"
+    },
+    {
+      "name": "e1",
+      "country": "de",
+      "description": "German (E1)"
+    },
+    {
+      "name": "e2",
+      "country": "de",
+      "description": "German (E2)"
+    },
+    {
+      "name": "T3",
+      "country": "de",
+      "description": "German (T3)"
+    },
+    {
+      "name": "us",
+      "country": "de",
+      "description": "German (US)"
+    },
+    {
+      "name": "dvorak",
+      "country": "de",
+      "description": "German (Dvorak)"
+    },
+    {
+      "name": "mac",
+      "country": "de",
+      "description": "German (Macintosh)"
+    },
+    {
+      "name": "mac_nodeadkeys",
+      "country": "de",
+      "description": "German (Macintosh, no dead keys)"
+    },
+    {
+      "name": "neo",
+      "country": "de",
+      "description": "German (Neo 2)"
+    },
+    {
+      "name": "qwerty",
+      "country": "de",
+      "description": "German (QWERTY)"
+    },
+    {
+      "name": "dsb",
+      "country": "de",
+      "description": "Lower Sorbian"
+    },
+    {
+      "name": "dsb_qwertz",
+      "country": "de",
+      "description": "Lower Sorbian (QWERTZ)"
+    },
+    {
+      "name": "ro",
+      "country": "de",
+      "description": "Romanian (Germany)"
+    },
+    {
+      "name": "ro_nodeadkeys",
+      "country": "de",
+      "description": "Romanian (Germany, no dead keys)"
+    },
+    {
+      "name": "ru",
+      "country": "de",
+      "description": "Russian (Germany, phonetic)"
+    },
+    {
+      "name": "tr",
+      "country": "de",
+      "description": "Turkish (Germany)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "at",
+      "description": "German (Austria, no dead keys)"
+    },
+    {
+      "name": "mac",
+      "country": "at",
+      "description": "German (Austria, Macintosh)"
+    },
+    {
+      "name": "de_nodeadkeys",
+      "country": "ch",
+      "description": "German (Switzerland, no dead keys)"
+    },
+    {
+      "name": "de_mac",
+      "country": "ch",
+      "description": "German (Switzerland, Macintosh)"
+    },
+    {
+      "name": "legacy",
+      "country": "ch",
+      "description": "German (Switzerland, legacy)"
+    },
+    {
+      "name": "fr",
+      "country": "ch",
+      "description": "French (Switzerland)"
+    },
+    {
+      "name": "fr_nodeadkeys",
+      "country": "ch",
+      "description": "French (Switzerland, no dead keys)"
+    },
+    {
+      "name": "fr_mac",
+      "country": "ch",
+      "description": "French (Switzerland, Macintosh)"
+    },
+    {
+      "name": "simple",
+      "country": "gr",
+      "description": "Greek (simple)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "gr",
+      "description": "Greek (no dead keys)"
+    },
+    {
+      "name": "polytonic",
+      "country": "gr",
+      "description": "Greek (polytonic)"
+    },
+    {
+      "name": "si2",
+      "country": "il",
+      "description": "Hebrew (SI-1452-2)"
+    },
+    {
+      "name": "lyx",
+      "country": "il",
+      "description": "Hebrew (lyx)"
+    },
+    {
+      "name": "phonetic",
+      "country": "il",
+      "description": "Hebrew (phonetic)"
+    },
+    {
+      "name": "biblical",
+      "country": "il",
+      "description": "Hebrew (Biblical, Tiro)"
+    },
+    {
+      "name": "standard",
+      "country": "hu",
+      "description": "Hungarian (standard)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "hu",
+      "description": "Hungarian (no dead keys)"
+    },
+    {
+      "name": "qwerty",
+      "country": "hu",
+      "description": "Hungarian (QWERTY)"
+    },
+    {
+      "name": "101_qwertz_comma_dead",
+      "country": "hu",
+      "description": "Hungarian (QWERTZ, 101-key, comma, dead keys)"
+    },
+    {
+      "name": "101_qwertz_comma_nodead",
+      "country": "hu",
+      "description": "Hungarian (QWERTZ, 101-key, comma, no dead keys)"
+    },
+    {
+      "name": "101_qwertz_dot_dead",
+      "country": "hu",
+      "description": "Hungarian (QWERTZ, 101-key, dot, dead keys)"
+    },
+    {
+      "name": "101_qwertz_dot_nodead",
+      "country": "hu",
+      "description": "Hungarian (QWERTZ, 101-key, dot, no dead keys)"
+    },
+    {
+      "name": "101_qwerty_comma_dead",
+      "country": "hu",
+      "description": "Hungarian (QWERTY, 101-key, comma, dead keys)"
+    },
+    {
+      "name": "101_qwerty_comma_nodead",
+      "country": "hu",
+      "description": "Hungarian (QWERTY, 101-key, comma, no dead keys)"
+    },
+    {
+      "name": "101_qwerty_dot_dead",
+      "country": "hu",
+      "description": "Hungarian (QWERTY, 101-key, dot, dead keys)"
+    },
+    {
+      "name": "101_qwerty_dot_nodead",
+      "country": "hu",
+      "description": "Hungarian (QWERTY, 101-key, dot, no dead keys)"
+    },
+    {
+      "name": "102_qwertz_comma_dead",
+      "country": "hu",
+      "description": "Hungarian (QWERTZ, 102-key, comma, dead keys)"
+    },
+    {
+      "name": "102_qwertz_comma_nodead",
+      "country": "hu",
+      "description": "Hungarian (QWERTZ, 102-key, comma, no dead keys)"
+    },
+    {
+      "name": "102_qwertz_dot_dead",
+      "country": "hu",
+      "description": "Hungarian (QWERTZ, 102-key, dot, dead keys)"
+    },
+    {
+      "name": "102_qwertz_dot_nodead",
+      "country": "hu",
+      "description": "Hungarian (QWERTZ, 102-key, dot, no dead keys)"
+    },
+    {
+      "name": "102_qwerty_comma_dead",
+      "country": "hu",
+      "description": "Hungarian (QWERTY, 102-key, comma, dead keys)"
+    },
+    {
+      "name": "102_qwerty_comma_nodead",
+      "country": "hu",
+      "description": "Hungarian (QWERTY, 102-key, comma, no dead keys)"
+    },
+    {
+      "name": "102_qwerty_dot_dead",
+      "country": "hu",
+      "description": "Hungarian (QWERTY, 102-key, dot, dead keys)"
+    },
+    {
+      "name": "102_qwerty_dot_nodead",
+      "country": "hu",
+      "description": "Hungarian (QWERTY, 102-key, dot, no dead keys)"
+    },
+    {
+      "name": "mac_legacy",
+      "country": "is",
+      "description": "Icelandic (Macintosh, legacy)"
+    },
+    {
+      "name": "mac",
+      "country": "is",
+      "description": "Icelandic (Macintosh)"
+    },
+    {
+      "name": "dvorak",
+      "country": "is",
+      "description": "Icelandic (Dvorak)"
+    },
+    {
+      "name": "asm-kagapa",
+      "country": "in",
+      "description": "Assamese (KaGaPa, phonetic)"
+    },
+    {
+      "name": "ben",
+      "country": "in",
+      "description": "Bangla (India)"
+    },
+    {
+      "name": "ben_probhat",
+      "country": "in",
+      "description": "Bangla (India, Probhat)"
+    },
+    {
+      "name": "ben_baishakhi",
+      "country": "in",
+      "description": "Bangla (India, Baishakhi)"
+    },
+    {
+      "name": "ben_bornona",
+      "country": "in",
+      "description": "Bangla (India, Bornona)"
+    },
+    {
+      "name": "ben-kagapa",
+      "country": "in",
+      "description": "Bangla (India, KaGaPa, phonetic)"
+    },
+    {
+      "name": "ben_gitanjali",
+      "country": "in",
+      "description": "Bangla (India, Gitanjali)"
+    },
+    {
+      "name": "ben_inscript",
+      "country": "in",
+      "description": "Bangla (India, Baishakhi InScript)"
+    },
+    {
+      "name": "eng",
+      "country": "in",
+      "description": "English (India, with rupee)"
+    },
+    {
+      "name": "guj",
+      "country": "in",
+      "description": "Gujarati"
+    },
+    {
+      "name": "guj-kagapa",
+      "country": "in",
+      "description": "Gujarati (KaGaPa, phonetic)"
+    },
+    {
+      "name": "bolnagri",
+      "country": "in",
+      "description": "Hindi (Bolnagri)"
+    },
+    {
+      "name": "hin-wx",
+      "country": "in",
+      "description": "Hindi (Wx)"
+    },
+    {
+      "name": "hin-kagapa",
+      "country": "in",
+      "description": "Hindi (KaGaPa, phonetic)"
+    },
+    {
+      "name": "kan",
+      "country": "in",
+      "description": "Kannada"
+    },
+    {
+      "name": "kan-kagapa",
+      "country": "in",
+      "description": "Kannada (KaGaPa, phonetic)"
+    },
+    {
+      "name": "mal",
+      "country": "in",
+      "description": "Malayalam"
+    },
+    {
+      "name": "mal_lalitha",
+      "country": "in",
+      "description": "Malayalam (Lalitha)"
+    },
+    {
+      "name": "mal_enhanced",
+      "country": "in",
+      "description": "Malayalam (enhanced InScript, with rupee)"
+    },
+    {
+      "name": "mal_poorna",
+      "country": "in",
+      "description": "Malayalam (Poorna, extended InScript)"
+    },
+    {
+      "name": "mni",
+      "country": "in",
+      "description": "Manipuri (Meitei)"
+    },
+    {
+      "name": "mar-kagapa",
+      "country": "in",
+      "description": "Marathi (KaGaPa, phonetic)"
+    },
+    {
+      "name": "marathi",
+      "country": "in",
+      "description": "Marathi (enhanced InScript)"
+    },
+    {
+      "name": "ori",
+      "country": "in",
+      "description": "Oriya"
+    },
+    {
+      "name": "ori-bolnagri",
+      "country": "in",
+      "description": "Oriya (Bolnagri)"
+    },
+    {
+      "name": "ori-wx",
+      "country": "in",
+      "description": "Oriya (Wx)"
+    },
+    {
+      "name": "guru",
+      "country": "in",
+      "description": "Punjabi (Gurmukhi)"
+    },
+    {
+      "name": "jhelum",
+      "country": "in",
+      "description": "Punjabi (Gurmukhi Jhelum)"
+    },
+    {
+      "name": "san-kagapa",
+      "country": "in",
+      "description": "Sanskrit (KaGaPa, phonetic)"
+    },
+    {
+      "name": "sat",
+      "country": "in",
+      "description": "Santali (Ol Chiki)"
+    },
+    {
+      "name": "tamilnet",
+      "country": "in",
+      "description": "Tamil (TamilNet '99)"
+    },
+    {
+      "name": "tamilnet_tamilnumbers",
+      "country": "in",
+      "description": "Tamil (TamilNet '99 with Tamil numerals)"
+    },
+    {
+      "name": "tamilnet_TAB",
+      "country": "in",
+      "description": "Tamil (TamilNet '99, TAB encoding)"
+    },
+    {
+      "name": "tamilnet_TSCII",
+      "country": "in",
+      "description": "Tamil (TamilNet '99, TSCII encoding)"
+    },
+    {
+      "name": "tam",
+      "country": "in",
+      "description": "Tamil (InScript, with Arabic numerals)"
+    },
+    {
+      "name": "tam_tamilnumbers",
+      "country": "in",
+      "description": "Tamil (InScript, with Tamil numerals)"
+    },
+    {
+      "name": "tel",
+      "country": "in",
+      "description": "Telugu"
+    },
+    {
+      "name": "tel-kagapa",
+      "country": "in",
+      "description": "Telugu (KaGaPa, phonetic)"
+    },
+    {
+      "name": "tel-sarala",
+      "country": "in",
+      "description": "Telugu (Sarala)"
+    },
+    {
+      "name": "urd-phonetic",
+      "country": "in",
+      "description": "Urdu (phonetic)"
+    },
+    {
+      "name": "urd-phonetic3",
+      "country": "in",
+      "description": "Urdu (alt. phonetic)"
+    },
+    {
+      "name": "urd-winkeys",
+      "country": "in",
+      "description": "Urdu (Windows)"
+    },
+    {
+      "name": "iipa",
+      "country": "in",
+      "description": "Indic IPA"
+    },
+    {
+      "name": "melayu-phonetic",
+      "country": "id",
+      "description": "Indonesian (Arab Melayu, phonetic)"
+    },
+    {
+      "name": "melayu-phoneticx",
+      "country": "id",
+      "description": "Indonesian (Arab Melayu, extended phonetic)"
+    },
+    {
+      "name": "pegon-phonetic",
+      "country": "id",
+      "description": "Indonesian (Arab Pegon, phonetic)"
+    },
+    {
+      "name": "javanese",
+      "country": "id",
+      "description": "Javanese"
+    },
+    {
+      "name": "UnicodeExpert",
+      "country": "ie",
+      "description": "Irish (UnicodeExpert)"
+    },
+    {
+      "name": "CloGaelach",
+      "country": "ie",
+      "description": "CloGaelach"
+    },
+    {
+      "name": "ogam",
+      "country": "ie",
+      "description": "Ogham"
+    },
+    {
+      "name": "ogam_is434",
+      "country": "ie",
+      "description": "Ogham (IS434)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "it",
+      "description": "Italian (no dead keys)"
+    },
+    {
+      "name": "winkeys",
+      "country": "it",
+      "description": "Italian (Windows)"
+    },
+    {
+      "name": "mac",
+      "country": "it",
+      "description": "Italian (Macintosh)"
+    },
+    {
+      "name": "us",
+      "country": "it",
+      "description": "Italian (US)"
+    },
+    {
+      "name": "ibm",
+      "country": "it",
+      "description": "Italian (IBM 142)"
+    },
+    {
+      "name": "fur",
+      "country": "it",
+      "description": "Friulian (Italy)"
+    },
+    {
+      "name": "scn",
+      "country": "it",
+      "description": "Sicilian"
+    },
+    {
+      "name": "geo",
+      "country": "it",
+      "description": "Georgian (Italy)"
+    },
+    {
+      "name": "kana",
+      "country": "jp",
+      "description": "Japanese (Kana)"
+    },
+    {
+      "name": "OADG109A",
+      "country": "jp",
+      "description": "Japanese (OADG 109A)"
+    },
+    {
+      "name": "mac",
+      "country": "jp",
+      "description": "Japanese (Macintosh)"
+    },
+    {
+      "name": "dvorak",
+      "country": "jp",
+      "description": "Japanese (Dvorak)"
+    },
+    {
+      "name": "kazrus",
+      "country": "kz",
+      "description": "Kazakh (with Russian)"
+    },
+    {
+      "name": "ext",
+      "country": "kz",
+      "description": "Kazakh (extended)"
+    },
+    {
+      "name": "latin",
+      "country": "kz",
+      "description": "Kazakh (Latin)"
+    },
+    {
+      "name": "ruskaz",
+      "country": "kz",
+      "description": "Russian (Kazakhstan, with Kazakh)"
+    },
+    {
+      "name": "kr104",
+      "country": "kr",
+      "description": "Korean (101/104-key compatible)"
+    },
+    {
+      "name": "phonetic",
+      "country": "kg",
+      "description": "Kyrgyz (phonetic)"
+    },
+    {
+      "name": "stea",
+      "country": "la",
+      "description": "Lao (STEA)"
+    },
+    {
+      "name": "apostrophe",
+      "country": "lv",
+      "description": "Latvian (apostrophe)"
+    },
+    {
+      "name": "tilde",
+      "country": "lv",
+      "description": "Latvian (tilde)"
+    },
+    {
+      "name": "fkey",
+      "country": "lv",
+      "description": "Latvian (F)"
+    },
+    {
+      "name": "modern",
+      "country": "lv",
+      "description": "Latvian (Modern Latin)"
+    },
+    {
+      "name": "modern-cyr",
+      "country": "lv",
+      "description": "Latvian (Modern Cyrillic)"
+    },
+    {
+      "name": "ergonomic",
+      "country": "lv",
+      "description": "Latvian (ergonomic, \u016aGJRMV)"
+    },
+    {
+      "name": "adapted",
+      "country": "lv",
+      "description": "Latvian (adapted)"
+    },
+    {
+      "name": "std",
+      "country": "lt",
+      "description": "Lithuanian (standard)"
+    },
+    {
+      "name": "us",
+      "country": "lt",
+      "description": "Lithuanian (US)"
+    },
+    {
+      "name": "ibm",
+      "country": "lt",
+      "description": "Lithuanian (IBM)"
+    },
+    {
+      "name": "lekp",
+      "country": "lt",
+      "description": "Lithuanian (LEKP)"
+    },
+    {
+      "name": "lekpa",
+      "country": "lt",
+      "description": "Lithuanian (LEKPa)"
+    },
+    {
+      "name": "ratise",
+      "country": "lt",
+      "description": "Lithuanian (Ratise)"
+    },
+    {
+      "name": "sgs",
+      "country": "lt",
+      "description": "Samogitian"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "mk",
+      "description": "Macedonian (no dead keys)"
+    },
+    {
+      "name": "phonetic",
+      "country": "my",
+      "description": "Malay (Jawi, phonetic)"
+    },
+    {
+      "name": "us",
+      "country": "mt",
+      "description": "Maltese (US)"
+    },
+    {
+      "name": "alt-us",
+      "country": "mt",
+      "description": "Maltese (US, with AltGr overrides)"
+    },
+    {
+      "name": "alt-gb",
+      "country": "mt",
+      "description": "Maltese (UK, with AltGr overrides)"
+    },
+    {
+      "name": "gag",
+      "country": "md",
+      "description": "Gagauz (Moldova)"
+    },
+    {
+      "name": "cyrillic",
+      "country": "me",
+      "description": "Montenegrin (Cyrillic)"
+    },
+    {
+      "name": "cyrillicyz",
+      "country": "me",
+      "description": "Montenegrin (Cyrillic, ZE and ZHE swapped)"
+    },
+    {
+      "name": "cyrillicalternatequotes",
+      "country": "me",
+      "description": "Montenegrin (Cyrillic, with guillemets)"
+    },
+    {
+      "name": "latinunicode",
+      "country": "me",
+      "description": "Montenegrin (Latin, Unicode)"
+    },
+    {
+      "name": "latinyz",
+      "country": "me",
+      "description": "Montenegrin (Latin, QWERTY)"
+    },
+    {
+      "name": "latinunicodeyz",
+      "country": "me",
+      "description": "Montenegrin (Latin, Unicode, QWERTY)"
+    },
+    {
+      "name": "latinalternatequotes",
+      "country": "me",
+      "description": "Montenegrin (Latin, with guillemets)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "no",
+      "description": "Norwegian (no dead keys)"
+    },
+    {
+      "name": "winkeys",
+      "country": "no",
+      "description": "Norwegian (Windows)"
+    },
+    {
+      "name": "mac",
+      "country": "no",
+      "description": "Norwegian (Macintosh)"
+    },
+    {
+      "name": "mac_nodeadkeys",
+      "country": "no",
+      "description": "Norwegian (Macintosh, no dead keys)"
+    },
+    {
+      "name": "colemak",
+      "country": "no",
+      "description": "Norwegian (Colemak)"
+    },
+    {
+      "name": "colemak_dh",
+      "country": "no",
+      "description": "Norwegian (Colemak-DH)"
+    },
+    {
+      "name": "colemak_dh_wide",
+      "country": "no",
+      "description": "Norwegian (Colemak-DH Wide)"
+    },
+    {
+      "name": "dvorak",
+      "country": "no",
+      "description": "Norwegian (Dvorak)"
+    },
+    {
+      "name": "smi",
+      "country": "no",
+      "description": "Northern Saami (Norway)"
+    },
+    {
+      "name": "smi_nodeadkeys",
+      "country": "no",
+      "description": "Northern Saami (Norway, no dead keys)"
+    },
+    {
+      "name": "pes_keypad",
+      "country": "ir",
+      "description": "Persian (with Persian keypad)"
+    },
+    {
+      "name": "winkeys",
+      "country": "ir",
+      "description": "Persian (Windows)"
+    },
+    {
+      "name": "azb",
+      "country": "ir",
+      "description": "Azerbaijani (Iran)"
+    },
+    {
+      "name": "ku",
+      "country": "ir",
+      "description": "Kurdish (Iran, Latin Q)"
+    },
+    {
+      "name": "ku_alt",
+      "country": "ir",
+      "description": "Kurdish (Iran, Latin Alt-Q)"
+    },
+    {
+      "name": "ku_f",
+      "country": "ir",
+      "description": "Kurdish (Iran, F)"
+    },
+    {
+      "name": "ku_ara",
+      "country": "ir",
+      "description": "Kurdish (Iran, Arabic-Latin)"
+    },
+    {
+      "name": "legacy",
+      "country": "pl",
+      "description": "Polish (legacy)"
+    },
+    {
+      "name": "qwertz",
+      "country": "pl",
+      "description": "Polish (QWERTZ)"
+    },
+    {
+      "name": "dvorak",
+      "country": "pl",
+      "description": "Polish (Dvorak)"
+    },
+    {
+      "name": "dvorak_quotes",
+      "country": "pl",
+      "description": "Polish (Dvorak, with Polish quotes on quotemark key)"
+    },
+    {
+      "name": "dvorak_altquotes",
+      "country": "pl",
+      "description": "Polish (Dvorak, with Polish quotes on key 1)"
+    },
+    {
+      "name": "dvp",
+      "country": "pl",
+      "description": "Polish (programmer Dvorak)"
+    },
+    {
+      "name": "csb",
+      "country": "pl",
+      "description": "Kashubian"
+    },
+    {
+      "name": "szl",
+      "country": "pl",
+      "description": "Silesian"
+    },
+    {
+      "name": "ru_phonetic_dvorak",
+      "country": "pl",
+      "description": "Russian (Poland, phonetic Dvorak)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "pt",
+      "description": "Portuguese (no dead keys)"
+    },
+    {
+      "name": "mac",
+      "country": "pt",
+      "description": "Portuguese (Macintosh)"
+    },
+    {
+      "name": "mac_nodeadkeys",
+      "country": "pt",
+      "description": "Portuguese (Macintosh, no dead keys)"
+    },
+    {
+      "name": "nativo",
+      "country": "pt",
+      "description": "Portuguese (Nativo)"
+    },
+    {
+      "name": "nativo-us",
+      "country": "pt",
+      "description": "Portuguese (Nativo for US keyboards)"
+    },
+    {
+      "name": "nativo-epo",
+      "country": "pt",
+      "description": "Esperanto (Portugal, Nativo)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "br",
+      "description": "Portuguese (Brazil, no dead keys)"
+    },
+    {
+      "name": "dvorak",
+      "country": "br",
+      "description": "Portuguese (Brazil, Dvorak)"
+    },
+    {
+      "name": "nativo",
+      "country": "br",
+      "description": "Portuguese (Brazil, Nativo)"
+    },
+    {
+      "name": "nativo-us",
+      "country": "br",
+      "description": "Portuguese (Brazil, Nativo for US keyboards)"
+    },
+    {
+      "name": "thinkpad",
+      "country": "br",
+      "description": "Portuguese (Brazil, IBM/Lenovo ThinkPad)"
+    },
+    {
+      "name": "nativo-epo",
+      "country": "br",
+      "description": "Esperanto (Brazil, Nativo)"
+    },
+    {
+      "name": "rus",
+      "country": "br",
+      "description": "Russian (Brazil, phonetic)"
+    },
+    {
+      "name": "std",
+      "country": "ro",
+      "description": "Romanian (standard)"
+    },
+    {
+      "name": "winkeys",
+      "country": "ro",
+      "description": "Romanian (Windows)"
+    },
+    {
+      "name": "phonetic",
+      "country": "ru",
+      "description": "Russian (phonetic)"
+    },
+    {
+      "name": "phonetic_winkeys",
+      "country": "ru",
+      "description": "Russian (phonetic, Windows)"
+    },
+    {
+      "name": "phonetic_YAZHERTY",
+      "country": "ru",
+      "description": "Russian (phonetic, YAZHERTY)"
+    },
+    {
+      "name": "phonetic_azerty",
+      "country": "ru",
+      "description": "Russian (phonetic, AZERTY)"
+    },
+    {
+      "name": "phonetic_dvorak",
+      "country": "ru",
+      "description": "Russian (phonetic, Dvorak)"
+    },
+    {
+      "name": "typewriter",
+      "country": "ru",
+      "description": "Russian (typewriter)"
+    },
+    {
+      "name": "ruchey_ru",
+      "country": "ru",
+      "description": "Russian (engineering, RU)"
+    },
+    {
+      "name": "ruchey_en",
+      "country": "ru",
+      "description": "Russian (engineering, EN)"
+    },
+    {
+      "name": "legacy",
+      "country": "ru",
+      "description": "Russian (legacy)"
+    },
+    {
+      "name": "typewriter-legacy",
+      "country": "ru",
+      "description": "Russian (typewriter, legacy)"
+    },
+    {
+      "name": "dos",
+      "country": "ru",
+      "description": "Russian (DOS)"
+    },
+    {
+      "name": "mac",
+      "country": "ru",
+      "description": "Russian (Macintosh)"
+    },
+    {
+      "name": "ab",
+      "country": "ru",
+      "description": "Abkhazian (Russia)"
+    },
+    {
+      "name": "bak",
+      "country": "ru",
+      "description": "Bashkirian"
+    },
+    {
+      "name": "cv",
+      "country": "ru",
+      "description": "Chuvash"
+    },
+    {
+      "name": "cv_latin",
+      "country": "ru",
+      "description": "Chuvash (Latin)"
+    },
+    {
+      "name": "xal",
+      "country": "ru",
+      "description": "Kalmyk"
+    },
+    {
+      "name": "kom",
+      "country": "ru",
+      "description": "Komi"
+    },
+    {
+      "name": "chm",
+      "country": "ru",
+      "description": "Mari"
+    },
+    {
+      "name": "os_legacy",
+      "country": "ru",
+      "description": "Ossetian (legacy)"
+    },
+    {
+      "name": "os_winkeys",
+      "country": "ru",
+      "description": "Ossetian (Windows)"
+    },
+    {
+      "name": "srp",
+      "country": "ru",
+      "description": "Serbian (Russia)"
+    },
+    {
+      "name": "tt",
+      "country": "ru",
+      "description": "Tatar"
+    },
+    {
+      "name": "udm",
+      "country": "ru",
+      "description": "Udmurt"
+    },
+    {
+      "name": "sah",
+      "country": "ru",
+      "description": "Yakut"
+    },
+    {
+      "name": "alternatequotes",
+      "country": "rs",
+      "description": "Serbian (Cyrillic, with guillemets)"
+    },
+    {
+      "name": "yz",
+      "country": "rs",
+      "description": "Serbian (Cyrillic, ZE and ZHE swapped)"
+    },
+    {
+      "name": "latin",
+      "country": "rs",
+      "description": "Serbian (Latin)"
+    },
+    {
+      "name": "latinalternatequotes",
+      "country": "rs",
+      "description": "Serbian (Latin, with guillemets)"
+    },
+    {
+      "name": "latinunicode",
+      "country": "rs",
+      "description": "Serbian (Latin, Unicode)"
+    },
+    {
+      "name": "latinyz",
+      "country": "rs",
+      "description": "Serbian (Latin, QWERTY)"
+    },
+    {
+      "name": "latinunicodeyz",
+      "country": "rs",
+      "description": "Serbian (Latin, Unicode, QWERTY)"
+    },
+    {
+      "name": "rue",
+      "country": "rs",
+      "description": "Pannonian Rusyn"
+    },
+    {
+      "name": "us",
+      "country": "lk",
+      "description": "Sinhala (US)"
+    },
+    {
+      "name": "tam_unicode",
+      "country": "lk",
+      "description": "Tamil (Sri Lanka, TamilNet '99)"
+    },
+    {
+      "name": "tam_TAB",
+      "country": "lk",
+      "description": "Tamil (Sri Lanka, TamilNet '99, TAB encoding)"
+    },
+    {
+      "name": "bksl",
+      "country": "sk",
+      "description": "Slovak (extra backslash)"
+    },
+    {
+      "name": "qwerty",
+      "country": "sk",
+      "description": "Slovak (QWERTY)"
+    },
+    {
+      "name": "qwerty_bksl",
+      "country": "sk",
+      "description": "Slovak (QWERTY, extra backslash)"
+    },
+    {
+      "name": "alternatequotes",
+      "country": "si",
+      "description": "Slovenian (with guillemets)"
+    },
+    {
+      "name": "us",
+      "country": "si",
+      "description": "Slovenian (US)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "es",
+      "description": "Spanish (no dead keys)"
+    },
+    {
+      "name": "deadtilde",
+      "country": "es",
+      "description": "Spanish (dead tilde)"
+    },
+    {
+      "name": "winkeys",
+      "country": "es",
+      "description": "Spanish (Windows)"
+    },
+    {
+      "name": "dvorak",
+      "country": "es",
+      "description": "Spanish (Dvorak)"
+    },
+    {
+      "name": "ast",
+      "country": "es",
+      "description": "Asturian (Spain, with bottom-dot H and L)"
+    },
+    {
+      "name": "cat",
+      "country": "es",
+      "description": "Catalan (Spain, with middle-dot L)"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "latam",
+      "description": "Spanish (Latin American, no dead keys)"
+    },
+    {
+      "name": "deadtilde",
+      "country": "latam",
+      "description": "Spanish (Latin American, dead tilde)"
+    },
+    {
+      "name": "dvorak",
+      "country": "latam",
+      "description": "Spanish (Latin American, Dvorak)"
+    },
+    {
+      "name": "colemak",
+      "country": "latam",
+      "description": "Spanish (Latin American, Colemak)"
+    },
+    {
+      "name": "kik",
+      "country": "ke",
+      "description": "Kikuyu"
+    },
+    {
+      "name": "nodeadkeys",
+      "country": "se",
+      "description": "Swedish (no dead keys)"
+    },
+    {
+      "name": "dvorak",
+      "country": "se",
+      "description": "Swedish (Dvorak)"
+    },
+    {
+      "name": "us_dvorak",
+      "country": "se",
+      "description": "Swedish (Dvorak, intl.)"
+    },
+    {
+      "name": "svdvorak",
+      "country": "se",
+      "description": "Swedish (Svdvorak)"
+    },
+    {
+      "name": "colemak",
+      "country": "se",
+      "description": "Swedish (Colemak)"
+    },
+    {
+      "name": "mac",
+      "country": "se",
+      "description": "Swedish (Macintosh)"
+    },
+    {
+      "name": "us",
+      "country": "se",
+      "description": "Swedish (US)"
+    },
+    {
+      "name": "swl",
+      "country": "se",
+      "description": "Swedish Sign Language"
+    },
+    {
+      "name": "smi",
+      "country": "se",
+      "description": "Northern Saami (Sweden)"
+    },
+    {
+      "name": "rus",
+      "country": "se",
+      "description": "Russian (Sweden, phonetic)"
+    },
+    {
+      "name": "indigenous",
+      "country": "tw",
+      "description": "Taiwanese (indigenous)"
+    },
+    {
+      "name": "saisiyat",
+      "country": "tw",
+      "description": "Saisiyat (Taiwan)"
+    },
+    {
+      "name": "legacy",
+      "country": "tj",
+      "description": "Tajik (legacy)"
+    },
+    {
+      "name": "tis",
+      "country": "th",
+      "description": "Thai (TIS-820.2538)"
+    },
+    {
+      "name": "pat",
+      "country": "th",
+      "description": "Thai (Pattachote)"
+    },
+    {
+      "name": "mnc",
+      "country": "th",
+      "description": "Thai (Manoonchai)"
+    },
+    {
+      "name": "alt",
+      "country": "tm",
+      "description": "Turkmen (Alt-Q)"
+    },
+    {
+      "name": "f",
+      "country": "tr",
+      "description": "Turkish (F)"
+    },
+    {
+      "name": "e",
+      "country": "tr",
+      "description": "Turkish (E)"
+    },
+    {
+      "name": "alt",
+      "country": "tr",
+      "description": "Turkish (Alt-Q)"
+    },
+    {
+      "name": "intl",
+      "country": "tr",
+      "description": "Turkish (intl., with dead keys)"
+    },
+    {
+      "name": "ku",
+      "country": "tr",
+      "description": "Kurdish (Turkey, Latin Q)"
+    },
+    {
+      "name": "ku_f",
+      "country": "tr",
+      "description": "Kurdish (Turkey, F)"
+    },
+    {
+      "name": "ku_alt",
+      "country": "tr",
+      "description": "Kurdish (Turkey, Latin Alt-Q)"
+    },
+    {
+      "name": "phonetic",
+      "country": "ua",
+      "description": "Ukrainian (phonetic)"
+    },
+    {
+      "name": "typewriter",
+      "country": "ua",
+      "description": "Ukrainian (typewriter)"
+    },
+    {
+      "name": "winkeys",
+      "country": "ua",
+      "description": "Ukrainian (Windows)"
+    },
+    {
+      "name": "winkeysenhanced",
+      "country": "ua",
+      "description": "Ukrainian (Windows Enhanced)"
+    },
+    {
+      "name": "macOS",
+      "country": "ua",
+      "description": "Ukrainian (macOS)"
+    },
+    {
+      "name": "legacy",
+      "country": "ua",
+      "description": "Ukrainian (legacy)"
+    },
+    {
+      "name": "homophonic",
+      "country": "ua",
+      "description": "Ukrainian (homophonic)"
+    },
+    {
+      "name": "crh",
+      "country": "ua",
+      "description": "Crimean Tatar (Turkish Q)"
+    },
+    {
+      "name": "crh_f",
+      "country": "ua",
+      "description": "Crimean Tatar (Turkish F)"
+    },
+    {
+      "name": "crh_alt",
+      "country": "ua",
+      "description": "Crimean Tatar (Turkish Alt-Q)"
+    },
+    {
+      "name": "urd-crulp",
+      "country": "pk",
+      "description": "Urdu (Pakistan, CRULP)"
+    },
+    {
+      "name": "urd-nla",
+      "country": "pk",
+      "description": "Urdu (Pakistan, NLA)"
+    },
+    {
+      "name": "pak_urdu_phonetic",
+      "country": "pk",
+      "description": "Urdu (Pak Urdu Phonetic)"
+    },
+    {
+      "name": "ara",
+      "country": "pk",
+      "description": "Arabic (Pakistan)"
+    },
+    {
+      "name": "snd",
+      "country": "pk",
+      "description": "Sindhi"
+    },
+    {
+      "name": "latin",
+      "country": "uz",
+      "description": "Uzbek (Latin)"
+    },
+    {
+      "name": "us",
+      "country": "vn",
+      "description": "Vietnamese (US)"
+    },
+    {
+      "name": "fr",
+      "country": "vn",
+      "description": "Vietnamese (France)"
+    }
+  ],
+  "option": [
+    {
+      "key": "grp",
+      "value": "Switching to another layout"
+    },
+    {
+      "key": "grp:switch",
+      "value": "Right Alt (while pressed)"
+    },
+    {
+      "key": "grp:lswitch",
+      "value": "Left Alt (while pressed)"
+    },
+    {
+      "key": "grp:lwin_switch",
+      "value": "Left Win (while pressed)"
+    },
+    {
+      "key": "grp:rwin_switch",
+      "value": "Right Win (while pressed)"
+    },
+    {
+      "key": "grp:win_switch",
+      "value": "Any Win (while pressed)"
+    },
+    {
+      "key": "grp:menu_switch",
+      "value": "Menu (while pressed), Shift+Menu for Menu"
+    },
+    {
+      "key": "grp:caps_switch",
+      "value": "Caps Lock (while pressed), Alt+Caps Lock for the original Caps Lock action"
+    },
+    {
+      "key": "grp:rctrl_switch",
+      "value": "Right Ctrl (while pressed)"
+    },
+    {
+      "key": "grp:toggle",
+      "value": "Right Alt"
+    },
+    {
+      "key": "grp:lalt_toggle",
+      "value": "Left Alt"
+    },
+    {
+      "key": "grp:caps_toggle",
+      "value": "Caps Lock"
+    },
+    {
+      "key": "grp:shift_caps_toggle",
+      "value": "Shift+Caps Lock"
+    },
+    {
+      "key": "grp:caps_select",
+      "value": "Caps Lock to first layout; Shift+Caps Lock to second layout"
+    },
+    {
+      "key": "grp:win_menu_select",
+      "value": "Left Win to first layout; Right Win/Menu to second layout"
+    },
+    {
+      "key": "grp:ctrl_select",
+      "value": "Left Ctrl to first layout; Right Ctrl to second layout"
+    },
+    {
+      "key": "grp:alt_caps_toggle",
+      "value": "Alt+Caps Lock"
+    },
+    {
+      "key": "grp:shifts_toggle",
+      "value": "Both Shifts together"
+    },
+    {
+      "key": "grp:alts_toggle",
+      "value": "Both Alts together"
+    },
+    {
+      "key": "grp:alt_altgr_toggle",
+      "value": "Both Alts together; AltGr alone chooses third level"
+    },
+    {
+      "key": "grp:ctrls_toggle",
+      "value": "Both Ctrls together"
+    },
+    {
+      "key": "grp:ctrl_shift_toggle",
+      "value": "Ctrl+Shift"
+    },
+    {
+      "key": "grp:lctrl_lshift_toggle",
+      "value": "Left Ctrl+Left Shift"
+    },
+    {
+      "key": "grp:rctrl_rshift_toggle",
+      "value": "Right Ctrl+Right Shift"
+    },
+    {
+      "key": "grp:ctrl_shift_toggle_bidir",
+      "value": "Left Ctrl+Left Shift chooses previous layout, Right Ctrl + Right Shift chooses next layout"
+    },
+    {
+      "key": "grp:ctrl_alt_toggle",
+      "value": "Alt+Ctrl"
+    },
+    {
+      "key": "grp:lctrl_lalt_toggle",
+      "value": "Left Alt+Left Ctrl"
+    },
+    {
+      "key": "grp:rctrl_ralt_toggle",
+      "value": "Right Alt+Right Ctrl"
+    },
+    {
+      "key": "grp:ctrl_alt_toggle_bidir",
+      "value": "Left Ctrl+Left Alt chooses previous layout, Right Ctrl + Right Alt chooses next layout"
+    },
+    {
+      "key": "grp:alt_shift_toggle",
+      "value": "Alt+Shift"
+    },
+    {
+      "key": "grp:lalt_lshift_toggle",
+      "value": "Left Alt+Left Shift"
+    },
+    {
+      "key": "grp:ralt_rshift_toggle",
+      "value": "Right Alt+Right Shift"
+    },
+    {
+      "key": "grp:alt_shift_toggle_bidir",
+      "value": "Left Alt+Left Shift chooses previous layout, Right Alt + Right Shift chooses next layout"
+    },
+    {
+      "key": "grp:menu_toggle",
+      "value": "Menu"
+    },
+    {
+      "key": "grp:lwin_toggle",
+      "value": "Left Win"
+    },
+    {
+      "key": "grp:alt_space_toggle",
+      "value": "Alt+Space"
+    },
+    {
+      "key": "grp:win_space_toggle",
+      "value": "Win+Space"
+    },
+    {
+      "key": "grp:ctrl_space_toggle",
+      "value": "Ctrl+Space"
+    },
+    {
+      "key": "grp:rwin_toggle",
+      "value": "Right Win"
+    },
+    {
+      "key": "grp:lshift_toggle",
+      "value": "Left Shift"
+    },
+    {
+      "key": "grp:rshift_toggle",
+      "value": "Right Shift"
+    },
+    {
+      "key": "grp:lctrl_toggle",
+      "value": "Left Ctrl"
+    },
+    {
+      "key": "grp:rctrl_toggle",
+      "value": "Right Ctrl"
+    },
+    {
+      "key": "grp:sclk_toggle",
+      "value": "Scroll Lock"
+    },
+    {
+      "key": "grp:lctrl_lwin_rctrl_menu",
+      "value": "Ctrl+Left Win to first layout; Ctrl+Menu to second layout"
+    },
+    {
+      "key": "grp:lctrl_lwin_toggle",
+      "value": "Left Ctrl+Left Win"
+    },
+    {
+      "key": "lv2",
+      "value": "Key to choose the 2nd level"
+    },
+    {
+      "key": "lv2:lsgt_switch",
+      "value": "The \"&lt; &gt;\" key"
+    },
+    {
+      "key": "lv3",
+      "value": "Key to choose the 3rd level"
+    },
+    {
+      "key": "lv3:switch",
+      "value": "Right Ctrl"
+    },
+    {
+      "key": "lv3:menu_switch",
+      "value": "Menu"
+    },
+    {
+      "key": "lv3:win_switch",
+      "value": "Any Win"
+    },
+    {
+      "key": "lv3:lwin_switch",
+      "value": "Left Win"
+    },
+    {
+      "key": "lv3:rwin_switch",
+      "value": "Right Win"
+    },
+    {
+      "key": "lv3:alt_switch",
+      "value": "Any Alt"
+    },
+    {
+      "key": "lv3:lalt_switch",
+      "value": "Left Alt"
+    },
+    {
+      "key": "lv3:ralt_switch",
+      "value": "Right Alt"
+    },
+    {
+      "key": "lv3:ralt_switch_multikey",
+      "value": "Right Alt; Shift+Right Alt as Compose"
+    },
+    {
+      "key": "lv3:ralt_alt",
+      "value": "Right Alt never chooses 3rd level"
+    },
+    {
+      "key": "lv3:enter_switch",
+      "value": "Enter on keypad"
+    },
+    {
+      "key": "lv3:caps_switch",
+      "value": "Caps Lock"
+    },
+    {
+      "key": "lv3:caps_switch_capslock_with_ctrl",
+      "value": "Caps Lock; Ctrl+Caps Lock for original Caps Lock action"
+    },
+    {
+      "key": "lv3:bksl_switch",
+      "value": "Backslash"
+    },
+    {
+      "key": "lv3:lsgt_switch",
+      "value": "The \"&lt; &gt;\" key"
+    },
+    {
+      "key": "lv3:caps_switch_latch",
+      "value": "Caps Lock; acts as onetime lock when pressed together with another 3rd-level chooser"
+    },
+    {
+      "key": "lv3:bksl_switch_latch",
+      "value": "Backslash; acts as onetime lock when pressed together with another 3rd level chooser"
+    },
+    {
+      "key": "lv3:lsgt_switch_latch",
+      "value": "The \"&lt; &gt;\" key; acts as onetime lock when pressed together with another 3rd level chooser"
+    },
+    {
+      "key": "ctrl",
+      "value": "Ctrl position"
+    },
+    {
+      "key": "ctrl:nocaps",
+      "value": "Caps Lock as Ctrl"
+    },
+    {
+      "key": "ctrl:lctrl_meta",
+      "value": "Left Ctrl as Meta"
+    },
+    {
+      "key": "ctrl:swapcaps",
+      "value": "Swap Ctrl and Caps Lock"
+    },
+    {
+      "key": "ctrl:grouptoggle_capscontrol",
+      "value": "Caps Lock as Ctrl,  Left Control switches to another layout"
+    },
+    {
+      "key": "ctrl:hyper_capscontrol",
+      "value": "Caps Lock as Ctrl, Ctrl as Hyper"
+    },
+    {
+      "key": "ctrl:ac_ctrl",
+      "value": "To the left of \"A\""
+    },
+    {
+      "key": "ctrl:aa_ctrl",
+      "value": "At the bottom left"
+    },
+    {
+      "key": "ctrl:rctrl_ralt",
+      "value": "Right Ctrl as Right Alt"
+    },
+    {
+      "key": "ctrl:ralt_rctrl",
+      "value": "Right Alt as Right Control"
+    },
+    {
+      "key": "ctrl:menu_rctrl",
+      "value": "Menu as Right Ctrl"
+    },
+    {
+      "key": "ctrl:swap_lalt_lctl",
+      "value": "Swap Left Alt with Left Ctrl"
+    },
+    {
+      "key": "ctrl:swap_ralt_rctl",
+      "value": "Swap Right Alt with Right Ctrl"
+    },
+    {
+      "key": "ctrl:swap_lwin_lctl",
+      "value": "Swap Left Win with Left Ctrl"
+    },
+    {
+      "key": "ctrl:swap_rwin_rctl",
+      "value": "Swap Right Win with Right Ctrl"
+    },
+    {
+      "key": "ctrl:swap_lalt_lctl_lwin",
+      "value": "Left Alt as Ctrl, Left Ctrl as Win, Left Win as Left Alt"
+    },
+    {
+      "key": "grp_led",
+      "value": "Use keyboard LED to show alternative layout"
+    },
+    {
+      "key": "grp_led:num",
+      "value": "Num Lock"
+    },
+    {
+      "key": "grp_led:caps",
+      "value": "Caps Lock"
+    },
+    {
+      "key": "grp_led:scroll",
+      "value": "Scroll Lock"
+    },
+    {
+      "key": "mod_led",
+      "value": "Use keyboard LED to indicate modifiers"
+    },
+    {
+      "key": "mod_led:compose",
+      "value": "Compose"
+    },
+    {
+      "key": "keypad",
+      "value": "Layout of numeric keypad"
+    },
+    {
+      "key": "keypad:legacy",
+      "value": "Legacy"
+    },
+    {
+      "key": "keypad:oss",
+      "value": "Unicode arrows and math operators"
+    },
+    {
+      "key": "keypad:future",
+      "value": "Unicode arrows and math operators on default level"
+    },
+    {
+      "key": "keypad:legacy_wang",
+      "value": "Legacy Wang 724"
+    },
+    {
+      "key": "keypad:oss_wang",
+      "value": "Wang 724 keypad with Unicode arrows and math operators"
+    },
+    {
+      "key": "keypad:future_wang",
+      "value": "Wang 724 keypad with Unicode arrows and math operators on default level"
+    },
+    {
+      "key": "keypad:hex",
+      "value": "Hexadecimal"
+    },
+    {
+      "key": "keypad:atm",
+      "value": "Phone and ATM style"
+    },
+    {
+      "key": "kpdl",
+      "value": "Numeric keypad Delete behavior"
+    },
+    {
+      "key": "kpdl:dot",
+      "value": "Legacy key with dot"
+    },
+    {
+      "key": "kpdl:comma",
+      "value": "Legacy key with comma"
+    },
+    {
+      "key": "kpdl:dotoss",
+      "value": "Four-level key with dot"
+    },
+    {
+      "key": "kpdl:dotoss_latin9",
+      "value": "Four-level key with dot, Latin-9 only"
+    },
+    {
+      "key": "kpdl:commaoss",
+      "value": "Four-level key with comma"
+    },
+    {
+      "key": "kpdl:momayyezoss",
+      "value": "Four-level key with momayyez"
+    },
+    {
+      "key": "kpdl:kposs",
+      "value": "Four-level key with abstract separators"
+    },
+    {
+      "key": "kpdl:semi",
+      "value": "Semicolon on third level"
+    },
+    {
+      "key": "caps",
+      "value": "Caps Lock behavior"
+    },
+    {
+      "key": "caps:internal",
+      "value": "Caps Lock uses internal capitalization; Shift \"pauses\" Caps Lock"
+    },
+    {
+      "key": "caps:internal_nocancel",
+      "value": "Caps Lock uses internal capitalization; Shift does not affect Caps Lock"
+    },
+    {
+      "key": "caps:shift",
+      "value": "Caps Lock acts as Shift with locking; Shift \"pauses\" Caps Lock"
+    },
+    {
+      "key": "caps:shift_nocancel",
+      "value": "Caps Lock acts as Shift with locking; Shift does not affect Caps Lock"
+    },
+    {
+      "key": "caps:capslock",
+      "value": "Caps Lock toggles normal capitalization of alphabetic characters"
+    },
+    {
+      "key": "caps:shiftlock",
+      "value": "Caps Lock toggles Shift Lock (affects all keys)"
+    },
+    {
+      "key": "caps:swapescape",
+      "value": "Swap Esc and Caps Lock"
+    },
+    {
+      "key": "caps:escape",
+      "value": "Make Caps Lock an additional Esc"
+    },
+    {
+      "key": "caps:escape_shifted_capslock",
+      "value": "Make Caps Lock an additional Esc, but Shift + Caps Lock is the regular Caps Lock"
+    },
+    {
+      "key": "caps:backspace",
+      "value": "Make Caps Lock an additional Backspace"
+    },
+    {
+      "key": "caps:return",
+      "value": "Make Caps Lock an additional Return key"
+    },
+    {
+      "key": "caps:super",
+      "value": "Make Caps Lock an additional Super"
+    },
+    {
+      "key": "caps:hyper",
+      "value": "Make Caps Lock an additional Hyper"
+    },
+    {
+      "key": "caps:menu",
+      "value": "Make Caps Lock an additional Menu key"
+    },
+    {
+      "key": "caps:numlock",
+      "value": "Make Caps Lock an additional Num Lock"
+    },
+    {
+      "key": "caps:ctrl_shifted_capslock",
+      "value": "Make Caps Lock an additional Ctrl and Shift + Caps Lock the regular Caps Lock"
+    },
+    {
+      "key": "caps:ctrl_modifier",
+      "value": "Make Caps Lock act as an additional Ctrl modifier, but keep identifying as Caps Lock"
+    },
+    {
+      "key": "caps:digits_row",
+      "value": "Caps Lock gives digits on the digits row (Azerty layouts)"
+    },
+    {
+      "key": "caps:digits_row_independent_lock",
+      "value": "Shift + Caps locks the digits on the digits row, Caps Lock alone behaves as usual (Azerty layouts)"
+    },
+    {
+      "key": "caps:none",
+      "value": "Caps Lock is disabled"
+    },
+    {
+      "key": "altwin",
+      "value": "Alt and Win behavior"
+    },
+    {
+      "key": "altwin:menu",
+      "value": "Add the standard behavior to Menu key"
+    },
+    {
+      "key": "altwin:menu_win",
+      "value": "Menu is mapped to Win"
+    },
+    {
+      "key": "altwin:meta_alt",
+      "value": "Alt and Meta are on Alt"
+    },
+    {
+      "key": "altwin:alt_win",
+      "value": "Alt is mapped to Win and the usual Alt"
+    },
+    {
+      "key": "altwin:ctrl_win",
+      "value": "Ctrl is mapped to Win and the usual Ctrl"
+    },
+    {
+      "key": "altwin:ctrl_rwin",
+      "value": "Ctrl is mapped to Right Win and the usual Ctrl"
+    },
+    {
+      "key": "altwin:ctrl_alt_win",
+      "value": "Ctrl is mapped to Alt, Alt to Win"
+    },
+    {
+      "key": "altwin:meta_win",
+      "value": "Meta is mapped to Win"
+    },
+    {
+      "key": "altwin:left_meta_win",
+      "value": "Meta is mapped to Left Win"
+    },
+    {
+      "key": "altwin:hyper_win",
+      "value": "Hyper is mapped to Win"
+    },
+    {
+      "key": "altwin:alt_super_win",
+      "value": "Alt is mapped to Right Win, Super to Menu"
+    },
+    {
+      "key": "altwin:swap_lalt_lwin",
+      "value": "Left Alt is swapped with Left Win"
+    },
+    {
+      "key": "altwin:swap_ralt_rwin",
+      "value": "Right Alt is swapped with Right Win"
+    },
+    {
+      "key": "altwin:swap_alt_win",
+      "value": "Alt is swapped with Win"
+    },
+    {
+      "key": "altwin:prtsc_rwin",
+      "value": "Win is mapped to PrtSc and the usual Win"
+    },
+    {
+      "key": "Compose",
+      "value": "key          Position of Compose key"
+    },
+    {
+      "key": "compose:ralt",
+      "value": "Right Alt"
+    },
+    {
+      "key": "compose:lwin",
+      "value": "Left Win"
+    },
+    {
+      "key": "compose:lwin-altgr",
+      "value": "3rd level of Left Win"
+    },
+    {
+      "key": "compose:rwin",
+      "value": "Right Win"
+    },
+    {
+      "key": "compose:rwin-altgr",
+      "value": "3rd level of Right Win"
+    },
+    {
+      "key": "compose:menu",
+      "value": "Menu"
+    },
+    {
+      "key": "compose:menu-altgr",
+      "value": "3rd level of Menu"
+    },
+    {
+      "key": "compose:lctrl",
+      "value": "Left Ctrl"
+    },
+    {
+      "key": "compose:lctrl-altgr",
+      "value": "3rd level of Left Ctrl"
+    },
+    {
+      "key": "compose:rctrl",
+      "value": "Right Ctrl"
+    },
+    {
+      "key": "compose:rctrl-altgr",
+      "value": "3rd level of Right Ctrl"
+    },
+    {
+      "key": "compose:caps",
+      "value": "Caps Lock"
+    },
+    {
+      "key": "compose:caps-altgr",
+      "value": "3rd level of Caps Lock"
+    },
+    {
+      "key": "compose:102",
+      "value": "The \"&lt; &gt;\" key"
+    },
+    {
+      "key": "compose:102-altgr",
+      "value": "3rd level of the \"&lt; &gt;\" key"
+    },
+    {
+      "key": "compose:paus",
+      "value": "Pause"
+    },
+    {
+      "key": "compose:ins",
+      "value": "Insert"
+    },
+    {
+      "key": "compose:prsc",
+      "value": "PrtSc"
+    },
+    {
+      "key": "compose:sclk",
+      "value": "Scroll Lock"
+    },
+    {
+      "key": "compat",
+      "value": "Compatibility options"
+    },
+    {
+      "key": "numpad:pc",
+      "value": "Default numeric keypad keys"
+    },
+    {
+      "key": "numpad:mac",
+      "value": "Numeric keypad always enters digits (as in macOS)"
+    },
+    {
+      "key": "numpad:microsoft",
+      "value": "Num Lock on: digits; Shift for arrows. Num Lock off: arrows (as in Windows)"
+    },
+    {
+      "key": "numpad:shift3",
+      "value": "Shift does not cancel Num Lock, chooses 3rd level instead"
+    },
+    {
+      "key": "hyper:mod2",
+      "value": "Map Hyper to Mod2 (conflict with NumLock)"
+    },
+    {
+      "key": "hyper:mod3",
+      "value": "Map Hyper to Mod3 (conflict with LevelFive)"
+    },
+    {
+      "key": "hyper:mod4",
+      "value": "Map Hyper to Mod4 (conflict with Super)"
+    },
+    {
+      "key": "scrolllock:mod3",
+      "value": "Map Scroll Lock to Mod3"
+    },
+    {
+      "key": "srvrkeys:none",
+      "value": "Special keys (Ctrl+Alt+&lt;key&gt;) handled in a server"
+    },
+    {
+      "key": "apple:alupckeys",
+      "value": "Apple Aluminium emulates Pause, PrtSc, Scroll Lock"
+    },
+    {
+      "key": "apple:jp_oadg109a",
+      "value": "Japanese Apple keyboards emulate OADG109A backslash"
+    },
+    {
+      "key": "apple:jp_pc106",
+      "value": "Japanese Apple keyboards emulate PC106 backslash"
+    },
+    {
+      "key": "shift:breaks_caps",
+      "value": "Shift cancels Caps Lock"
+    },
+    {
+      "key": "misc:typo",
+      "value": "Enable extra typographic characters"
+    },
+    {
+      "key": "misc:apl",
+      "value": "Enable APL overlay characters"
+    },
+    {
+      "key": "shift:both_capslock",
+      "value": "Both Shifts together enable Caps Lock"
+    },
+    {
+      "key": "shift:both_capslock_cancel",
+      "value": "Both Shifts together enable Caps Lock; one Shift key disables it"
+    },
+    {
+      "key": "shift:both_shiftlock",
+      "value": "Both Shifts together enable Shift Lock"
+    },
+    {
+      "key": "keypad:pointerkeys",
+      "value": "Shift + Num Lock enables PointerKeys"
+    },
+    {
+      "key": "grab:break_actions",
+      "value": "Allow breaking grabs with keyboard actions (warning: security risk)"
+    },
+    {
+      "key": "grab:debug",
+      "value": "Allow grab and window tree logging"
+    },
+    {
+      "key": "currencysign",
+      "value": "Currency signs"
+    },
+    {
+      "key": "eurosign:e",
+      "value": "Euro on E, third level"
+    },
+    {
+      "key": "eurosign:E",
+      "value": "Euro on E, fourth level"
+    },
+    {
+      "key": "eurosign:2",
+      "value": "Euro on 2"
+    },
+    {
+      "key": "eurosign:4",
+      "value": "Euro on 4"
+    },
+    {
+      "key": "eurosign:5",
+      "value": "Euro on 5"
+    },
+    {
+      "key": "rupeesign:4",
+      "value": "Rupee on 4"
+    },
+    {
+      "key": "lv5",
+      "value": "Key to choose the 5th level"
+    },
+    {
+      "key": "lv5:caps_switch",
+      "value": "Caps Lock chooses 5th level"
+    },
+    {
+      "key": "lv5:lsgt_switch",
+      "value": "The \"&lt; &gt;\" key chooses 5th level"
+    },
+    {
+      "key": "lv5:ralt_switch",
+      "value": "Right Alt chooses 5th level"
+    },
+    {
+      "key": "lv5:menu_switch",
+      "value": "Menu chooses 5th level"
+    },
+    {
+      "key": "lv5:rctrl_switch",
+      "value": "Right Ctrl chooses 5th level"
+    },
+    {
+      "key": "lv5:lsgt_switch_lock",
+      "value": "The \"&lt; &gt;\" key chooses 5th level and acts as a one-time lock if pressed with another 5th level chooser"
+    },
+    {
+      "key": "lv5:ralt_switch_lock",
+      "value": "Right Alt chooses 5th level and acts as a one-time lock if pressed with another 5th level chooser"
+    },
+    {
+      "key": "lv5:lwin_switch_lock",
+      "value": "Left Win chooses 5th level and acts as a one-time lock if pressed with another 5th level chooser"
+    },
+    {
+      "key": "lv5:rwin_switch_lock",
+      "value": "Right Win chooses 5th level and acts as a one-time lock if pressed with another 5th level chooser"
+    },
+    {
+      "key": "nbsp",
+      "value": "Non-breaking space input"
+    },
+    {
+      "key": "nbsp:none",
+      "value": "Usual space at any level"
+    },
+    {
+      "key": "nbsp:level2",
+      "value": "Non-breaking space at the 2nd level"
+    },
+    {
+      "key": "nbsp:level3",
+      "value": "Non-breaking space at the 3rd level"
+    },
+    {
+      "key": "nbsp:level3n",
+      "value": "Non-breaking space at the 3rd level, thin non-breaking space at the 4th level"
+    },
+    {
+      "key": "nbsp:level4",
+      "value": "Non-breaking space at the 4th level"
+    },
+    {
+      "key": "nbsp:level4n",
+      "value": "Non-breaking space at the 4th level, thin non-breaking space at the 6th level"
+    },
+    {
+      "key": "nbsp:level4nl",
+      "value": "Non-breaking space at the 4th level, thin non-breaking space at the 6th level (via Ctrl+Shift)"
+    },
+    {
+      "key": "nbsp:zwnj2",
+      "value": "Zero-width non-joiner at the 2nd level"
+    },
+    {
+      "key": "nbsp:zwnj2zwj3",
+      "value": "Zero-width non-joiner at the 2nd level, zero-width joiner at the 3rd level"
+    },
+    {
+      "key": "nbsp:zwnj2zwj3nb4",
+      "value": "Zero-width non-joiner at the 2nd level, zero-width joiner at the 3rd level, non-breaking space at the 4th level"
+    },
+    {
+      "key": "nbsp:zwnj2nb3",
+      "value": "Zero-width non-joiner at the 2nd level, non-breaking space at the 3rd level"
+    },
+    {
+      "key": "nbsp:zwnj2nb3zwj4",
+      "value": "Zero-width non-joiner at the 2nd level, non-breaking space at the 3rd level, zero-width joiner at the 4th level"
+    },
+    {
+      "key": "nbsp:zwnj2nb3nnb4",
+      "value": "Zero-width non-joiner at the 2nd level, non-breaking space at the 3rd level, thin non-breaking space at the 4th level"
+    },
+    {
+      "key": "nbsp:zwnj3zwj4",
+      "value": "Zero-width non-joiner at the 3rd level, zero-width joiner at the 4th level"
+    },
+    {
+      "key": "japan",
+      "value": "Japanese keyboard options"
+    },
+    {
+      "key": "japan:kana_lock",
+      "value": "Kana Lock key is locking"
+    },
+    {
+      "key": "japan:nicola_f_bs",
+      "value": "NICOLA-F style Backspace"
+    },
+    {
+      "key": "japan:hztg_escape",
+      "value": "Make Zenkaku Hankaku an additional Esc"
+    },
+    {
+      "key": "korean",
+      "value": "Korean Hangul/Hanja keys"
+    },
+    {
+      "key": "korean:ralt_hangul",
+      "value": "Make right Alt a Hangul key"
+    },
+    {
+      "key": "korean:rctrl_hangul",
+      "value": "Make right Ctrl a Hangul key"
+    },
+    {
+      "key": "korean:ralt_hanja",
+      "value": "Make right Alt a Hanja key"
+    },
+    {
+      "key": "korean:rctrl_hanja",
+      "value": "Make right Ctrl a Hanja key"
+    },
+    {
+      "key": "esperanto",
+      "value": "Esperanto letters with superscripts"
+    },
+    {
+      "key": "esperanto:qwerty",
+      "value": "At the corresponding key in a QWERTY layout"
+    },
+    {
+      "key": "esperanto:dvorak",
+      "value": "At the corresponding key in a Dvorak layout"
+    },
+    {
+      "key": "esperanto:colemak",
+      "value": "At the corresponding key in a Colemak layout"
+    },
+    {
+      "key": "solaris",
+      "value": "Old Solaris keycodes compatibility"
+    },
+    {
+      "key": "solaris:sun_compat",
+      "value": "Sun key compatibility"
+    },
+    {
+      "key": "terminate",
+      "value": "Key sequence to kill the X server"
+    },
+    {
+      "key": "terminate:ctrl_alt_bksp",
+      "value": "Ctrl+Alt+Backspace"
+    },
+    {
+      "key": "fkeys",
+      "value": "Function keys"
+    },
+    {
+      "key": "fkeys:basic_13-24",
+      "value": "Use F13-F24 as usual function keys"
+    },
+    {
+      "key": "custom",
+      "value": "Miscellaneous options"
+    },
+    {
+      "key": "custom:types",
+      "value": "Use user-defined custom XKB types"
+    }
+  ]
+}

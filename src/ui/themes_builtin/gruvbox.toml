@@ -1,0 +1,87 @@
+[[theme]]
+name = "Custom Gruvbox Warm"
+author = "Paul"
+variant = "Dark"
+description = "Gruvbox-based warm color theme with yellow primary accents."
+link = ""
+
+# Surfaces
+surface-0 = "#282828"      # bg0_h
+surface-1 = "#1d2021"      # bg0
+surface-2 = "#3c3836"      # bg1
+surface-border = "#504945" # bg2
+
+# Text hierarchy
+text-0 = "#fbf1c7"          # fg0
+text-1 = "#ebdbb2"          # fg1
+text-2 = "#d5c4a1"          # fg2
+text-3 = "#bdae93"          # fg3
+text-disabled = "#a89984"
+text-contrast = "#413b35ff"
+
+# Accents (warm-first, all distinct)
+accent = "#e5ae2fff"       # yellow (main warm accent)
+accent-hover = "#8ec07c"   # aqua (cool hover contrast)
+accent-active = "#fe8019"  # bright warm orange
+accent-success = "#b8bb26" # warm green
+accent-warning = "#d65d0e" # deep orange
+accent-danger = "#fb4934"  # warm red
+
+# Common colors
+red = "#fb4934"
+orange = "#fe8019"
+yellow = "#fabd2f"
+green = "#b8bb26"
+teal = "#8ec07c"   # using aqua since gruvbox has no teal
+blue = "#458588"
+pink = "#d3869b"
+purple = "#d3869b"
+
+# Utilities
+overlay = "#665c54"
+shadow = "#7c6f64"
+
+
+[[theme]]
+name = "Custom Gruvbox Warm Light"
+author = "Paul"
+variant = "Light"
+description = "Light Gruvbox-based warm color theme with yellow primary accents."
+link = ""
+# border-rad = 1
+
+# Surfaces
+surface-0 = "#ebdbb2"      # bg0_h
+surface-1 = "#fbf1c7"      # bg0
+surface-2 = "#d5c4a1"      # bg1
+surface-border = "#d5c4a1" # bg2
+
+# Text hierarchy
+text-0 = "#282828"        # fg0
+text-1 = "#3c3836"        # fg1
+text-2 = "#504945"        # fg2
+text-3 = "#665c54"        # fg3
+text-disabled = "#7c6f64"
+text-contrast = "#f9f5d7"
+
+# Accents (warm-first, all distinct)
+accent = "#b68728ff"         # yellow (main accent)
+accent-hover = "#98971a"   # aqua
+accent-active = "#af3a03"  # bright warm orange
+accent-success = "#98971a" # warm green
+accent-warning = "#b57614" # muted warm yellow-brown
+accent-danger = "#9d0006"  # deep warm red
+
+# Common colors
+red = "#9d0006"
+orange = "#af3a03"
+yellow = "#d79921"
+green = "#98971a"
+teal = "#689d6a"   # gruvbox aqua
+blue = "#076678"
+pink = "#8f3f71"
+purple = "#8f3f71"
+
+# Utilities
+overlay = "#bdae93" # bg3
+shadow = "#a89984"  # bg4

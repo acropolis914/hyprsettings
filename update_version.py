@@ -18,7 +18,7 @@ TARGETS: list[tuple[str, str, Callable[[re.Match, str], str]]] = [
     ("default.nix", r'^(  version = ")([^"]*)(";)', lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
     ("src/hyprsettings", r'^(CURRENT_VERSION\s*=\s*")([^"]*)(")', lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
     ("pyproject.toml", r'^(version\s*=\s*")([^"]*)(")', lambda m, ver: f'{m.group(1)}{ver}{m.group(3)}'),
-    ("src/ui/settings.js", r"^(let VERSION\s*=\s*')([^']*)(')", lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
+    ("src/ui-src/scripts/settings.js", r"^(let VERSION\s*=\s*')([^']*)(')", lambda m, ver: f"{m.group(1)}{ver}{m.group(3)}"),
     ("uv.lock", r"^(version\s*=\s*)(.*)$", lambda m, ver: f"{m.group(1)}{ver}"),
 ]
 

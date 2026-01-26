@@ -1,0 +1,42 @@
+[[theme]]
+name = "Nord"
+author = "arcticicestudio"
+variant = "Dark"
+description = "Calm, arctic-inspired color scheme."
+link = "https://www.nordtheme.com/"
+
+# Surfaces
+surface-0 = "#2E3440"
+surface-1 = "#3B4252"
+surface-2 = "#434C5E"
+surface-border = "#4C566A"
+
+# Text hierarchy
+text-0 = "#D8DEE9"
+text-1 = "#E5E9F0"
+text-2 = "#ECEFF4"
+text-3 = "#8FBCBB"
+text-disabled = "#4C566A"
+text-contrast = "#2E3440"
+
+# Accents
+accent = "#81A1C1"
+accent-hover = "#88C0D0"
+accent-active = "#B48EAD"
+accent-success = "#A3BE8C"
+accent-warning = "#D08770"
+accent-danger = "#BF616A"
+
+# Common colors
+red = "#BF616A"
+orange = "#D08770"
+yellow = "#EBCB8B"
+green = "#A3BE8C"
+teal = "#88C0D0"
+blue = "#81A1C1"
+pink = "#B48EAD"
+purple = "#B48EAD"
+
+# Utilities
+overlay = "#4C566A"
+shadow = "#2E3440"

@@ -13,7 +13,8 @@
 /* --- SCSS-only Vars (Internal) ---*/
 $transition-speed-fast: 0.05s;
 $transition-speed-normal: 0.5s;
-$transition-main: background-color $transition-speed-normal ease,
+$transition-main:
+	background-color $transition-speed-normal ease,
 	color $transition-speed-fast ease;
 
 /* --- Mixins ---*/
@@ -77,12 +78,6 @@ $transition-main: background-color $transition-speed-normal ease,
 		align-content: center;
 		padding-left: 0.2rem;
 	}
-}
-
-@font-face {
-	font-family: 'CommitMonoIconFont';
-	src: url('fonts/CommitMonoNerdFontMono-Regular.otf') format('opentype');
-	font-display: swap;
 }
 
 /* --- Placeholders ---*/
@@ -192,7 +187,8 @@ html {
 	height: 100%;
 	background-color: var(--surface-0);
 	color: var(--text-0);
-	font-family: var(--font-primary), 'CommitMonoIconFont', monospace !important;
+	font-family:
+		var(--font-primary), 'CommitMonoIconFont', monospace !important;
 	font-size: 52.5%;
 	opacity: 0;
 	transition: opacity 0.2s ease-in-out;
@@ -340,7 +336,9 @@ header#main-header {
 
 		> div {
 			@include text-ellipsis;
-			transition: opacity 0.3s ease-in-out, height 0.2s ease-in-out;
+			transition:
+				opacity 0.3s ease-in-out,
+				height 0.2s ease-in-out;
 			height: 2rem;
 		}
 	}
@@ -436,7 +434,9 @@ footer {
 	padding-left: var(--spacing-unit);
 	width: 100%;
 	opacity: 0.9;
-	transition: background-color 0.1s ease-in-out, transform 1s ease;
+	transition:
+		background-color 0.1s ease-in-out,
+		transform 1s ease;
 	align-items: center;
 	@include text-ellipsis;
 	outline: none !important;
@@ -637,7 +637,7 @@ h1#config-set-title {
 	min-width: 30rem;
 	width: 30rem;
 	transition: height 0.2s ease-in-out;
-	.dmenu-footer{
+	.dmenu-footer {
 		font-size: 1rem;
 		align-items: flex-end;
 	}
@@ -695,9 +695,9 @@ h1#config-set-title {
 				}
 			}
 
-			&.selected{
+			&.selected {
 			}
-			.dmenu-item-label{
+			.dmenu-item-label {
 				font-weight: bold;
 			}
 
@@ -731,7 +731,10 @@ h1#config-set-title {
 	border: 1px solid transparent;
 	padding: 0.5rem;
 	margin-bottom: var(--spacing-unit);
-	transition: margin 0.2s ease, border 100ms ease-in-out, scale 0.2s ease;
+	transition:
+		margin 0.2s ease,
+		border 100ms ease-in-out,
+		scale 0.2s ease;
 	display: flex;
 	flex-direction: column;
 	font-size: 1.6rem;
@@ -835,7 +838,7 @@ h1#config-set-title {
 			// width: 100%;
 			border-radius: var(--border-rad);
 			&:disabled {
-				opacity: .5;
+				opacity: 0.5;
 			}
 		}
 
@@ -964,9 +967,8 @@ h1#config-set-title {
 	transition: height 1s ease-in-out;
 	@media (max-width: 33rem) {
 		scale: 0.8;
-
 	}
-	
+
 	.title {
 		white-space: pre;
 		color: var(--accent);
@@ -991,7 +993,6 @@ h1#config-set-title {
 		color: var(--text-0, #fff);
 		@media (max-width: 33rem) {
 			flex-direction: column;
-
 		}
 
 		a {
@@ -1104,7 +1105,9 @@ h1#config-set-title {
 		display: grid;
 		gap: 1rem;
 		grid-auto-flow: column;
-		transition: grid-auto-flow 0.3s, grid-auto-rows 0.3s,
+		transition:
+			grid-auto-flow 0.3s,
+			grid-auto-rows 0.3s,
 			grid-auto-columns 0.3s;
 
 		&.narrow-child {
@@ -1303,10 +1306,10 @@ h1#config-set-title {
 	outline-offset: 2px !important;
 }
 
-.editor-item#theme-selector-setting{
-	select{
-		margin-left:auto;
-		margin-right:1rem;
+.editor-item#theme-selector-setting {
+	select {
+		margin-left: auto;
+		margin-right: 1rem;
 		position: relative;
 	}
 
@@ -1339,13 +1342,15 @@ h1#config-set-title {
 	flex-direction: column;
 	opacity: 1;
 	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
-	transition: margin 0.3s ease, scale 0.2s ease;
+	transition:
+		margin 0.3s ease,
+		scale 0.2s ease;
 
 	> .config-group {
 		margin-top: 1.5rem;
 	}
 
-	&.rule{
+	&.rule {
 		background-color: var(--surface-0);
 	}
 }
@@ -1412,7 +1417,8 @@ button#theme-toggle {
 	color: var(--text-1);
 	font-size: 2rem;
 	cursor: pointer;
-	transition: transform $transition-speed-normal ease,
+	transition:
+		transform $transition-speed-normal ease,
 		color $transition-speed-normal ease;
 
 	&:hover {
@@ -1434,7 +1440,7 @@ button#theme-toggle {
 	flex: 0;
 }
 
-select{
+select {
 	appearance: none;
 	color: inherit;
 	background-color: transparent;
@@ -1598,7 +1604,8 @@ span {
 
 		* {
 			margin-bottom: 0;
-			text-shadow: 0 5px 20px 10px rgba(0, 0, 0, 1),
+			text-shadow:
+				0 5px 20px 10px rgba(0, 0, 0, 1),
 				0 1px 5px rgba(0, 0, 0, 1);
 			line-height: 1.85rem;
 			font-size: 1.5rem;
