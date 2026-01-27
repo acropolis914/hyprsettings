@@ -208,7 +208,8 @@ export function selectFrom(options, addCustom = true) {
 			},
 			onCancel: () => {
 				cleanup()
-				reject(new Error('Selection cancelled'))
+				console.warn('Selection cancelled')
+				reject('selectioncancelled')
 			},
 			promptText: 'Type to search',
 		})
@@ -218,7 +219,8 @@ export function selectFrom(options, addCustom = true) {
 		function outsideClick(e) {
 			if (!root.contains(e.target)) {
 				cleanup()
-				reject(new Error('Selection cancelled'))
+				console.warn('Selection cancelled')
+				reject('selectioncancelled')
 			}
 		}
 

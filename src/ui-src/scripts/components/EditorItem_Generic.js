@@ -60,6 +60,7 @@ export class EditorItem_Generic {
 		this.el.dataset.position = position ?? ''
 		this.el.dataset.disabled = disabled ? 'true' : 'false' //lol vscode badly wants to be a string that's why
 		this.el.dataset.type = 'KEY'
+		this.el.disable = this.disable.bind(this)
 		if (disabled === true) {
 			this.el.classList.add('disabled')
 		}
@@ -626,10 +627,15 @@ export class EditorItem_Generic {
 		this.el.remove()
 	}
 
-	disable() {
+	disable(disabled = null) {
+		if (disabled !== null) {
+			this.el.dataset.disabled = disabled
+			disabled == true ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
+		} else {
 		this.el.dataset.disabled =
 			this.el.dataset.disabled === 'true' ? 'false' : 'true'
 		this.el.classList.toggle('disabled')
+		}
 		this.saveDebounced()
 	}
 

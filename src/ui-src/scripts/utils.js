@@ -4,8 +4,9 @@ import { GLOBAL } from './GLOBAL.js'
 export async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
 	const start = Date.now()
 	while (!check()) {
-		if (Date.now() - start > timeout) throw new Error('Timeout waiting for condition')
-		await new Promise(r => setTimeout(r, interval))
+		if (Date.now() - start > timeout)
+			throw new Error('Timeout waiting for condition')
+		await new Promise((r) => setTimeout(r, interval))
 	}
 }
 
@@ -32,7 +33,7 @@ export function hideAllContextMenus() {
  * @param {String[]} path
  * @returns {Object|null}
  */
-function findParent(root, path, childuuid=null) {
+function findParent(root, path, childuuid = null) {
 	// console.log(`Finding parent for path: ${path}`)
 	let node = root
 	for (let i = 1; i < path.length; i++) {
@@ -41,13 +42,19 @@ function findParent(root, path, childuuid=null) {
 			// console.log(`Node ${node["name"]} has no children`)
 			return null
 		}
-		parent = node["name"]
-		node = node.children.filter(child => child.name === key)
+		parent = node['name']
+		node = node.children.filter((child) => child.name === key)
 		if (node.length > 1) {
 			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
 			if (Array.isArray(node)) {
-				let possibleParents = node.filter(node => Array.isArray(node.children))
-				let parent = possibleParents.filter(parentNode => parentNode.children.some(child => child.uuid === childuuid))
+				let possibleParents = node.filter((node) =>
+					Array.isArray(node.children),
+				)
+				let parent = possibleParents.filter((parentNode) =>
+					parentNode.children.some(
+						(child) => child.uuid === childuuid,
+					),
+				)
 				return parent[0]
 			}
 		} else if (node.length === 1) {
@@ -73,13 +80,25 @@ function findParent(root, path, childuuid=null) {
  * @param {Boolean} disabled=false
  * @returns {any}
  */
-export function saveKey(type, name, uuid, position, value, comment = null, disabled = false) {
+export function saveKey(
+	type,
+	name,
+	uuid,
+	position,
+	value,
+	comment = null,
+	disabled = false,
+) {
+	console.log("Saving key:", {type, name, uuid, position, comment, disabled})
 	let root = GLOBAL['data']
 	let path = position.split(':')
-	let file = path.slice(1).filter(path => path.includes(".conf")).at(-1)
-	console.log("Changed file:", file)
+	let file = path
+		.slice(1)
+		.filter((path) => path.includes('.conf'))
+		.at(-1)
+	console.log('Changed file:', file)
 	let parent = findParent(root, path, uuid)
-	let node = parent.children.find(node => node.uuid === uuid)
+	let node = parent.children.find((node) => node.uuid === uuid)
 	if (node && node.type === 'KEY') {
 		// console.log(node)
 		// console.log(parent.children.indexOf(node))
@@ -89,7 +108,12 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 	node['uuid'] = uuid
 	node['position'] = position
 	node['value'] = value
-	node['disabled'] = disabled;
+	node['disabled'] = disabled
+	if (type === 'GROUP') {
+		console.log(
+			`Group name with uuid ${uuid} disabled set to ${disabled}`,
+		)
+	}
 	if (comment) {
 		node['comment'] = comment
 	} else if (node.hasOwnProperty('comment')) {
@@ -111,8 +135,8 @@ export function deleteKey(uuid, position) {
 	let root = GLOBAL['data']
 	let path = position.split(':')
 	let parent = findParent(root, path, uuid)
-	let node = parent.children.find(node => node.uuid === uuid)
-	let nodeIndex = parent.children.findIndex(node => node.uuid === uuid)
+	let node = parent.children.find((node) => node.uuid === uuid)
+	let nodeIndex = parent.children.findIndex((node) => node.uuid === uuid)
 	if (!GLOBAL['config'].dryrun) {
 		console.log(`Node ${uuid} deleted:`, node)
 		parent.children.splice(nodeIndex, 1)
@@ -124,12 +148,22 @@ export function deleteKey(uuid, position) {
 	}
 }
 
-export async function addItem(type, name, value, comment, position, relative_uuid, below = true) {
+export async function addItem(
+	type,
+	name,
+	value,
+	comment,
+	position,
+	relative_uuid,
+	below = true,
+) {
 	let root = GLOBAL['data']
 	let path = position.split(':')
 	let parent = findParent(root, path, relative_uuid)
 	// console.log(parent)
-	let nodeIndex = parent.children.findIndex(node => node.uuid == relative_uuid)
+	let nodeIndex = parent.children.findIndex(
+		(node) => node.uuid == relative_uuid,
+	)
 	// console.log({ nodeIndex })
 	let newuuid = await Backend.newUUID()
 	let targetIndex = below ? nodeIndex + 1 : nodeIndex
@@ -139,11 +173,10 @@ export async function addItem(type, name, value, comment, position, relative_uui
 		name: name,
 		value: value,
 		position: position,
-		uuid: newuuid
+		uuid: newuuid,
 	})
 	return { type, name, value, comment, position, uuid: newuuid, below }
 }
-
 
 export function makeUUID(length = 8) {
 	let full
@@ -161,11 +194,13 @@ export function makeUUID(length = 8) {
 	return full.slice(0, length)
 }
 
-
 export function saveWindowConfig() {
 	try {
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
-		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		Backend.saveWindowConfig(
+			JSON.stringify(GLOBAL['persistence']),
+			'persistence',
+		)
 		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['config']), 'config')
 		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
@@ -175,7 +210,10 @@ export function saveWindowConfig() {
 
 export async function saveWindowConfig_Config() {
 	try {
-		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
+		await Backend.saveWindowConfig(
+			JSON.stringify(GLOBAL['config']),
+			'config',
+		)
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
@@ -183,7 +221,10 @@ export async function saveWindowConfig_Config() {
 
 export async function saveWindowConfig_Persistence() {
 	try {
-		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		await Backend.saveWindowConfig(
+			JSON.stringify(GLOBAL['persistence']),
+			'persistence',
+		)
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}

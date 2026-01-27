@@ -3,13 +3,17 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "vite",
+      "prestart": "hyprsettings -k &",
+      "dev:parallel": "concurrently -n python,vite -c cyan,magenta \"cd ../../ && sh ./run.sh --bun-dev --debug -c test_config.conf -b --no-browser || true\" \"vite\"",
+      "dev": "bun run prestart && bun run dev:parallel",
+		"old_dev": "hyprsettings -k && vite",
 		"build": "vite build",
 		"preview": "vite preview",
 		"clean-font": "glyphhanger --delay=5000 --whitelist=\"U+E000-U+F8FF,U+F0000-U+FFFFD\" --formats=woff2 --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:6969/"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
+		"concurrently": "^9.2.1",
 		"sass": "^1.97.3",
 		"vite": "^7.3.1"
 	},
