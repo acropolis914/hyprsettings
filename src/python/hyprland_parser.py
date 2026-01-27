@@ -2,8 +2,10 @@
 import json
 import os
 import re
+import threading
 import traceback
 import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import Literal, get_args
 
@@ -18,7 +20,8 @@ changedFileList = []
 
 
 def ui_print(*args, **kwargs):
-	console.print("[green]\\[Hyprland Parser][/green]", *args, **kwargs)
+	now = datetime.now().strftime("%H:%M:%S")
+	console.print(f"[green]\\[HyprParser] {now} [/green]", *args, **kwargs)
 
 
 _last_log_message = None
@@ -49,6 +52,26 @@ NodeType = Literal["KEY", "GROUP", "COMMENT", "BLANK", "FILE", "GROUPEND"]
 
 def makeUUID(length: int):
 	return str(uuid.uuid4()).replace("-", "")[:length]
+
+
+_write_lock = threading.Lock()
+_timers: dict[Path, threading.Timer] = {}
+_DEBOUNCE_SECONDS = 0.2
+
+
+def debounced_write(path: Path, contents: str):
+	def _write():
+		with _write_lock:
+			with open(path, "w", encoding="UTF-8") as f:
+				f.write(contents)
+
+	with _write_lock:
+		if path in _timers:
+			_timers[path].cancel()
+
+		timer = threading.Timer(_DEBOUNCE_SECONDS, _write)
+		_timers[path] = timer
+		timer.start()
 
 
 class Node:
@@ -110,9 +133,11 @@ class Node:
 		indent = "  "
 
 		if self.type == "KEY":
-			disabled = "#DISABLED " if self.disabled or disabled else ""
+			disabled_text = "#DISABLED " if (self.disabled or disabled) else ""
+			if self.disabled or disabled:
+				log(f"Key {self.name} is disabled by {'itself' if self.disabled else 'parent'}.")
 			comment = f" # {self.comment}" if self.comment else ""
-			return f"{indent * indent_level}{disabled}{self.name} = {self.value}{comment}"
+			return f"{indent * indent_level}{disabled_text}{self.name} = {self.value}{comment}"
 		if self.type == "BLANK":
 			return ""
 		if self.type == "COMMENT":
@@ -143,32 +168,32 @@ class Node:
 						content.append(file_content)
 				contents = "\n".join(content)
 
-				# if not contains_any:
-				#     log(f"Path {path} is not in changed files {changedFileList}")
-				# log(contains_any, changedFileList)
 				if save and contains_any:
 					log(f"File {path} has been changed. Saving.")
-					with open(Path(path), "w", encoding="UTF-8") as f:
-						f.write(contents)
+					debounced_write(Path(path), contents)
+
 				return contents
 
 			if self.type == "GROUP" and self.name != "root":
-				ui_print(f"Processing group {self.name} which is disabled: {self.disabled}")
+				ui_print(f"Proc. group {self.name} which is disabled: {self.disabled or disabled}")
 				group_content: list = []
 				comment = f" # {self.comment}" if self.comment else ""
-				disabled_text = "#DISABLED " if self.disabled == "true" or disabled else ""
+				disabled_text = "#DISABLED " if self.disabled or disabled else ""
 				group_content.append(f"{indent * indent_level}{disabled_text}{self.name}" + " {" + comment)
 				indent_level += 1
 				groupeend_comment = None
 				for child in self.children:
+					# log(
+					# 	f"Processing child {child.name} of type {child.type} in group {self.name} which is {self.disabled or disabled}"
+					# )
 					if child.type == "GROUPEND":
-						child.disabled = self.disabled == "true" or disabled
 						groupeend_comment = f"# {child.comment}" if child.comment else ""
 						continue
 					disable_child: bool = (
-						self.disabled == "true" or disabled
-						if self.disabled == "true" or disabled
-						else False
+						(self.disabled or disabled) if (self.disabled or disabled) else False
+					)
+					log(
+						f"{child.name} is Self disabled: {self.disabled}, Parent disabled: {disabled}, Child disabled: {child.disabled}, Final disable: {disable_child}"
 					)
 					content = child.to_hyprland(indent_level, disabled=disable_child)
 					group_content.append(content)
@@ -177,7 +202,6 @@ class Node:
 					f"{indent * indent_level}" + f"{disabled_text}" + "}" + f" {groupeend_comment}"
 				)
 				group_text = "\n".join(group_content)
-				# ui_print(group_text)
 				return group_text
 		elif len(self.children) == 0:
 			# log(f"{self.name} is empty.")
@@ -209,6 +233,7 @@ class Node:
 		console.print_json(json_string)
 		data = json.loads(json_string)
 		data = Node.from_dict(data)
+		log(data)
 		return data
 
 	def __repr__(self):

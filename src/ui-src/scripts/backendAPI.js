@@ -61,6 +61,7 @@ export const Backend = {
 	},
 
 	saveConfig(configJSON, changedFiles=[]) {
+		// console.log({configJSON})
 		switch (GLOBAL.backend) {
 			case 'pywebview':
 				window.pywebview.api.save_config(configJSON, changedFiles)
