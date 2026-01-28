@@ -155,6 +155,28 @@ export function deleteKey(uuid, position) {
 	}
 }
 
+export function duplicateKey(uuid, position, below = true) {
+	console.log(`Duplicating ${position} => with uuid ${uuid}`)
+	let root = GLOBAL['data']
+	let path = position.split(':')
+	let parent = findParent(root, path, uuid)
+	let node = parent.children.find((node) => node.uuid === uuid)
+	let nodeIndex = parent.children.findIndex((node) => node.uuid === uuid)
+	let newuuid = makeUUID(8)
+	let newNode = JSON.parse(JSON.stringify(node))
+	newNode.uuid = newuuid
+	parent.children.splice(nodeIndex + (below ? 1 : 0), 0, newNode)
+	if (!GLOBAL['config'].dryrun) {
+		console.log(`Node ${uuid} duplicated:`, node)
+		Backend.saveConfig(JSON.stringify(GLOBAL['data']))
+		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
+		window.jsViewer.data = GLOBAL['data']
+	} else {
+		console.log(`Dryrun duplicate ${uuid}:`, node)
+	}
+	return newNode
+}
+
 export async function addItem(
 	type,
 	name,

@@ -229,19 +229,19 @@ def on_closing(window):
 		log('[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]')
 		# print("______________________________________________\n")
 		return False
-	# else:
-	#     window_instance.hide()
-	#     window_visible = False
-	#     log(
-	#         "[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]"
-	#     )
-	#     return False
-	if disabled_dmabuf == '1':
-		log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
-		log('Restoring from daemon will fail. Daemon setting is dishonored.')
-	log('Window closed. Terminating process.')
-	# print("______________________________________________\n")
-	os._exit(0)
+	else:
+		#     window_instance.hide()
+		#     window_visible = False
+		#     log(
+		#         "[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]"
+		#     )
+		#     return False
+		if disabled_dmabuf == '1':
+			log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
+			log('Restoring from daemon will fail. Daemon setting is dishonored.')
+		log('Window closed. Terminating process.')
+		# print("______________________________________________\n")
+		os._exit(0)
 
 
 # ------------------- Socket toggle functions -------------------
@@ -653,7 +653,7 @@ if __name__ == '__main__':
 		log(f'Using UI {args.ui}')
 	log(f'Debug mode: {args.debug}')
 	log(f'Verbose: {args.verbose}')
-	log(f'Daemon: {args.no_daemon or args.daemon}')
+	log(f'Daemon: {not args.no_daemon or args.daemon}')
 	log(f'Window: {not args.no_window}')
 
 	if args.hidden:
@@ -664,7 +664,7 @@ if __name__ == '__main__':
 			HYPRLAND_CONFIG_PATH = Path(str(args.config).strip('"').strip("'"))
 		else:
 			warn(f'Given config file is not a ".conf file". Using default config path {HYPRLAND_CONFIG_PATH}')
-	daemon: bool = args.no_daemon or args.daemon
+	daemon: bool = not args.no_daemon or args.daemon
 	#     print(f"Daemon mode: {daemon}")
 	if args.debug:
 		log(
