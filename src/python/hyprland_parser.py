@@ -8,6 +8,7 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Literal, get_args
+import inspect
 
 import rich
 import rich.traceback
@@ -20,8 +21,10 @@ changedFileList = []
 
 
 def ui_print(*args, **kwargs):
+    frame = inspect.currentframe().f_back
+    lineno = frame.f_lineno
     now = datetime.now().strftime("%H:%M:%S")
-    console.print(f"[green]\\[HyprParser] {now} [/green]", *args, **kwargs)
+    console.print(f"[green]\\[HyprParser : {lineno}] {now} [/green]", *args, **kwargs)
 
 
 _last_log_message = None
@@ -304,7 +307,7 @@ class ConfigParser:
             globals = {}
 
             for line_index, line_content in enumerate(config_file, start=1):
-                # log(line_content)
+
                 match = re.match(
                     r"^#\s*disabled\b", line_content.lstrip(), re.IGNORECASE
                 )
@@ -319,11 +322,11 @@ class ConfigParser:
                             flags=re.IGNORECASE,
                         ).lstrip()
                     )
-                log(f"{none_disabled_name.strip()} is disabled: {is_disabled}")
+                    log(f"{none_disabled_name.strip()} is disabled: {is_disabled}")
                 
                 check = self.sanitize(none_disabled_name)
-                is_comment = line_content.strip().startswith("#")
                 line, comment = self.get_parts(none_disabled_name, "#")
+                is_comment = line_content.strip().startswith("#") and not is_disabled and "=" not in line
                 position = ":".join(node.name for node in self.stack)
 
                 if not check and not comment:
