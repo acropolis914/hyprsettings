@@ -1,6 +1,8 @@
 import { ContextMenu } from './contextMenu.js'
 import { addItem, debounce, deleteKey, saveKey } from '../utils.js'
 import { GLOBAL } from '../GLOBAL.js'
+import { EditorItem_Generic } from './EditorItem_Generic.js'
+import { EditorItem_Binds } from './EditorItem_Binds.js'
 
 export class EditorItem_Comments {
 	constructor(json, hidden = false) {
@@ -173,6 +175,10 @@ export class EditorItem_Comments {
 		parent.appendChild(this.el)
 	}
 
+	return() {
+		return this.el
+	}
+
 	delete() {
 		deleteKey(this.el.dataset.uuid, this.el.dataset.position)
 		this.el.remove()
@@ -205,6 +211,23 @@ export class EditorItem_Comments {
 					(comment = comment),
 					false,
 				)
+				let json = {
+					name: name,
+					uuid: uuid,
+					value: new_value,
+					comment: comment ? `# ${comment}` : '',
+					position: position,
+					type: type,
+				}
+				if (name.startsWith('bind')) {
+					this.el.replaceWith(
+						new EditorItem_Binds(json).return(),
+					)
+				} else {
+					this.el.replaceWith(
+						new EditorItem_Generic(json).return(),
+					)
+				}
 			}
 		} else {
 			let type = 'COMMENT'

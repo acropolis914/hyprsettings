@@ -440,6 +440,9 @@ export class EditorItem_Binds {
 		}
 		return false
 	}
+	return(){
+		return this.el
+	}
 
 	save() {
 		let name = this.el.dataset.name

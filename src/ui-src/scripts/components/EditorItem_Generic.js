@@ -655,7 +655,10 @@ export class EditorItem_Generic {
 			)
 		}
 	}
-
+	return() {
+		return this.el
+	}
+	
 	save() {
 		let type = this.el.dataset.type
 		let name = this.el.dataset.name
