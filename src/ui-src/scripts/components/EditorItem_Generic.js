@@ -633,16 +633,27 @@ export class EditorItem_Generic {
 	 *
 	 * @param {boolean|null} disabled
 	 */
-	disable(disabled = null) {
+	disable(disabled = null, groupSave = false) {
 		if (disabled !== null) {
 			this.el.dataset.disabled = disabled.toString()
-			disabled === true ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
+			disabled === true
+				? this.el.classList.add('disabled')
+				: this.el.classList.remove('disabled')
 		} else {
-			this.el.dataset.disabled = this.el.dataset.disabled === 'true' ? 'false' : 'true'
-		// this.el.classList.toggle('disabled')
-			this.el.dataset.disabled === 'true' ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
+			this.el.dataset.disabled =
+				this.el.dataset.disabled === 'true' ? 'false' : 'true'
+			// this.el.classList.toggle('disabled')
+			this.el.dataset.disabled === 'true'
+				? this.el.classList.add('disabled')
+				: this.el.classList.remove('disabled')
 		}
-		this.saveDebounced()
+		if (!groupSave) {
+			this.saveDebounced()
+		} else {
+			console.log(
+				`Saving key as a part of a group. Skipping self save.`,
+			)
+		}
 	}
 
 	save() {

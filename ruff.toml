@@ -1,4 +1,5 @@
 indent-width = 6
-line-length = 120
+line-length  = 150
 [format]
 indent-style = "tab"
+quote-style  = "single"

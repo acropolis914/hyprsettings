@@ -1,4 +1,5 @@
 // @ts-check
+import { GLOBAL } from "../GLOBAL.js"
 import { debounce, saveKey } from "../utils.js"
 import { ContextMenu } from "./contextMenu.js"
 import type { HtmlTagDescriptor } from "vite"
@@ -20,7 +21,7 @@ export class ConfigGroup {
 		this.group_el.dataset.disabled = json["disabled"]
 		this.group_el.dataset.type = json["type"]
 		this.group_el.disable = this.disable.bind(this)
-		this.saveDebounced = debounce(() => this.save(), 500)
+		this.saveDebounced = debounce(() => this.save(), 15)
 		this.group_el.setAttribute(
 			"title",
 			json["position"].replace("root:", "")
@@ -71,11 +72,11 @@ export class ConfigGroup {
 			// 	icon: '󰅀',
 			// 	action: () => this.add('KEY', true),
 			// },
-			// {
-			// 	label: 'Toggle Disable(Bugs!)',
-			// 	icon: '󰈉',
-			// 	action: () => this.disable(),
-			// },
+			{
+				label: 'Toggle Disable(Bugs!)',
+				icon: '󰈉',
+				action: () => this.disable(),
+			},
 			{
 				label: "Delete Group",
 				icon: "󰗩",
@@ -83,7 +84,7 @@ export class ConfigGroup {
 			}
 		])
 
-		// this.group_el.appendChild(this.contextMenu.el)
+		this.group_el.appendChild(this.contextMenu.el)
 
 		this.addEventListeners()
 	}
@@ -136,15 +137,18 @@ export class ConfigGroup {
 			disabled = this.group_el.dataset.disabled === "true"
 
 		}
-
+		this.save()
+		// GLOBAL['groupsave'] = true
 		// @ts-ignore
 		let children = [...this.group_el.querySelectorAll("[data-uuid]")]
 		children.forEach((element: HTMLDivElement) => {
-			console.log("Disabling element:", element)
-			element.disable(disabled)
+			// console.log("Disabling element:", element)
+			element.disable(disabled, true)
 		})
-
-		this.save()
+		// setTimeout(() => {
+		// 	GLOBAL['groupsave'] = false
+		// }, 20);
+		
 	}
 
 	return() {
@@ -153,6 +157,7 @@ export class ConfigGroup {
 
 	save() {
 		const disabled = this.group_el.dataset.disabled === 'true'
+		// console.log("Saving group:", this.group_el.dataset.name, "Disabled:", disabled)
 		saveKey(
 			"GROUP",
 			this.group_el.dataset.name,

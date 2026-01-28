@@ -128,12 +128,12 @@ export class ConfigGroup {
 			disabled = this.group_el.dataset.disabled === 'true'
 
 		}
-		console.log(disabled)
+		// console.log(disabled)
 
 		let children = [...this.group_el.querySelectorAll('[data-uuid]')]
 		children.forEach((element) => {
 			// console.log("Disabling element:", element)
-			element.disable(disabled)
+			element.disable(disabled, true)
 		})
 
 		this.save()

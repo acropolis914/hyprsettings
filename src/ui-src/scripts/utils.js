@@ -89,7 +89,18 @@ export function saveKey(
 	comment = null,
 	disabled = false,
 ) {
-	console.log("Saving key:", {type, name, uuid, position, comment, disabled})
+	if (type === "KEY" && GLOBAL.groupsave === true) {
+		console.log("Group save in progress, skipping key save for ", name)
+		return
+	}
+	console.log('Saving key:', {
+		type,
+		name,
+		uuid,
+		position,
+		comment,
+		disabled,
+	})
 	let root = GLOBAL['data']
 	let path = position.split(':')
 	let file = path
@@ -99,10 +110,6 @@ export function saveKey(
 	console.log('Changed file:', file)
 	let parent = findParent(root, path, uuid)
 	let node = parent.children.find((node) => node.uuid === uuid)
-	if (node && node.type === 'KEY') {
-		// console.log(node)
-		// console.log(parent.children.indexOf(node))
-	}
 	node['name'] = name
 	node['type'] = type
 	node['uuid'] = uuid
@@ -110,9 +117,10 @@ export function saveKey(
 	node['value'] = value
 	node['disabled'] = disabled
 	if (type === 'GROUP') {
-		console.log(
-			`Group name with uuid ${uuid} disabled set to ${disabled}`,
-		)
+		node['children'].forEach((child) => {
+			// console.log('Disabling child:', child)
+			child['disabled'] = disabled
+		})
 	}
 	if (comment) {
 		node['comment'] = comment
@@ -121,7 +129,6 @@ export function saveKey(
 	}
 
 	window.jsViewer.data = GLOBAL['data']
-
 	if (!GLOBAL['config'].dryrun) {
 		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
 		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
