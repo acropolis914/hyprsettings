@@ -137,9 +137,10 @@ export class ConfigGroup {
 
 		}
 
+		// @ts-ignore
 		let children = [...this.group_el.querySelectorAll("[data-uuid]")]
 		children.forEach((element: HTMLDivElement) => {
-			// console.log("Disabling element:", element)
+			console.log("Disabling element:", element)
 			element.disable(disabled)
 		})
 

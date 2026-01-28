@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
       "prestart": "hyprsettings -k &",
-      "dev:parallel": "concurrently -n py,vt -c cyan,magenta \"cd ../../ && sh ./run.sh --bun-dev --debug -c test_config.conf -b --no-browser || true\" \"vite\"",
+      "dev:parallel": "concurrently -n py,vt -c cyan,magenta \"cd ../../ && sh ./run.sh --bun-dev --debug || true\" \"vite\"",
       "dev": "bun run prestart && bun run dev:parallel",
 		"old_dev": "hyprsettings -k && vite",
 		"build": "vite build",
