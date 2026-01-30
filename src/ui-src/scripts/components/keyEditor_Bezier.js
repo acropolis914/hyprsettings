@@ -1,4 +1,5 @@
-import { debounce } from '../utils.js';
+// import { debounce } from '../utils.js';
+import { debounce } from '../helpers.js'
 
 export class BezierModal {
 	constructor(initialValue) {

@@ -1,11 +1,15 @@
 import { GLOBAL } from './GLOBAL.js'
-import { waitFor } from './utils.js'
+import { debounce, waitFor } from './helpers.js'
 
 async function fetchFlask(path, options = {}) {
 	const url = '/api/' + path
 	const resp = await fetch(url, options)
 	return await resp.json()
 }
+
+export const saveConfigDebounced = debounce((configJSON, changedFiles = []) => {
+	Backend.saveConfig(configJSON, changedFiles)
+}, 50)
 
 export const Backend = {
 	async readWindowConfig() {
@@ -26,9 +30,7 @@ export const Backend = {
 				await waitFor(() => window.pywebview?.api.init)
 				return await window.pywebview.api.init()
 			case 'flask':
-				const query = path
-					? `?path=${encodeURIComponent(path)}`
-					: ''
+				const query = path ? `?path=${encodeURIComponent(path)}` : ''
 				return await fetchFlask('get_config' + query)
 			default:
 				throw new Error('Unknown backend: ' + GLOBAL.backend)
@@ -39,9 +41,7 @@ export const Backend = {
 		switch (GLOBAL.backend) {
 			case 'pywebview':
 				await waitFor(() => window.pywebview?.api.init)
-				return JSON.parse(
-					await window.pywebview.api.getDebugStatus()
-				)
+				return JSON.parse(await window.pywebview.api.getDebugStatus())
 			case 'flask':
 				return await fetchFlask('get_debug_status')
 			default:
@@ -60,7 +60,7 @@ export const Backend = {
 		}
 	},
 
-	saveConfig(configJSON, changedFiles=[]) {
+	saveConfig(configJSON, changedFiles = []) {
 		// console.log({configJSON})
 		switch (GLOBAL.backend) {
 			case 'pywebview':
@@ -70,7 +70,7 @@ export const Backend = {
 				fetchFlask('save_config', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ config: configJSON, changedFiles })
+					body: JSON.stringify({ config: configJSON, changedFiles }),
 				})
 				break
 			default:
@@ -83,9 +83,7 @@ export const Backend = {
 			case 'pywebview':
 				return await window.pywebview.api.new_uuid(length)
 			case 'flask':
-				const data = await fetchFlask(
-					`new_uuid?length=${length}`
-				)
+				const data = await fetchFlask(`new_uuid?length=${length}`)
 				return data.uuid
 			default:
 				throw new Error('Unknown backend: ' + GLOBAL.backend)
@@ -95,10 +93,7 @@ export const Backend = {
 	saveWindowConfig(json, label = 'config') {
 		switch (GLOBAL.backend) {
 			case 'pywebview':
-				window.pywebview.api.save_window_config(
-					json,
-					label
-				)
+				window.pywebview.api.save_window_config(json, label)
 				break
 			case 'flask':
 				fetchFlask(`save_window_config?label=${label}`, {

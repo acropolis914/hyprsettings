@@ -6,16 +6,37 @@ import {
 import { ContextMenu } from './contextMenu.js'
 import {
 	addItem,
-	debounce,
 	deleteKey,
 	saveKey,
 	splitWithRemainder,
 } from '../utils.js'
+import { debounce } from '../helpers.js'
 import { GLOBAL } from '../GLOBAL.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
+import { html, render } from 'lit'
 
 // import TomSelect from "../../jslib/tom-select.complete.min"
-
+const templateString = html`
+	<div class="editor-item" tabindex="0">
+		<div class="editor-item-preview"></div>
+		<div class="keybind-editor">
+			<select class="bindflags" multiple></select>
+			<select class="modkey" multiple></select>
+			<textarea class="keypress"></textarea>
+			<textarea class="description hidden"></textarea>
+			<select class="dispatcher" multiple></select>
+			<textarea class="params"></textarea>
+		</div>
+		<div class="comment-area">
+			<span class="comment-hashtag">#</span>
+			<textarea
+				class="comment"
+				contenteditable="true"
+				placeholder="No Comment"
+			></textarea>
+		</div>
+	</div>
+`
 export class EditorItem_Binds {
 	constructor(json, disabled = false) {
 		this.initial_load = true
@@ -27,8 +48,12 @@ export class EditorItem_Binds {
 		if (!name.trim().startsWith('bind')) {
 			return
 		}
-		const template = document.getElementById('keybind-template')
-		this.el = template.content.firstElementChild.cloneNode(true)
+		const template = document.createElement('div')
+		render(templateString, template)
+		// template.innerHTML = templateString
+		//
+		// const template = document.getElementById('keybind-template')
+		this.el = template.firstElementChild.cloneNode(true)
 		// @ts-ignore
 		if (GLOBAL['config'].compact) {
 			this.el.classList.add('compact')
@@ -440,7 +465,7 @@ export class EditorItem_Binds {
 		}
 		return false
 	}
-	return(){
+	return() {
 		return this.el
 	}
 

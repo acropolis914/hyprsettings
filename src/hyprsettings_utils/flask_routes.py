@@ -1,5 +1,5 @@
-from python.shared import state
-from python.pywebview_apis import api
+from .shared import state
+from .pywebview_apis import api
 from flask import send_from_directory, jsonify, request
 
 app = state.app

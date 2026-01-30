@@ -194,6 +194,14 @@ export function selectFrom(options, addCustom = true) {
 			GLOBAL.currentView = GLOBAL.previousView
 			document.removeEventListener('click', outsideClick)
 		}
+		if (addCustom) {
+		let custom = {
+			name: 'Custom value...',
+			value: 'custom',
+			description: 'Enter a custom value',
+		}
+		options.push(custom)
+		}
 
 		menu = new DMenu({
 			items: options.map((o) => ({

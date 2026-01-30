@@ -1,23 +1,6 @@
-import { Backend } from './backendAPI.js'
+import { Backend, saveConfigDebounced } from './backendAPI.js'
 import { GLOBAL } from './GLOBAL.js'
-
-export async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
-	const start = Date.now()
-	while (!check()) {
-		if (Date.now() - start > timeout)
-			throw new Error('Timeout waiting for condition')
-		await new Promise((r) => setTimeout(r, interval))
-	}
-}
-
-export const debounce = (fn, wait = 100) => {
-	let timeout
-	return function (...args) {
-		const context = this
-		clearTimeout(timeout)
-		timeout = setTimeout(() => fn.apply(context, args), wait)
-	}
-}
+import { debounce, waitFor } from './helpers.js'
 
 export function hideAllContextMenus() {
 	// console.log("hiding all ctx")
@@ -47,14 +30,8 @@ function findParent(root, path, childuuid = null) {
 		if (node.length > 1) {
 			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
 			if (Array.isArray(node)) {
-				let possibleParents = node.filter((node) =>
-					Array.isArray(node.children),
-				)
-				let parent = possibleParents.filter((parentNode) =>
-					parentNode.children.some(
-						(child) => child.uuid === childuuid,
-					),
-				)
+				let possibleParents = node.filter((node) => Array.isArray(node.children))
+				let parent = possibleParents.filter((parentNode) => parentNode.children.some((child) => child.uuid === childuuid))
 				return parent[0]
 			}
 		} else if (node.length === 1) {
@@ -80,17 +57,9 @@ function findParent(root, path, childuuid = null) {
  * @param {Boolean} disabled=false
  * @returns {any}
  */
-export function saveKey(
-	type,
-	name,
-	uuid,
-	position,
-	value,
-	comment = null,
-	disabled = false,
-) {
-	if (type === "KEY" && GLOBAL.groupsave === true) {
-		console.log("Group save in progress, skipping key save for ", name)
+export function saveKey(type, name, uuid, position, value, comment = null, disabled = false) {
+	if (type === 'KEY' && GLOBAL.groupsave === true) {
+		console.log('Group save in progress, skipping key save for ', name)
 		return
 	}
 	console.log('Saving key:', {
@@ -131,7 +100,7 @@ export function saveKey(
 	window.jsViewer.data = GLOBAL['data']
 	if (!GLOBAL['config'].dryrun) {
 		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
-		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
+		saveConfigDebounced(JSON.stringify(GLOBAL['data']), [file])
 	} else {
 		console.log(`Dryrun save ${uuid}:`, node)
 	}
@@ -177,22 +146,12 @@ export function duplicateKey(uuid, position, below = true) {
 	return newNode
 }
 
-export async function addItem(
-	type,
-	name,
-	value,
-	comment,
-	position,
-	relative_uuid,
-	below = true,
-) {
+export async function addItem(type, name, value, comment, position, relative_uuid, below = true) {
 	let root = GLOBAL['data']
 	let path = position.split(':')
 	let parent = findParent(root, path, relative_uuid)
 	// console.log(parent)
-	let nodeIndex = parent.children.findIndex(
-		(node) => node.uuid == relative_uuid,
-	)
+	let nodeIndex = parent.children.findIndex((node) => node.uuid == relative_uuid)
 	// console.log({ nodeIndex })
 	let newuuid = await Backend.newUUID()
 	let targetIndex = below ? nodeIndex + 1 : nodeIndex
@@ -226,10 +185,7 @@ export function makeUUID(length = 8) {
 export function saveWindowConfig() {
 	try {
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
-		Backend.saveWindowConfig(
-			JSON.stringify(GLOBAL['persistence']),
-			'persistence',
-		)
+		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
 		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['config']), 'config')
 		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
@@ -239,10 +195,7 @@ export function saveWindowConfig() {
 
 export async function saveWindowConfig_Config() {
 	try {
-		await Backend.saveWindowConfig(
-			JSON.stringify(GLOBAL['config']),
-			'config',
-		)
+		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
@@ -250,10 +203,7 @@ export async function saveWindowConfig_Config() {
 
 export async function saveWindowConfig_Persistence() {
 	try {
-		await Backend.saveWindowConfig(
-			JSON.stringify(GLOBAL['persistence']),
-			'persistence',
-		)
+		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}

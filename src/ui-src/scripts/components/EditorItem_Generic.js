@@ -1,16 +1,15 @@
 import { ContextMenu } from './contextMenu.js'
-import { addItem, debounce, deleteKey, saveKey } from '../utils.js'
+import { addItem, deleteKey, saveKey } from '../utils.js'
+import { debounce } from '../helpers.js'
 import { GLOBAL } from '../GLOBAL.js'
-import {
-	findAdjacentConfigKeys,
-	findConfigDescription,
-} from '../hyprland-specific/hyprland_config_descriptions.js'
+import { findAdjacentConfigKeys, findConfigDescription } from '../hyprland-specific/hyprland_config_descriptions.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { SliderModal } from './keyEditor_Slider.js'
 import { GradientModal } from './keyEditor_Gradient.js'
 import { parseHyprColor } from '../hyprland-specific/colorparser.js'
 import { selectFrom } from '../ui_components/dmenu.js'
 import { BezierModal } from './keyEditor_Bezier.js'
+import { html, render } from 'lit'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -31,6 +30,20 @@ import { BezierModal } from './keyEditor_Bezier.js'
 //         // saveKey(type, name, uuid, position, value)
 //     }
 // }
+
+const templateString = html`
+	<div class="editor-item editor-item-generic" tabindex="0">
+		<div class="editor-item-preview"></div>
+		<div class="generic-editor">
+			<!-- <textarea name="key" id="generic-key"></textarea>
+			<textarea name="value" id="generic-value"></textarea> -->
+		</div>
+		<div class="comment-area">
+			<span class="comment-hashtag">#</span>
+			<textarea class="comment" placeholder="No Comment"></textarea>
+		</div>
+	</div>
+`
 export class EditorItem_Generic {
 	constructor(json, disabled = false) {
 		this.inital_load = true
@@ -42,16 +55,17 @@ export class EditorItem_Generic {
 		let position = json['position']
 
 		this.saveDebounced = debounce(() => this.save(), 15)
-		const template = document.getElementById('generic-template')
-		this.el = template.content.firstElementChild.cloneNode(true)
+
+		const template = document.createElement('div')
+		render(templateString, template)
+		this.el = template.firstElementChild.cloneNode(true)
+
 		this.el.classList.add('editor-item')
 		this.el.classList.add('editor-item-generic')
 		if (GLOBAL['config'].compact) {
 			this.el.classList.add('compact')
 		}
-		let position_title = json['position']
-			.replace('root:', '')
-			.replaceAll(':', ' 󰄾 ')
+		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
 		this.el.title = `  Location: ${position_title}`
 		this.el.dataset.name = name
 		this.el.dataset.uuid = uuid
@@ -93,44 +107,25 @@ export class EditorItem_Generic {
 						.map(Number)
 					let data = this.info['data']
 					// console.log({ min, max, data })
-					this.valueEditor = new SliderModal(
-						min,
-						max,
-						this.info['type'] === 'CONFIG_OPTION_INT'
-							? false
-							: true,
-					).el
+					this.valueEditor = new SliderModal(min, max, this.info['type'] === 'CONFIG_OPTION_INT' ? false : true).el
 					this.valueEditor.value = value
 					break
 				}
 
 				case 'CONFIG_OPTION_COLOR': {
 					try {
-						this.valueEditor =
-							document.createElement('input')
-						this.valueEditor.setAttribute(
-							'type',
-							'text',
-						)
-						this.valueEditor.setAttribute(
-							'data-coloris',
-							'',
-						)
+						this.valueEditor = document.createElement('input')
+						this.valueEditor.setAttribute('type', 'text')
+						this.valueEditor.setAttribute('data-coloris', '')
 						if (parseInt(value)) {
 							value = Number(value)
 						}
-						this.valueEditor.value =
-							parseHyprColor(value)
-						this.valueEditor.style.backgroundColor =
-							this.valueEditor.value
+						this.valueEditor.value = parseHyprColor(value)
+						this.valueEditor.style.backgroundColor = this.valueEditor.value
 						this.valueEditor.style.color = 'transparent'
-						this.valueEditor.addEventListener(
-							'input',
-							() => {
-								this.valueEditor.style.backgroundColor =
-									this.valueEditor.value
-							},
-						)
+						this.valueEditor.addEventListener('input', () => {
+							this.valueEditor.style.backgroundColor = this.valueEditor.value
+						})
 					} catch (E) {
 						this.valueEditor = null
 					}
@@ -139,9 +134,7 @@ export class EditorItem_Generic {
 
 				case 'CONFIG_OPTION_GRADIENT': {
 					try {
-						this.valueEditor = new GradientModal(
-							value,
-						).el
+						this.valueEditor = new GradientModal(value).el
 					} catch (E) {
 						this.valueEditor = null
 					}
@@ -162,9 +155,9 @@ export class EditorItem_Generic {
 
 		if (!this.valueEditor) {
 			this.valueEditor = document.createElement('textarea')
-			this.valueEditor = document.createElement('textarea')
+			// this.valueEditor = document.createElement('textarea')
 			this.valueEditor.rows = 1
-			this.valueEditor.rows = 1
+			// this.valueEditor.rows = 1
 			if (this.info) {
 				this.valueEditor.dataset.defaultData = this.info['data']
 			}
@@ -177,13 +170,8 @@ export class EditorItem_Generic {
 			let type = JSON.stringify(this.info['type'])
 
 			let description_title = `${JSON.parse(description)}\n\n Type: ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
-			description_title =
-				description_title.charAt(0).toUpperCase() +
-				description_title.slice(1)
-			if (
-				JSON.parse(type) === 'CONFIG_OPTION_INT' ||
-				JSON.parse(type) === 'CONFIG_OPTION_FLOAT'
-			) {
+			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
+			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
 				this.el.title += `\n\n󱎸  Description: ${description_title}`
 				const [defaultValue, min, max] = this.info['data']
 					.split(',')
@@ -263,9 +251,7 @@ export class EditorItem_Generic {
 		let formatted = name.replace(/_/g, ' ')
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
 		let value = this.valueEditor.value
-		let comment = this.commentArea.value
-			? `# ${this.commentArea.value}`
-			: ''
+		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
 		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
 		if (!this.inital_load) {
 			this.saveDebounced()
@@ -286,15 +272,10 @@ export class EditorItem_Generic {
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('dblclick', (e) => {
-			if (
-				this.el.dataset.name === 'bezier' &&
-				this.valueEditor.contains(e.target)
-			) {
+			if (this.el.dataset.name === 'bezier' && this.valueEditor.contains(e.target)) {
 				// this.el.classList.toggle('compact')
 				// this.contextMenu.hide()
-			} else if (
-				this.el.dataset.infoType === 'CONFIG_OPTION_BOOL'
-			) {
+			} else if (this.el.dataset.infoType === 'CONFIG_OPTION_BOOL') {
 				// this.contextMenu.hide()
 			} else {
 				this.el.classList.toggle('compact')
@@ -313,27 +294,15 @@ export class EditorItem_Generic {
 			if (e.key === 'Delete') {
 				e.preventDefault()
 				e.stopPropagation()
-				Array.from(this.contextMenu.el.children).forEach(
-					(element) => {
-						let label_el =
-							element.querySelector(
-								'.ctx-button-label',
-							)
-						if (
-							label_el.textContent
-								.toLowerCase()
-								.includes('delete')
-						) {
-							setTimeout(() => element.click(), 0)
-						}
-					},
-				)
+				Array.from(this.contextMenu.el.children).forEach((element) => {
+					let label_el = element.querySelector('.ctx-button-label')
+					if (label_el.textContent.toLowerCase().includes('delete')) {
+						setTimeout(() => element.click(), 0)
+					}
+				})
 			}
 			if (e.key === 'd') {
-				if (
-					e.target.tagName === 'TEXTAREA' ||
-					e.target.tagName === 'INPUT'
-				) {
+				if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
 					return
 				}
 				e.stopPropagation()
@@ -391,52 +360,24 @@ export class EditorItem_Generic {
 
 				console.debug('Current element:', this.el)
 				console.debug('dataset:', { ...this.el.dataset })
-				console.debug(
-					'parent classes:',
-					this.el.parentElement?.classList?.value,
-				)
+				console.debug('parent classes:', this.el.parentElement?.classList?.value)
 
-				const existingSiblingKeys = Array.from(
-					this.el.parentNode.children,
-				)
-					.filter((el) =>
-						el.classList.contains(
-							'editor-item-generic',
-						),
-					)
+				const existingSiblingKeys = Array.from(this.el.parentNode.children)
+					.filter((el) => el.classList.contains('editor-item-generic'))
 					.map((el) => el.dataset.name)
 
-				console.debug(
-					'existingSiblingKeys:',
-					existingSiblingKeys,
-				)
-
 				let availableKeys
-				console.debug(this.config_position)
 				try {
-					availableKeys = findAdjacentConfigKeys(
-						this.config_position,
-						existingSiblingKeys,
-					)
+					availableKeys = findAdjacentConfigKeys(this.config_position, existingSiblingKeys)
 				} catch (e) {
 					console.error('findAdjacentConfigKeys threw:', e)
 				}
-				// console.table(availableKeys);
 
 				let randomKey
-				if (
-					Array.isArray(availableKeys) &&
-					availableKeys.length > 0
-				) {
-					// const idx = Math.floor(Math.random() * availableKeys.length);
-					// randomKey = availableKeys[idx];
-					// console.debug('Random index:', idx);
-					randomKey = await selectFrom(availableKeys)
+				if (Array.isArray(availableKeys) && availableKeys.length > 0) {
+					randomKey = await selectFrom(availableKeys, true)
 				} else {
-					console.warn(
-						'availableKeys empty or invalid:',
-						availableKeys,
-					)
+					console.warn('availableKeys empty or invalid:', availableKeys)
 				}
 
 				console.debug('randomKey raw:', randomKey)
@@ -455,25 +396,17 @@ export class EditorItem_Generic {
 
 					try {
 						if (
-							randomKey.type ===
-								'CONFIG_OPTION_INT' ||
+							randomKey.type === 'CONFIG_OPTION_INT' ||
 							(typeof randomKey.data === 'string' &&
 								randomKey.data.includes(',') &&
-								randomKey.data.split(',')
-									.length === 3)
+								randomKey.data.split(',').length === 3)
 						) {
-							value = randomKey.data
-								.split(',')[0]
-								.trim()
+							value = randomKey.data.split(',')[0].trim()
 						} else {
 							value = randomKey.data
 						}
 					} catch (e) {
-						console.error(
-							'Value derivation failed:',
-							e,
-							randomKey,
-						)
+						console.error('Value derivation failed:', e, randomKey)
 					}
 				} else {
 					console.debug('No randomKey selected.')
@@ -487,10 +420,7 @@ export class EditorItem_Generic {
 				const allowed_dupes = ['animation', 'bezier', 'gesture']
 				const thisName = this.el.dataset.name
 				const isAllowedDupe = allowed_dupes.includes(thisName)
-				const isInConfigGroup =
-					this.el.parentElement?.classList?.contains(
-						'config-group',
-					)
+				const isInConfigGroup = this.el.parentElement?.classList?.contains('config-group')
 
 				console.debug('Fallback decision inputs:', {
 					nameIsFalsy: !name,
@@ -500,9 +430,7 @@ export class EditorItem_Generic {
 				})
 
 				if (!name && (isAllowedDupe || !isInConfigGroup)) {
-					console.warn(
-						'Using dataset name due to dupe rules',
-					)
+					console.warn('Using dataset name due to dupe rules')
 					name = thisName
 				} else if (!name) {
 					console.warn('Falling back to GENERIC')
@@ -515,15 +443,7 @@ export class EditorItem_Generic {
 
 				console.debug('FINAL name/value:', { name, value })
 
-				let newGenericItem = await addItem(
-					'KEY',
-					name,
-					value,
-					'',
-					this.el.dataset.position,
-					this.el.dataset.uuid,
-					below,
-				)
+				let newGenericItem = await addItem('KEY', name, value, '', this.el.dataset.position, this.el.dataset.uuid, below)
 
 				console.debug('addItem result:', newGenericItem)
 
@@ -578,14 +498,8 @@ export class EditorItem_Generic {
 	}
 
 	valueReset() {
-		if (
-			this.info.type == 'CONFIG_OPTION_INT' ||
-			(this.info.data.includes(',') &&
-				this.info.data.split(',').length === 3)
-		) {
-			this.valueEditor.value = this.info['data']
-				.split(',')[0]
-				.trim()
+		if (this.info.type == 'CONFIG_OPTION_INT' || (this.info.data.includes(',') && this.info.data.split(',').length === 3)) {
+			this.valueEditor.value = this.info['data'].split(',')[0].trim()
 		} else {
 			this.valueEditor.value = this.info['data']
 		}
@@ -594,25 +508,11 @@ export class EditorItem_Generic {
 	}
 
 	flipValueIfBool() {
-		if (
-			this.el.dataset.infoType === 'CONFIG_OPTION_BOOL' ||
-			this.el.dataset.value === 'on' ||
-			this.el.dataset.value === 'off'
-		) {
-			if (
-				this.valueEditor.value === 'true' ||
-				this.valueEditor.value === 'false'
-			) {
-				this.valueEditor.value =
-					this.valueEditor.value === 'true'
-						? 'false'
-						: 'true'
-			} else if (
-				this.el.dataset.value === 'on' ||
-				this.el.dataset.value === 'off'
-			) {
-				this.valueEditor.value =
-					this.valueEditor.value === 'on' ? 'off' : 'on'
+		if (this.el.dataset.infoType === 'CONFIG_OPTION_BOOL' || this.el.dataset.value === 'on' || this.el.dataset.value === 'off') {
+			if (this.valueEditor.value === 'true' || this.valueEditor.value === 'false') {
+				this.valueEditor.value = this.valueEditor.value === 'true' ? 'false' : 'true'
+			} else if (this.el.dataset.value === 'on' || this.el.dataset.value === 'off') {
+				this.valueEditor.value = this.valueEditor.value === 'on' ? 'off' : 'on'
 			}
 
 			this.el.dataset.value = this.valueEditor.value
@@ -636,29 +536,22 @@ export class EditorItem_Generic {
 	disable(disabled = null, groupSave = false) {
 		if (disabled !== null) {
 			this.el.dataset.disabled = disabled.toString()
-			disabled === true
-				? this.el.classList.add('disabled')
-				: this.el.classList.remove('disabled')
+			disabled === true ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
 		} else {
-			this.el.dataset.disabled =
-				this.el.dataset.disabled === 'true' ? 'false' : 'true'
+			this.el.dataset.disabled = this.el.dataset.disabled === 'true' ? 'false' : 'true'
 			// this.el.classList.toggle('disabled')
-			this.el.dataset.disabled === 'true'
-				? this.el.classList.add('disabled')
-				: this.el.classList.remove('disabled')
+			this.el.dataset.disabled === 'true' ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
 		}
 		if (!groupSave) {
 			this.saveDebounced()
 		} else {
-			console.log(
-				`Saving key as a part of a group. Skipping self save.`,
-			)
+			console.log(`Saving key as a part of a group. Skipping self save.`)
 		}
 	}
 	return() {
 		return this.el
 	}
-	
+
 	save() {
 		let type = this.el.dataset.type
 		let name = this.el.dataset.name

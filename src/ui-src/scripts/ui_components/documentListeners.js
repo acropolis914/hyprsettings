@@ -1,6 +1,7 @@
 import { GLOBAL } from '../GLOBAL.js'
 import { hideAllContextMenus } from '../utils.js'
 import { createOverlay } from './darken_overlay.js'
+import hotkeys from 'hotkeys-js'
 
 document.addEventListener('keydown', (event) => {
 	if (event.key === 'F5') {

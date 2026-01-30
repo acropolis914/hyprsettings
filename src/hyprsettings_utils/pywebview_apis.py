@@ -4,13 +4,12 @@ import os
 import subprocess
 from pathlib import Path
 from packaging.version import Version
-from python.shared import state, hs_globals
+from .shared import hs_globals, state
 import tomlkit as toml
 
 thisfile_path = Path(__file__).parent.resolve()
 thisfile_path_parent = thisfile_path.parent.resolve()
-
-from 
+from .hyprland_parser import ConfigParser
 
 
 class Api:

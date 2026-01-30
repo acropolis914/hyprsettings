@@ -1,6 +1,7 @@
 // @ts-check
 import { GLOBAL } from "../GLOBAL.js"
-import { debounce, saveKey, deleteKey, duplicateKey} from "../utils.js"
+import { saveKey, deleteKey, duplicateKey} from "../utils.js"
+import { debounce } from '../helpers.js'
 import { ContextMenu } from "./contextMenu.js"
 import type { HtmlTagDescriptor } from "vite"
 

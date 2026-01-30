@@ -5,7 +5,8 @@
     "": {
       "name": "hyprsettings-ui",
       "dependencies": {
-        "lit": "^3.0.0",
+        "hotkeys-js": "^4.0.0",
+        "lit": "^3.3.2",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -198,6 +199,8 @@
     "get-caller-file": ["get-caller-file@2.0.5", "", {}, "sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg=="],
 
     "has-flag": ["has-flag@4.0.0", "", {}, "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="],
+
+    "hotkeys-js": ["hotkeys-js@4.0.0", "", {}, "sha512-gIoeqMWYqPIItc4HaseVbtTRpEpBbeufZMUcoWtN62JZdDq3KadS1ijN6wpaDjTzRK7PjT3QOPUcx+yNT0rrZQ=="],
 
     "immutable": ["immutable@5.1.4", "", {}, "sha512-p6u1bG3YSnINT5RQmx/yRZBpenIl30kVxkTLDyHLIMk0gict704Q9n+thfDI7lTRm9vXdDYutVzXhzcThxTnXA=="],
 
