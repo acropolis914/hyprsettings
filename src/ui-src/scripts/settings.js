@@ -335,7 +335,7 @@ function createAnimationsToggleSetting() {
 }
 
 function createThemeSelectorSetting() {
-	console.log('Creating theme selector setting (coming soon)')
+	// console.log('Creating theme selector setting (coming soon)')
 	let settingContainer = document.createElement('div')
 	let tooltip = 'Select the application theme'
 	settingContainer.setAttribute('title', tooltip)
