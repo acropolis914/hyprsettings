@@ -31,7 +31,27 @@ export const Backend = {
 				return await window.pywebview.api.init()
 			case 'flask':
 				const query = path ? `?path=${encodeURIComponent(path)}` : ''
-				return await fetchFlask('get_config' + query)
+				return await fetchFlask('get_hyprland_config' + query)
+			default:
+				throw new Error('Unknown backend: ' + GLOBAL.backend)
+		}
+	},
+
+	async getHyprlandConfigTexts(path = null) {
+		switch (GLOBAL.backend) {
+			case 'flask':
+				let json_string = JSON.stringify(GLOBAL['data']) || {}
+				// console.log(json_string)
+				const response = await fetchFlask('get_hyprland_config_texts', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({"json_string": json_string})
+				})
+				// console.log(response)
+				if (response){
+					GLOBAL.setKey("configText", response)
+				}
+				break
 			default:
 				throw new Error('Unknown backend: ' + GLOBAL.backend)
 		}
@@ -60,18 +80,25 @@ export const Backend = {
 		}
 	},
 
-	saveConfig(configJSON, changedFiles = []) {
+	async saveConfig(configJSON, changedFiles = []) {
 		// console.log({configJSON})
 		switch (GLOBAL.backend) {
 			case 'pywebview':
 				window.pywebview.api.save_config(configJSON, changedFiles)
 				break
 			case 'flask':
-				fetchFlask('save_config', {
+				const response = await fetchFlask('save_config', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ config: configJSON, changedFiles }),
 				})
+				// console.log('response', response)
+				if (response.status !== 'ok') {
+					throw new Error('Failed to save config: ' + response.message)
+				} else {
+					GLOBAL.setKey("configText", response.preview)
+					// console.log(response.preview)
+				}
 				break
 			default:
 				throw new Error('Unknown backend: ' + GLOBAL.backend)

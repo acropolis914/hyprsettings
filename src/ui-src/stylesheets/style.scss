@@ -333,6 +333,8 @@ header#main-header {
 			transition: all 0.2s ease-in-out;
 			max-width: 100%;
 			min-width: 0;
+			font-size: 1.4rem;
+			font-weight: bold;
 		}
 
 		> div {
@@ -434,7 +436,7 @@ footer {
 	height: 3rem;
 	padding-left: var(--spacing-unit);
 	width: 100%;
-	opacity: 0.9;
+	opacity: 0.7;
 	transition:
 		background-color 0.1s ease-in-out,
 		transform 1s ease;
@@ -466,6 +468,7 @@ footer {
 	&.selected {
 		opacity: 1;
 		@include sidebar-item-active;
+		scale: 1.1;
 	}
 }
 
@@ -943,7 +946,7 @@ h1#config-set-title {
 				position: absolute;
 				padding-left: 0.5ch;
 				padding-right: 0.5ch;
-				z-index: 10000;
+				z-index: 7;
 				transform: translateY(2px) translateX(-100%);
 				border-radius: var(--border-rad);
 				color: var(--accent-warning);
@@ -1263,6 +1266,7 @@ h1#config-set-title {
 	opacity: 1;
 	outline: none;
 	font-family: var(--font-primary), monospace;
+	font-size: 1.4rem;
 
 	textarea,
 	input {
@@ -1275,6 +1279,7 @@ h1#config-set-title {
 		color: var(--text-4);
 		font-style: italic;
 		@include text-ellipsis;
+		font-size: 1.4rem;
 
 		&:focus,
 		&:focus-visible {
@@ -1586,17 +1591,22 @@ span {
 	background-color: rgba(red($color), green($color), blue($color), $alpha);
 }
 
-#onboarding,
-.testing-screen {
+
+%overlay{
 	left: 0;
 	position: fixed;
 	top: 0;
-	z-index: 10;
+	z-index: 22;
 	display: flex;
-	height: 100vh;
+	height: 90vh;
 	width: 100vw;
-	transition: all 0.4s ease;
+	//transition: all 0.4s ease;
 	transition: opacity 1s ease;
+}
+
+#onboarding,
+.testing-screen {
+ @extend %overlay
 }
 
 #onboarding {
@@ -1694,15 +1704,86 @@ span {
 }
 
 .testing-screen {
-	background-color: rgba(var(--surface-0), 0.5);
+	//background-color: rgba(var(--surface-0), 1);
+	background-color: var(--surface-0);
+	display: flex;
 	flex-direction: column;
-	backdrop-filter: blur(10px) brightness(0.6);
+	backdrop-filter: blur(10px) brightness(0.4);
 	justify-content: center;
 	align-items: center;
+	color: var(--text-1);
+	//height: 100vh;
 
 	#main-part {
 		flex: 1;
 		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		max-height: 95%;
+		width: 100%;
+	}
+
+	#config-preview{
+		//height: 80vh;
+		max-height: 90%;
+		min-height: 90%;
+		width: 100%;
+		padding: var(--spacing-unit);
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-unit);
+
+		#config-preview-tabs{
+			display: flex;
+			flex-direction: row;
+			justify-content: left;
+			align-items: center;
+			gap: 1rem;
+			//background-color: var(--surface-2);
+			//border-bottom: 1px solid var(--surface-border);
+			flex-shrink: 1;
+			z-index: 10;
+			cursor: pointer;
+			flex-wrap: wrap;
+		}
+		.config-preview-tab-item {
+			//flex: 1 1 0;
+			//overflow: hidden;
+			//text-overflow: ellipsis;
+			padding-left: 0.5rem;
+			padding-right: 0.5rem;
+			z-index: 10;
+			border-radius: var(--border-rad);
+			border: 1px solid var(--surface-border);
+
+			&.active{
+				color: var(--text-contrast);
+				background-color: var(--accent);
+				border: 1px solid var(--accent);
+			}
+		}
+		pre, iframe{
+			max-height: 100%;
+			min-height: 100%;
+			max-width: 100%;
+			border-radius: var(--border-rad);
+			z-index: 1;
+			//overflow: hidden;
+			margin-top: var(--spacing-unit);
+			background-color: var(--surface-1);
+		}
+		#config-preview-code{
+			//color: unset;
+			overflow: scroll !important;
+			max-height: 100%;
+			//background-color: var(--surface-2);
+		}
+
+		iframe{
+			background-color: transparent;
+			border-bottom: 100px solid var(--surface-1);
+		}
+
 	}
 }
 

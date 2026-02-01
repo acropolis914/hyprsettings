@@ -22,6 +22,8 @@ class State:
 		'webview_port',
 		'flask_port',
 		'app',
+		'vite_process',
+		'hyprland_wiki_thread',
 	)
 
 	def __init__(self):
@@ -37,6 +39,8 @@ class State:
 		self.webview_port: int = 65432
 		self.flask_port: int = 6969
 		self.app: Flask | None = None
+		self.vite_process = None
+		self.hyprland_wiki_thread: threading.Thread | None = None
 
 	# Add a new explicit state variable (rarely)
 	def add(self, key: str, value: object) -> None:
@@ -66,8 +70,10 @@ state = State()
 
 class Globals:
 	CACHE_PATH = Path.home() / '.cache' / 'hyprsettings' / '.pywebview'
+	WIKI_PATH = Path.home() / '.cache' / 'hyprsettings' / 'hyprland-wiki'
 	HOST = '127.0.0.1'
 	CURRENT_VERSION = '0.8.1'
+	HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 
 
 hs_globals = Globals()

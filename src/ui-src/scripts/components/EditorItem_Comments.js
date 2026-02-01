@@ -2,7 +2,7 @@ import { ContextMenu } from './contextMenu.js'
 import { addItem, deleteKey, saveKey } from '../utils.js'
 import { debounce } from '../helpers.js'
 import { GLOBAL } from '../GLOBAL.js'
-import { EditorItem_Generic } from './EditorItem_Generic.js'
+import { EditorItem_Generic } from './EditorItem_Generic.ts'
 import { EditorItem_Binds } from './EditorItem_Binds.js'
 
 export class EditorItem_Comments {

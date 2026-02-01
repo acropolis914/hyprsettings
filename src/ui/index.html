@@ -14,7 +14,7 @@ Manually adding tabs might come at a later update.-->
 		<title>Hyprland Config Parser by Pol</title>
 		<link rel="shortcut icon" href="/icon-48.png" type="image/x-icon">
 
-		<script src="/jslibs/hotkeys.min.js"></script>
+		<!-- <script src="/jslibs/hotkeys.min.js"></script> -->
 		<script src="/jslibs/tom-select.complete.min.js"></script>
 		<link rel="stylesheet" href="/fonts/fonts.css" />
 		<!-- <link rel="stylesheet" href="style.css" /> -->
@@ -129,47 +129,16 @@ Let's go!
 			<header>F3 Debug Screen</header>
 			<div id="main-part">
 <!--			<input type="text" name="" id="" data-coloris>-->
-				<!-- <iframe src="http://localhost:1313" tabindex="-1" style="width:100vw;height:100%;border:none;"></iframe> -->
+
+			<div id="config-preview">
+				<h2>Config Preview</h2>
+				<div id="config-preview-tabs"></div>
+				<pre><code id="config-preview-code"></code></pre>
+				<iframe src="/hyprland-wiki/" tabindex="-1" style="width:100vw;height:90vh;border:none;" class="hidden"></iframe>
+			</div>
 			</div>
 			<footer><p>Press F3 to get out of this screen</p></footer>
 		</div>
 	</body>
 
-	<template id="keybind-template">
-		<div class="editor-item" tabindex="0">
-			<div class="editor-item-preview"></div>
-			<div class="keybind-editor">
-				<select class="bindflags" multiple></select>
-				<select class="modkey" multiple></select>
-				<textarea class="keypress"></textarea>
-				<textarea class="description hidden"></textarea>
-				<select class="dispatcher" multiple></select>
-				<textarea class="params"></textarea>
-			</div>
-			<div class="comment-area">
-				<span class="comment-hashtag">#</span>
-				<textarea
-					class="comment"
-					contenteditable="true"
-					placeholder="No Comment"
-				></textarea>
-			</div>
-		</div>
-	</template>
-	<template id="generic-template">
-		<div class="editor-item editor-item-generic" tabindex="0">
-			<div class="editor-item-preview"></div>
-			<div class="generic-editor">
-				<textarea name="key" id="generic-key"></textarea>
-				<textarea name="value" id="generic-value"></textarea>
-			</div>
-			<div class="comment-area">
-				<span class="comment-hashtag">#</span>
-				<textarea
-					class="comment"
-					placeholder="No Comment"
-				></textarea>
-			</div>
-		</div>
-	</template>
 </html>

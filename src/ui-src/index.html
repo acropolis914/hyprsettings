@@ -131,30 +131,18 @@ Let's go!
 		</div>
 		
 		<div class="testing-screen hidden">
-			<header>F3 Debug Screen</header>
+			<header id="testing-screen-header">F3 Debug Screen</header>
 			<div id="main-part">
-<!--			<input type="text" name="" id="" data-coloris>-->
-				<!-- <iframe src="http://localhost:1313" tabindex="-1" style="width:100vw;height:100%;border:none;"></iframe> -->
+
+			<div id="config-preview">
+				<h2>Config Preview</h2>
+				<div id="config-preview-tabs"></div>
+				<pre><code id="config-preview-code"></code></pre>
+				<iframe src="/wiki/Configuring/" tabindex="-1" style="width:100vw;height:90vh;border:none;" class="hidden"></iframe>
+			</div>
 			</div>
 			<footer><p>Press F3 to get out of this screen</p></footer>
 		</div>
 	</body>
 
-
-	<template id="generic-template">
-		<div class="editor-item editor-item-generic" tabindex="0">
-			<div class="editor-item-preview"></div>
-			<div class="generic-editor">
-				<textarea name="key" id="generic-key"></textarea>
-				<textarea name="value" id="generic-value"></textarea>
-			</div>
-			<div class="comment-area">
-				<span class="comment-hashtag">#</span>
-				<textarea
-					class="comment"
-					placeholder="No Comment"
-				></textarea>
-			</div>
-		</div>
-	</template>
 </html>

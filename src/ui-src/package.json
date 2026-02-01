@@ -19,7 +19,9 @@
 	},
 	"dependencies": {
 		"hotkeys-js": "^4.0.0",
-		"lit": "^3.3.2"
+		"lit": "^3.3.2",
+		"prismjs": "^1.30.0",
+		"tippy.js": "^6.3.7"
 	},
 	"peerDependencies": {
 		"typescript": "^5"

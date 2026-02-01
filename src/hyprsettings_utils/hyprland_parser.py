@@ -14,6 +14,9 @@ import rich
 import rich.traceback
 from rich.console import Console
 
+from .shared import state
+
+files = []
 rich.traceback.install(show_locals=True)
 console = Console()
 global_verbose = False
@@ -37,7 +40,7 @@ def log(msg, prefix='', only_verbose=False):
 	prefix_str = f'{prefix}' if prefix else ''
 	full_message = f'{prefix_str} {msg}'
 
-	if not only_verbose or global_verbose:
+	if not only_verbose or state.verbose:
 		if full_message == _last_log_message:
 			_last_log_count += 1
 
@@ -127,9 +130,9 @@ class Node:
 	def to_json(self) -> str:
 		return json.dumps(self.to_dict(), indent=4)
 
-	def to_hyprland(self, indent_level: int = 0, save=False, changedFiles: list = [], disabled=False) -> list | str:
+	def to_hyprland(self, indent_level: int = 0, save=False, changedFiles: list = [], disabled=False) -> list | str | dict:
+		global changedFileList, files
 		if len(changedFiles) > 0:
-			global changedFileList
 			# log(f"Some files are changed:{changedFiles}")
 			changedFileList = changedFiles
 
@@ -138,7 +141,7 @@ class Node:
 		if self.type == 'KEY':
 			disabled_text = '#DISABLED ' if (self.disabled or disabled) else ''
 			# if self.disabled or disabled:
-				# log(f'Key {self.name} is disabled by {"itself" if self.disabled else "parent"}.')
+			# log(f'Key {self.name} is disabled by {"itself" if self.disabled else "parent"}.')
 			comment = f' # {self.comment}' if self.comment else ''
 			return f'{indent * indent_level}{disabled_text}{self.name} = {self.value}{comment}'
 		if self.type == 'BLANK':
@@ -150,18 +153,14 @@ class Node:
 				return f'{indent * indent_level} {self.comment}'
 		if self.children:
 			if self.type == 'GROUP' and self.name == 'root':  # implied that the type is file
-				stack = []
+				files.clear()
 				for file in self.children:
-					# new_file = {}
-					# new_file["name"] = str(file.name)
-					# new_file["path"] = file.value
-					# new_file["resolved_path"] = file.resolved_path
-					new_file = file.to_hyprland(0, save)
-					stack.append(new_file)
-				return stack
+					file.to_hyprland(0, save)
+				return files
 			if self.type == 'FILE':
 				path: str | None = self.resolved_path
 				contains_any: bool = any(sub in path for sub in changedFileList)
+
 				content = []
 				for child in self.children:
 					if child.type == 'FILE':
@@ -170,12 +169,12 @@ class Node:
 						file_content = child.to_hyprland()
 						content.append(file_content)
 				contents = '\n'.join(content)
-
+				files.append({'path': path, 'content': contents})
 				if save and contains_any:
 					log(f'File {path} has been changed. Saving.')
 					debounced_write(Path(path), contents)
 
-				return contents
+				return {'path': path, 'contents': contents}
 
 			if self.type == 'GROUP' and self.name != 'root':
 				is_disabled = self.disabled or disabled
@@ -230,11 +229,13 @@ class Node:
 
 	@staticmethod
 	def from_json(json_string: str) -> 'Node':
-		# console.print_json(json_string)
 		data = json.loads(json_string)
 		data = Node.from_dict(data)
-		# log(data)
 		return data
+
+	@classmethod
+	def from_json_to_hyprland(cls, json_string: str, **kwargs):
+		return cls.from_json(json_string).to_hyprland(**kwargs)
 
 	def __repr__(self):
 		is_disabled = {self.disabled}
@@ -261,7 +262,7 @@ def print_hyprland(config_list, print: bool = False, save: bool = False):
 
 
 class ConfigParser:
-	def __init__(self, path: Path, verbose=False):
+	def __init__(self, path: Path, verbose=state.verbose):
 		global global_verbose
 		global_verbose = verbose
 		self.root = Node('root', 'GROUP')

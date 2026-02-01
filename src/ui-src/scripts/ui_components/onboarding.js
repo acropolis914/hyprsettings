@@ -30,7 +30,6 @@ function finishOnboarding() {
 document.addEventListener('keydown', (event) => {
 	if (event.key === 'F1') {
 		event.preventDefault()
-
 		const isHidden = onboardingUI.classList.contains('hidden')
 		if (isHidden) {
 			onboardingUI.classList.remove('hidden')

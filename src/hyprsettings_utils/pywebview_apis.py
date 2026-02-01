@@ -4,15 +4,22 @@ import os
 import subprocess
 from pathlib import Path
 from packaging.version import Version
+from rich.console import Console
+
 from .shared import hs_globals, state
 import tomlkit as toml
 
 thisfile_path = Path(__file__).parent.resolve()
 thisfile_path_parent = thisfile_path.parent.resolve()
-from .hyprland_parser import ConfigParser
+console = Console()
+
+from .hyprland_parser import ConfigParser, Node, makeUUID
+from .utils import log, ui_print
 
 
 class Api:
+	global current_config
+
 	def __init__(self):
 		self.window_config = None
 
@@ -20,15 +27,26 @@ class Api:
 		return self.get_config()
 
 	@staticmethod
-	def get_config(path=None):
-		state.hyprland_config_path = path if path else state.hyprland_config_path
-		config = ConfigParser(state.hyprland_config_path, verbose=state.verbose).root.to_json()
+	def get_hyprland_config(path=None):
+		global current_config
+		path = path if path else state.hyprland_config_path
+		config = ConfigParser(path).root.to_json()
+		current_config = config
 		return config
 
 	@staticmethod
-	def save_config(json: str, changedFiles: list = []):
+	def get_hyprland_config_texts(json_string):
+		node = Node.from_json(json_string)
+		files = node.to_hyprland(indent_level=0, save=False)
+		return files
+
+	@staticmethod
+	def save_config(json_string: str, changedFiles: list = []):
 		# console.print_json(json)
-		Node.from_json(json).to_hyprland(indent_level=0, save=True, changedFiles=changedFiles)
+		node = Node.from_json(json_string)
+		files = node.to_hyprland(save=True, changedFiles=changedFiles)
+		# console.print(Pretty(files))
+		return files
 
 	@staticmethod
 	def new_uuid(length: int = 8) -> str:
@@ -73,10 +91,10 @@ class Api:
 				if key not in config_lines:
 					config_lines[key] = val
 
-		window_config_path = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
+		hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 		template = Path(thisfile_path_parent / 'default_config.toml')
 
-		if not window_config_path.is_file() or window_config_path.stat().st_size == 0:
+		if not hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file() or hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
 			temporary_font = None
 			try:
 				temporary_font = self.list_fonts(mono=False, nerd=True)[1]
@@ -84,7 +102,7 @@ class Api:
 				log('No nerd font found. Using monospace.')
 			temporary_font = None
 
-			log(f'Config file not found in {window_config_path}')
+			log(f'Config file not found in {hs_globals.HYPRSETTINGS_CONFIG_PATH}')
 			with open(
 				template,
 				'r',
@@ -97,11 +115,11 @@ class Api:
 			version_migration()
 			if self.window_config['config']['daemon']:
 				state.daemon = True
-			with window_config_path.open('w') as config_file:
+			with hs_globals.HYPRSETTINGS_CONFIG_PATH.open('w') as config_file:
 				config_file.write(default_config_text)
 			return self.window_config
 		else:
-			with window_config_path.open('r', encoding='utf-8') as config_file:
+			with hs_globals.HYPRSETTINGS_CONFIG_PATH.open('r', encoding='utf-8') as config_file:
 				config = None
 				try:
 					config = toml.parse(config_file.read())
@@ -138,8 +156,8 @@ class Api:
 		config_from_json = json.loads(json_fromjs)
 		for key in config_from_json:
 			self.window_config[part][key] = config_from_json[key]
-		window_config_path = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
-		with open(window_config_path, 'w', encoding='utf-8') as config_file:
+		hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
+		with open(hs_globals.HYPRSETTINGS_CONFIG_PATH, 'w', encoding='utf-8') as config_file:
 			config_tosave = toml.dumps(self.window_config)
 			config_file.write(config_tosave)
 
@@ -159,6 +177,18 @@ class Api:
 		isDebugging = state.args.debug
 		# print("Debug mode: ", isDebugging)
 		return isDebugging
+
+	@staticmethod
+	def open_file(file_path: str):
+		ui_print(f'Opening {file_path}')
+		try:
+			subprocess.Popen(
+				['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL, close_fds=True
+			)
+			return True
+		except Exception as e:
+			ui_print(f'Failed to open {file_path}: {e}')
+			return False
 
 
 api = Api()

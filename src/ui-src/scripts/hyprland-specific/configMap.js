@@ -103,7 +103,7 @@ export let tabs = [
 	{ name: 'separator', label: 'System & Devices' },
 	{ name: 'Monitor', id: 'monitor', icon: '󰨇' }, // nf-md-monitor
 	{ name: 'Input', id: 'input', icon: '' }, // nf-md-keyboard
-	{ name: 'Environment Variables', id: 'envars', icon: '' }, // nf-md-code
+	{ name: 'Env Variables', id: 'envars', icon: '' }, // nf-md-code
 	{ name: 'separator', label: 'System Behavior' },
 	{ name: 'Globals', id: 'globals', icon: '' }, // nf-md-globe
 	{ name: 'Permissions', id: 'permissions', icon: '󰒃' }, // nf-md-lock

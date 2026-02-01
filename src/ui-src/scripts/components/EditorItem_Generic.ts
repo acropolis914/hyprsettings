@@ -10,16 +10,18 @@ import { parseHyprColor } from '../hyprland-specific/colorparser.js'
 import { selectFrom } from '../ui_components/dmenu.js'
 import { BezierModal } from './keyEditor_Bezier.js'
 import { html, render } from 'lit'
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css'; // optional for styling
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
-//         this.inital_load = true
+//         this.initial_load = true
 //         this.saveDebounced = debounce(() => this.save(), 250);
 //         this.update()
-//         this.inital_load=true
+//         this.initial_load=true
 //     }
 //     update() {
-//         if (!this.inital_load){
+//         if (!this.initial_load){
 //             this.saveDebounced()
 //         }
 //     }
@@ -45,8 +47,11 @@ const templateString = html`
 	</div>
 `
 export class EditorItem_Generic {
-	constructor(json, disabled = false) {
-		this.inital_load = true
+	tippyTitle: string
+	initial_load: boolean
+	el: Node
+	constructor(json: string, disabled = false) {
+		this.initial_load= true
 
 		let name = json['name']
 		let uuid = json['uuid']
@@ -66,7 +71,7 @@ export class EditorItem_Generic {
 			this.el.classList.add('compact')
 		}
 		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
-		this.el.title = `  Location: ${position_title}`
+		this.tippyTitle = `  Location: ${position_title}`
 		this.el.dataset.name = name
 		this.el.dataset.uuid = uuid
 		this.el.dataset.value = value ?? ''
@@ -82,7 +87,7 @@ export class EditorItem_Generic {
 		this.preview_el = this.el.querySelector('.editor-item-preview')
 
 		this.genericEditor_el = this.el.querySelector('.generic-editor')
-		this.genericEditor_el.innerHTML = ''
+		// this.genericEditor_el.innerHTML = ''
 		this.keyEditor = document.createElement('textarea')
 		this.keyEditor.rows = 1
 		this.keyEditor.id = 'generic-key'
@@ -172,16 +177,16 @@ export class EditorItem_Generic {
 			let description_title = `${JSON.parse(description)}\n\n Type: ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
 			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
 			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
-				this.el.title += `\n\n󱎸  Description: ${description_title}`
+				this.tippyTitle += `\n\n󱎸  Description: ${description_title}`
 				const [defaultValue, min, max] = this.info['data']
 					.split(',')
 					.map((item) => item.trim())
 					.map(Number)
-				this.el.title += `\nDefault: ${defaultValue} • Min: ${min} • Max: ${max}`
+				this.tippyTitle += `\nDefault: ${defaultValue} • Min: ${min} • Max: ${max}`
 			} else {
-				this.el.title += `\n\n󱎸  Description: ${description_title}`
+				this.tippyTitle += `\n\n󱎸  Description: ${description_title}`
 				let defaultValue = this.info['data']
-				this.el.title += `\nDefault: ${defaultValue}`
+				this.tippyTitle += `\nDefault: ${defaultValue}`
 			}
 			// this.valueEditor.title = title
 		}
@@ -195,7 +200,13 @@ export class EditorItem_Generic {
 		this.keyEditor.value = name
 		this.commentArea = this.el.querySelector('.comment')
 		this.commentArea.value = this.el.dataset.comment
+		this.createContextMenu()
+		this.addListeners()
+		this.update()
+		this.initial_load = false
+	}
 
+	createContextMenu() {
 		let contextMenuItems = [
 			{
 				label: 'Comment Above',
@@ -238,12 +249,8 @@ export class EditorItem_Generic {
 			//cause if there is an info, there is also a default value
 			contextMenuItems.splice(4, 0, contextMenuItem_reset)
 		}
-
 		this.contextMenu = new ContextMenu(contextMenuItems)
 		this.el.appendChild(this.contextMenu.el)
-		this.addListeners()
-		this.update()
-		this.inital_load = false
 	}
 
 	update() {
@@ -253,7 +260,7 @@ export class EditorItem_Generic {
 		let value = this.valueEditor.value
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
 		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
-		if (!this.inital_load) {
+		if (!this.initial_load) {
 			this.saveDebounced()
 		}
 	}
@@ -516,7 +523,7 @@ export class EditorItem_Generic {
 			}
 
 			this.el.dataset.value = this.valueEditor.value
-			// console.log(this.inital_load)
+			// console.log(this.initial_load)
 			this.update()
 			return true
 		} else {

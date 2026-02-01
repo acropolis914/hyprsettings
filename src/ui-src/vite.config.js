@@ -25,6 +25,7 @@ export default defineConfig({
 		open: false,
 		proxy: {
 			'/api': 'http://localhost:6969',
+			'/wiki': 'http://localhost:6969',
 		},
 	},
 	resolve: {

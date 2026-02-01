@@ -1,5 +1,5 @@
 // import { hideAllContextMenus, waitFor } from './utils.js'
-import { EditorItem_Generic } from './components/EditorItem_Generic.js'
+import { EditorItem_Generic } from './components/EditorItem_Generic.ts'
 import { EditorItem_Comments } from './components/EditorItem_Comments.js'
 import { EditorItem_Binds } from './components/EditorItem_Binds.js'
 import { tabids, keyNameStarts, configGroups } from './hyprland-specific/configMap.js'

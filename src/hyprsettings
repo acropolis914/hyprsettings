@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import sys
-import socket
 import signal
 import threading
 import argparse
@@ -20,6 +19,8 @@ import mimetypes
 from hyprsettings_utils.argument_parser import createArgParse
 from hyprsettings_utils.shared import hs_globals, state
 from hyprsettings_utils.flask_routes import register_routes
+from hyprsettings_utils.utils import is_port_open
+from hyprsettings_utils.window_manager import *
 
 os.environ['GDK_BACKEND'] = 'wayland'
 os.environ['FLASK_SKIP_DOTENV'] = '1'
@@ -30,7 +31,6 @@ werlog.setLevel(logging.ERROR)
 thisfile_path = Path(__file__).parent.resolve()
 
 
-# noinspection PyUnusedImports
 def start_flask_server():
 	state.app = Flask(__name__)
 	register_routes(state.app)
@@ -40,7 +40,21 @@ def start_flask_server():
 	state.app.run(host=hs_globals.HOST, port=state.flask_port, use_reloader=False)
 
 
-# UTILITY FUNCTIONS
+# def start_hyprland_wiki_server():
+# 	wikiport = 7654
+# 	if is_port_open(wikiport):
+# 		wikiport += 1
+# 	hugo_folder = Path(__file__).parent / 'ui' / 'hyprland-wiki'
+#
+# 	class Handler(http.server.SimpleHTTPRequestHandler):
+# 		def __init__(self, *args, **kwargs):
+# 			super().__init__(*args, directory=str(hugo_folder), **kwargs)
+#
+# 	with socketserver.TCPServer((hs_globals.HOST, wikiport), Handler) as httpd:
+# 		log(f'Serving hyprland wiki at http://{hs_globals.HOST}:{wikiport}')
+# 		httpd.serve_forever()
+
+
 def ui_print(*args, **kwargs):
 	console.print('[blue][UIBackend][/blue]', *args, **kwargs)
 
@@ -80,6 +94,14 @@ def handle_interrupt(signum, frame):
 def kill_hyprsettings():
 	log('Killing all hyprsettings instances')
 	result = subprocess.run(['pkill', '-f', 'hyprsettings'])
+	if (state.vite_process is not None) and (state.vite_process.poll() is None):
+		log('Killing bun vite process')
+		os.killpg(state.vite_process.pid, signal.SIGTERM)
+		try:
+			state.vite_process.wait(timeout=5)
+		except subprocess.TimeoutExpired:
+			log('Bun vite process did not terminate in time. Forcing kill.')
+			os.killpg(state.vite_process.pid, signal.SIGKILL)
 
 	if result.returncode == 0:
 		log('Hyprsettings killed')
@@ -196,18 +218,14 @@ def on_closing(window):
 		log('[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]')
 		return False
 	else:
-		#     window_instance.hide()
-		#     state.window_visible = False
-		#     log(
-		#         "[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]"
-		#     )
-		#     return False
 		if disabled_dmabuf == '1':
 			log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
 			log('Restoring from daemon will fail. Daemon setting is dishonored.')
 		log('Window closed. Terminating process.')
-		# print("______________________________________________\n")
-		os._exit(0)
+		kill_hyprsettings()
+		return None
+	# print("______________________________________________\n")
+	# os._exit(0)
 
 
 # ------------------- Socket toggle functions -------------------
@@ -295,7 +313,7 @@ def handle_client(conn):
 		conn.close()
 
 
-def start_socket_server():
+def start_window_server():
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as window_socket:
 		window_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		window_socket.bind((hs_globals.HOST, state.webview_port))
@@ -305,33 +323,24 @@ def start_socket_server():
 			threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
 
 
-def send_toggle():
-	try:
-		with socket.create_connection((HOST, state.webview_port), timeout=0.1) as s:
-			s.sendall(b'TOGGLE')
-			log(f'Toggled existing window daemon at port {state.webview_port} instead of spawning a new one.')
-			return True
-	except (ConnectionRefusedError, socket.timeout):
-		return False
-
-
-def is_port_open(port, timeout=0.1):
-	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-		s.settimeout(timeout)
-		return s.connect_ex((hs_globals.HOST, port)) == 0
-
-
 def main():
 	state.flask_thread = threading.Thread(target=start_flask_server, daemon=True)
 	state.flask_thread.start()
+
+	# state.hyprland_wiki_thread = threading.Thread(target=start_hyprland_wiki_server, daemon=True)
+	# state.hyprland_wiki_thread.start()
 
 	try:
 		mimetypes.add_type('application/javascript', '.js')
 		if state.args.no_devtools:
 			webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
 		ui_link = f'http://localhost:{state.flask_port}/'
+		if state.args.bun_dev:
+			ui_link = 'http://localhost:3000/'
+			log('Using bun dev server at localhost:3000 as per --bun-dev arg')
+
 		if not state.args.no_window:
-			state.window_thread = threading.Thread(target=start_socket_server, daemon=state.daemon)
+			state.window_thread = threading.Thread(target=start_window_server, daemon=state.daemon)
 			state.window_thread.start()
 			log('Starting webview window...')
 			state.window_instance = webview.create_window(
@@ -411,7 +420,7 @@ if __name__ == '__main__':
 		state.verbose = state.args.verbose
 
 	if state.args.bun_dev:
-		state.flask_port = 3000
+		state.vite_process = subprocess.Popen(['bun', 'run', 'vite'], cwd=thisfile_path / 'ui-src')
 
 	def gotoMain():
 		with redirect_stderr(LogFilter()), redirect_stdout(LogFilter()):

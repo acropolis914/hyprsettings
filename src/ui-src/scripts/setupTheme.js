@@ -51,9 +51,23 @@ function applyThemeVars(theme) {
 	})
 	GLOBAL['config']['current_theme'] = theme.name
 	window.themeVariant = theme.variant.toLowerCase()
+	GLOBAL.setKey(`themeVariant`, theme)
+
 	root.classList.remove('dark')
 	root.classList.remove('light')
 	root.classList.add(theme.variant.toLowerCase())
+
+	// const wiki_iframe = document.querySelector('.testing-screen iframe');
+	// const doc = wiki_iframe.contentDocument;
+	// doc.documentElement.classList.remove('dark');
+	// doc.documentElement.classList.remove('light');
+	// doc.documentElement.classList.add(theme.variant.toLowerCase());
+	//
+	// doc.documentElement.addEventListener('click', () => {
+	// 	doc.documentElement.classList.remove('dark');
+	// 	doc.documentElement.classList.remove('light');
+	// 	doc.documentElement.classList.add(theme.variant.toLowerCase());
+	// })
 }
 
 export function changeTheme(theme) {

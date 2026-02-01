@@ -24,8 +24,8 @@ GLOBAL.setKey('backend', 'flask')
 
 // @ts-ignore
 async function setupData() {
-	GLOBAL.data = JSON.parse(await Backend.getHyprlandConfig())
-
+	GLOBAL.data = await JSON.parse(await Backend.getHyprlandConfig())
+	await Backend.getHyprlandConfigTexts()
 	jsViewerInit()
 	new configRenderer(GLOBAL.data)
 	destroyOverlay()
@@ -93,6 +93,7 @@ export async function initialize() {
 	setupData()
 	renderSettings()
 	initializeSearchBar()
+
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
