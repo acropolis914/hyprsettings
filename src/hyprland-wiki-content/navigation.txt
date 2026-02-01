@@ -1,0 +1,89 @@
+Version selector ⚙️
+▸ Getting Started
+Installation
+Master tutorial
+Preconfigured setups
+▸ Configuring
+Start
+Variables
+Keywords
+Monitors
+Binds
+Dispatchers
+Window Rules
+Workspace Rules
+Animations
+Gestures
+Tearing
+Dwindle Layout
+Master Layout
+Permissions
+Using hyprctl
+Expanding functionality
+XWayland
+Environment variables
+Multi-GPU
+Uncommon tips & tricks
+Example configurations
+Performance
+▸ Hypr Ecosystem
+hyprpaper
+hyprpicker
+hyprlauncher
+hypridle
+hyprlock
+xdg-desktop-portal-hyprland
+hyprsysteminfo
+hyprsunset
+hyprpolkitagent
+hyprland-qt-support
+hyprqt6engine
+hyprpwcenter
+hyprshutdown
+▸ hyprtoolkit
+Development
+hyprcursor
+hyprutils
+hyprlang
+hyprwayland-scanner
+aquamarine
+hyprgraphics
+hyprland-guiutils
+▸ Useful Utilities
+Must have
+Status bars
+Wallpapers
+Screen sharing
+App launchers
+App clients
+Color pickers
+Clipboard Managers
+File Managers
+Other
+Hypr Ecosystem
+Systemd startup
+▸ Plugins
+Using plugins
+▸ Development
+Getting started
+Plugin guidelines
+Event list
+Advanced
+▸ Nix
+Hyprland on NixOS
+Hyprland on Home Manager
+Cachix
+Hyprland on Other Distros
+Options & Overrides
+Plugins
+Contributing and Debugging
+Nvidia
+IPC
+Crashes and Bugs
+FAQ
+Connect
+▸ Contributing and Debugging
+Issue Guidelines
+PR Guidelines
+Tests
+Translations

@@ -1,3 +1,4 @@
+// run this in the hyprland wiki page console to extract headers from the sidebar
 (() => {
 	const seen = new Set()
 	const result = []
