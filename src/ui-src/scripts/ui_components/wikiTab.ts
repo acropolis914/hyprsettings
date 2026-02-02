@@ -1,0 +1,266 @@
+import { GLOBAL } from '../GLOBAL'
+import { Backend } from '../backendAPI'
+import * as util from 'node:util'
+import { makeUUID } from '../utils'
+import parseMarkdown from '../utils/parseMarkdown.ts'
+import normalizeText from "../utils/normalizeText.ts"
+import Prism from "prismjs/prism"
+import "prismjs/components/prism-ini.min.js";
+import "prismjs/components/prism-bash.min.js";
+import "prismjs/components/prism-shell-session";
+import '@stylesheets/prism.css';
+
+export default async function createWiki() {
+	console.log('Creating Wiki...')
+	GLOBAL.onChange('wikiTree', createWikiNavigation)
+	await Backend.getHyprlandWikiNavigation()
+}
+
+function createWikiNavigation() {
+	let wikiRoot_el = document.querySelector('.config-set#wiki')
+	wikiRoot_el.innerHTML = ''
+	let navigationEl = document.createElement('div')
+	navigationEl.setAttribute('id', 'wikiNavigation')
+	navigationEl.setAttribute('tabindex', '0')
+	navigationEl.dataset.uuid = 'wikiNavigation'
+	navigationEl.addEventListener('focus', (e) => {
+		if (e.target != navigationEl) {
+			return
+		}
+		navigationEl.firstElementChild.focus()
+	})
+	// navigationEl.classList.add("config-set", "editor-item")
+
+	let viewEl = document.createElement('div')
+	viewEl.setAttribute('id', 'wikiView')
+	viewEl.setAttribute('tabindex', '0')
+	viewEl.dataset.uuid = 'wikiView'
+
+	let viewEl_title = document.createElement('div')
+	viewEl_title.setAttribute('id', 'wikiView_title')
+	viewEl_title.classList.add('hidden')
+	viewEl.appendChild(viewEl_title)
+
+	let viewEl_position = document.createElement('div')
+	viewEl_position.setAttribute('id', 'wikiView_position')
+	viewEl.appendChild(viewEl_position)
+
+	let viewEl_content = document.createElement('div')
+	viewEl_content.setAttribute('id', 'wikiView_content')
+	viewEl.appendChild(viewEl_content)
+
+	wikiRoot_el.appendChild(navigationEl)
+	wikiRoot_el.appendChild(viewEl)
+	// viewEl.classList.add("config-set", "editor-item")
+
+	async function setViewElValue(value: string, position: string, title="") {
+		// console.clear()
+		const parsed = JSON.parse(value)
+		if (parsed['value']) {
+			// viewEl.innerHTML = ""
+			// @ts-ignore
+			if(parsed.data.matter.title){
+				viewEl_title.textContent = parsed.data.matter.title
+				viewEl_title.classList.remove('hidden')
+			} else if (title){
+				viewEl_title.textContent = title
+				viewEl_title.classList.remove('hidden')
+			} else {
+				viewEl_title.classList.add('hidden')
+			}
+			viewEl_position.innerHTML = ` ${position.split(":").join("  ")} `
+
+			viewEl_content.innerHTML = parsed['value']
+			viewEl_content.querySelectorAll('a').forEach((element: HTMLElement) => {
+				fixLinxElement(element, position)
+			})
+			viewEl_content.querySelectorAll('pre').forEach((element: HTMLElement) => {
+				let code = element.querySelector('code') || element
+				let shebang = code.innerText.toLowerCase().split('\n')[0]
+				if (shebang && shebang.trim().endsWith('sh')) {
+					code.classList.add('language-bash')
+					element.classList.add('language-bash')
+					Prism.highlightElement(code)
+				} else if (code.innerText.toLowerCase().includes("vga compatible")){
+					console.log(code.innerText)
+					code.classList.add('language-shell-session')
+					element.classList.add('language-shell-session')
+					code.classList.add('language-bash')
+					element.classList.add('language-bash')
+					Prism.highlightElement(code)
+				} else {
+					code.classList.add('language-ini')
+					element.classList.add('language-ini')
+					Prism.highlightElement(code)
+				}
+
+
+			})
+			viewEl.scrollTo({top:0, behavior: 'smooth'})
+		}
+	}
+
+	let objectTree = []
+	objectTree.push(navigationEl)
+
+	let tree: Object = GLOBAL.wikiTree
+	async function setupNavigation(
+		object : object,
+		indentation = 0,
+		path = 'wiki',
+	) {
+		let indent = '       '.repeat(indentation)
+		for (const [key, value] of Object.entries(object)) {
+			if (key === '.version') {
+				continue
+			}
+			if (objectTree.length === 1 && key == '_index.md') {
+				let markdown_json_parsed = JSON.stringify(await parseMarkdown(value))
+				await setViewElValue(markdown_json_parsed, path,"Hyprland Wiki")
+				continue
+			}
+
+			let el = document.createElement('div')
+			el.classList.add('editor-item')
+			el.classList.add('wiki-item')
+			el.setAttribute('tabindex', 0)
+			el.dataset.uuid = makeUUID()
+			el.dataset.name = key
+			el.dataset.cleanName = key
+				.trim()
+				.replace('.md', '')
+				.replace('-', ' ')
+			el.dataset.value = JSON.stringify(await parseMarkdown(value))
+			el.dataset.position = path
+			function setElValue() {
+				setViewElValue(el.dataset.value, el.dataset.position)
+			}
+
+			if (typeof value == 'string' && key != '_index.md') {
+				el.classList.add('wiki-file')
+				el.innerHTML = el.dataset.cleanName
+				objectTree.at(-1).appendChild(el)
+			} else if (key != '_index.md' && typeof value != 'string') {
+				el.classList.add('wiki-folder', 'config-group')
+				el.dataset.position = `${path}:${key}`
+				objectTree.at(-1).appendChild(el)
+				objectTree.push(el)
+				indentation += 1
+				// if (key.startsWith('Hypr Ecosystem')) {
+				// 	console.log("Processing Hypr Ecosystem with children:", value)
+				// }
+				await setupNavigation(value, indentation, `${path}:${key}`)
+				indentation -= 1
+
+				objectTree.pop()
+			} else if (key == '_index.md') {
+				objectTree.at(-1).dataset.value = JSON.stringify(await parseMarkdown(value))
+				continue
+			} else {
+				console.warn(`Unknown key "${key}"`)
+			}
+			el.addEventListener('click', (e) => {
+				if (e.target != el) {return}
+				// let target = e.target
+				GLOBAL.setKey('currentView', 'main')
+				// @ts-ignore
+				GLOBAL['mainFocus'][GLOBAL['activeTab']] =
+					el.dataset.uuid
+				setElValue(e)
+
+			})
+			el.addEventListener('focus', (e) => setElValue(e))
+
+		}
+	}
+	setupNavigation(tree, 0, 'wiki')
+}
+
+function findWikiViewElement(target_element: string): HTMLElement {
+	let linkTargetName = target_element.replace('#', '')
+		.replaceAll('-', ' ')
+	let wikiView = document.getElementById('wikiView')
+	let element = Array.from(wikiView.childNodes).find(
+		(element: HTMLElement) => {
+			if (element.innerText) {
+				return (
+					element.innerText.toLowerCase() ===
+					linkTargetName.toLowerCase()
+				)
+			}
+		},
+	)
+	return element
+}
+
+function fixLinxElement(element: HTMLElement, position) {
+	let link = element.getAttribute('href')
+	element.title = link
+
+	if (link.startsWith('..') || link.startsWith('.')) {
+		// console.log({ position })
+		let position_paths = position.split(':').filter(Boolean)
+		let link_parts = link.split('/').filter(Boolean)
+
+		while (link_parts[0] === '..') {
+			link_parts.shift()
+			// if (!link.endsWith('/')) {
+			// 	position_paths.pop()
+			// }
+		}
+		while (link_parts[0] === '.') {
+			link_parts.shift()
+		}
+		const newLink = [...position_paths, ...link_parts].join(':')
+		element.title = newLink
+		// console.log('Fixing link element', { link, position,newLink })
+		element.addEventListener('click', (e) => {
+			e.preventDefault()
+			gotoWikiEvent(e)
+		})
+		function gotoWikiEvent(e) {
+			console.log('Navigating to', newLink)
+			gotoWiki(newLink)
+		}
+	} else if (link.startsWith('#')) {
+		element.addEventListener('click', (e) => {
+			e.preventDefault()
+			let element = findWikiViewElement(link)
+			element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+		})
+	}
+}
+
+function gotoWiki(wikidir: string) {
+	// document.querySelector(".sidebar-item#wiki").click()
+	let wikiDir_path = wikidir.split(':').filter(e => !e.startsWith('#'))
+	let wikiDir_section = wikidir.split(':').filter(e => e.startsWith('#'))
+
+	// console.log(`Wiki: ${wikiDir_path.join(":")}`)
+	console.log(wikiDir_path)
+	let wikiDirNavigationEl = document.querySelector('#wikiNavigation')
+	wikiDir_path.shift()
+
+	let node = wikiDirNavigationEl
+	while (wikiDir_path.length > 0) {
+		let node_children = Array.from(node.children)
+
+
+		node = node_children.find(e =>{
+			let name =normalizeText(e.dataset.name)
+			let target = normalizeText(wikiDir_path[0])
+			console.log({ name, target })
+			return target === name
+		})
+
+		if (!node) {
+			console.error('Could not find wiki node:', wikiDir_path[0])
+			return
+		}
+		wikiDir_path.shift()
+	}
+	// console.log(node)
+	node.click()
+	let section = findWikiViewElement(wikiDir_section[0])
+	section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}

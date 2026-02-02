@@ -21,6 +21,7 @@ from hyprsettings_utils.shared import hs_globals, state
 from hyprsettings_utils.flask_routes import register_routes
 from hyprsettings_utils.utils import is_port_open
 from hyprsettings_utils.window_manager import *
+from hyprsettings_utils.hyprland_wiki import register_markdown_routes
 
 os.environ['GDK_BACKEND'] = 'wayland'
 os.environ['FLASK_SKIP_DOTENV'] = '1'
@@ -34,6 +35,7 @@ thisfile_path = Path(__file__).parent.resolve()
 def start_flask_server():
 	state.app = Flask(__name__)
 	register_routes(state.app)
+	register_markdown_routes(state.app)
 	while is_port_open(port=state.flask_port):
 		state.flask_port += 1
 	log(f'You can access the ui on [blue][link=localhost:{state.flask_port}]localhost:{state.flask_port}[/link][/blue]')

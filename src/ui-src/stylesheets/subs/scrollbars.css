@@ -1,0 +1,27 @@
+/* ===== Scrollbar Reset ===== */
+
+/* Firefox */
+* {
+	scrollbar-width: auto; /* or thin */
+	scrollbar-color: auto; /* don't force colors yet */
+}
+
+/* Chromium / WebKit */
+*::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: transparent;
+	border-radius: 0;
+	border: none;
+}
+
+*::-webkit-scrollbar-corner {
+	background: transparent;
+}

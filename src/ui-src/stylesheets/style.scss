@@ -6,7 +6,8 @@
  * and run on the same dir as style.scss:
  * sass --watch style.scss:style.css
  */
-
+@use 'subs/wiki.scss' as *;
+@use 'subs/scrollbars.css' as *;
 /* =================================
 1. Variables, Mixins & Placeholders
 ================================= */
@@ -389,6 +390,9 @@ header#main-header {
 	@media (max-width: 40rem) {
 		flex: 0 0 90%;
 	}
+	@media (max-height: 30rem) {
+		//padding: 0;
+	}
 
 	position: relative;
 }
@@ -585,7 +589,10 @@ footer {
 	flex-direction: column;
 	min-height: 0;
 	//background-color: red;
+	@media (max-width: 500px) {
+		padding: 1rem 0;
 
+	}
 	/* Specific styles for the #settings tab*/
 	&#settings {
 		.setting-container {
@@ -613,10 +620,30 @@ footer {
 	}
 }
 
-h1#config-set-title {
+#content-area-header{
 	margin-bottom: var(--spacing-unit);
-	color: var(--accent);
+	display: flex;
+	flex-direction: row;
 	padding-left: 1.5rem;
+	gap: var(--spacing-unit);
+	@media (max-height: 300px) {
+		margin: 0
+	}
+
+}
+h1#config-set-title {
+	//font-size: 2rem !important;
+	color: var(--accent);
+	flex: 0 0 auto;
+	@media (max-height: 300px) {
+		font-size: 2rem;
+	}
+
+}
+#config-set-info {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
 }
 
 #dmenu {
@@ -1593,23 +1620,21 @@ span {
 
 
 %overlay{
-	left: 0;
+	left: 50%;
 	position: fixed;
-	top: 0;
+	top: 50%;
 	z-index: 22;
 	display: flex;
-	height: 90vh;
+	height: 100vh;
 	width: 100vw;
+	transform: translateX(-50%) translateY(-50%);
 	//transition: all 0.4s ease;
 	transition: opacity 1s ease;
 }
 
-#onboarding,
-.testing-screen {
- @extend %overlay
-}
 
 #onboarding {
+	@extend %overlay;
 	background-color: var(--surface-1);
 	flex-direction: row;
 
@@ -1704,6 +1729,9 @@ span {
 }
 
 .testing-screen {
+	@extend %overlay;
+	height: 90vh;
+	width: 90vw;
 	//background-color: rgba(var(--surface-0), 1);
 	background-color: var(--surface-0);
 	display: flex;
@@ -1712,6 +1740,9 @@ span {
 	justify-content: center;
 	align-items: center;
 	color: var(--text-1);
+	border-bottom: 1px solid var(--text-0);
+	box-shadow: var(--accent) 0px 0px 5px;
+	border-radius: var(--border-rad) ;
 	//height: 100vh;
 
 	#main-part {
@@ -1804,3 +1835,5 @@ span {
 	//transform: scale(0.5);
 	//display: none;
 }
+
+

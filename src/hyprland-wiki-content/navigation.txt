@@ -27,6 +27,8 @@ Uncommon tips & tricks
 Example configurations
 Performance
 ▸ Hypr Ecosystem
+    ▸▸ hyprtoolkit
+    Development
 hyprpaper
 hyprpicker
 hyprlauncher
@@ -40,8 +42,6 @@ hyprland-qt-support
 hyprqt6engine
 hyprpwcenter
 hyprshutdown
-▸ hyprtoolkit
-Development
 hyprcursor
 hyprutils
 hyprlang

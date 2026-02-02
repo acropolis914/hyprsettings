@@ -76,17 +76,20 @@ testingScreen.addEventListener("transitionend", (e) => {
 		console.log("Element is now invisible");
 		testingScreen.classList.add("hidden")
 	} else if (e.propertyName === "opacity" && getComputedStyle(e.target).opacity > "0" && open) {
-
+		testingScreen.classList.remove("hidden")
 	}
 });
 
-
-
 function toggleTestingScreen() {
 	if (!open) {
+		// testingScreen.classList.remove("hidden")
 		testingScreen.classList.remove("hidden")
+		requestAnimationFrame(()=>{
+			testingScreen.style.opacity = "1";
+		})
 	} else {
-		testingScreen.classList.add("hidden")
+		testingScreen.style.opacity = "0";
+		// testingScreen.classList.add("hidden")
 	}
 	open = !open
 }
@@ -116,9 +119,10 @@ export async function renderTextPreview(){
 		})
 		return tab
 	}
-	const wikiLinkActive = await fetch('/wiki/', { method: 'HEAD' })
+	// const wikiLinkActive = await fetch('/wiki/', { method: 'HEAD' })
+	let wikiLinkActive
 	let wikiTab;
-	if (wikiLinkActive.ok){
+	if (wikiLinkActive){
 	wikiTab = createTab("WIKI")
 	wikiTab.addEventListener("click", (e) => {
 		if (iframe.classList.contains("hidden")){
@@ -140,6 +144,7 @@ export async function renderTextPreview(){
 		// create tab
 		let tab= createTab(path);
 
+
 		tab.addEventListener("click", (e) => {
 			configPreviewCode_el.textContent = text
 			Prism.highlightElement(configPreviewCode_el)
@@ -147,6 +152,9 @@ export async function renderTextPreview(){
 			iframe.classList.add("hidden")
 			pre.classList.remove("hidden")
 		})
+		if (tab.innerText === "hyprland"){
+			tab.click()
+		}
 		tab.addEventListener("dblclick", async (e) => {
 			const response = await fetch("/api/open_file?path=" + encodeURIComponent(path))
 			if (!response.ok) {
@@ -154,7 +162,11 @@ export async function renderTextPreview(){
 			}
 		})
 	})
-	wikiTab.click()
+	if (wikiTab){
+		wikiTab.click()
+	} else {
+
+	}
 
 }
 

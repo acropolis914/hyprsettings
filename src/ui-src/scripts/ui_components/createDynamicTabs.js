@@ -120,7 +120,7 @@ class ConfigTab {
 		}
 		GLOBAL['persistence']['last_tab'] = id
 		GLOBAL.setKey('currentView', 'tabs')
-		GLOBAL['activeTab'] = id
+		GLOBAL.setKey("activeTab", id)
 		if (!initialLoad) {
 			saveWindowConfig()
 		}
@@ -128,6 +128,9 @@ class ConfigTab {
 }
 
 export async function createDynamicTabs() {
+	return new Promise(resolve => {
+
+
 	let sidebar = document.querySelector('aside#sidebar>ul')
 	sidebar.innerHTML = ''
 	document.querySelectorAll('.config-set').forEach((element) => {
@@ -157,4 +160,6 @@ export async function createDynamicTabs() {
 		console.log(GLOBAL)
 	}
 	initialLoad = false
+		resolve()
+	})
 }

@@ -1,6 +1,5 @@
 @font-face {
 	font-family: 'CommitMonoIconFont';
-	src: url('/fonts/CommitMonoNerdFontMono-Regular-subset.woff2')
-		format('opentype');
+	src: url('/fonts/CommitMonoNerdFontMono-Regular-subset.woff2') format('opentype');
 	font-display: swap;
 }

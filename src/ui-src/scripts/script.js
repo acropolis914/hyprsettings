@@ -18,6 +18,7 @@ import { Backend } from './backendAPI.js'
 import '../stylesheets/style.scss'
 
 import { createLoadingOverlay, destroyOverlay } from './ui_components/darken_overlay.js'
+import createWiki from '@scripts/ui_components/wikiTab.ts'
 // import './consoleInterceptor.js'
 window.Global = GLOBAL
 GLOBAL.setKey('backend', 'flask')
@@ -93,6 +94,7 @@ export async function initialize() {
 	setupData()
 	renderSettings()
 	initializeSearchBar()
+	createWiki()
 
 }
 

@@ -67,7 +67,7 @@ hotkeys('*', (event) => {
 			console.log(`Config set ${GLOBAL['activeTab']} doesnt exist.`)
 			return
 		} else {
-			// console.log(`Config set ${GLOBAL["activeTab"]} exists.`);
+			console.log(`Config set ${GLOBAL["activeTab"]} exists.`);
 		}
 		if (GLOBAL['mainFocus'][GLOBAL['activeTab']] && currentSet.querySelector(`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`)) {
 			const prevFocus = currentSet.querySelector(`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`)

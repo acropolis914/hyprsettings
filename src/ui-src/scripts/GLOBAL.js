@@ -1,6 +1,7 @@
 export class GLOBAL {
 	static _listeners = new Map(); // key → array of callbacks
 	static configText
+	static wikiTree
 
 	static onChange(key, callback) {
 		if (!this._listeners.has(key)) {

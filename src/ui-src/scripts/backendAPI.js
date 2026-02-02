@@ -133,4 +133,19 @@ export const Backend = {
 				throw new Error('Unknown backend: ' + GLOBAL.backend)
 		}
 	},
+
+	async getHyprlandWikiNavigation(){
+		try {
+			const tree = await fetchFlask('wiki_tree', {
+				method: 'GET',
+			})
+
+			GLOBAL.setKey("wikiTree", tree)
+			// console.log(tree)
+			return tree
+		} catch (e){
+			console.error(e)
+		}
+
+	}
 }

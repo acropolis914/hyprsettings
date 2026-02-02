@@ -23,6 +23,9 @@ export async function initializeSearchBar() {
 			if (item.classList.contains('config-group')) {
 				itemProps['type'] = 'GROUP'
 			}
+			if (item.classList.contains('wiki-item')) {
+				itemProps['type'] = 'WIKI'
+			}
 			if (itemProps.type === 'COMMENT' && itemProps.comment.trim().startsWith('#####')) {
 				return
 			}
@@ -33,7 +36,7 @@ export async function initializeSearchBar() {
 		})
 		// console.log(resultsPool)
 		const fuse = new Fuse(resultsPool, {
-			keys: ['name', 'value', 'comment', 'position']
+			keys: ['name', 'value', 'comment', 'position', 'type', 'cleanName']
 		})
 
 		const results = fuse.search(searchBar.value)
@@ -56,20 +59,32 @@ export async function initializeSearchBar() {
 				  <span class="value">${result.item.value}</span>&nbsp;</br>
 				  <span class="comment" style ="font-size:1.2rem">${result.item.comment || ''}</span>
 				`
-			} else {
+			} else  if (result.item.type.toLowerCase() === 'group') {
 				configLineDiv.innerHTML = `Group: <span class="name">${result.item.name}</span>`
+			} else if(result.item.type.toLowerCase() === 'wiki'){
+				configLineDiv.innerHTML = `
+				<span class="wiki">${result.item.cleanName}</span>`
 			}
 
 			const locationDiv = document.createElement('div')
 			locationDiv.className = 'location'
 			try {
-				locationDiv.innerHTML = `${result.item.position.split(':').slice(1).join(' 󰄾 ')}`
+				let slices = 1
+				result.item.type === "WIKI" ?  slices = 0 : 1
+				locationDiv.innerHTML = `${result.item.position.split(':').slice(slices).join(' 󰄾 ')}`
 			} catch (e) {
 				console.error(e, result.item)
 			}
 
 			resultDiv.appendChild(configLineDiv)
 			resultDiv.appendChild(locationDiv)
+
+			if (result.item.type.toLowerCase() === 'wiki') {
+				resultDiv.addEventListener('click', (e) => {
+					const wikiView = document.getElementById("wikiView")
+					searchAndScroll(wikiView, searchBar.value)
+				})
+			}
 
 			resultDiv.addEventListener('keydown', (e) => {
 				if (e.key === 'Enter') {
@@ -110,9 +125,9 @@ export async function initializeSearchBar() {
 			resultDiv.addEventListener('click', (e) => {
 				let goto = document.querySelector(`.editor-item[data-uuid="${result.item.uuid}"]`)
 				let closest = goto.closest('.config-set').id
-				console.log(closest)
+				// console.log(closest)
 				document.querySelector(`aside>ul>li#${closest}`).click()
-				console.debug(goto)
+				// console.debug(goto)
 				goto.scrollIntoView({ behavior: 'smooth', block: 'center' })
 				// goto.click()
 				// goto.style.outline = '1px solid red'
@@ -219,3 +234,27 @@ export async function initializeSearchBar() {
 	}
 
 }
+
+
+const searchAndScroll = (container, query) => {
+	const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+	let bestMatch = null;
+	let highestScore = -1;
+
+	while (walker.nextNode()) {
+		const text = walker.currentNode.textContent.toLowerCase();
+		const search = query.toLowerCase();
+
+		// Minimal scoring: does it include it, or how many chars overlap?
+		if (text.includes(search)) {
+			bestMatch = walker.currentNode.parentElement;
+			break; // Exact(ish) match found, stop early
+		}
+	}
+
+	if (bestMatch) {
+		bestMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		bestMatch.style.backgroundColor = 'yellow'; // Quick highlight
+		setTimeout(() => bestMatch.style.backgroundColor = '', 2000);
+	}
+};

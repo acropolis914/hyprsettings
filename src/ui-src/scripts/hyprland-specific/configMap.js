@@ -112,4 +112,5 @@ export let tabs = [
 	{ name: 'separator', label: 'Utility & Debugging' },
 	{ name: 'Settings', id: 'settings', icon: '' }, // nf-md-tune
 	{ name: 'Debug / Testing', id: 'debug', icon: '' }, // nf-md-bug_report
+	{ name: 'Wiki', id: 'wiki', icon: '󰂺' },
 ]
