@@ -9,12 +9,14 @@ import rehypeSanitize, { defaultSchema } from "rehype-sanitize"
 import { shortcodes } from 'remark-hugo-shortcodes'
 import remarkDirective from "remark-directive"
 import { remarkObsidianAdmonitions } from "./markdown/remarkObsidianAdmonitions.ts"
+import { remarkHugoTabsToDirectives } from "./markdown/remarkTabs"
 
 export default async function parseMarkdown(input: string) {
 	// console.log("parseMarkdown")
 	const processor = unified()
 		.use(remarkParse).use(remarkDirective)
 		.use(remarkObsidianAdmonitions)
+		.use(remarkHugoTabsToDirectives)
 		.use(remarkFrontmatter)
 		.use(remarkGfm)
 		.use(() => (tree, file) => {

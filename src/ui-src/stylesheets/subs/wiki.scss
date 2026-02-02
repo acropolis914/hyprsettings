@@ -283,3 +283,90 @@
 }
 
 
+.tabs-container {
+	// Local scope variables for the component
+	--tab-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+	margin: var(--spacing-unit) 0;
+	background-color: var(--surface-1);
+	//border: 1px solid var(--surface-border);
+	border-radius: var(--border-rad);
+	overflow: hidden;
+	font-family: var(--font-primary), monospace;
+
+	.tab-nav {
+		display: flex;
+		background-color: var(--surface-0);
+		border-bottom: 1px solid var(--surface-border);
+		padding: 0 calc(var(--spacing-unit) * 0.5);
+		gap: 0.25rem;
+		overflow-x: auto;
+		scrollbar-width: none; // Arch users love clean UI
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	.tab-btn {
+		padding: 0.75rem 1.25rem;
+		cursor: pointer;
+		background: transparent;
+		border: none;
+		color: var(--text-3);
+		font-family: inherit;
+		//font-size: 0.85rem;
+		position: relative;
+		transition: var(--tab-transition);
+		white-space: nowrap;
+		flex: 1;
+
+		&:hover {
+			color: var(--text-0);
+			background-color: rgba(255, 255, 255, 0.05);
+		}
+
+		&.active {
+			color: var(--accent);
+
+			// Custom underline using pseudo-element
+			&::after {
+				content: '';
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: 2px;
+				background-color: var(--accent);
+				box-shadow: 0 0 8px var(--accent);
+			}
+		}
+	}
+
+	.tab-panel {
+		padding: var(--spacing-unit);
+		background-color: var(--surface-0);
+		animation: tabSlideUp 0.3s ease-out;
+
+		// Clean up Nix code blocks inside tabs
+		pre {
+			max-width: 100% !important;
+			margin:var(--spacing-unit) 0 ;
+			background-color: var(--surface-0) !important;
+			border: 1px solid var(--surface-border);
+		}
+	}
+}
+
+@keyframes tabSlideUp {
+	from {
+		opacity: 0;
+		transform: translateY(4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+

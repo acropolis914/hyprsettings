@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"front-matter": "^4.0.2",
+		"hastscript": "^9.0.1",
 		"hotkeys-js": "^4.0.0",
 		"lit": "^3.3.2",
 		"prismjs": "^1.30.0",
