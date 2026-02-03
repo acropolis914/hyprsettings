@@ -1,13 +1,12 @@
 import { GLOBAL } from '../GLOBAL'
 import { Backend } from '../backendAPI'
-import * as util from 'node:util'
+// import * as util from 'node:util'
 import { makeUUID } from '../utils'
 import parseMarkdown from '../utils/parseMarkdown.ts'
 import normalizeText from "../utils/normalizeText.ts"
 import Prism from "prismjs/prism"
 import "prismjs/components/prism-ini.min.js";
 import "prismjs/components/prism-bash.min.js";
-import "prismjs/components/prism-shell-session";
 import '@stylesheets/prism.css';
 
 export default async function createWiki() {
@@ -68,9 +67,14 @@ function createWikiNavigation() {
 			} else {
 				viewEl_title.classList.add('hidden')
 			}
+
+			if (parsed.data) {
+				console.log(parsed.data)
+			}
 			viewEl_position.innerHTML = ` ${position.split(":").join("  ")} `
 
 			viewEl_content.innerHTML = parsed['value']
+			console.clear()
 			viewEl_content.querySelectorAll('a').forEach((element: HTMLElement) => {
 				fixLinxElement(element, position)
 			})
@@ -111,7 +115,7 @@ function createWikiNavigation() {
 	) {
 		let indent = '       '.repeat(indentation)
 		for (const [key, value] of Object.entries(object)) {
-			if (key === '.version') {
+			if (key === '.version' || key === 'navigation.txt' || key === "version-selector.md") {
 				continue
 			}
 			if (objectTree.length === 1 && key == '_index.md') {
@@ -130,7 +134,6 @@ function createWikiNavigation() {
 				.trim()
 				.replace('.md', '')
 				.replace('-', ' ')
-			el.dataset.value = JSON.stringify(await parseMarkdown(value))
 			el.dataset.position = path
 			function setElValue() {
 				setViewElValue(el.dataset.value, el.dataset.position)
@@ -139,6 +142,9 @@ function createWikiNavigation() {
 			if (typeof value == 'string' && key != '_index.md') {
 				el.classList.add('wiki-file')
 				el.innerHTML = el.dataset.cleanName
+				let parsed = await parseMarkdown(value)
+				el.dataset.value = JSON.stringify(parsed)
+				el.dataset.weight = parsed.data.matter.weight || -1
 				objectTree.at(-1).appendChild(el)
 			} else if (key != '_index.md' && typeof value != 'string') {
 				el.classList.add('wiki-folder', 'config-group')
@@ -153,11 +159,16 @@ function createWikiNavigation() {
 				indentation -= 1
 
 				objectTree.pop()
-			} else if (key == '_index.md') {
-				objectTree.at(-1).dataset.value = JSON.stringify(await parseMarkdown(value))
+			} else if (key == '_index.md' && typeof value === 'string') {
+				// console.log(value)
+				let parsed = await parseMarkdown(value)
+				// el.dataset.value =
+
+				objectTree.at(-1).dataset.value = JSON.stringify(parsed)
+				objectTree.at(-1).dataset.weight = parsed.data.matter.weight || -1
 				continue
 			} else {
-				console.warn(`Unknown key "${key}"`)
+				console.warn(`Error parsing "${key}: ${value}"`)
 			}
 			el.addEventListener('click', (e) => {
 				if (e.target != el) {return}
@@ -169,17 +180,49 @@ function createWikiNavigation() {
 				setElValue(e)
 
 			})
-			el.addEventListener('focus', (e) => setElValue(e))
+			el.addEventListener('focus', (e) => {
+				if(e.target != el) {return}
+				setElValue(e)})
 
 		}
 	}
 	setupNavigation(tree, 0, 'wiki')
+	reorderByWeight(navigationEl)
 }
+
+export function reorderByWeight(el: HTMLElement): void {
+	if (!el) return
+
+	// Grab only .editor-item children
+	const items = Array.from(el.children).filter(
+		(child): child is HTMLElement =>
+			child instanceof HTMLElement && child.classList.contains("editor-item")
+	)
+
+	// Sort by dataset.weight (allow negatives, treat invalid as 0)
+	const sorted = [...items].sort((a, b) => {
+		const aw = Number(a.dataset.weight?.trim() || 0)
+		const bw = Number(b.dataset.weight?.trim() || 0)
+		return aw - bw
+	})
+
+	// Re-append in order if needed
+	for (let i = 0; i < sorted.length; i++) {
+		const currentNode = sorted[i]
+		if (el.children[i] !== currentNode) {
+			el.insertBefore(currentNode, el.children[i] || null)
+		}
+		// recurse into children
+		reorderByWeight(currentNode)
+	}
+}
+
+
 
 function findWikiViewElement(target_element: string): HTMLElement {
 	let linkTargetName = target_element.replace('#', '')
 		.replaceAll('-', ' ')
-	let wikiView = document.getElementById('wikiView')
+	let wikiView = document.getElementById('wikiView_content')
 	let element = Array.from(wikiView.childNodes).find(
 		(element: HTMLElement) => {
 			if (element.innerText) {
@@ -199,21 +242,24 @@ function fixLinxElement(element: HTMLElement, position) {
 
 	if (link.startsWith('..') || link.startsWith('.')) {
 		// console.log({ position })
+		let link_without_section = link.replace(link.substring(link.indexOf('#')), "")
+		console.log(link_without_section)
 		let position_paths = position.split(':').filter(Boolean)
-		let link_parts = link.split('/').filter(Boolean)
-
+		let link_parts = link.split('/').filter(Boolean).filter(item => !item.startsWith("#"))
+		let link_section = link.split('/').filter(Boolean).filter(item => item.startsWith("#"))
+		let linkToFix = link_parts.join(":")
 		while (link_parts[0] === '..') {
 			link_parts.shift()
-			// if (!link.endsWith('/')) {
-			// 	position_paths.pop()
-			// }
+			if (!link_without_section.endsWith('/') && position_paths.length > 1) {
+				position_paths.pop()
+			}
 		}
 		while (link_parts[0] === '.') {
 			link_parts.shift()
 		}
-		const newLink = [...position_paths, ...link_parts].join(':')
+		const newLink = [...position_paths, ...link_parts, ...link_section].join(':')
 		element.title = newLink
-		// console.log('Fixing link element', { link, position,newLink })
+		console.log('Fixing link element', { link_without_section, position,newLink })
 		element.addEventListener('click', (e) => {
 			e.preventDefault()
 			gotoWikiEvent(e)
@@ -249,7 +295,7 @@ function gotoWiki(wikidir: string) {
 		node = node_children.find(e =>{
 			let name =normalizeText(e.dataset.name)
 			let target = normalizeText(wikiDir_path[0])
-			console.log({ name, target })
+			// console.log({ name, target })
 			return target === name
 		})
 
@@ -261,6 +307,12 @@ function gotoWiki(wikidir: string) {
 	}
 	// console.log(node)
 	node.click()
-	let section = findWikiViewElement(wikiDir_section[0])
-	section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+	setTimeout(() => {
+		if(!wikiDir_section[0]) {return}
+		let section = findWikiViewElement(wikiDir_section[0])
+
+		// console.log(section)
+		section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+	}, 100)
+
 }

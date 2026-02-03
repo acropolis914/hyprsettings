@@ -15,6 +15,7 @@
 		"@types/bun": "latest",
 		"@types/prismjs": "^1.26.5",
 		"concurrently": "^9.2.1",
+		"rollup-plugin-visualizer": "^6.0.5",
 		"sass": "^1.97.3",
 		"vite": "^7.3.1"
 	},
@@ -30,7 +31,6 @@
 		"remark-directive": "^4.0.0",
 		"remark-frontmatter": "^5.0.0",
 		"remark-gfm": "^4.0.1",
-		"remark-hugo-shortcodes": "^0.2.13",
 		"remark-parse": "^11.0.0",
 		"remark-rehype": "^11.1.2",
 		"tippy.js": "^6.3.7",
