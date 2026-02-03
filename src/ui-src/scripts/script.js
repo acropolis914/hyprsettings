@@ -95,7 +95,6 @@ export async function initialize() {
 	renderSettings()
 	initializeSearchBar()
 	createWiki()
-
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

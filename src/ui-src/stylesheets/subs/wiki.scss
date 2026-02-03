@@ -62,6 +62,12 @@
 			font-weight: bold;
 		}
 
+		#wikiView_position{
+			padding-top: 0.5rem;
+			color: var(--text-2);
+			margin-bottom: calc(1.5 * var(--spacing-unit));
+		}
+
 	}
 }
 
@@ -370,3 +376,64 @@
 }
 
 
+.details-wrapper {
+	margin: var(--spacing-unit) 0;
+	border: 1px solid var(--surface-border);
+	border-radius: var(--border-rad);
+	background-color: var(--surface-1);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+
+	button.details-header {
+		/* Reset Button Defaults */
+		appearance: none;
+		background: var(--surface-1);
+		border: none;
+		text-align: left;
+		width: 100%;
+
+		padding: 0.75rem 1rem;
+		cursor: pointer;
+		color: var(--accent);
+		font-family: var(--font-primary);
+		font-weight: 600;
+		//font-size: 1rem;
+		display: flex;
+		align-items: center;
+		user-select: none;
+		transition: background-color 0.2s ease;
+
+		&::before {
+			content: ''; /* Nerd Font Chevron */
+			margin-right: 0.75rem;
+			transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+			color: var(--text-4);
+			display: inline-block;
+		}
+
+		&.is-open {
+			border-bottom: 0px solid var(--surface-border);
+			&::before {
+				transform: rotate(90deg);
+				color: var(--accent);
+			}
+		}
+
+		&:hover {
+			background-color: var(--surface-0);
+			transform: scale(1);
+		}
+	}
+
+	.details-body {
+		padding: var(--spacing-unit);
+		background-color: var(--surface-1);
+
+		// Nix code block styling inside
+		pre {
+			margin: 0;
+			background-color: var(--surface-2) !important;
+		}
+	}
+}

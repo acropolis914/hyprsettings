@@ -15,7 +15,7 @@ export default async function createWiki() {
 	await Backend.getHyprlandWikiNavigation()
 }
 
-function createWikiNavigation() {
+async function createWikiNavigation() {
 	let wikiRoot_el = document.querySelector('.config-set#wiki')
 	wikiRoot_el.innerHTML = ''
 	let navigationEl = document.createElement('div')
@@ -53,19 +53,20 @@ function createWikiNavigation() {
 	// viewEl.classList.add("config-set", "editor-item")
 
 	async function setViewElValue(value: string, position: string, title="") {
-		// console.clear()
+		console.clear()
 		const parsed = JSON.parse(value)
 		if (parsed['value']) {
 			// viewEl.innerHTML = ""
 			// @ts-ignore
 			if(parsed.data.matter.title){
-				viewEl_title.textContent = parsed.data.matter.title
+				viewEl_title.textContent = parsed.data.matter.title || "Hyprland Wiki"
 				viewEl_title.classList.remove('hidden')
 			} else if (title){
 				viewEl_title.textContent = title
 				viewEl_title.classList.remove('hidden')
 			} else {
-				viewEl_title.classList.add('hidden')
+				viewEl_title.textContent = "Hyprland Wiki"
+				// viewEl_title.classList.add('hidden')
 			}
 
 			if (parsed.data) {
@@ -74,7 +75,7 @@ function createWikiNavigation() {
 			viewEl_position.innerHTML = ` ${position.split(":").join("  ")} `
 
 			viewEl_content.innerHTML = parsed['value']
-			console.clear()
+			// console.clear()
 			viewEl_content.querySelectorAll('a').forEach((element: HTMLElement) => {
 				fixLinxElement(element, position)
 			})
@@ -118,11 +119,7 @@ function createWikiNavigation() {
 			if (key === '.version' || key === 'navigation.txt' || key === "version-selector.md") {
 				continue
 			}
-			if (objectTree.length === 1 && key == '_index.md') {
-				let markdown_json_parsed = JSON.stringify(await parseMarkdown(value))
-				await setViewElValue(markdown_json_parsed, path,"Hyprland Wiki")
-				continue
-			}
+
 
 			let el = document.createElement('div')
 			el.classList.add('editor-item')
@@ -145,6 +142,9 @@ function createWikiNavigation() {
 				let parsed = await parseMarkdown(value)
 				el.dataset.value = JSON.stringify(parsed)
 				el.dataset.weight = parsed.data.matter.weight || -1
+				if (key === 'LICENSE'){
+					el.dataset.weight = 1000
+				}
 				objectTree.at(-1).appendChild(el)
 			} else if (key != '_index.md' && typeof value != 'string') {
 				el.classList.add('wiki-folder', 'config-group')
@@ -159,7 +159,7 @@ function createWikiNavigation() {
 				indentation -= 1
 
 				objectTree.pop()
-			} else if (key == '_index.md' && typeof value === 'string') {
+			} else if (key == '_index.md' && typeof value === 'string' && objectTree.length != 1) {
 				// console.log(value)
 				let parsed = await parseMarkdown(value)
 				// el.dataset.value =
@@ -167,7 +167,18 @@ function createWikiNavigation() {
 				objectTree.at(-1).dataset.value = JSON.stringify(parsed)
 				objectTree.at(-1).dataset.weight = parsed.data.matter.weight || -1
 				continue
-			} else {
+			} else if (objectTree.length === 1 && key == '_index.md') {
+				el.classList.add('wiki-file')
+				el.innerHTML = "Welcome to the Wiki!"
+				let parsed = await parseMarkdown(value)
+				el.dataset.value = JSON.stringify(parsed)
+				el.dataset.weight =  -2
+				objectTree.at(-1).appendChild(el)
+				// objectTree.at(-1).appendChild(el)
+				let markdown_json_parsed = JSON.stringify(await parseMarkdown(value))
+				await setViewElValue(markdown_json_parsed, path,"Hyprland Wiki")
+				// continue
+			}else {
 				console.warn(`Error parsing "${key}: ${value}"`)
 			}
 			el.addEventListener('click', (e) => {
@@ -186,18 +197,18 @@ function createWikiNavigation() {
 
 		}
 	}
-	setupNavigation(tree, 0, 'wiki')
-	reorderByWeight(navigationEl)
+	await setupNavigation(tree, 0, 'wiki')
+	let navigationNode = document.getElementById('wikiNavigation')
+	reorderByWeight(navigationNode)
 }
 
 export function reorderByWeight(el: HTMLElement): void {
+	// console.log(el)
 	if (!el) return
 
 	// Grab only .editor-item children
-	const items = Array.from(el.children).filter(
-		(child): child is HTMLElement =>
-			child instanceof HTMLElement && child.classList.contains("editor-item")
-	)
+	const items = el.children
+	// console.log(items)
 
 	// Sort by dataset.weight (allow negatives, treat invalid as 0)
 	const sorted = [...items].sort((a, b) => {
@@ -206,6 +217,7 @@ export function reorderByWeight(el: HTMLElement): void {
 		return aw - bw
 	})
 
+	// console.log(sorted)
 	// Re-append in order if needed
 	for (let i = 0; i < sorted.length; i++) {
 		const currentNode = sorted[i]

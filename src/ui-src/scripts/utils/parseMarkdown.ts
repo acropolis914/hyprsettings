@@ -9,6 +9,7 @@ import rehypeSanitize from "rehype-sanitize"
 import remarkDirective from "remark-directive"
 import { remarkObsidianAdmonitions } from "./markdown/remarkObsidianAdmonitions.ts"
 import { remarkHugoTabsToDirectives } from "./markdown/remarkTabs"
+import { remarkHugoDetailsToHTML } from "./markdown/remarkHugoDetails"
 
 /* -----------------------------
  * Minimal frontmatter stripper
@@ -46,6 +47,7 @@ export default async function parseMarkdown(input: string) {
 		.use(remarkDirective)
 		.use(remarkObsidianAdmonitions)
 		.use(remarkHugoTabsToDirectives)
+		.use(remarkHugoDetailsToHTML)
 		.use(remarkFrontmatter) // keeps frontmatter node stripped
 		.use(remarkGfm)
 		.use(() => (_tree, file) => {
@@ -54,7 +56,7 @@ export default async function parseMarkdown(input: string) {
 		.use(remarkRehype)
 		.use(rehypeStringify)
 		// .use(shortcodes, { tokens: [["{{<", ">}}"]], inlineMode: true })
-		.use(rehypeSanitize)
+		// .use(rehypeSanitize)
 
 	const file = await processor.process(content)
 	return file
