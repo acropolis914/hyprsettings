@@ -14,7 +14,7 @@ export default defineConfig({
 		emptyOutDir: true,
 		sourcemap: true,
 		rollupOptions: {
-			plugins: [visualizer({ open: true })],
+			plugins: [visualizer({ open: false })],
 			input: resolve(__dirname, 'index.html'),
 			output: {
 				entryFileNames: 'index.js',
