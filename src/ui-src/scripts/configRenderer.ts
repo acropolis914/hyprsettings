@@ -83,15 +83,16 @@ export class ConfigRenderer {
 	}
 	async invokeParser() {
 		await this.parse(this.json)
-		console.log('done parsing')
-		console.log(this.temporaryElement)
 		while (this.renderTo && this.temporaryElement.firstChild) {
-			console.log('temp.firstChild', this.temporaryElement.firstChild)
+			let el = this.temporaryElement.firstElementChild
 			if (this.renderAfter) {
-				this.renderTo.after(this.temporaryElement.firstChild)
+				this.renderTo.after(el)
 			} else {
-				this.renderTo.before(this.temporaryElement.firstChild)
+				this.renderTo.before(el)
 			}
+			el.tabIndex = 0
+			el.focus()
+			el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 		}
 	}
 

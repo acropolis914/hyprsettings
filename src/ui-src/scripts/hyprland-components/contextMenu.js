@@ -1,5 +1,10 @@
 import { hideAllContextMenus } from '../utils.ts'
 import { GLOBAL } from '../GLOBAL.js'
+import tippy, { hideAll } from 'tippy.js'
+import { roundArrow } from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
+import 'tippy.js/dist/svg-arrow.css'
+import '@stylesheets/subs/tippy.css'
 
 export class ContextMenu {
 	constructor(items = []) {
@@ -18,6 +23,14 @@ export class ContextMenu {
 		for (const { label, icon, action, title } of items) {
 			const btnEl = document.createElement('div')
 			btnEl.classList.add('ctx-button')
+			tippy(btnEl, {
+				content: `${icon} ${label}`,
+				triggerTarget: btnEl,
+				theme: 'pol',
+				onShow(instance) {
+					hideAll({ exclude: instance })
+				},
+			})
 			const iconEl = document.createElement('div')
 			iconEl.classList.add('ctx-button-icon')
 			iconEl.textContent = icon

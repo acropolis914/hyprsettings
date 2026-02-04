@@ -100,7 +100,7 @@ export async function initialize() {
 	renderSettings()
 	initializeSearchBar()
 	createWiki()
-	tippy.setDefaultProps({ delay: 500 })
+	tippy.setDefaultProps({ delay: 200, arrow: true })
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

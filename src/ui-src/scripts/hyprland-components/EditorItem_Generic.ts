@@ -13,8 +13,12 @@ import { parseHyprColor } from '../hyprland-specific/colorparser.js'
 import { selectFrom } from '../ui_components/dmenu.js'
 import { BezierModal } from './keyEditor_Bezier.js'
 import { html, render } from 'lit'
-import tippy, { followCursor } from 'tippy.js'
-import '@stylesheets/subs/tippy.css' // optional for styling
+import tippy, { followCursor, hideAll } from 'tippy.js'
+import { roundArrow } from 'tippy.js'
+import 'tippy.js/dist/tippy.css'
+import 'tippy.js/dist/svg-arrow.css'
+import '@stylesheets/subs/tippy.css'
+import { gotoWiki } from '../ui_components/wikiTab.ts' // optional for styling
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -53,6 +57,7 @@ export class EditorItem_Generic {
 	tippyTitle: string
 	initial_load: boolean
 	el: Node
+	preview_el: HTMLDivElement
 	constructor(json: string, disabled = false) {
 		this.initial_load = true
 
@@ -215,7 +220,14 @@ export class EditorItem_Generic {
 			allowHTML: true,
 			followCursor: false,
 			plugins: [followCursor],
-			theme: 'pol',
+			delay: [200, 0],
+			animation: 'fade',
+			// theme: 'pol',
+			arrow: roundArrow,
+			// triggerTarget: this.el,
+			onShow(instance) {
+				hideAll({ exclude: this.el })
+			},
 		})
 		this.valueEditor.id = 'generic-value'
 		if (name.startsWith('$') || name === 'generic') {
@@ -282,6 +294,10 @@ export class EditorItem_Generic {
 	update() {
 		let name = this.keyEditor.value
 		let formatted = name.replace(/_/g, ' ')
+		if (formatted.trim().toLowerCase() === 'animation') {
+			formatted = `<a onclick='window.gotoWiki("wiki:animations")' title="Go to Wiki">${formatted}</a>`
+			// formatted.title =
+		}
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
 		let value = this.valueEditor.value
 		let comment = this.commentArea.value
@@ -500,7 +516,10 @@ export class EditorItem_Generic {
 					isInConfigGroup,
 				})
 
-				if (!name && (isAllowedDupe || !isInConfigGroup)) {
+				if (
+					(!name || name.toLowerCase().startsWith('custom')) &&
+					(isAllowedDupe || !isInConfigGroup)
+				) {
 					console.warn('Using dataset name due to dupe rules')
 					name = thisName
 				} else if (!name) {

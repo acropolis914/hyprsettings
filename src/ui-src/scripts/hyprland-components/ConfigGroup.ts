@@ -2,6 +2,7 @@
 import { saveKey, deleteKey, duplicateKey } from '../utils.js'
 import { debounce } from '../helpers.js'
 import { ContextMenu } from './contextMenu.js'
+import { dmenuConfirm } from '../ui_components/dmenu'
 
 export class ConfigGroup {
 	group_el: HTMLDivElement
@@ -88,11 +89,10 @@ export class ConfigGroup {
 		])
 
 		this.group_el.appendChild(this.contextMenu.el)
-
 		this.addEventListeners()
 	}
 
-	addEventListeners() {
+	async addEventListeners() {
 		this.group_el.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
 			this.contextMenu.show()
@@ -104,12 +104,24 @@ export class ConfigGroup {
 		this.group_el.addEventListener('blur', (e) => {
 			this.contextMenu.hide()
 		})
+
+		this.group_el.addEventListener('keydown', async (e) => {
+			if (
+				e.key === 'Delete' &&
+				!(
+					e.target instanceof HTMLTextAreaElement ||
+					e.target instanceof HTMLInputElement
+				)
+			) {
+				e.preventDefault()
+				e.stopPropagation()
+				const confirm = await dmenuConfirm()
+				if (confirm) {
+					this.delete()
+				}
+			}
+		})
 	}
-	// duplicateKey(after: boolean = false) {
-	// 	const node = duplicateKey(this.group_el.dataset.uuid, this.group_el.dataset.position, after)
-	// 	const clone = new ConfigGroup(node).return()
-	// 	after ? this.group_el.after(clone) : this.group_el.before(clone)
-	// }
 
 	disable(disable: boolean | null = null) {
 		// WARNING! THIS IS NOT YET WORKING GOOD
@@ -162,8 +174,72 @@ export class ConfigGroup {
 		return this.group_el
 	}
 	delete() {
-		deleteKey(this.group_el.dataset.uuid, this.group_el.dataset.position)
-		this.group_el.remove()
+		this.group_el.style.backgroundColor = 'var(--surface-1)'
+		let before =
+			this.group_el.previousElementSibling ||
+			this.group_el.nextElementSibling
+		function collapseElementFull(el, duration = 1000) {
+			const style = getComputedStyle(el)
+
+			// store initial values
+			const startHeight = el.offsetHeight
+			const startOpacity = parseFloat(style.opacity) || 1
+
+			const startPaddingTop = parseFloat(style.paddingTop)
+			const startPaddingBottom = parseFloat(style.paddingBottom)
+
+			const startMarginTop = parseFloat(style.marginTop)
+			const startMarginBottom = parseFloat(style.marginBottom)
+
+			const startBorderTop = parseFloat(style.borderTopWidth)
+			const startBorderBottom = parseFloat(style.borderBottomWidth)
+
+			el.style.overflow = 'hidden'
+			const startTime = performance.now()
+
+			function animate(now) {
+				const elapsed = now - startTime
+				let t = Math.min(elapsed / duration, 1) // progress 0 → 1
+
+				// EASE OUT QUAD
+				const factor = 1 - (1 - t) * (1 - t)
+
+				const invFactor = 1 - factor // for collapsing from full → 0
+
+				el.style.height = startHeight * invFactor + 'px'
+				el.style.opacity = startOpacity * invFactor
+
+				el.style.paddingTop = startPaddingTop * invFactor + 'px'
+				el.style.paddingBottom =
+					startPaddingBottom * invFactor + 'px'
+
+				el.style.marginTop = startMarginTop * invFactor + 'px'
+				el.style.marginBottom = startMarginBottom * invFactor + 'px'
+
+				el.style.borderTopWidth = startBorderTop * invFactor + 'px'
+				el.style.borderBottomWidth =
+					startBorderBottom * invFactor + 'px'
+
+				if (t < 1) {
+					requestAnimationFrame(animate)
+				} else {
+					// animation done
+					deleteKey(el.dataset.uuid, el.dataset.position)
+					el.remove()
+					before.click()
+					before.focus()
+					before.scrollIntoView({
+						behavior: 'smooth',
+						block: 'center',
+					})
+				}
+			}
+
+			requestAnimationFrame(animate)
+		}
+
+		// Usage
+		collapseElementFull(this.group_el, 500)
 	}
 	duplicateKey() {
 		duplicateKey(

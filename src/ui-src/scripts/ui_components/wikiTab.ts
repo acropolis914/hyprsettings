@@ -315,9 +315,9 @@ function fixLinxElement(element: HTMLElement, position: string) {
 		plugins: [followCursor],
 	})
 }
-
-function gotoWiki(wikidir: string) {
-	// document.querySelector(".sidebar-item#wiki").click()
+window.gotoWiki = gotoWiki
+export function gotoWiki(wikidir: string) {
+	document.querySelector('.sidebar-item#wiki').click()
 	let wikiDir_path = wikidir.split(':').filter((e) => !e.startsWith('#'))
 	let wikiDir_path_immutable = wikiDir_path
 	let wikiDir_section = wikidir.split(':').filter((e) => e.startsWith('#'))
@@ -362,6 +362,8 @@ function gotoWiki(wikidir: string) {
 		console.log({ directory, directories, found })
 		if (found) {
 			found.click()
+		} else {
+			console.error('Could not find wiki node:', wikiDir_path[0])
 		}
 	}
 

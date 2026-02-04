@@ -6,6 +6,7 @@
 	border-radius: var(--border-rad);
 	padding: var(--spacing-unit);
 	border: 1px solid var(--text-0);
+	/*overflow: auto !important;*/
 }
 
 html.light {
@@ -14,28 +15,22 @@ html.light {
 	}
 }
 
-.tippy-box[data-placement^='top'] > .tippy-arrow:before {
-	border-top-color: var(--surface-2);
-}
-
-.tippy-box[data-placement^='bottom'] > .tippy-arrow:before {
-	border-bottom-color: var(--surface-2);
-}
-
-.tippy-box[data-placement^='left'] > .tippy-arrow:before {
-	border-left-color: var(--surface-2);
-}
-
-.tippy-box[data-placement^='right'] > .tippy-arrow:before {
-	border-right-color: var(--surface-2);
+.tippy-box > .tippy-arrow:before {
+	border-top-color: rgba(var(--surface-0) \, 0.75);
+	border: 1px solid var(--text-0);
+	fill: var(--surface-0);
 }
 
 .tippy-box > .tippy-backdrop {
-	background-color: var(--surface-2);
+	background-color: var(--surface-2) !important;
 }
 
 .tippy-box > .tippy-svg-arrow {
-	fill: var(--surface-2);
+	fill: var(--surface-0) !important;
+}
+
+.tippy-box > .tippy-svg-arrow > svg {
+	/*fill: var(--text-0) !important;*/
 }
 
 .tippy-content {
