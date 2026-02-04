@@ -10,6 +10,7 @@ import { GLOBAL } from '../GLOBAL.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { html, render } from 'lit'
 import TomSelect from 'tom-select'
+import { dmenuConfirm } from '../ui_components/dmenu'
 
 // import TomSelect from "../../jslib/tom-select.complete.min"
 const templateString = html`
@@ -253,7 +254,7 @@ export class EditorItem_Binds {
 		})
 	}
 
-	addListeners() {
+	async addListeners() {
 		this.el.addEventListener('click', (e) => {
 			this.el.classList.remove('compact')
 			this.contextMenu.show()
@@ -267,7 +268,7 @@ export class EditorItem_Binds {
 			this.el.classList.toggle('compact')
 			this.contextMenu.hide()
 		})
-		this.el.addEventListener('keydown', (e) => {
+		this.el.addEventListener('keydown', async (e) => {
 			// e.stopPropagation()
 			if (e.key === 'Enter') {
 				this.el.classList.toggle('compact')
@@ -276,15 +277,10 @@ export class EditorItem_Binds {
 			if (e.key === 'Delete') {
 				e.preventDefault()
 				e.stopPropagation()
-				const el = [
-					...this.contextMenu.el.querySelectorAll(
-						'.ctx-button-label',
-					),
-				].find((label) =>
-					label.textContent.toLowerCase().includes('delete'),
-				)
-
-				if (el) setTimeout(() => el.parentElement.click(), 0)
+				const confirm = await dmenuConfirm()
+				if (confirm) {
+					this.delete()
+				}
 			}
 			if (e.key === 'd') {
 				if (
@@ -317,7 +313,7 @@ export class EditorItem_Binds {
 		let description_el = this.el.querySelector('.description')
 		if (bindFlags.includes('d')) {
 			description_el.classList.remove('hidden')
-			description_el.value = ' '
+			this.hasDescription = true
 		} else {
 			description_el.classList.add('hidden')
 			this.hasDescription = false
@@ -332,8 +328,8 @@ export class EditorItem_Binds {
 			: ''
 		this.el.dataset.name = bindflagString
 		if (this.hasDescription) {
-			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress},${description}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
-			this.el.dataset.value = `${modKeyString}, ${keyPress},${description}, ${disPatcherString}, ${paramString}`
+			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress},${description || 'has description'}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
+			this.el.dataset.value = `${modKeyString}, ${keyPress},${description || "I've forgotten to add a description"}, ${disPatcherString}, ${paramString}`
 		} else {
 			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
 			this.el.dataset.value = `${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}`

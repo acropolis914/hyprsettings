@@ -178,7 +178,7 @@ export function selectFrom(options, addCustom = true) {
 	return new Promise((resolve, reject) => {
 		GLOBAL.previousView = GLOBAL.currentView
 		GLOBAL.currentView = 'dmenu'
-		console.log(options)
+		// console.log(options)
 
 		createOverlay()
 
@@ -232,6 +232,123 @@ export function selectFrom(options, addCustom = true) {
 
 		document.getElementById('content-area').appendChild(root)
 
+		menu.focusFirst()
+	})
+}
+
+export function dmenuConfirm() {
+	return new Promise((resolve, reject) => {
+		GLOBAL.setKey('previousView', GLOBAL.currentView)
+		GLOBAL.currentView = 'dmenu'
+		createOverlay()
+		let menu
+		function cleanup() {
+			menu?.destroy()
+			destroyOverlay()
+			GLOBAL.currentView = GLOBAL.previousView
+			document.removeEventListener('click', outsideClick)
+		}
+		menu = new DMenu({
+			searchbar: true,
+			promptText: 'Are you sure?',
+			items: [
+				{ label: 'Yes', value: true },
+				{ label: 'No', value: false },
+			],
+			onSelect: (item) => {
+				menu.destroy()
+				resolve(item.value)
+				cleanup()
+
+			},
+			onCancel: () => {
+				menu.destroy()
+				resolve(false)
+				cleanup()
+			},
+		})
+
+		function outsideClick(e) {
+			if (!root.contains(e.target)) {
+				cleanup()
+				console.warn('Selection cancelled')
+				reject('selectioncancelled')
+			}
+		}
+
+		document.addEventListener('click', outsideClick)
+		document.getElementById('content-area').appendChild(menu.render())
+		menu.focusFirst()
+	})
+}
+
+
+
+/* ============================================================
+ * General DMenu wrapper: returns a promise with item.value
+ * ============================================================ */
+export function dmenuWrapper({
+						    items = [],          // array of { label, value, description?, type? }
+						    promptText = '',     // optional placeholder / prompt
+						    searchbar = true,    // whether to show search input
+						    footerText = '↑ ↓ Enter Esc cancel',
+						    addCustom = false,   // optional "custom value..." item
+						    cancelValue = null,  // what to resolve if cancelled / Esc / outside click
+					    } = {}) {
+	return new Promise((resolve) => {
+		GLOBAL.previousView = GLOBAL.currentView
+		GLOBAL.currentView = 'dmenu'
+
+		createOverlay()
+
+		let menu
+
+		function cleanup() {
+			menu?.destroy()
+			destroyOverlay()
+			GLOBAL.currentView = GLOBAL.previousView
+			document.removeEventListener('click', outsideClick)
+		}
+
+		if (addCustom) {
+			items.push({
+				label: 'Custom value...',
+				value: 'custom',
+				description: 'Enter a custom value',
+			})
+		}
+
+		menu = new DMenu({
+			searchbar,
+			promptText,
+			footer: footerText,
+			items: items.map((o) => ({
+				label: o.label ?? String(o.value),
+				value: o.value,
+				type: o.type,
+				description: o.description,
+			})),
+			onSelect: (item) => {
+				cleanup()
+				resolve(item.value)
+			},
+			onCancel: () => {
+				cleanup()
+				resolve(cancelValue)
+			},
+		})
+
+		const root = menu.render()
+
+		function outsideClick(e) {
+			if (!root.contains(e.target)) {
+				cleanup()
+				resolve(cancelValue)
+			}
+		}
+
+		document.addEventListener('click', outsideClick)
+		document.getElementById('content-area').appendChild(root)
 		menu.focusFirst()
 	})
 }

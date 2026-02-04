@@ -9,8 +9,8 @@
 	width: 100%;
 	height: 100%;
 	overflow-y: hidden;
-	margin-right: 0rem;
-	padding-right: 0rem;
+	margin-right: 0;
+	padding-right: 0;
 	@media (max-width: 768px) {
 		width: 100%;
 		max-width: 100%;
@@ -497,7 +497,7 @@
 		padding: 0.75rem 1rem;
 		cursor: pointer;
 		color: var(--accent);
-		font-family: var(--font-primary);
+		font-family: v.$font;
 		font-weight: 600;
 		//font-size: 1rem;
 		display: flex;
@@ -514,7 +514,7 @@
 		}
 
 		&.is-open {
-			border-bottom: 0px solid var(--surface-border);
+			border-bottom: 0 solid var(--surface-border);
 			&::before {
 				transform: rotate(90deg);
 				color: var(--accent);

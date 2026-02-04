@@ -20,31 +20,55 @@ export default async function getAndRenderConfig() {
 	await Backend.getHyprlandConfigTexts()
 }
 
+function clearConfigItems() {
+	document.querySelectorAll('.config-set').forEach((element) => {
+		if (['settings', 'debug', 'wiki'].includes(element.id)) {
+			return
+		} else {
+			Array.from(element.children).forEach((child) => {
+				child.remove()
+			})
+		}
+	})
+}
+
 export class ConfigRenderer {
 	private readonly json: Record<string, any>
 	current_container: any[]
 	comment_stack: any[]
 	comment_queue: any[]
 	group_stack: any[]
-	constructor(json: Record<string, any>) {
+	temporaryElement: HTMLDivElement
+	renderTo: HTMLElement
+	renderAfter: boolean
+	constructor(
+		json: Record<string, any>,
+		renderTo: HTMLElement = null,
+		renderAfter: boolean = true,
+	) {
+		this.renderTo = renderTo
+		this.renderAfter = renderAfter
 		this.json = json
 		this.current_container = []
-		this.current_container.push(
-			document.querySelector('.config-set#general'),
-		)
+		if (renderTo) {
+			console.log('renderTo', renderTo)
+			this.temporaryElement = document.createElement('div')
+			this.temporaryElement.style.display = 'none'
+			document.body.appendChild(this.temporaryElement)
+			this.current_container.push(this.temporaryElement)
+		} else {
+			this.current_container.push(
+				document.querySelector('.config-set#general'),
+			)
+		}
+
 		this.comment_stack = [] //for the block comments
 		this.comment_queue = []
 		this.group_stack = []
-		document.querySelectorAll('.config-set').forEach((element) => {
-			if (['settings', 'debug', 'wiki'].includes(element.id)) {
-				return
-			} else {
-				Array.from(element.children).forEach((child) => {
-					child.remove()
-				})
-			}
-		})
-		this.parse(this.json)
+		if (!renderTo) {
+			clearConfigItems()
+		}
+		this.invokeParser()
 		document
 			.querySelectorAll<HTMLElement>('.editor-item')
 			.forEach((element) => {
@@ -56,6 +80,19 @@ export class ConfigRenderer {
 						element.dataset.uuid
 				})
 			})
+	}
+	async invokeParser() {
+		await this.parse(this.json)
+		console.log('done parsing')
+		console.log(this.temporaryElement)
+		while (this.renderTo && this.temporaryElement.firstChild) {
+			console.log('temp.firstChild', this.temporaryElement.firstChild)
+			if (this.renderAfter) {
+				this.renderTo.after(this.temporaryElement.firstChild)
+			} else {
+				this.renderTo.before(this.temporaryElement.firstChild)
+			}
+		}
 	}
 
 	async parse(json: string | Record<string, any> | JSON) {
@@ -177,15 +214,16 @@ export class ConfigRenderer {
 				// 		this.comment_queue.splice(0, 1)
 				// 	}
 				// }
-
 				let matched
-				for (const [key, value] of configGroups) {
-					if (json.name.trim().startsWith(key)) {
-						document
-							.querySelector(`.config-set#${value}`)
-							.appendChild(group_el)
-						matched = true
-						break
+				if (!this.renderTo) {
+					for (const [key, value] of configGroups) {
+						if (json.name.trim().startsWith(key)) {
+							document
+								.querySelector(`.config-set#${value}`)
+								.appendChild(group_el)
+							matched = true
+							break
+						}
 					}
 				}
 

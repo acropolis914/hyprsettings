@@ -33,7 +33,6 @@ hotkeys('*', { keydown: true, keyup: true }, (event) => {
 })
 
 GLOBAL.setKey('currentView', 'tabs') //area of the document currently active
-GLOBAL['activeTab']
 GLOBAL['mainFocus'] = {}
 window.currentFocus = null
 

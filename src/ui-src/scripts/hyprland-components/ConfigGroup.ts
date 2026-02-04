@@ -1,13 +1,11 @@
 // @ts-check
-import { GLOBAL } from '../GLOBAL.js'
 import { saveKey, deleteKey, duplicateKey } from '../utils.js'
 import { debounce } from '../helpers.js'
 import { ContextMenu } from './contextMenu.js'
-import type { HtmlTagDescriptor } from 'vite'
 
 export class ConfigGroup {
-	private group_el: HTMLDivElement
-	private document: any
+	group_el: HTMLDivElement
+	private document: HTMLDivElement
 	private contextMenu: ContextMenu
 	private saveDebounced: any
 
@@ -72,11 +70,11 @@ export class ConfigGroup {
 			// 	icon: '󰅃',
 			// 	action: () => this.add('KEY', false),
 			// },
-			// {
-			// 	label: 'Duplicate Group',
-			// 	icon: '󰅀',
-			// 	action: () => this.duplicateKey( true),
-			// },
+			{
+				label: 'Duplicate Group',
+				icon: '󰅀',
+				action: () => this.duplicateKey(true),
+			},
 			{
 				label: 'Toggle Disable(Bugs!)',
 				icon: '󰈉',
@@ -166,6 +164,14 @@ export class ConfigGroup {
 	delete() {
 		deleteKey(this.group_el.dataset.uuid, this.group_el.dataset.position)
 		this.group_el.remove()
+	}
+	duplicateKey() {
+		duplicateKey(
+			this.group_el.dataset.uuid,
+			this.group_el.dataset.position,
+			true,
+			this.group_el,
+		)
 	}
 
 	save() {

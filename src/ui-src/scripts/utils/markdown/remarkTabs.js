@@ -1,5 +1,3 @@
-import { visit } from 'unist-util-visit'
-
 export function remarkHugoTabsToDirectives() {
 	return (tree) => {
 		const children = tree.children

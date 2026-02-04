@@ -1,5 +1,3 @@
-import { visit } from 'unist-util-visit'
-
 export function remarkHugoDetailsToHTML() {
 	return (tree) => {
 		const children = tree.children

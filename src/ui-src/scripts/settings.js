@@ -216,14 +216,14 @@ function createLineCommentsVisibilitySetting() {
 		)
 		commentItems.forEach((i) => i.classList.add('settings-hidden'))
 	}
-	let tooltip =
+	let tooltip_text =
 		'Shows or hides independent comments (not including the header comments)'
 	const item = new CheckBoxItem(
 		'Show line comments',
 		'show_line_comments',
 		true,
 		{ onCheck, onUncheck },
-		(tooltip = tooltip),
+		tooltip_text,
 	)
 }
 

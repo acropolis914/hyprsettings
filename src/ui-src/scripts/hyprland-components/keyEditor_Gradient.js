@@ -154,7 +154,7 @@ export class GradientModal {
 		this.addGradientbutton.textContent = ''
 		this.addGradientbutton.addEventListener('click', () => {
 			// e._stopBubblingUp = true; // custom flag
-			if (this.colorContainer.children.length == 11) {
+			if (this.colorContainer.children.length === 11) {
 				return
 			}
 			const itemIndex = Math.round(Math.random() * getSwatch().length)

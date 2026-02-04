@@ -380,9 +380,9 @@ function gotoWiki(wikidir: string) {
 }
 
 async function setViewElValue(value: string, position: string, title = '') {
-	console.log(value, title, position)
+	// console.log(value, title, position)
 	const parsed = JSON.parse(value)
-	console.log(parsed)
+	// console.log(parsed)
 	if (parsed['value']) {
 		// viewEl.innerHTML = ""
 		// @ts-ignore

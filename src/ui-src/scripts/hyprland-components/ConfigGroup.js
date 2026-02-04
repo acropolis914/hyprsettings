@@ -36,9 +36,9 @@ export class ConfigGroup {
 			// 	console.log("Group is entered");
 			// }
 			if (
-				e.key == 'd' &&
-				e.target.tagName != 'TEXTAREA' &&
-				e.target.tagName != 'INPUT'
+				e.key === 'd' &&
+				e.target.tagName !== 'TEXTAREA' &&
+				e.target.tagName !== 'INPUT'
 			) {
 				e.stopPropagation()
 				e.stopImmediatePropagation()

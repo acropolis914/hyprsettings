@@ -1,6 +1,6 @@
 import { Backend, saveConfigDebounced } from './backendAPI.js'
 import { GLOBAL } from './GLOBAL.js'
-import { debounce, waitFor } from './helpers.js'
+import { ConfigRenderer } from './configRenderer.ts'
 
 export function hideAllContextMenus() {
 	// console.log("hiding all ctx")
@@ -127,18 +127,28 @@ export function deleteKey(uuid, position) {
 	let parent = findParent(root, path, uuid)
 	let node = parent.children.find((node) => node.uuid === uuid)
 	let nodeIndex = parent.children.findIndex((node) => node.uuid === uuid)
-	if (!GLOBAL['config'].dryrun) {
+	let changedPath = position.split(':')
+	let file = path
+		.slice(1)
+		.filter((path) => path.includes('.conf'))
+		.at(-1)
+	if (!file) {
+		console.warn('No .conf file found in position:', position)
+	} else if (!GLOBAL['config'].dryrun) {
 		console.log(`Node ${uuid} deleted:`, node)
 		parent.children.splice(nodeIndex, 1)
-		Backend.saveConfig(JSON.stringify(GLOBAL['data']))
-		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
-		window.jsViewer.data = GLOBAL['data']
+		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 	} else {
 		console.log(`Dryrun delete ${uuid}:`, node)
 	}
 }
 
-export function duplicateKey(uuid, position, below = true) {
+export function duplicateKey(
+	uuid,
+	position,
+	below = true,
+	element: HTMLElement,
+) {
 	console.log(`Duplicating ${position} => with uuid ${uuid}`)
 	let root = GLOBAL['data']
 	let path = position.split(':')
@@ -149,15 +159,21 @@ export function duplicateKey(uuid, position, below = true) {
 	let newNode = JSON.parse(JSON.stringify(node))
 	newNode.uuid = newuuid
 	parent.children.splice(nodeIndex + (below ? 1 : 0), 0, newNode)
+	new ConfigRenderer(newNode, element, below)
+
+	let file = path
+		.slice(1)
+		.filter((path) => path.includes('.conf'))
+		.at(-1)
 	if (!GLOBAL['config'].dryrun) {
 		console.log(`Node ${uuid} duplicated:`, node)
-		Backend.saveConfig(JSON.stringify(GLOBAL['data']))
+		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
 		window.jsViewer.data = GLOBAL['data']
 	} else {
 		console.log(`Dryrun duplicate ${uuid}:`, node)
 	}
-	return newNode
+	// return newNode
 }
 
 export async function addItem(
