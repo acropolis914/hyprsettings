@@ -10,8 +10,8 @@ import { parseHyprColor } from '../hyprland-specific/colorparser.js'
 import { selectFrom } from '../ui_components/dmenu.js'
 import { BezierModal } from './keyEditor_Bezier.js'
 import { html, render } from 'lit'
-import tippy from 'tippy.js';
-import 'tippy.js/dist/tippy.css'; // optional for styling
+import tippy, { followCursor } from 'tippy.js';
+import '@stylesheets/subs/tippy.css'; // optional for styling
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -174,23 +174,32 @@ export class EditorItem_Generic {
 			let description = JSON.stringify(this.info['description'])
 			let type = JSON.stringify(this.info['type'])
 
-			let description_title = `${JSON.parse(description)}\n\n Type: ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
+			let description_title = `${JSON.parse(description)}\n\n<strong> Type:</strong> ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
 			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
 			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
-				this.tippyTitle += `\n\n󱎸  Description: ${description_title}`
+				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
 				const [defaultValue, min, max] = this.info['data']
 					.split(',')
 					.map((item) => item.trim())
 					.map(Number)
-				this.tippyTitle += `\nDefault: ${defaultValue} • Min: ${min} • Max: ${max}`
+				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue} • Min: ${min} • Max: ${max}`
 			} else {
-				this.tippyTitle += `\n\n󱎸  Description: ${description_title}`
+				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
 				let defaultValue = this.info['data']
-				this.tippyTitle += `\nDefault: ${defaultValue}`
+				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
 			}
 			// this.valueEditor.title = title
 		}
+		this.el.setAttribute('data-tippy-content', this.tippyTitle)
+		// console.log(this.tippyTitle.replace(/\n/g, '<br>'))
+		tippy(this.el, {
 
+			content: `<div>${this.tippyTitle.replace(/\n/g, '<br>')}</div>`,
+			allowHTML: true,
+			followCursor: false,
+			plugins: [followCursor],
+			theme: 'pol'
+		})
 		this.valueEditor.id = 'generic-value'
 		if (name.startsWith('$') || name === 'generic') {
 			this.genericEditor_el.appendChild(this.keyEditor)

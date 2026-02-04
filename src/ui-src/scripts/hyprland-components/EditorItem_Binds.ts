@@ -38,6 +38,9 @@ const templateString = html`
 	</div>
 `
 export class EditorItem_Binds {
+	dataset
+	classList
+
 	constructor(json, disabled = false) {
 		this.initial_load = true
 		let name = json['name']
@@ -50,11 +53,8 @@ export class EditorItem_Binds {
 		}
 		const template = document.createElement('div')
 		render(templateString, template)
-		// template.innerHTML = templateString
-		//
-		// const template = document.getElementById('keybind-template')
 		this.el = template.firstElementChild.cloneNode(true)
-		// @ts-ignore
+
 		if (GLOBAL['config'].compact) {
 			this.el.classList.add('compact')
 		}
