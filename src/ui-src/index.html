@@ -17,7 +17,6 @@ Manually adding tabs might come at a later update.-->
 		<script type="module" src="scripts/script.js" defer></script>
 		<script type="module" src="scripts/jslib/json-viewer.js"></script>
 		<!-- <script src="/jslibs/hotkeys.min.js"></script> -->
-		<script src="/jslibs/tom-select.complete.min.js"></script>
 		<script type="module" src="scripts/jslib/coloris.js"></script>
 		<link rel="stylesheet" href="stylesheets/style.scss" />
 		<link rel="stylesheet" href="/fonts/fonts.css" />
@@ -25,12 +24,12 @@ Manually adding tabs might come at a later update.-->
 		<link rel="stylesheet" href="scripts/jslib/tom-select.css" />
 		<link rel="stylesheet" href="scripts/jslib/nouislider.css">
 		<link rel="stylesheet" href="scripts/jslib/coloris.css">
-		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/eruda/3.4.3/eruda.min.js" integrity="sha512-cDmB70h28kl47NuDUcO3/hqJ29T+Gxue9DA6hoENF9RPGN/AZuyI94ATk5MN9VXTiuTHw2v3iVT9sXLzMMF1sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-		<!-- <script>eruda.init();</script> -->
+<!--		 <script src="https://cdnjs.cloudflare.com/ajax/libs/eruda/3.4.3/eruda.min.js" integrity="sha512-cDmB70h28kl47NuDUcO3/hqJ29T+Gxue9DA6hoENF9RPGN/AZuyI94ATk5MN9VXTiuTHw2v3iVT9sXLzMMF1sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+<!--		 <script>eruda.init();</script>-->
 	</head>
 	<body>
 		<header  id="main-header" >
-			<span id="header-title" onclick="initialize(); window.refreshAllStylesheets()" oldonclick="location.reload()" title="Click to reinitialize session">
+			<span id="header-title" onclick="reinitialize();" oldonclick="location.reload()" title="Click to reinitialize session">
 			<span id="icon"></span> HyprSettings
 			<span id="debug-indicator" class="hidden">Debug Mode</span>
 			</span>
@@ -141,7 +140,7 @@ Let's go!
 				<h2>Config Preview</h2>
 				<div id="config-preview-tabs"></div>
 				<pre><code id="config-preview-code"></code></pre>
-				<iframe src="/wiki/Configuring/" tabindex="-1" style="width:100vw;height:90vh;border:none;" class="hidden"></iframe>
+<!--				<iframe src="/wiki/Configuring/" tabindex="-1" style="width:100vw;height:90vh;border:none;" class="hidden"></iframe>-->
 			</div>
 			</div>
 			<footer><p>Press F3 to get out of this screen</p></footer>
