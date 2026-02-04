@@ -317,11 +317,13 @@ export class EditorItem_Binds {
 		let description_el = this.el.querySelector('.description')
 		if (bindFlags.includes('d')) {
 			description_el.classList.remove('hidden')
+			description_el.value = ' '
 		} else {
 			description_el.classList.add('hidden')
 			this.hasDescription = false
 		}
 		let description = this.el.querySelector('.description').value
+		// console.log(description)
 		let disPatcherString = this.dispatcherTS.getValue()
 		let paramString = this.el.querySelector('.params').value.trim()
 		let preview_el = this.el.querySelector('.editor-item-preview')
@@ -336,6 +338,7 @@ export class EditorItem_Binds {
 			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
 			this.el.dataset.value = `${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}`
 		}
+		// console.log(this.el.dataset.value)
 		let saved_comment = this.comment_el.value
 		this.el.dataset.comment = saved_comment
 		if (!this.initial_load) {

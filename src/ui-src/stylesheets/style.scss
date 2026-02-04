@@ -9,6 +9,7 @@
 @use 'subs/wiki.scss' as *;
 @use 'subs/scrollbars.css' as *;
 @use 'subs/tippy.css' as *;
+@use '_variables.scss' as v;
 /* =================================
 1. Variables, Mixins & Placeholders
 ================================= */
@@ -19,16 +20,12 @@ $transition-main:
 	background-color $transition-speed-normal ease,
 	color $transition-speed-fast ease;
 
-/* --- Mixins ---*/
-
-/* Single-line text overflow*/
 @mixin text-ellipsis {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-/* Sidebar tab active state (for :hover, :active, .selected)*/
 @mixin sidebar-item-active {
 	background-color: var(--accent);
 	color: var(--text-contrast);
@@ -591,7 +588,7 @@ footer {
 	min-height: 0;
 	//background-color: red;
 	@media (max-width: 500px) {
-		padding: 1rem 0;
+		padding: 1rem 1rem;
 	}
 	/* Specific styles for the #settings tab*/
 	&#settings {

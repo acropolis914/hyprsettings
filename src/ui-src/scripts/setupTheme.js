@@ -34,10 +34,11 @@ themeButton.addEventListener('click', (e) => {
 })
 
 export function incrementCurrentTheme() {
-	GLOBAL['currentThemeIndex'] += 1
-	GLOBAL['currentThemeIndex'] =
-		GLOBAL['currentThemeIndex'] % window.themes.length
-	let theme = window.themes[GLOBAL['currentThemeIndex']]
+	GLOBAL.setKey(
+		'currentThemeIndex',
+		(GLOBAL.currentThemeIndex + 1) % window.themes.length,
+	)
+	let theme = GLOBAL.themes[GLOBAL['currentThemeIndex']]
 	changeTheme(theme)
 }
 
@@ -55,18 +56,6 @@ function applyThemeVars(theme) {
 	root.classList.remove('dark')
 	root.classList.remove('light')
 	root.classList.add(theme.variant.toLowerCase())
-
-	// const wiki_iframe = document.querySelector('.testing-screen iframe');
-	// const doc = wiki_iframe.contentDocument;
-	// doc.documentElement.classList.remove('dark');
-	// doc.documentElement.classList.remove('light');
-	// doc.documentElement.classList.add(theme.variant.toLowerCase());
-	//
-	// doc.documentElement.addEventListener('click', () => {
-	// 	doc.documentElement.classList.remove('dark');
-	// 	doc.documentElement.classList.remove('light');
-	// 	doc.documentElement.classList.add(theme.variant.toLowerCase());
-	// })
 }
 
 export function changeTheme(theme) {

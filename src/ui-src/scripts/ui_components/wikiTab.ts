@@ -7,6 +7,8 @@ import normalizeText from '../utils/normalizeText.ts'
 import Prism from 'prismjs/prism'
 import 'prismjs/components/prism-ini.min.js'
 import 'prismjs/components/prism-bash.min.js'
+import 'prismjs/plugins/toolbar/prism-toolbar.min.js'
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js'
 import '@stylesheets/prism.css'
 import tippy, { followCursor } from 'tippy.js'
 import '@stylesheets/subs/tippy.css'
@@ -30,7 +32,41 @@ async function createWikiNavigation() {
 		}
 		navigationEl.firstElementChild.focus()
 	})
-	// navigationEl.classList.add("config-set", "editor-item")
+
+	let open = true
+	navigationEl.addEventListener('transitionend', (e) => {
+		if (
+			e.propertyName === 'opacity' &&
+			getComputedStyle(e.target).opacity === '0'
+		) {
+			navigationEl.classList.add('hidden')
+		} else if (
+			e.propertyName === 'opacity' &&
+			getComputedStyle(e.target).opacity > '0' &&
+			open
+		) {
+			navigationEl.classList.remove('hidden')
+		}
+	})
+
+	let navigationElToggle = document.createElement('div')
+	navigationElToggle.setAttribute('id', 'navigation_toggle')
+	navigationElToggle.addEventListener('click', (e) => {
+		if (!open) {
+			// testingScreen.classList.remove("hidden")
+			navigationEl.classList.remove('hidden')
+			requestAnimationFrame(() => {
+				navigationEl.style.opacity = '1'
+			})
+		} else {
+			navigationEl.style.opacity = '0'
+			// testingScreen.classList.add("hidden")
+		}
+		open = !open
+	})
+
+	navigationElToggle.innerText = ''
+	wikiRoot_el.appendChild(navigationElToggle)
 
 	let viewEl = document.createElement('div')
 	viewEl.setAttribute('id', 'wikiView')
@@ -54,72 +90,6 @@ async function createWikiNavigation() {
 	wikiRoot_el.appendChild(viewEl)
 	// viewEl.classList.add("config-set", "editor-item")
 
-	async function setViewElValue(
-		value: string,
-		position: string,
-		title = '',
-	) {
-		// console.clear()
-		const parsed = JSON.parse(value)
-		if (parsed['value']) {
-			// viewEl.innerHTML = ""
-			// @ts-ignore
-			if (parsed.data.matter.title) {
-				viewEl_title.textContent =
-					parsed.data.matter.title || 'Hyprland Wiki'
-				viewEl_title.classList.remove('hidden')
-			} else if (title) {
-				viewEl_title.textContent = title
-				viewEl_title.classList.remove('hidden')
-			} else {
-				viewEl_title.textContent = 'Hyprland Wiki'
-				// viewEl_title.classList.add('hidden')
-			}
-
-			if (parsed.data) {
-				// console.log(parsed.data)
-			}
-			viewEl_position.innerHTML = ` ${position.split(':').join('  ')} `
-
-			viewEl_content.innerHTML = parsed['value']
-			// console.clear()
-			viewEl_content
-				.querySelectorAll('a')
-				.forEach((element: HTMLElement) => {
-					fixLinxElement(element, position)
-				})
-			viewEl_content
-				.querySelectorAll('pre')
-				.forEach((element: HTMLElement) => {
-					let code = element.querySelector('code') || element
-					let shebang = code.innerText
-						.toLowerCase()
-						.split('\n')[0]
-					if (shebang && shebang.trim().endsWith('sh')) {
-						code.classList.add('language-bash')
-						element.classList.add('language-bash')
-						Prism.highlightElement(code)
-					} else if (
-						code.innerText
-							.toLowerCase()
-							.includes('vga compatible')
-					) {
-						console.log(code.innerText)
-						code.classList.add('language-shell-session')
-						element.classList.add('language-shell-session')
-						code.classList.add('language-bash')
-						element.classList.add('language-bash')
-						Prism.highlightElement(code)
-					} else {
-						code.classList.add('language-ini')
-						element.classList.add('language-ini')
-						Prism.highlightElement(code)
-					}
-				})
-			viewEl.scrollTo({ top: 0, behavior: 'smooth' })
-		}
-	}
-
 	let objectTree = []
 	objectTree.push(navigationEl)
 
@@ -131,11 +101,11 @@ async function createWikiNavigation() {
 	) {
 		let indent = '       '.repeat(indentation)
 		for (const [key, value] of Object.entries(object)) {
-			if (
-				key === '.version' ||
-				key === 'navigation.txt' ||
-				key === 'version-selector.md'
-			) {
+			if (key === 'navigation.txt' || key === 'version-selector.md') {
+				continue
+			}
+			if (key === '.version') {
+				GLOBAL.setKey('wikiVersion', value)
 				continue
 			}
 
@@ -150,7 +120,7 @@ async function createWikiNavigation() {
 				.replace('.md', '')
 				.replace('-', ' ')
 			el.dataset.position = path
-			function setElValue() {
+			function setElValue(el) {
 				setViewElValue(el.dataset.value, el.dataset.position)
 			}
 
@@ -170,9 +140,6 @@ async function createWikiNavigation() {
 				objectTree.at(-1).appendChild(el)
 				objectTree.push(el)
 				indentation += 1
-				// if (key.startsWith('Hypr Ecosystem')) {
-				// 	console.log("Processing Hypr Ecosystem with children:", value)
-				// }
 				await setupNavigation(value, indentation, `${path}:${key}`)
 				indentation -= 1
 
@@ -193,20 +160,20 @@ async function createWikiNavigation() {
 			} else if (objectTree.length === 1 && key == '_index.md') {
 				el.classList.add('wiki-file')
 				el.innerHTML = 'Welcome to the Wiki!'
-				let parsed = await parseMarkdown(value)
-				el.dataset.value = JSON.stringify(parsed)
-				el.dataset.weight = -2
+				el.dataset.weight = '-2'
 				objectTree.at(-1).appendChild(el)
-				// objectTree.at(-1).appendChild(el)
-				let markdown_json_parsed = JSON.stringify(
-					await parseMarkdown(value),
-				)
-				await setViewElValue(
-					markdown_json_parsed,
-					path,
-					'Hyprland Wiki',
-				)
-				// continue
+				let parsed = await parseMarkdown(value)
+				parsed.value = `
+					<blockquote class="info">
+					This wiki is sourced from the hyprwm/hyprland-wiki github page. It was pulled with version <strong>${GLOBAL.wikiVersion.split('\n')[0]}</strong>.
+					
+					All rights reserved to vaxry and the hyprland contributors! See <a href="./LICENSE">LICENSE</a> for the hyprland wiki.
+					</blockquote>
+					<br><br>${parsed.value}
+					`
+				let markdown_json_parsed = JSON.stringify(parsed)
+				el.dataset.value = markdown_json_parsed
+				setViewElValue(markdown_json_parsed, path, 'Hyprland Wiki')
 			} else {
 				console.warn(`Error parsing "${key}: ${value}"`)
 			}
@@ -218,17 +185,20 @@ async function createWikiNavigation() {
 				GLOBAL.setKey('currentView', 'main')
 				// @ts-ignore
 				GLOBAL['mainFocus'][GLOBAL['activeTab']] = el.dataset.uuid
-				setElValue(e)
+				if (el.innerText.startsWith('Welcome')) {
+					console.warn(`Welcome to the Wiki!`)
+				}
+				setViewElValue(el.dataset.value, el.dataset.position)
 			})
 			el.addEventListener('focus', (e) => {
 				if (e.target != el) {
 					return
 				}
-				setElValue(e)
+				setElValue(el)
 			})
 		}
 	}
-	await setupNavigation(tree, 0, 'wiki')
+	await setupNavigation(tree, 0, 'Wiki')
 	let navigationNode = document.getElementById('wikiNavigation')
 	reorderByWeight(navigationNode)
 }
@@ -273,10 +243,10 @@ function findWikiViewElement(target_element: string): HTMLElement {
 			}
 		},
 	)
-	return element
+	return <HTMLElement>element
 }
 
-function fixLinxElement(element: HTMLElement, position) {
+function fixLinxElement(element: HTMLElement, position: string) {
 	let link = element.getAttribute('href')
 	let title = link
 
@@ -407,4 +377,68 @@ function gotoWiki(wikidir: string) {
 			wikiView_content.scrollTo(0, 0)
 		}
 	}, 100)
+}
+
+async function setViewElValue(value: string, position: string, title = '') {
+	console.log(value, title, position)
+	const parsed = JSON.parse(value)
+	console.log(parsed)
+	if (parsed['value']) {
+		// viewEl.innerHTML = ""
+		// @ts-ignore
+		let viewEl = document.getElementById('wikiView')
+		let viewEl_title = document.getElementById('wikiView_title')
+		let viewEl_content = document.getElementById('wikiView_content')
+		let viewEl_position = document.getElementById('wikiView_position')
+		if (parsed.data.matter.title) {
+			viewEl_title.textContent =
+				parsed.data.matter.title || 'Hyprland Wiki'
+			viewEl_title.classList.remove('hidden')
+		} else if (title) {
+			viewEl_title.textContent = title
+			viewEl_title.classList.remove('hidden')
+		} else {
+			viewEl_title.textContent = 'Hyprland Wiki'
+			// viewEl_title.classList.add('hidden')
+		}
+
+		if (parsed.data) {
+			// console.log(parsed.data)
+		}
+		viewEl_position.innerHTML = ` ${position.split(':').join('  ')} `
+
+		viewEl_content.innerHTML = parsed['value']
+		// console.clear()
+		viewEl_content
+			.querySelectorAll('a')
+			.forEach((element: HTMLElement) => {
+				fixLinxElement(element, position)
+			})
+		viewEl_content
+			.querySelectorAll('pre')
+			.forEach((element: HTMLElement) => {
+				let code = element.querySelector('code') || element
+				code.classList.add('copy-to-clipboard-button')
+				let shebang = code.innerText.toLowerCase().split('\n')[0]
+				if (shebang && shebang.trim().endsWith('sh')) {
+					code.classList.add('language-bash')
+					element.classList.add('language-bash')
+					Prism.highlightElement(code)
+				} else if (
+					code.innerText.toLowerCase().includes('vga compatible')
+				) {
+					console.log(code.innerText)
+					code.classList.add('language-shell-session')
+					element.classList.add('language-shell-session')
+					code.classList.add('language-bash')
+					element.classList.add('language-bash')
+					Prism.highlightElement(code)
+				} else {
+					code.classList.add('language-ini')
+					element.classList.add('language-ini')
+					Prism.highlightElement(code)
+				}
+			})
+		viewEl.scrollTo({ top: 0, behavior: 'smooth' })
+	}
 }

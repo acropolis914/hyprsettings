@@ -22,6 +22,16 @@ export async function initializeSearchBar() {
 			}
 			if (item.classList.contains('wiki-item')) {
 				itemProps['type'] = 'WIKI'
+				if (itemProps.name.startsWith('_')) {
+					itemProps.name = 'Wiki Homepage'
+					itemProps.cleanName = 'Wiki Homepage'
+				}
+				let html_string = JSON.parse(itemProps.value).value
+				let text_string = new DOMParser().parseFromString(
+					html_string,
+					'text/html',
+				).body.textContent
+				itemProps['value'] = text_string
 			}
 			if (
 				itemProps.type === 'COMMENT' &&
@@ -44,6 +54,8 @@ export async function initializeSearchBar() {
 				'type',
 				'cleanName',
 			],
+			ignoreLocation: true,
+			threshold: 0.4,
 		})
 
 		const results = fuse.search(searchBar.value)
@@ -150,16 +162,13 @@ export async function initializeSearchBar() {
 				goto.focus()
 				goto.click()
 				if (GLOBAL.config.ui_animations) {
-					goto.style.scale = '1.02'
+					goto.style.scale = '1.03'
 					setTimeout(() => {
 						goto.style.outline = '0px solid red'
 						goto.style.scale = '1.0'
-					}, 200)
+					}, 300)
 				}
 				cleanUp()
-				searchResultEl.style.display = 'none'
-				searchResultEl.innerHTML = ''
-				searchBar.value = ''
 			})
 
 			resultDiv.addEventListener('focus', (e) => {

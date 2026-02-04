@@ -32,7 +32,7 @@ export function createLoadingOverlay(message = 'Loading your Hyprland config') {
 	const intervalId = setInterval(() => {
 		dots = (dots + 1) % 4
 		loadingText.textContent = message + '.'.repeat(dots)
-	}, 500)
+	}, 200)
 
 	// 🔑 return a cleanup function
 	return () => {

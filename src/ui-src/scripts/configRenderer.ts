@@ -9,12 +9,24 @@ import {
 } from './hyprland-specific/configMap.js'
 import { ConfigGroup } from './hyprland-components/ConfigGroup.ts'
 import { GLOBAL } from './GLOBAL.js'
+import { Backend } from '@scripts/backendAPI.js'
+import { destroyOverlay } from '@scripts/ui_components/darken_overlay.js'
 
-export class configRenderer {
-	/**
-	 * @param {string} json
-	 */
-	constructor(json) {
+export default async function getAndRenderConfig() {
+	GLOBAL.onChange('data', () => {
+		new ConfigRenderer(GLOBAL.data)
+	})
+	await Backend.getHyprlandConfig()
+	await Backend.getHyprlandConfigTexts()
+}
+
+export class ConfigRenderer {
+	private readonly json: Record<string, any>
+	current_container: any[]
+	comment_stack: any[]
+	comment_queue: any[]
+	group_stack: any[]
+	constructor(json: Record<string, any>) {
 		this.json = json
 		this.current_container = []
 		this.current_container.push(
@@ -23,22 +35,30 @@ export class configRenderer {
 		this.comment_stack = [] //for the block comments
 		this.comment_queue = []
 		this.group_stack = []
-		this.parse(this.json)
-		document.querySelectorAll('.editor-item').forEach((element) => {
-			element.addEventListener('click', (e) => {
-				// let target = e.target
-				GLOBAL.setKey('currentView', 'main')
-				// @ts-ignore
-				GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-					element.dataset.uuid
-			})
+		document.querySelectorAll('.config-set').forEach((element) => {
+			if (['settings', 'debug', 'wiki'].includes(element.id)) {
+				return
+			} else {
+				Array.from(element.children).forEach((child) => {
+					child.remove()
+				})
+			}
 		})
+		this.parse(this.json)
+		document
+			.querySelectorAll<HTMLElement>('.editor-item')
+			.forEach((element) => {
+				element.addEventListener('click', (e) => {
+					// let target = e.target
+					GLOBAL.setKey('currentView', 'main')
+					// @ts-ignore
+					GLOBAL['mainFocus'][GLOBAL['activeTab']] =
+						element.dataset.uuid
+				})
+			})
 	}
 
-	/**
-	 * @param {string} json
-	 */
-	async parse(json) {
+	async parse(json: string | Record<string, any> | JSON) {
 		//Comment Stacking for three line label comments from default hyprland.conf
 		const self = this
 		function renderCommentStack() {
@@ -74,6 +94,7 @@ export class configRenderer {
 			// json['comment'].includes('### ') &&
 			this.comment_stack.length > 0
 		) {
+			// console.log(json['comment'])
 			this.comment_stack.push(json)
 			let comment = json['comment']
 				.trim()
@@ -248,5 +269,6 @@ export class configRenderer {
 				await this.parse(child)
 			}
 		}
+		setTimeout(() => destroyOverlay(), 1)
 	}
 }

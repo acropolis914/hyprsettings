@@ -33,7 +33,13 @@ export const Backend = {
 				const query = path
 					? `?path=${encodeURIComponent(path)}`
 					: ''
-				return await fetchFlask('get_hyprland_config' + query)
+				GLOBAL.setKey('data', '')
+				let hyprlandConfig = await fetchFlask(
+					'get_hyprland_config' + query,
+				)
+				let stringifiedHyprlandConfig = JSON.parse(hyprlandConfig)
+				GLOBAL.setKey('data', stringifiedHyprlandConfig)
+				return hyprlandConfig
 			default:
 				throw new Error('Unknown backend: ' + GLOBAL.backend)
 		}
@@ -153,7 +159,6 @@ export const Backend = {
 			const tree = await fetchFlask('wiki_tree', {
 				method: 'GET',
 			})
-
 			GLOBAL.setKey('wikiTree', tree)
 			// console.log(tree)
 			return tree

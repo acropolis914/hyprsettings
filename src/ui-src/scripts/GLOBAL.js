@@ -3,6 +3,8 @@ export class GLOBAL {
 	static configText
 	static wikiTree //wiki Object : object
 	compact
+	static data
+	static wikiVersion
 
 	static onChange(key, callback) {
 		if (!this._listeners.has(key)) {

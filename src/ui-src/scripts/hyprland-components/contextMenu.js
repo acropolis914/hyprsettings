@@ -23,7 +23,7 @@ export class ContextMenu {
 			iconEl.textContent = icon
 			const labelEl = document.createElement('div')
 			labelEl.classList.add('ctx-button-label')
-			if (!GLOBAL['config']['show_contextmenu_label']) {
+			if (!GLOBAL['config']['show_contextmenu_label'] || true) {
 				labelEl.classList.add('hidden')
 			}
 			labelEl.textContent = label

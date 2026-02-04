@@ -5,7 +5,7 @@ import { makeUUID, saveWindowConfig } from './utils.ts'
 let settingsEl = document.querySelector('.config-set#settings')
 let VERSION = '0.9.0'
 
-export async function renderSettings() {
+export function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
 	createAbout()
 	createHeaderCommentsVisibilitySetting()

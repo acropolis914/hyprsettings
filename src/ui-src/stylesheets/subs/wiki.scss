@@ -1,9 +1,22 @@
+@use '@stylesheets/_variables.scss' as v;
+
 .config-set#wiki {
 	display: flex;
+	position: relative;
 	flex-direction: row;
+	max-width: calc(100% - 5 * var(--spacing-unit));
 	max-height: calc(90vh - var(--spacing-unit));
+	width: 100%;
 	height: 100%;
 	overflow-y: hidden;
+	margin-right: 0rem;
+	padding-right: 0rem;
+	@media (max-width: 768px) {
+		width: 100%;
+		max-width: 100%;
+		padding-right: 1rem;
+	}
+
 	//color: red;
 
 	.wiki-file {
@@ -28,11 +41,46 @@
 		flex: 0 0 auto;
 		max-height: 100%;
 		max-width: 30%;
-		//overflow-y: scroll;
+		overflow-y: scroll;
 		overflow-x: hidden;
-		transition: all 1s;
-		@media (max-width: 600px) {
-			width: 0;
+		transition:
+			left 10s,
+			opacity 150ms,
+			transform 0s;
+		@media (max-width: 768px) {
+			display: block;
+			overflow-x: scroll;
+			justify-content: center;
+			position: absolute;
+			max-width: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: var(--surface-1);
+			padding: var(--spacing-unit) var(--spacing-unit);
+			margin: calc(2 * var(--spacing-unit)) 0;
+			margin-bottom: 0;
+			max-height: 100%;
+			height: 80%;
+			border: 2px solid var(--text-1);
+			box-shadow: 1px 2rem 0.5rem 0.9rem rgba(var(--surface-0), 0);
+			border-radius: var(--border-rad);
+			padding-right: 0;
+			//width: 0;
+		}
+
+		.config-group {
+			padding: calc(0.5 * var(--spacing-unit));
+			@media (max-width: 600px) {
+				min-width: 50%;
+				padding: var(--spacing-unit);
+			}
+		}
+
+		.wiki-file {
+			max-width: 100%;
+			@media (max-width: 600px) {
+				min-width: 50%;
+			}
 		}
 		.editor-item:not(.config-group) {
 			overflow: hidden;
@@ -42,7 +90,26 @@
 			//word-wrap:
 		}
 	}
-
+	#navigation_toggle {
+		position: absolute;
+		z-index: 10;
+		color: var(--text-0);
+		font-size: 3rem;
+		right: calc(2 * var(--spacing-unit));
+		transition: all 300ms ease;
+		//color: red;
+		//top: 10rem;
+		@media (max-width: 600px) {
+			font-size: 5rem;
+			display: block;
+			position: absolute;
+			top: 0;
+			transform: scale(1.5);
+		}
+		&:hover {
+			transform: scale(1.5);
+		}
+	}
 	#wikiView {
 		flex: 1 1 auto;
 		padding: var(--spacing-unit);
@@ -50,9 +117,17 @@
 		//padding-left: 0;
 		display: flex;
 		flex-direction: column;
-		max-width: 80%;
-		@media (max-width: 600px) {
+		//max-width: 80%;
+		width: clamp(100px, 60%, 400px);
+		//max-width: calc(100% - 4 * var(--spacing-unit));
+		transition:
+			all 300ms ease,
+			width 2000ms ease;
+		@media (max-width: 768px) {
+			//padding: 0;
 			max-width: 100%;
+			width: 100%;
+			margin-right: 0;
 		}
 
 		#wikiView_title {
@@ -69,22 +144,45 @@
 	}
 }
 
+#wikiNavigation.hidden + #wikiView {
+	//transition: ;
+	width: 100%;
+}
+
 #wikiView_content {
 	//markdown styling
 	//padding-top: 0;
 	overflow: auto;
-	font-family: var(--font-primary);
+	font-family: v.$font;
 	padding: var(--spacing-unit);
 	padding-left: 0;
 	word-wrap: break-word;
 	//font-size: 1.6rem;
 	line-height: 1.65;
 	color: var(--text-0);
-	max-width: calc(100% - 3 * var(--spacing-unit));
-	max-height: calc(100% - 5rem);
+	max-width: calc(100% - 0 * var(--spacing-unit)) !important;
+	max-height: calc(100% - 4rem);
+	-webkit-user-select: text !important; /* Chrome, Safari */
+	-moz-user-select: text !important; /* Firefox */
+	-ms-user-select: text !important; /* IE/Edge */
+	user-select: text !important; /* Standard */
+	cursor: text;
+	@media (max-width: 768px) {
+		max-width: 100%;
+		width: 100%;
+		padding-right: 0;
+	}
 
-	> * + * {
+	> * + *:not(.token) {
 		margin-top: var(--spacing-unit);
+		max-width: calc(100vw - 4 * var(--spacing-unit));
+		margin-right: var(--spacing-unit);
+		margin-left: var(--spacing-unit);
+	}
+	*:not(pre, code, .token) {
+		margin-right: var(--spacing-unit);
+		margin-left: var(--spacing-unit);
+		max-width: calc(100vw - 4 * var(--spacing-unit));
 	}
 
 	/* Headings */
@@ -386,6 +484,7 @@
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
+	max-width: 90%;
 
 	button.details-header {
 		/* Reset Button Defaults */
@@ -410,7 +509,7 @@
 			content: ''; /* Nerd Font Chevron */
 			margin-right: 0.75rem;
 			transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-			color: var(--text-4);
+			color: var(--text-1);
 			display: inline-block;
 		}
 

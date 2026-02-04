@@ -79,6 +79,7 @@ export function saveKey(
 	console.log('Saving key:', {
 		type,
 		name,
+		value,
 		uuid,
 		position,
 		comment,
@@ -111,7 +112,6 @@ export function saveKey(
 		delete node['comment']
 	}
 
-	window.jsViewer.data = GLOBAL['data']
 	if (!GLOBAL['config'].dryrun) {
 		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
 		saveConfigDebounced(JSON.stringify(GLOBAL['data']), [file])
@@ -222,10 +222,7 @@ export function saveWindowConfig() {
 
 export async function saveWindowConfig_Config() {
 	try {
-		await Backend.saveWindowConfig(
-			JSON.stringify(GLOBAL['config']),
-			'config',
-		)
+		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
@@ -233,7 +230,7 @@ export async function saveWindowConfig_Config() {
 
 export async function saveWindowConfig_Persistence() {
 	try {
-		await Backend.saveWindowConfig(
+		Backend.saveWindowConfig(
 			JSON.stringify(GLOBAL['persistence']),
 			'persistence',
 		)

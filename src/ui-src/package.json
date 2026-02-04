@@ -3,11 +3,11 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"prestart": "hyprsettings -k &",
-		"dev:parallel": "concurrently -n py,vt -c cyan,magenta \"cd ../../ && sh ./run.sh --bun-dev --debug --no-daemon || true\" \"vite\"",
-		"dev": "bun run prestart && bun run dev:parallel",
-		"old_dev": "hyprsettings -k && vite",
-		"build": "vite build",
+		"killhs": "hyprsettings -k &",
+		"dev": "concurrently -n py,vt -c cyan,magenta \"cd ../../ && sh ./run.sh --bun-dev --debug --no-daemon || true\" \"vite --host\"",
+		"old_dev": "bun run prestart && bun run dev:parallel",
+		"build": "vite build && cd ../../ && sh ./run.sh --debug --no-daemon",
+		"hs": "cd ../../ && sh ./run.sh --debug --no-daemon",
 		"preview": "vite preview",
 		"clean-font": "glyphhanger --delay=5000 --whitelist=\"U+E000-U+F8FF,U+F0000-U+FFFFD\" --formats=woff2 --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:6969/",
 		"format": "prettier --write \"**/*.{js,ts,jsx,tsx,css,scss}\""
