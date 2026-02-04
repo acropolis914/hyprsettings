@@ -31,13 +31,10 @@ export class SliderModal {
 		this.textEditor.setAttribute('size', float ? '5' : '3')
 		this.el.appendChild(this.textEditor)
 
-		const debouncedUpdateSlider = debounce(
-			() => this.updateSlider(),
-			300
-		)
+		const debouncedUpdateSlider = debounce(() => this.updateSlider(), 300)
 		const debouncedUpdateTextValue = debounce(
 			() => this.updateSlider(),
-			50
+			50,
 		)
 
 		let updating = false
@@ -63,7 +60,7 @@ export class SliderModal {
 			if (updating) return
 			if (!float) {
 				this.textEditor.value = Math.round(
-					this.sliderEl.noUiSlider.get()
+					this.sliderEl.noUiSlider.get(),
 				)
 			} else {
 				this.textEditor.value = this.sliderEl.noUiSlider.get()

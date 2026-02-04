@@ -1,20 +1,24 @@
 // import { hideAllContextMenus, waitFor } from './utils.js'
-import { EditorItem_Generic } from './components/EditorItem_Generic.ts'
-import { EditorItem_Comments } from './components/EditorItem_Comments.js'
-import { EditorItem_Binds } from './components/EditorItem_Binds.js'
-import { tabids, keyNameStarts, configGroups } from './hyprland-specific/configMap.js'
-import { ConfigGroup } from './components/ConfigGroup.ts'
+import { EditorItem_Generic } from './hyprland-components/EditorItem_Generic.ts'
+import { EditorItem_Comments } from './hyprland-components/EditorItem_Comments.js'
+import { EditorItem_Binds } from './hyprland-components/EditorItem_Binds.ts'
+import {
+	tabids,
+	keyNameStarts,
+	configGroups,
+} from './hyprland-specific/configMap.js'
+import { ConfigGroup } from './hyprland-components/ConfigGroup.ts'
 import { GLOBAL } from './GLOBAL.js'
 
 export class configRenderer {
 	/**
-     * @param {string} json
-     */
+	 * @param {string} json
+	 */
 	constructor(json) {
 		this.json = json
 		this.current_container = []
 		this.current_container.push(
-			document.querySelector('.config-set#general')
+			document.querySelector('.config-set#general'),
 		)
 		this.comment_stack = [] //for the block comments
 		this.comment_queue = []
@@ -32,31 +36,28 @@ export class configRenderer {
 	}
 
 	/**
-     * @param {string} json
-     */
+	 * @param {string} json
+	 */
 	async parse(json) {
 		//Comment Stacking for three line label comments from default hyprland.conf
 		const self = this
-		function renderCommentStack(){
+		function renderCommentStack() {
 			for (let i = 0; i < self.comment_stack.length; i++) {
 				let comment_item = new EditorItem_Comments(
-					self.comment_stack[i]
+					self.comment_stack[i],
 				)
 				comment_item.el.classList.add('block-comment')
 				if (!GLOBAL['config']['show_header_comments']) {
-					comment_item.el.classList.add(
-						'settings-hidden'
-					)
+					comment_item.el.classList.add('settings-hidden')
 				}
-				comment_item.addToParent(
-					self.current_container.at(-1)
-				)
+				comment_item.addToParent(self.current_container.at(-1))
 			}
 			self.comment_stack = []
 		}
-		if ( // is a comment that looks like the start of a comment block
+		if (
+			// is a comment that looks like the start of a comment block
 			json['type'] === 'COMMENT' &&
-			(json['comment'].startsWith('####')||
+			(json['comment'].startsWith('####') ||
 				json['comment'].startsWith('# ====')) &&
 			(this.comment_stack.length === 0 ||
 				this.comment_stack.length === 2)
@@ -67,7 +68,8 @@ export class configRenderer {
 			if (this.comment_stack.length === 3) {
 				renderCommentStack()
 			}
-		} else if ( //if there is a comment block start and there is another comment
+		} else if (
+			//if there is a comment block start and there is another comment
 			json['type'] === 'COMMENT' &&
 			// json['comment'].includes('### ') &&
 			this.comment_stack.length > 0
@@ -82,21 +84,15 @@ export class configRenderer {
 				if (comment.toLowerCase().includes(key)) {
 					this.current_container.pop()
 					this.current_container.push(
-						document.querySelector(
-							`.config-set#${value}`
-						)
+						document.querySelector(`.config-set#${value}`),
 					)
-					if (
-						!document.querySelector(
-							`.config-set#${value}`
-						)
-					) {
+					if (!document.querySelector(`.config-set#${value}`)) {
 						await waitFor(() =>
 							this.current_container.push(
 								document.querySelector(
-									`.config-set#${value}`
-								)
-							)
+									`.config-set#${value}`,
+								),
+							),
 						)
 						break
 					}
@@ -105,7 +101,10 @@ export class configRenderer {
 		} // end of comment stacks
 
 		//inline comments
-		else if (json['type'] === 'COMMENT' && this.comment_stack.length === 0) {
+		else if (
+			json['type'] === 'COMMENT' &&
+			this.comment_stack.length === 0
+		) {
 			// console.debug({json})
 			if (this.comment_stack.length > 0) {
 				//catch for when there is a comment stack that didnt end
@@ -117,15 +116,9 @@ export class configRenderer {
 			}
 			this.comment_queue.push(comment_item)
 			if (this.comment_queue.length > 1) {
-				for (
-					let i = 0;
-					i < this.comment_queue.length - 1;
-					i++
-				) {
+				for (let i = 0; i < this.comment_queue.length - 1; i++) {
 					comment_item = this.comment_queue[0]
-					comment_item.addToParent(
-						this.current_container.at(-1)
-					)
+					comment_item.addToParent(this.current_container.at(-1))
 					this.comment_queue.splice(0, 1)
 				}
 			}
@@ -133,9 +126,7 @@ export class configRenderer {
 			if (this.comment_queue.length > 0) {
 				for (let i = 0; i < this.comment_queue.length; i++) {
 					let comment_item = this.comment_queue[0]
-					comment_item.addToParent(
-						this.current_container.at(-1)
-					)
+					comment_item.addToParent(this.current_container.at(-1))
 					this.comment_queue.splice(0, 1)
 				}
 			}
@@ -144,21 +135,13 @@ export class configRenderer {
 			// blankline.textContent = "THIS IS A BLANK LINE"
 			// this.current_container.at(-1).appendChild(blankline)
 			/////fugly
-		}
-		else if (json['type'] === 'GROUP') {
-			if (
-				json['position'] &&
-				json['position'].split(':').length > 1
-			) {
+		} else if (json['type'] === 'GROUP') {
+			if (json['position'] && json['position'].split(':').length > 1) {
 				if (this.comment_queue.length > 0) {
-					for (
-						let i = 0;
-						i < this.comment_queue.length;
-						i++
-					) {
+					for (let i = 0; i < this.comment_queue.length; i++) {
 						let comment_item = this.comment_queue[0]
 						comment_item.addToParent(
-							this.current_container.at(-1)
+							this.current_container.at(-1),
 						)
 						this.comment_queue.splice(0, 1)
 					}
@@ -186,9 +169,7 @@ export class configRenderer {
 				}
 
 				if (!matched) {
-					this.current_container
-						.at(-1)
-						.appendChild(group_el)
+					this.current_container.at(-1).appendChild(group_el)
 				}
 				this.current_container.push(group_el)
 			}
@@ -204,12 +185,12 @@ export class configRenderer {
 				if (json['name'].startsWith('bind')) {
 					genericItem = new EditorItem_Binds(
 						json,
-						json['disabled']
+						json['disabled'],
 					)
 				} else {
 					genericItem = new EditorItem_Generic(
 						json,
-						json['disabled']
+						json['disabled'],
 					)
 				}
 
@@ -228,7 +209,7 @@ export class configRenderer {
 						!excluded.includes(json.name.trim())
 					) {
 						tabToAddTo = document.querySelector(
-							`.config-set#${value}`
+							`.config-set#${value}`,
 						)
 						if (json.name.startsWith('bind')) {
 							// console.log()

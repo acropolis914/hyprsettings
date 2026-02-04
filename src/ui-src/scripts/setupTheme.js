@@ -1,4 +1,4 @@
-import { saveWindowConfig } from './utils.js'
+import { saveWindowConfig } from './utils.ts'
 import { GLOBAL } from './GLOBAL.js'
 
 GLOBAL['currentThemeIndex'] = 0
@@ -6,29 +6,27 @@ let themeButton = document.getElementById('theme-toggle')
 const root = document.querySelector(':root')
 let headers = ['description', 'link', 'author', 'variant']
 
-
-
-
 export async function setupTheme() {
 	let currentTheme = GLOBAL['config']['current_theme']
-	document.documentElement.style.opacity = GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
+	document.documentElement.style.opacity =
+		GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
 	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])
 
-	const index = window.themes.findIndex(t => t.name === currentTheme)
+	const index = window.themes.findIndex((t) => t.name === currentTheme)
 	if (index !== -1) {
 		const theme = window.themes[index]
 		GLOBAL.currentThemeIndex = index
 		console.log(`Initially setting ${theme.name} as theme from config`)
 		applyThemeVars(theme)
 	} else {
-		console.log(`No theme found matching ${currentTheme}, defaulting to first theme`)
+		console.log(
+			`No theme found matching ${currentTheme}, defaulting to first theme`,
+		)
 		applyThemeVars(window.themes[0])
 		GLOBAL.currentThemeIndex = 0
 	}
 	updateColoris()
 }
-
-
 
 themeButton.addEventListener('click', (e) => {
 	e.stopPropagation()
@@ -37,7 +35,8 @@ themeButton.addEventListener('click', (e) => {
 
 export function incrementCurrentTheme() {
 	GLOBAL['currentThemeIndex'] += 1
-	GLOBAL['currentThemeIndex'] = GLOBAL['currentThemeIndex'] % (window.themes.length)
+	GLOBAL['currentThemeIndex'] =
+		GLOBAL['currentThemeIndex'] % window.themes.length
 	let theme = window.themes[GLOBAL['currentThemeIndex']]
 	changeTheme(theme)
 }
@@ -72,8 +71,11 @@ function applyThemeVars(theme) {
 
 export function changeTheme(theme) {
 	console.log(`Changing theme to ${theme.name}`)
-	let settingsThemeChanger = document.getElementById('theme-selector-setting')
-	let settingsThemeChangerSelect = settingsThemeChanger.querySelector('select')
+	let settingsThemeChanger = document.getElementById(
+		'theme-selector-setting',
+	)
+	let settingsThemeChangerSelect =
+		settingsThemeChanger.querySelector('select')
 	settingsThemeChangerSelect.value = theme.name
 	// settingsThemeChanger.value = theme.name
 	applyThemeVars(theme)
@@ -81,7 +83,6 @@ export function changeTheme(theme) {
 	updateJsonViewerTheme(theme.variant.toLowerCase())
 	updateColoris()
 }
-
 
 export function updateJsonViewerTheme(themeVariant) {
 	if (themeVariant === 'dark') {
@@ -97,7 +98,7 @@ export function updateJsonViewerTheme(themeVariant) {
 export function refreshAllStylesheets() {
 	const links = document.querySelectorAll('link[rel="stylesheet"]')
 	const newTimestamp = Date.now()
-	links.forEach(link => {
+	links.forEach((link) => {
 		const currentHref = link.href
 		// Remove any existing query strings (?v=...) and fragment identifiers (#...)
 		const cleanHref = currentHref.replace(/(\?.*)|(#.*)/g, '')
@@ -108,28 +109,26 @@ export function refreshAllStylesheets() {
 
 window.refreshAllStylesheets = refreshAllStylesheets // for debugging
 
-
-
-
-
 function updateColoris() {
-	Coloris({// bind picker to THIS input only
+	Coloris({
+		// bind picker to THIS input only
 		theme: 'pill',
-		alpha: true,        // enable opacity for RGBA
+		alpha: true, // enable opacity for RGBA
 		forceAlpha: true,
 		format: 'rgb',
-		swatches: sortSwatchesByValue(getSwatch())     // output rgba if alpha enabled
+		swatches: sortSwatchesByValue(getSwatch()), // output rgba if alpha enabled
 	})
 }
 
 export function getSwatch() {
 	const themeName = GLOBAL.config.current_theme
-	const currentTheme = window.themes.find(t => t.name === themeName)
+	const currentTheme = window.themes.find((t) => t.name === themeName)
 	if (!currentTheme) return []
 
 	const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
-	const colors = Object.values(currentTheme)
-		.filter(value => typeof value === 'string' && hexRegex.test(value))
+	const colors = Object.values(currentTheme).filter(
+		(value) => typeof value === 'string' && hexRegex.test(value),
+	)
 	// Ensure uniqueness
 	return [...new Set(colors)]
 }
@@ -137,7 +136,10 @@ export function getSwatch() {
 function hexToRgb(hex) {
 	hex = hex.replace('#', '')
 	if (hex.length === 3) {
-		hex = hex.split('').map(c => c + c).join('')
+		hex = hex
+			.split('')
+			.map((c) => c + c)
+			.join('')
 	}
 	const bigint = parseInt(hex, 16)
 	const r = (bigint >> 16) & 255
@@ -148,7 +150,7 @@ function hexToRgb(hex) {
 
 function luminance([r, g, b]) {
 	// relative luminance formula
-	const a = [r, g, b].map(v => {
+	const a = [r, g, b].map((v) => {
 		v /= 255
 		return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
 	})
@@ -156,5 +158,7 @@ function luminance([r, g, b]) {
 }
 
 export function sortSwatchesByValue(colors) {
-	return colors.slice().sort((a, b) => luminance(hexToRgb(a)) - luminance(hexToRgb(b)))
+	return colors
+		.slice()
+		.sort((a, b) => luminance(hexToRgb(a)) - luminance(hexToRgb(b)))
 }

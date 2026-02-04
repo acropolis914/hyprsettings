@@ -8,6 +8,7 @@
  */
 @use 'subs/wiki.scss' as *;
 @use 'subs/scrollbars.css' as *;
+@use 'subs/tippy.css' as *;
 /* =================================
 1. Variables, Mixins & Placeholders
 ================================= */
@@ -591,7 +592,6 @@ footer {
 	//background-color: red;
 	@media (max-width: 500px) {
 		padding: 1rem 0;
-
 	}
 	/* Specific styles for the #settings tab*/
 	&#settings {
@@ -620,16 +620,15 @@ footer {
 	}
 }
 
-#content-area-header{
+#content-area-header {
 	margin-bottom: var(--spacing-unit);
 	display: flex;
 	flex-direction: row;
 	padding-left: 1.5rem;
 	gap: var(--spacing-unit);
 	@media (max-height: 300px) {
-		margin: 0
+		margin: 0;
 	}
-
 }
 h1#config-set-title {
 	//font-size: 2rem !important;
@@ -638,7 +637,6 @@ h1#config-set-title {
 	@media (max-height: 300px) {
 		font-size: 2rem;
 	}
-
 }
 #config-set-info {
 	flex: 1 1 auto;
@@ -1618,8 +1616,7 @@ span {
 	background-color: rgba(red($color), green($color), blue($color), $alpha);
 }
 
-
-%overlay{
+%overlay {
 	left: 50%;
 	position: fixed;
 	top: 50%;
@@ -1631,7 +1628,6 @@ span {
 	//transition: all 0.4s ease;
 	transition: opacity 0.5s ease;
 }
-
 
 #onboarding {
 	@extend %overlay;
@@ -1742,7 +1738,7 @@ span {
 	color: var(--text-1);
 	border-bottom: 1px solid var(--text-0);
 	box-shadow: var(--accent) 0px 0px 5px;
-	border-radius: var(--border-rad) ;
+	border-radius: var(--border-rad);
 	//height: 100vh;
 
 	#main-part {
@@ -1754,7 +1750,7 @@ span {
 		width: 100%;
 	}
 
-	#config-preview{
+	#config-preview {
 		//height: 80vh;
 		max-height: 90%;
 		min-height: 90%;
@@ -1764,7 +1760,7 @@ span {
 		flex-direction: column;
 		gap: var(--spacing-unit);
 
-		#config-preview-tabs{
+		#config-preview-tabs {
 			display: flex;
 			flex-direction: row;
 			justify-content: left;
@@ -1787,13 +1783,14 @@ span {
 			border-radius: var(--border-rad);
 			border: 1px solid var(--surface-border);
 
-			&.active{
+			&.active {
 				color: var(--text-contrast);
 				background-color: var(--accent);
 				border: 1px solid var(--accent);
 			}
 		}
-		pre, iframe{
+		pre,
+		iframe {
 			max-height: 100%;
 			min-height: 100%;
 			max-width: 100%;
@@ -1803,18 +1800,17 @@ span {
 			margin-top: var(--spacing-unit);
 			background-color: var(--surface-1);
 		}
-		#config-preview-code{
+		#config-preview-code {
 			//color: unset;
 			overflow: scroll !important;
 			max-height: 100%;
 			//background-color: var(--surface-2);
 		}
 
-		iframe{
+		iframe {
 			background-color: transparent;
 			border-bottom: 100px solid var(--surface-1);
 		}
-
 	}
 }
 
@@ -1835,5 +1831,3 @@ span {
 	//transform: scale(0.5);
 	//display: none;
 }
-
-

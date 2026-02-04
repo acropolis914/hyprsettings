@@ -26,7 +26,7 @@ export class GradientModal {
 		this.slider = noUiSlider.create(this.angleEl, {
 			start: 0,
 			step: 1,
-			range: { min: 0, max: 360 }
+			range: { min: 0, max: 360 },
 		})
 
 		// Angle text input
@@ -77,7 +77,7 @@ export class GradientModal {
 			get: () => this.value,
 			set: (val) => {
 				this.value = val
-			}
+			},
 		})
 
 		// Initialize values if provided
@@ -110,7 +110,9 @@ export class GradientModal {
 	}
 
 	get value() {
-		const colors = Array.from(this.colorContainer.children).map(c => c.value)
+		const colors = Array.from(this.colorContainer.children).map(
+			(c) => c.value,
+		)
 		const angle = parseInt(this.angleEl.noUiSlider.get())
 		return `${colors.join(' ')}${angle}deg`
 	}
@@ -129,13 +131,13 @@ export class GradientModal {
 		this.angleEl.noUiSlider.set(angle)
 		this.textEditor.value = angle
 
-		colors.forEach(item => {
+		colors.forEach((item) => {
 			let colordiv = this.createColorPreview(item)
 			this.colorContainer.appendChild(colordiv)
 
-			const ro = new ResizeObserver(entries => {
+			const ro = new ResizeObserver((entries) => {
 				const childCount = this.colorContainer.children.length
-				const neededWidth = childCount * 60   // expected total width
+				const neededWidth = childCount * 60 // expected total width
 				const actualWidth = this.colorContainer.clientWidth
 
 				if (actualWidth < neededWidth) {
@@ -169,7 +171,7 @@ export class GradientModal {
 			handle: '.dragButton',
 			ghostClass: 'sortable-ghost',
 			chosenClass: 'sortable-chosen',
-			dragClass: 'sortable-drag'
+			dragClass: 'sortable-drag',
 		})
 	}
 
@@ -192,7 +194,6 @@ export class GradientModal {
 		colordiv.value = rgba
 		colordiv.style.backgroundColor = rgba
 		colordiv.size = 1
-
 
 		const removeButton = document.createElement('button')
 		removeButton.type = 'button'
@@ -227,7 +228,6 @@ export class GradientModal {
 				this._emit()
 				this._notifyInputListeners()
 			}
-
 		})
 		removeButton.addEventListener('click', (e) => {
 			e._stopBubblingUp = true // custom flag
@@ -247,31 +247,32 @@ export class GradientModal {
 			const y = e.clientY
 
 			// Check if click is inside remove button bounds
-			if (x >= btnRect.left && x <= btnRect.right &&
-				y >= btnRect.top && y <= btnRect.bottom) {
-
+			if (
+				x >= btnRect.left &&
+				x <= btnRect.right &&
+				y >= btnRect.top &&
+				y <= btnRect.bottom
+			) {
 				// Call the colordiv's right-click handler
 				const event = new MouseEvent('contextmenu', {
 					bubbles: false,
 					cancelable: true,
 					view: window,
 					clientX: x,
-					clientY: y
+					clientY: y,
 				})
 				colordiv.dispatchEvent(event)
 			}
 		})
 
-
 		Object.defineProperty(parentEl, 'value', {
 			get: () => colordiv.value,
 			set: (val) => {
 				colordiv.value = val
-			}
+			},
 		})
 		return parentEl
 	}
-
 
 	replaceElement(target) {
 		if (!target) return

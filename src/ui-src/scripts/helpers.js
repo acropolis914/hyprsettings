@@ -10,7 +10,8 @@ export const debounce = (fn, wait = 100) => {
 export async function waitFor(check, { interval = 50, timeout = 10000 } = {}) {
 	const start = Date.now()
 	while (!check()) {
-		if (Date.now() - start > timeout) throw new Error('Timeout waiting for condition')
+		if (Date.now() - start > timeout)
+			throw new Error('Timeout waiting for condition')
 		await new Promise((r) => setTimeout(r, interval))
 	}
 }

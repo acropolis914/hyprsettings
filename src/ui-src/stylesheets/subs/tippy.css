@@ -1,0 +1,43 @@
+.tippy-box {
+	/*box-shadow: 0 0 20px 4px rgba(154, 161, 177, .15), 0 4px 80px -8px rgba(36, 40, 47, .25), 0 4px 4px -2px rgba(91, 94, 105, .15);*/
+	background-color: rgba(var(--surface-0) \, 0.75);
+	backdrop-filter: blur(10px) brightness(0.8);
+	color: var(--text-0);
+	border-radius: var(--border-rad);
+	padding: var(--spacing-unit);
+	border: 1px solid var(--text-0);
+}
+
+html.light {
+	.tippy-box {
+		backdrop-filter: blur(10px) brightness(1);
+	}
+}
+
+.tippy-box[data-placement^='top'] > .tippy-arrow:before {
+	border-top-color: var(--surface-2);
+}
+
+.tippy-box[data-placement^='bottom'] > .tippy-arrow:before {
+	border-bottom-color: var(--surface-2);
+}
+
+.tippy-box[data-placement^='left'] > .tippy-arrow:before {
+	border-left-color: var(--surface-2);
+}
+
+.tippy-box[data-placement^='right'] > .tippy-arrow:before {
+	border-right-color: var(--surface-2);
+}
+
+.tippy-box > .tippy-backdrop {
+	background-color: var(--surface-2);
+}
+
+.tippy-box > .tippy-svg-arrow {
+	fill: var(--surface-2);
+}
+
+.tippy-content {
+	white-space: pre-line;
+}

@@ -25,7 +25,6 @@ export default defineConfig({
 					if (id.includes('/wiki/')) return 'wiki'
 				},
 			},
-
 		},
 		assetsDir: 'assets',
 	},

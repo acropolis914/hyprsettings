@@ -3,6 +3,5 @@
   "useTabs": true,
   "semi": false,
   "singleQuote": true,
-  "lineWidth": 80,
   "printWidth": 80
 }

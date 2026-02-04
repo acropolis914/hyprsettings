@@ -1,6 +1,6 @@
 import { GLOBAL } from './GLOBAL.js'
 import { changeTheme, incrementCurrentTheme } from './setupTheme.js'
-import { makeUUID, saveWindowConfig } from './utils.js'
+import { makeUUID, saveWindowConfig } from './utils.ts'
 
 let settingsEl = document.querySelector('.config-set#settings')
 let VERSION = '0.9.0'
@@ -37,8 +37,7 @@ class CheckBoxItem {
 		this.checkbox = document.createElement('input')
 		this.checkbox.id = config_key
 		this.checkbox.setAttribute('type', 'checkbox')
-		this.checkbox.checked =
-			GLOBAL['config'][config_key] ?? default_value
+		this.checkbox.checked = GLOBAL['config'][config_key] ?? default_value
 		this.label = document.createElement('label')
 		this.label.setAttribute('for', config_key)
 		this.label.textContent = label

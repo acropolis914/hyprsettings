@@ -82,7 +82,7 @@
 .ts-wrapper.multi .ts-control > div {
 	cursor: pointer;
 	/*margin: 0 3px 3px 0;*/
-	margin-right: .3rem;
+	margin-right: 0.3rem;
 	padding: 2px 2px;
 	background: var(--surface-0);
 	color: var(--text-0) !important;
@@ -245,7 +245,7 @@
 }
 
 .ts-dropdown .spinner::after {
-	content: " ";
+	content: ' ';
 	display: block;
 	width: 24px;
 	height: 24px;
@@ -373,14 +373,14 @@
 }
 
 .ts-wrapper.plugin-input_autogrow.has-items.focus
-.ts-control
-> input::-ms-input-placeholder {
+	.ts-control
+	> input::-ms-input-placeholder {
 	color: transparent;
 }
 
 .ts-wrapper.plugin-input_autogrow.has-items.focus
-.ts-control
-> input::placeholder {
+	.ts-control
+	> input::placeholder {
 	color: transparent;
 }
 
@@ -485,15 +485,15 @@
 
 .ts-control:not(.rtl) {
 	padding-right: max(
-		  var(--ts-pr-min),
-		  var(--ts-pr-clear-button) + var(--ts-pr-caret)
+		var(--ts-pr-min),
+		var(--ts-pr-clear-button) + var(--ts-pr-caret)
 	) !important;
 }
 
 .ts-control.rtl {
 	padding-left: max(
-		  var(--ts-pr-min),
-		  var(--ts-pr-clear-button) + var(--ts-pr-caret)
+		var(--ts-pr-min),
+		var(--ts-pr-clear-button) + var(--ts-pr-caret)
 	) !important;
 }
 

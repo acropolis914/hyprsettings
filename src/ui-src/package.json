@@ -9,14 +9,17 @@
 		"old_dev": "hyprsettings -k && vite",
 		"build": "vite build",
 		"preview": "vite preview",
-		"clean-font": "glyphhanger --delay=5000 --whitelist=\"U+E000-U+F8FF,U+F0000-U+FFFFD\" --formats=woff2 --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:6969/"
+		"clean-font": "glyphhanger --delay=5000 --whitelist=\"U+E000-U+F8FF,U+F0000-U+FFFFD\" --formats=woff2 --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:6969/",
+		"format": "prettier --write \"**/*.{js,ts,jsx,tsx,css,scss}\""
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
 		"@types/prismjs": "^1.26.5",
 		"concurrently": "^9.2.1",
+		"prettier": "^3.8.1",
 		"rollup-plugin-visualizer": "^6.0.5",
 		"sass": "^1.97.3",
+		"tom-select": "^2.4.5",
 		"vite": "^7.3.1"
 	},
 	"dependencies": {

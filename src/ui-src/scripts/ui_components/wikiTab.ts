@@ -1,13 +1,15 @@
 import { GLOBAL } from '../GLOBAL'
 import { Backend } from '../backendAPI'
 // import * as util from 'node:util'
-import { makeUUID } from '../utils'
+import { makeUUID } from '../utils.ts'
 import parseMarkdown from '../utils/parseMarkdown.ts'
-import normalizeText from "../utils/normalizeText.ts"
-import Prism from "prismjs/prism"
-import "prismjs/components/prism-ini.min.js";
-import "prismjs/components/prism-bash.min.js";
-import '@stylesheets/prism.css';
+import normalizeText from '../utils/normalizeText.ts'
+import Prism from 'prismjs/prism'
+import 'prismjs/components/prism-ini.min.js'
+import 'prismjs/components/prism-bash.min.js'
+import '@stylesheets/prism.css'
+import tippy, { followCursor } from 'tippy.js'
+import '@stylesheets/subs/tippy.css'
 
 export default async function createWiki() {
 	console.log('Creating Wiki...')
@@ -52,56 +54,69 @@ async function createWikiNavigation() {
 	wikiRoot_el.appendChild(viewEl)
 	// viewEl.classList.add("config-set", "editor-item")
 
-	async function setViewElValue(value: string, position: string, title="") {
-		console.clear()
+	async function setViewElValue(
+		value: string,
+		position: string,
+		title = '',
+	) {
+		// console.clear()
 		const parsed = JSON.parse(value)
 		if (parsed['value']) {
 			// viewEl.innerHTML = ""
 			// @ts-ignore
-			if(parsed.data.matter.title){
-				viewEl_title.textContent = parsed.data.matter.title || "Hyprland Wiki"
+			if (parsed.data.matter.title) {
+				viewEl_title.textContent =
+					parsed.data.matter.title || 'Hyprland Wiki'
 				viewEl_title.classList.remove('hidden')
-			} else if (title){
+			} else if (title) {
 				viewEl_title.textContent = title
 				viewEl_title.classList.remove('hidden')
 			} else {
-				viewEl_title.textContent = "Hyprland Wiki"
+				viewEl_title.textContent = 'Hyprland Wiki'
 				// viewEl_title.classList.add('hidden')
 			}
 
 			if (parsed.data) {
-				console.log(parsed.data)
+				// console.log(parsed.data)
 			}
-			viewEl_position.innerHTML = ` ${position.split(":").join("  ")} `
+			viewEl_position.innerHTML = ` ${position.split(':').join('  ')} `
 
 			viewEl_content.innerHTML = parsed['value']
 			// console.clear()
-			viewEl_content.querySelectorAll('a').forEach((element: HTMLElement) => {
-				fixLinxElement(element, position)
-			})
-			viewEl_content.querySelectorAll('pre').forEach((element: HTMLElement) => {
-				let code = element.querySelector('code') || element
-				let shebang = code.innerText.toLowerCase().split('\n')[0]
-				if (shebang && shebang.trim().endsWith('sh')) {
-					code.classList.add('language-bash')
-					element.classList.add('language-bash')
-					Prism.highlightElement(code)
-				} else if (code.innerText.toLowerCase().includes("vga compatible")){
-					console.log(code.innerText)
-					code.classList.add('language-shell-session')
-					element.classList.add('language-shell-session')
-					code.classList.add('language-bash')
-					element.classList.add('language-bash')
-					Prism.highlightElement(code)
-				} else {
-					code.classList.add('language-ini')
-					element.classList.add('language-ini')
-					Prism.highlightElement(code)
-				}
-
-
-			})
-			viewEl.scrollTo({top:0, behavior: 'smooth'})
+			viewEl_content
+				.querySelectorAll('a')
+				.forEach((element: HTMLElement) => {
+					fixLinxElement(element, position)
+				})
+			viewEl_content
+				.querySelectorAll('pre')
+				.forEach((element: HTMLElement) => {
+					let code = element.querySelector('code') || element
+					let shebang = code.innerText
+						.toLowerCase()
+						.split('\n')[0]
+					if (shebang && shebang.trim().endsWith('sh')) {
+						code.classList.add('language-bash')
+						element.classList.add('language-bash')
+						Prism.highlightElement(code)
+					} else if (
+						code.innerText
+							.toLowerCase()
+							.includes('vga compatible')
+					) {
+						console.log(code.innerText)
+						code.classList.add('language-shell-session')
+						element.classList.add('language-shell-session')
+						code.classList.add('language-bash')
+						element.classList.add('language-bash')
+						Prism.highlightElement(code)
+					} else {
+						code.classList.add('language-ini')
+						element.classList.add('language-ini')
+						Prism.highlightElement(code)
+					}
+				})
+			viewEl.scrollTo({ top: 0, behavior: 'smooth' })
 		}
 	}
 
@@ -110,16 +125,19 @@ async function createWikiNavigation() {
 
 	let tree: Object = GLOBAL.wikiTree
 	async function setupNavigation(
-		object : object,
+		object: object,
 		indentation = 0,
 		path = 'wiki',
 	) {
 		let indent = '       '.repeat(indentation)
 		for (const [key, value] of Object.entries(object)) {
-			if (key === '.version' || key === 'navigation.txt' || key === "version-selector.md") {
+			if (
+				key === '.version' ||
+				key === 'navigation.txt' ||
+				key === 'version-selector.md'
+			) {
 				continue
 			}
-
 
 			let el = document.createElement('div')
 			el.classList.add('editor-item')
@@ -142,7 +160,7 @@ async function createWikiNavigation() {
 				let parsed = await parseMarkdown(value)
 				el.dataset.value = JSON.stringify(parsed)
 				el.dataset.weight = parsed.data.matter.weight || -1
-				if (key === 'LICENSE'){
+				if (key === 'LICENSE') {
 					el.dataset.weight = 1000
 				}
 				objectTree.at(-1).appendChild(el)
@@ -159,42 +177,55 @@ async function createWikiNavigation() {
 				indentation -= 1
 
 				objectTree.pop()
-			} else if (key == '_index.md' && typeof value === 'string' && objectTree.length != 1) {
+			} else if (
+				key == '_index.md' &&
+				typeof value === 'string' &&
+				objectTree.length != 1
+			) {
 				// console.log(value)
 				let parsed = await parseMarkdown(value)
 				// el.dataset.value =
 
 				objectTree.at(-1).dataset.value = JSON.stringify(parsed)
-				objectTree.at(-1).dataset.weight = parsed.data.matter.weight || -1
+				objectTree.at(-1).dataset.weight =
+					parsed.data.matter.weight || -1
 				continue
 			} else if (objectTree.length === 1 && key == '_index.md') {
 				el.classList.add('wiki-file')
-				el.innerHTML = "Welcome to the Wiki!"
+				el.innerHTML = 'Welcome to the Wiki!'
 				let parsed = await parseMarkdown(value)
 				el.dataset.value = JSON.stringify(parsed)
-				el.dataset.weight =  -2
+				el.dataset.weight = -2
 				objectTree.at(-1).appendChild(el)
 				// objectTree.at(-1).appendChild(el)
-				let markdown_json_parsed = JSON.stringify(await parseMarkdown(value))
-				await setViewElValue(markdown_json_parsed, path,"Hyprland Wiki")
+				let markdown_json_parsed = JSON.stringify(
+					await parseMarkdown(value),
+				)
+				await setViewElValue(
+					markdown_json_parsed,
+					path,
+					'Hyprland Wiki',
+				)
 				// continue
-			}else {
+			} else {
 				console.warn(`Error parsing "${key}: ${value}"`)
 			}
 			el.addEventListener('click', (e) => {
-				if (e.target != el) {return}
+				if (e.target != el) {
+					return
+				}
 				// let target = e.target
 				GLOBAL.setKey('currentView', 'main')
 				// @ts-ignore
-				GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-					el.dataset.uuid
+				GLOBAL['mainFocus'][GLOBAL['activeTab']] = el.dataset.uuid
 				setElValue(e)
-
 			})
 			el.addEventListener('focus', (e) => {
-				if(e.target != el) {return}
-				setElValue(e)})
-
+				if (e.target != el) {
+					return
+				}
+				setElValue(e)
+			})
 		}
 	}
 	await setupNavigation(tree, 0, 'wiki')
@@ -229,11 +260,8 @@ export function reorderByWeight(el: HTMLElement): void {
 	}
 }
 
-
-
 function findWikiViewElement(target_element: string): HTMLElement {
-	let linkTargetName = target_element.replace('#', '')
-		.replaceAll('-', ' ')
+	let linkTargetName = target_element.replace('#', '').replaceAll('-', ' ')
 	let wikiView = document.getElementById('wikiView_content')
 	let element = Array.from(wikiView.childNodes).find(
 		(element: HTMLElement) => {
@@ -250,28 +278,44 @@ function findWikiViewElement(target_element: string): HTMLElement {
 
 function fixLinxElement(element: HTMLElement, position) {
 	let link = element.getAttribute('href')
-	element.title = link
+	let title = link
 
 	if (link.startsWith('..') || link.startsWith('.')) {
 		// console.log({ position })
-		let link_without_section = link.replace(link.substring(link.indexOf('#')), "")
-		console.log(link_without_section)
+		let link_without_section = link.replace(
+			link.substring(link.indexOf('#')),
+			'',
+		)
+		// console.log(link_without_section)
 		let position_paths = position.split(':').filter(Boolean)
-		let link_parts = link.split('/').filter(Boolean).filter(item => !item.startsWith("#"))
-		let link_section = link.split('/').filter(Boolean).filter(item => item.startsWith("#"))
-		let linkToFix = link_parts.join(":")
+		let link_parts = link
+			.split('/')
+			.filter(Boolean)
+			.filter((item) => !item.startsWith('#'))
+		let link_section = link
+			.split('/')
+			.filter(Boolean)
+			.filter((item) => item.startsWith('#'))
+		let linkToFix = link_parts.join(':')
 		while (link_parts[0] === '..') {
 			link_parts.shift()
-			if (!link_without_section.endsWith('/') && position_paths.length > 1) {
+			if (
+				!link_without_section.endsWith('/') &&
+				position_paths.length > 1
+			) {
 				position_paths.pop()
 			}
 		}
 		while (link_parts[0] === '.') {
 			link_parts.shift()
 		}
-		const newLink = [...position_paths, ...link_parts, ...link_section].join(':')
-		element.title = newLink
-		console.log('Fixing link element', { link_without_section, position,newLink })
+		const newLink = [
+			...position_paths,
+			...link_parts,
+			...link_section,
+		].join(':')
+		title = newLink
+		// console.log('Fixing link element', { link_without_section, position,newLink })
 		element.addEventListener('click', (e) => {
 			e.preventDefault()
 			gotoWikiEvent(e)
@@ -286,13 +330,27 @@ function fixLinxElement(element: HTMLElement, position) {
 			let element = findWikiViewElement(link)
 			element.scrollIntoView({ behavior: 'smooth', block: 'start' })
 		})
+	} else if (link.trim().startsWith('http')) {
+		element.setAttribute('target', '_blank')
 	}
+	let content
+	if (title.startsWith('http')) {
+		content = title
+	} else {
+		content = title.replace(':', '  ')
+	}
+	tippy(element, {
+		content: content,
+		followCursor: true,
+		plugins: [followCursor],
+	})
 }
 
 function gotoWiki(wikidir: string) {
 	// document.querySelector(".sidebar-item#wiki").click()
-	let wikiDir_path = wikidir.split(':').filter(e => !e.startsWith('#'))
-	let wikiDir_section = wikidir.split(':').filter(e => e.startsWith('#'))
+	let wikiDir_path = wikidir.split(':').filter((e) => !e.startsWith('#'))
+	let wikiDir_path_immutable = wikiDir_path
+	let wikiDir_section = wikidir.split(':').filter((e) => e.startsWith('#'))
 
 	// console.log(`Wiki: ${wikiDir_path.join(":")}`)
 	console.log(wikiDir_path)
@@ -303,9 +361,8 @@ function gotoWiki(wikidir: string) {
 	while (wikiDir_path.length > 0) {
 		let node_children = Array.from(node.children)
 
-
-		node = node_children.find(e =>{
-			let name =normalizeText(e.dataset.name)
+		node = node_children.find((e) => {
+			let name = normalizeText(e.dataset.name)
 			let target = normalizeText(wikiDir_path[0])
 			// console.log({ name, target })
 			return target === name
@@ -313,18 +370,41 @@ function gotoWiki(wikidir: string) {
 
 		if (!node) {
 			console.error('Could not find wiki node:', wikiDir_path[0])
-			return
 		}
 		wikiDir_path.shift()
 	}
 	// console.log(node)
-	node.click()
+	if (node) {
+		node.click()
+	} else {
+		let directory = wikidir
+			.split(':')
+			.filter((e) => !e.startsWith('#'))
+			.at(-1)
+		console.log(directory)
+		let directories = Array.from(
+			wikiDirNavigationEl.querySelectorAll('.wiki-item'),
+		)
+		let found = directories.find(
+			(e) =>
+				normalizeText(e.dataset.name) === normalizeText(directory),
+		)
+		console.log({ directory, directories, found })
+		if (found) {
+			found.click()
+		}
+	}
+
 	setTimeout(() => {
-		if(!wikiDir_section[0]) {return}
-		let section = findWikiViewElement(wikiDir_section[0])
+		if (wikiDir_section[0]) {
+			let section = findWikiViewElement(wikiDir_section[0])
 
-		// console.log(section)
-		section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+			// console.log(section)
+			section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+		} else {
+			let wikiView_content =
+				document.querySelector('#wikiView_content')
+			wikiView_content.scrollTo(0, 0)
+		}
 	}, 100)
-
 }

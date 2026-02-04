@@ -55,7 +55,7 @@ export const keyNameStarts = [
 
 	// workspaces
 	['workspace', 'workspaces', ['workspace_wraparound']],
-];
+]
 
 export const configGroups = [
 	// animations
@@ -88,7 +88,7 @@ export const configGroups = [
 	['group', 'win-rules'],
 	['windowrule', 'win-rules'],
 	['xwayland', 'win-rules'],
-];
+]
 
 export let tabs = [
 	{ name: 'General', id: 'general', default: true, icon: '' }, // nf-md-settings

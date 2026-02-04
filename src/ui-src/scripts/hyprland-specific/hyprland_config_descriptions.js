@@ -135,8 +135,7 @@ export const config_descriptions = [
 		path: 'general:snap',
 		type: 'CONFIG_OPTION_INT',
 		data: '10, 0, 100',
-		description:
-			'minimum gap in pixels between windows before snapping',
+		description: 'minimum gap in pixels between windows before snapping',
 	},
 	{
 		name: 'monitor_gap',
@@ -297,8 +296,7 @@ export const config_descriptions = [
 		path: 'decoration',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '0.5, 0, 1',
-		description:
-			'how much inactive windows should be dimmed [0.0 - 1.0]',
+		description: 'how much inactive windows should be dimmed [0.0 - 1.0]',
 	},
 	{
 		name: 'dim_special',
@@ -470,8 +468,7 @@ export const config_descriptions = [
 		path: 'input',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: 'STRVAL_EMPTY',
-		description:
-			'Appropriate XKB keymap parameter. See the note below.',
+		description: 'Appropriate XKB keymap parameter. See the note below.',
 	},
 	{
 		name: 'kb_layout',
@@ -817,8 +814,7 @@ export const config_descriptions = [
 		path: 'input:virtualkeyboard',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'Release all pressed keys by virtual keyboard on close.',
+		description: 'Release all pressed keys by virtual keyboard on close.',
 	},
 	{
 		name: 'transform',
@@ -1002,8 +998,7 @@ export const config_descriptions = [
 		path: 'group',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether window groups can be dragged into other groups',
+		description: 'whether window groups can be dragged into other groups',
 	},
 	{
 		name: 'merge_groups_on_groupbar',
@@ -1211,8 +1206,7 @@ export const config_descriptions = [
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'if yes, will only round at the groupbar gradient edges',
+		description: 'if yes, will only round at the groupbar gradient edges',
 	},
 	{
 		name: 'text_color',
@@ -2492,8 +2486,7 @@ export const config_descriptions = [
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_STRING',
 		data: '""',
-		description:
-			'Windows on matching workspace (id, name, or selector).',
+		description: 'Windows on matching workspace (id, name, or selector).',
 	},
 	{
 		name: 'match:content',

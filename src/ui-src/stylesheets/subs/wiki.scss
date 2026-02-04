@@ -34,27 +34,25 @@
 		@media (max-width: 600px) {
 			width: 0;
 		}
-		.editor-item:not(.config-group){
+		.editor-item:not(.config-group) {
 			overflow: hidden;
 		}
-		.config-group::before{
+		.config-group::before {
 			//top: 10px
 			//word-wrap:
-
 		}
 	}
 
 	#wikiView {
 		flex: 1 1 auto;
 		padding: var(--spacing-unit);
-		padding-top:0;
+		padding-top: 0;
 		//padding-left: 0;
 		display: flex;
 		flex-direction: column;
 		max-width: 80%;
 		@media (max-width: 600px) {
 			max-width: 100%;
-
 		}
 
 		#wikiView_title {
@@ -63,17 +61,16 @@
 			font-weight: bold;
 		}
 
-		#wikiView_position{
+		#wikiView_position {
 			padding-top: 0.5rem;
 			color: var(--text-2);
 			margin-bottom: calc(1.5 * var(--spacing-unit));
 		}
-
 	}
 }
 
-
-#wikiView_content { //markdown styling
+#wikiView_content {
+	//markdown styling
 	//padding-top: 0;
 	overflow: auto;
 	font-family: var(--font-primary);
@@ -83,7 +80,7 @@
 	//font-size: 1.6rem;
 	line-height: 1.65;
 	color: var(--text-0);
-	max-width: calc(100% - 3*var(--spacing-unit));
+	max-width: calc(100% - 3 * var(--spacing-unit));
 	max-height: calc(100% - 5rem);
 
 	> * + * {
@@ -91,7 +88,12 @@
 	}
 
 	/* Headings */
-	h1, h2, h3, h4, h5, h6 {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
 		font-weight: 600;
 		line-height: 1.3;
 		//margin-top: calc(var(--spacing-unit) * 2);
@@ -156,7 +158,6 @@
 		color: var(--accent);
 		padding: 0.15em 0.35em;
 		border-radius: var(--border-rad);
-
 	}
 
 	/* Code blocks */
@@ -177,7 +178,8 @@
 	}
 
 	/* Blockquotes */
-	blockquote, .blockquote {
+	blockquote,
+	.blockquote {
 		background: var(--surface-1);
 		border-left: 3px solid var(--accent);
 		padding: 0.75rem 1rem;
@@ -203,11 +205,11 @@
 			border-left-color: var(--accent-danger);
 			background: var(--surface-2);
 		}
-
 	}
 
 	/* Lists */
-	ul, ol {
+	ul,
+	ol {
 		padding-left: 1.6rem;
 		color: var(--text-1);
 
@@ -225,7 +227,8 @@
 		overflow: hidden;
 	}
 
-	th, td {
+	th,
+	td {
 		padding: 0.6rem 0.8rem;
 		border-bottom: 1px solid var(--surface-border);
 		//max-width: 20ch;
@@ -288,7 +291,6 @@
 		color: var(--accent-danger);
 	}
 }
-
 
 .tabs-container {
 	// Local scope variables for the component
@@ -358,7 +360,7 @@
 		// Clean up Nix code blocks inside tabs
 		pre {
 			max-width: 100% !important;
-			margin:var(--spacing-unit) 0 ;
+			margin: var(--spacing-unit) 0;
 			background-color: var(--surface-0) !important;
 			border: 1px solid var(--surface-border);
 		}
@@ -375,7 +377,6 @@
 		transform: translateY(0);
 	}
 }
-
 
 .details-wrapper {
 	margin: var(--spacing-unit) 0;

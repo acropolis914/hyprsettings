@@ -1,23 +1,23 @@
-import { unified } from "unified"
-import remarkParse from "remark-parse"
-import remarkFrontmatter from "remark-frontmatter"
-import remarkGfm from "remark-gfm"
-import remarkRehype from "remark-rehype"
-import rehypeStringify from "rehype-stringify"
-import rehypeSanitize from "rehype-sanitize"
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkGfm from 'remark-gfm'
+import remarkRehype from 'remark-rehype'
+import rehypeStringify from 'rehype-stringify'
+import rehypeSanitize from 'rehype-sanitize'
 // import { shortcodes } from 'remark-hugo-shortcodes'
-import remarkDirective from "remark-directive"
-import { remarkObsidianAdmonitions } from "./markdown/remarkObsidianAdmonitions.ts"
-import { remarkHugoTabsToDirectives } from "./markdown/remarkTabs"
-import { remarkHugoDetailsToHTML } from "./markdown/remarkHugoDetails"
+import remarkDirective from 'remark-directive'
+import { remarkObsidianAdmonitions } from './markdown/remarkObsidianAdmonitions.ts'
+import { remarkHugoTabsToDirectives } from './markdown/remarkTabs'
+import { remarkHugoDetailsToHTML } from './markdown/remarkHugoDetails'
 
 /* -----------------------------
  * Minimal frontmatter stripper
  * ----------------------------- */
 function stripFrontmatter(input: string) {
-	if (!input.startsWith("---\n")) return { matter: {}, content: input }
+	if (!input.startsWith('---\n')) return { matter: {}, content: input }
 
-	const end = input.indexOf("\n---", 4)
+	const end = input.indexOf('\n---', 4)
 	if (end === -1) return { matter: {}, content: input }
 
 	const raw = input.slice(4, end).trim()
@@ -25,8 +25,8 @@ function stripFrontmatter(input: string) {
 
 	const matter: Record<string, string> = {}
 
-	for (const line of raw.split("\n")) {
-		const idx = line.indexOf(":")
+	for (const line of raw.split('\n')) {
+		const idx = line.indexOf(':')
 		if (idx === -1) continue
 		const key = line.slice(0, idx).trim()
 		const value = line.slice(idx + 1).trim()
@@ -55,8 +55,8 @@ export default async function parseMarkdown(input: string) {
 		})
 		.use(remarkRehype)
 		.use(rehypeStringify)
-		// .use(shortcodes, { tokens: [["{{<", ">}}"]], inlineMode: true })
-		// .use(rehypeSanitize)
+	// .use(shortcodes, { tokens: [["{{<", ">}}"]], inlineMode: true })
+	// .use(rehypeSanitize)
 
 	const file = await processor.process(content)
 	return file

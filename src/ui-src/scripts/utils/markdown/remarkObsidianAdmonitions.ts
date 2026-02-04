@@ -14,15 +14,27 @@ export function remarkObsidianAdmonitions() {
 				) {
 					const text = first.children[0].value.trim()
 					// Check for [!TYPE]
-					const match = text.match(/^\[!(NOTE|TIP|WARNING|CAUTION)]/i)
+					const match = text.match(
+						/^\[!(NOTE|TIP|WARNING|CAUTION)]/i,
+					)
 					if (match) {
 						const type = match[1].toLowerCase()
 						const data = node.data || (node.data = {})
 						data.hName = 'div'
-						data.hProperties = { className: ['admonition', type, 'blockquote'] }
+						data.hProperties = {
+							className: [
+								'admonition',
+								type,
+								'blockquote',
+							],
+						}
 
 						// Remove the [!TYPE] marker from the first paragraph
-						first.children[0].value = first.children[0].value.replace(/^\[!(NOTE|TIP|WARNING|CAUTION)]\s*/, '')
+						first.children[0].value =
+							first.children[0].value.replace(
+								/^\[!(NOTE|TIP|WARNING|CAUTION)]\s*/,
+								'',
+							)
 					}
 				}
 			}

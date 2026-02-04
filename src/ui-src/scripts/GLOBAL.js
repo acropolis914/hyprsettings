@@ -1,25 +1,24 @@
 export class GLOBAL {
-	static _listeners = new Map(); // key → array of callbacks
+	static _listeners = new Map() // key → array of callbacks
 	static configText
-	static wikiTree
+	static wikiTree //wiki Object : object
+	compact
 
 	static onChange(key, callback) {
 		if (!this._listeners.has(key)) {
-			this._listeners.set(key, []);
+			this._listeners.set(key, [])
 		}
-		this._listeners.get(key).push(callback);
+		this._listeners.get(key).push(callback)
 	}
 
 	static setKey(key, value) {
-		if (this[key] === value) return;
+		if (this[key] === value) return
 
-		this[key] = value;
+		this[key] = value
 
-		const list = this._listeners.get(key);
+		const list = this._listeners.get(key)
 		if (list) {
-			for (const fn of list) fn(value);
+			for (const fn of list) fn(value)
 		}
 	}
 }
-
-

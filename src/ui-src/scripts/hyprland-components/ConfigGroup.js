@@ -1,4 +1,4 @@
-import { debounce, saveKey } from '../utils.js'
+import { debounce, saveKey } from '../utils.ts'
 import { ContextMenu } from './contextMenu.js'
 export class ConfigGroup {
 	constructor(json) {
@@ -35,7 +35,11 @@ export class ConfigGroup {
 			// 	console.log(firstChild)
 			// 	console.log("Group is entered");
 			// }
-			if (e.key == "d" && e.target.tagName != "TEXTAREA" && e.target.tagName != "INPUT") {
+			if (
+				e.key == 'd' &&
+				e.target.tagName != 'TEXTAREA' &&
+				e.target.tagName != 'INPUT'
+			) {
 				e.stopPropagation()
 				e.stopImmediatePropagation()
 				this.disable()
@@ -95,38 +99,38 @@ export class ConfigGroup {
 	}
 
 	disable(disable = null) {
-
 		// WARNING! THIS IS NOT YET WORKING GOOD
 		function hasDisabledParent(el) {
-			let parent = el.parentElement;
+			let parent = el.parentElement
 			console.log(parent)
 			while (parent) {
 				if (
-					parent.dataset.type === "GROUP" &&
-					parent.dataset.disabled === "true"
+					parent.dataset.type === 'GROUP' &&
+					parent.dataset.disabled === 'true'
 				) {
-					return true;
+					return true
 				}
-				parent = parent.parentElement;
+				parent = parent.parentElement
 			}
 
-			return false;
+			return false
 		}
-
 
 		let disabled
 		if (disable !== null) {
-			this.group_el.dataset.disabled = disable.toString();
-			disabled = disable;
+			this.group_el.dataset.disabled = disable.toString()
+			disabled = disable
 		} else {
-			let isParentDisabled = hasDisabledParent(this.group_el);
+			let isParentDisabled = hasDisabledParent(this.group_el)
 			if (isParentDisabled) {
-				console.warn("Parent is disabled, cannot enable/disable child")
+				console.warn(
+					'Parent is disabled, cannot enable/disable child',
+				)
 				return
 			}
-			this.group_el.dataset.disabled = this.group_el.dataset.disabled !== "true"
+			this.group_el.dataset.disabled =
+				this.group_el.dataset.disabled !== 'true'
 			disabled = this.group_el.dataset.disabled === 'true'
-
 		}
 		// console.log(disabled)
 

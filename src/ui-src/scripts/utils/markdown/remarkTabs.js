@@ -11,10 +11,17 @@ export function remarkHugoTabsToDirectives() {
 
 			if (text && text.includes('{{< tabs')) {
 				const itemsMatch = text.match(/items="([^"]+)"/)
-				const globalLabels = itemsMatch ? itemsMatch[1].split(',').map(s => s.trim()) : []
+				const globalLabels = itemsMatch
+					? itemsMatch[1].split(',').map((s) => s.trim())
+					: []
 
 				let endIdx = i
-				while (endIdx < children.length && !getRawText(children[endIdx])?.includes('{{< /tabs >}}')) {
+				while (
+					endIdx < children.length &&
+					!getRawText(children[endIdx])?.includes(
+						'{{< /tabs >}}',
+					)
+				) {
 					endIdx++
 				}
 
@@ -28,8 +35,13 @@ export function remarkHugoTabsToDirectives() {
 					innerNodes.forEach((innerNode) => {
 						const innerText = getRawText(innerNode)
 						if (innerText && innerText.includes('{{< tab')) {
-							const labelMatch = innerText.match(/{{<\s*tab\s*(?:"([^"]+)")?\s*>\}}/)
-							const label = (labelMatch && labelMatch[1]) ? labelMatch[1] : globalLabels[tabCounter]
+							const labelMatch = innerText.match(
+								/{{<\s*tab\s*(?:"([^"]+)")?\s*>\}}/,
+							)
+							const label =
+								labelMatch && labelMatch[1]
+									? labelMatch[1]
+									: globalLabels[tabCounter]
 							const id = `tab-${Math.random().toString(36).substr(2, 6)}`
 
 							labelsFound.push({ label, id })
@@ -43,19 +55,26 @@ export function remarkHugoTabsToDirectives() {
 										className: ['tab-panel'],
 										id: id,
 										// Hide all but the first tab initially
-										style: tabCounter === 0 ? 'display: block;' : 'display: none;'
-									}
-								}
+										style:
+											tabCounter === 0
+												? 'display: block;'
+												: 'display: none;',
+									},
+								},
 							}
 							tabCounter++
 							return
 						}
-						if (innerText && innerText.includes('{{< /tab >}}')) {
+						if (
+							innerText &&
+							innerText.includes('{{< /tab >}}')
+						) {
 							if (currentTab) tabPanels.push(currentTab)
 							currentTab = null
 							return
 						}
-						if (currentTab) currentTab.children.push(innerNode)
+						if (currentTab)
+							currentTab.children.push(innerNode)
 					})
 
 					// --- Direct Onclick Logic ---
@@ -68,7 +87,10 @@ export function remarkHugoTabsToDirectives() {
 							data: {
 								hName: 'button',
 								hProperties: {
-									className: ['tab-btn', idx === 0 ? 'active' : ''],
+									className: [
+										'tab-btn',
+										idx === 0 ? 'active' : '',
+									],
 									type: 'button',
 									// The "One-Liner" Logic
 									onclick: `(function(el){
@@ -77,18 +99,26 @@ export function remarkHugoTabsToDirectives() {
                     con.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                     document.getElementById('${item.id}').style.display = 'block';
                     el.classList.add('active');
-                  })(this)`
-								}
-							}
+                  })(this)`,
+								},
+							},
 						})),
-						data: { hName: 'div', hProperties: { className: ['tab-nav'] } }
+						data: {
+							hName: 'div',
+							hProperties: { className: ['tab-nav'] },
+						},
 					}
 
 					const tabsContainer = {
 						type: 'containerDirective',
 						name: 'tabs',
 						children: [tabSelector, ...tabPanels],
-						data: { hName: 'div', hProperties: { className: ['tabs-container'] } }
+						data: {
+							hName: 'div',
+							hProperties: {
+								className: ['tabs-container'],
+							},
+						},
 					}
 
 					children.splice(i, endIdx - i + 1, tabsContainer)
@@ -100,7 +130,8 @@ export function remarkHugoTabsToDirectives() {
 }
 
 function getRawText(node) {
-	if (node.type === 'paragraph') return node.children.map(c => c.value || '').join('')
+	if (node.type === 'paragraph')
+		return node.children.map((c) => c.value || '').join('')
 	if (node.type === 'html' || node.type === 'text') return node.value
 	return null
 }

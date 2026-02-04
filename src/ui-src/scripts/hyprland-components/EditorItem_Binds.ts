@@ -4,16 +4,12 @@ import {
 	dispatchers,
 } from '../hyprland-specific/hyprlandBindDefinitions.js'
 import { ContextMenu } from './contextMenu.js'
-import {
-	addItem,
-	deleteKey,
-	saveKey,
-	splitWithRemainder,
-} from '../utils.js'
+import { addItem, deleteKey, saveKey, splitWithRemainder } from '../utils.js'
 import { debounce } from '../helpers.js'
 import { GLOBAL } from '../GLOBAL.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { html, render } from 'lit'
+import TomSelect from 'tom-select'
 
 // import TomSelect from "../../jslib/tom-select.complete.min"
 const templateString = html`
@@ -37,11 +33,18 @@ const templateString = html`
 		</div>
 	</div>
 `
-export class EditorItem_Binds {
-	dataset
-	classList
 
-	constructor(json, disabled = false) {
+export class EditorItem_Binds {
+	dataset: any
+	classList: any
+	el: any
+	initial_load: boolean
+	private contextMenu: ContextMenu
+	private hasDescription: boolean
+	private bindflagTS: TomSelect
+	private modkeyTS: TomSelect
+
+	constructor(json: string | Record<string, any>, disabled = false) {
 		this.initial_load = true
 		let name = json['name']
 		let uuid = json['uuid']
@@ -72,60 +75,37 @@ export class EditorItem_Binds {
 		this.el.dataset.comment = comment ?? ''
 		this.el.dataset.position = position ?? ''
 		this.el.dataset.disabled = disabled ?? false
+		this.hasDescription = false
 		this.el.dataset.type = 'KEY'
 		this.preview = ''
-		this.contextMenu = new ContextMenu([
-			{
-				label: 'Comment Above',
-				icon: '',
-				action: () => this.add('COMMENT', false),
-			},
-			{
-				label: 'Comment Below',
-				icon: '',
-				action: () => this.add('COMMENT', true),
-			},
-			{
-				label: 'NewBind Above',
-				icon: '󰅃',
-				action: () => this.add('KEY', false),
-			},
-			{
-				label: 'NewBind Below',
-				icon: '󰅀',
-				action: () => this.add('KEY', true),
-			},
-			{
-				label: 'Toggle Disable',
-				icon: '󰈉',
-				action: () => this.disable(),
-			},
-			{
-				label: 'Delete Key',
-				icon: '󰗩',
-				action: () => this.delete(),
-			},
-		])
-		this.el.appendChild(this.contextMenu.el)
+
 		this.saveDebounced = debounce(() => this.save(), 100)
-
-		this.addElements(name, comment, parent)
-
+		this.createContextMenu()
+		this.addElements()
 		this.addListeners()
 		this.update()
 		this.initial_load = false
 	}
 
-	addElements(name, comment) {
+	addElements() {
 		let bindflag_additems = this.el.dataset.name
 			.trim()
 			.substring(4)
 			.split('')
-		let values = splitWithRemainder(this.el.dataset.value, ',', 3)
+		let values = splitWithRemainder(this.el.dataset.value, ',', 3).map(
+			(i: string) => i.trim(),
+		)
 		this.hasDescription = bindflag_additems.includes('d')
 		if (this.hasDescription) {
-			// console.debug(`${this.el.dataset.name} = ${this.el.dataset.value} has a description`)
-			values = splitWithRemainder(this.el.dataset.value, ',', 4)
+			if (!values.at(-1).includes(',')) {
+				values.splice(2, 0, '')
+			} else {
+				values = splitWithRemainder(
+					this.el.dataset.value,
+					',',
+					4,
+				).map((i: string) => i.trim())
+			}
 		}
 
 		const renderflags = {
@@ -146,11 +126,10 @@ export class EditorItem_Binds {
 		}
 		//bindflags
 		let bindflag_select_el = this.el.querySelector('.bindflags')
-
 		this.bindflagTS = new TomSelect(bindflag_select_el, {
 			options: bindFlags,
 			valueField: 'value',
-			searchField: 'value',
+			searchField: ['value', 'text'],
 			labelField: 'value',
 			highlight: false,
 			duplicates: false,
@@ -162,13 +141,12 @@ export class EditorItem_Binds {
 			},
 			render: renderflags,
 		})
-		if (bindflag_additems.length == 0) {
-			this.bindflagTS.addItem('')
-		} else {
-			bindflag_additems.forEach((element) => {
-				this.bindflagTS.addItem(element)
-			})
-		}
+		this.bindflagTS.getValue()
+		bindflag_additems.length > 0
+			? bindflag_additems.forEach((element) => {
+					this.bindflagTS.addItem(element)
+				})
+			: this.bindflagTS.addItem('')
 
 		//modkeys
 		let modkey_select_el = this.el.querySelector('.modkey')
@@ -177,7 +155,7 @@ export class EditorItem_Binds {
 			create: true,
 			highlight: false,
 			valueField: 'value',
-			searchField: 'text',
+			searchField: ['text', 'value'],
 			onChange: (value) => {
 				if (!this.initial_load) {
 					this.update()
@@ -298,21 +276,15 @@ export class EditorItem_Binds {
 			if (e.key === 'Delete') {
 				e.preventDefault()
 				e.stopPropagation()
-				Array.from(this.contextMenu.el.children).forEach(
-					(element) => {
-						let label_el =
-							element.querySelector(
-								'.ctx-button-label',
-							)
-						if (
-							label_el.textContent
-								.toLowerCase()
-								.includes('delete')
-						) {
-							setTimeout(() => element.click(), 0)
-						}
-					},
+				const el = [
+					...this.contextMenu.el.querySelectorAll(
+						'.ctx-button-label',
+					),
+				].find((label) =>
+					label.textContent.toLowerCase().includes('delete'),
 				)
+
+				if (el) setTimeout(() => el.parentElement.click(), 0)
 			}
 			if (e.key === 'd') {
 				if (
@@ -342,6 +314,13 @@ export class EditorItem_Binds {
 			? modKeys.join(' ')
 			: modKeys
 		let keyPress = this.el.querySelector('.keypress').value
+		let description_el = this.el.querySelector('.description')
+		if (bindFlags.includes('d')) {
+			description_el.classList.remove('hidden')
+		} else {
+			description_el.classList.add('hidden')
+			this.hasDescription = false
+		}
 		let description = this.el.querySelector('.description').value
 		let disPatcherString = this.dispatcherTS.getValue()
 		let paramString = this.el.querySelector('.params').value.trim()
@@ -352,11 +331,9 @@ export class EditorItem_Binds {
 		this.el.dataset.name = bindflagString
 		if (this.hasDescription) {
 			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress},${description}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
-			// this.preview = `${bindflagString} = ${modKeyString}, ${keyPress},${description}, ${disPatcherString}, ${paramString} ${comment}`
 			this.el.dataset.value = `${modKeyString}, ${keyPress},${description}, ${disPatcherString}, ${paramString}`
 		} else {
 			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
-			// this.preview = `${bindflagString} = ${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString} ${comment}`
 			this.el.dataset.value = `${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}`
 		}
 		let saved_comment = this.comment_el.value
@@ -465,6 +442,7 @@ export class EditorItem_Binds {
 		}
 		return false
 	}
+
 	return() {
 		return this.el
 	}
@@ -481,5 +459,41 @@ export class EditorItem_Binds {
 		let type = this.el.dataset.type
 		let disabled = this.el.dataset.disabled === 'true'
 		saveKey(type, name, uuid, position, value, commentToSave, disabled)
+	}
+
+	private createContextMenu() {
+		this.contextMenu = new ContextMenu([
+			{
+				label: 'Comment Above',
+				icon: '',
+				action: () => this.add('COMMENT', false),
+			},
+			{
+				label: 'Comment Below',
+				icon: '',
+				action: () => this.add('COMMENT', true),
+			},
+			{
+				label: 'NewBind Above',
+				icon: '󰅃',
+				action: () => this.add('KEY', false),
+			},
+			{
+				label: 'NewBind Below',
+				icon: '󰅀',
+				action: () => this.add('KEY', true),
+			},
+			{
+				label: 'Toggle Disable',
+				icon: '󰈉',
+				action: () => this.disable(),
+			},
+			{
+				label: 'Delete Key',
+				icon: '󰗩',
+				action: () => this.delete(),
+			},
+		])
+		this.el.appendChild(this.contextMenu.el)
 	}
 }

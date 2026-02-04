@@ -30,8 +30,14 @@ function findParent(root, path, childuuid = null) {
 		if (node.length > 1) {
 			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
 			if (Array.isArray(node)) {
-				let possibleParents = node.filter((node) => Array.isArray(node.children))
-				let parent = possibleParents.filter((parentNode) => parentNode.children.some((child) => child.uuid === childuuid))
+				let possibleParents = node.filter((node) =>
+					Array.isArray(node.children),
+				)
+				let parent = possibleParents.filter((parentNode) =>
+					parentNode.children.some(
+						(child) => child.uuid === childuuid,
+					),
+				)
 				return parent[0]
 			}
 		} else if (node.length === 1) {
@@ -57,7 +63,15 @@ function findParent(root, path, childuuid = null) {
  * @param {Boolean} disabled=false
  * @returns {any}
  */
-export function saveKey(type, name, uuid, position, value, comment = null, disabled = false) {
+export function saveKey(
+	type,
+	name,
+	uuid,
+	position,
+	value,
+	comment = null,
+	disabled = false,
+) {
 	if (type === 'KEY' && GLOBAL.groupsave === true) {
 		console.log('Group save in progress, skipping key save for ', name)
 		return
@@ -146,12 +160,22 @@ export function duplicateKey(uuid, position, below = true) {
 	return newNode
 }
 
-export async function addItem(type, name, value, comment, position, relative_uuid, below = true) {
+export async function addItem(
+	type,
+	name,
+	value,
+	comment,
+	position,
+	relative_uuid,
+	below = true,
+) {
 	let root = GLOBAL['data']
 	let path = position.split(':')
 	let parent = findParent(root, path, relative_uuid)
 	// console.log(parent)
-	let nodeIndex = parent.children.findIndex((node) => node.uuid == relative_uuid)
+	let nodeIndex = parent.children.findIndex(
+		(node) => node.uuid == relative_uuid,
+	)
 	// console.log({ nodeIndex })
 	let newuuid = await Backend.newUUID()
 	let targetIndex = below ? nodeIndex + 1 : nodeIndex
@@ -185,7 +209,10 @@ export function makeUUID(length = 8) {
 export function saveWindowConfig() {
 	try {
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
-		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		Backend.saveWindowConfig(
+			JSON.stringify(GLOBAL['persistence']),
+			'persistence',
+		)
 		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['config']), 'config')
 		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
@@ -195,7 +222,10 @@ export function saveWindowConfig() {
 
 export async function saveWindowConfig_Config() {
 	try {
-		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
+		await Backend.saveWindowConfig(
+			JSON.stringify(GLOBAL['config']),
+			'config',
+		)
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
@@ -203,13 +233,20 @@ export async function saveWindowConfig_Config() {
 
 export async function saveWindowConfig_Persistence() {
 	try {
-		await Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		await Backend.saveWindowConfig(
+			JSON.stringify(GLOBAL['persistence']),
+			'persistence',
+		)
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
 }
 
-export function splitWithRemainder(str, sep, limit) {
+export function splitWithRemainder(
+	str: string,
+	sep: string,
+	limit: number,
+): string[] {
 	let parts = str.split(sep)
 	if (parts.length > limit) {
 		let firstParts = parts.slice(0, limit)

@@ -1,9 +1,9 @@
 // @ts-check
-import { GLOBAL } from "../GLOBAL.js"
-import { saveKey, deleteKey, duplicateKey} from "../utils.js"
+import { GLOBAL } from '../GLOBAL.js'
+import { saveKey, deleteKey, duplicateKey } from '../utils.js'
 import { debounce } from '../helpers.js'
-import { ContextMenu } from "./contextMenu.js"
-import type { HtmlTagDescriptor } from "vite"
+import { ContextMenu } from './contextMenu.js'
+import type { HtmlTagDescriptor } from 'vite'
 
 export class ConfigGroup {
 	private group_el: HTMLDivElement
@@ -12,31 +12,31 @@ export class ConfigGroup {
 	private saveDebounced: any
 
 	constructor(json: JSON) {
-		this.group_el = document.createElement("div")
-		this.group_el.classList.add("config-group")
-		this.group_el.setAttribute("tabindex", "0")
-		this.group_el.classList.add("editor-item")
-		this.group_el.dataset.name = json["name"]
-		this.group_el.dataset.uuid = json["uuid"]
-		this.group_el.dataset.position = json["position"]
-		this.group_el.dataset.disabled = json["disabled"]
-		this.group_el.dataset.type = json["type"]
+		this.group_el = document.createElement('div')
+		this.group_el.classList.add('config-group')
+		this.group_el.setAttribute('tabindex', '0')
+		this.group_el.classList.add('editor-item')
+		this.group_el.dataset.name = json['name']
+		this.group_el.dataset.uuid = json['uuid']
+		this.group_el.dataset.position = json['position']
+		this.group_el.dataset.disabled = json['disabled']
+		this.group_el.dataset.type = json['type']
 		this.group_el.disable = this.disable.bind(this)
 		this.saveDebounced = debounce(() => this.save(), 15)
 		this.group_el.setAttribute(
-			"title",
-			json["position"].replace("root:", "")
+			'title',
+			json['position'].replace('root:', ''),
 		)
-		if (json["comment"]) {
-			this.group_el.dataset.comment = json["comment"]
+		if (json['comment']) {
+			this.group_el.dataset.comment = json['comment']
 		}
 		if (
-			this.group_el.dataset.name === "windowrule" ||
-			this.group_el.dataset.name === "layerrule"
+			this.group_el.dataset.name === 'windowrule' ||
+			this.group_el.dataset.name === 'layerrule'
 		) {
-			this.group_el.classList.add("rule")
+			this.group_el.classList.add('rule')
 		}
-		this.group_el.addEventListener("keydown", (e) => {
+		this.group_el.addEventListener('keydown', (e) => {
 			// if (e.key == "Enter") {
 			// 	e.preventDefault()
 			// 	// this.group_el.querySelector(".editor-item").focus();
@@ -45,7 +45,11 @@ export class ConfigGroup {
 			// 	console.log(firstChild)
 			// 	console.log("Group is entered");
 			// }
-			if (e.key == "d" && e.target.tagName != "TEXTAREA" && e.target.tagName != "INPUT") {
+			if (
+				e.key == 'd' &&
+				e.target.tagName != 'TEXTAREA' &&
+				e.target.tagName != 'INPUT'
+			) {
 				e.stopPropagation()
 				e.stopImmediatePropagation()
 				this.disable()
@@ -79,10 +83,10 @@ export class ConfigGroup {
 				action: () => this.disable(),
 			},
 			{
-				label: "Delete Group",
-				icon: "󰗩",
-				action: () => this.delete()
-			}
+				label: 'Delete Group',
+				icon: '󰗩',
+				action: () => this.delete(),
+			},
 		])
 
 		this.group_el.appendChild(this.contextMenu.el)
@@ -91,15 +95,15 @@ export class ConfigGroup {
 	}
 
 	addEventListeners() {
-		this.group_el.addEventListener("contextmenu", (e) => {
+		this.group_el.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
 			this.contextMenu.show()
 		})
-		this.group_el.addEventListener("focus", (e) => {
+		this.group_el.addEventListener('focus', (e) => {
 			this.contextMenu.show()
 		})
 
-		this.group_el.addEventListener("blur", (e) => {
+		this.group_el.addEventListener('blur', (e) => {
 			this.contextMenu.hide()
 		})
 	}
@@ -110,15 +114,14 @@ export class ConfigGroup {
 	// }
 
 	disable(disable: boolean | null = null) {
-
 		// WARNING! THIS IS NOT YET WORKING GOOD
 		function hasDisabledParent(el) {
 			let parent = el.parentElement
 			console.log(parent)
 			while (parent) {
 				if (
-					parent.dataset.type === "GROUP" &&
-					parent.dataset.disabled === "true"
+					parent.dataset.type === 'GROUP' &&
+					parent.dataset.disabled === 'true'
 				) {
 					return true
 				}
@@ -128,7 +131,6 @@ export class ConfigGroup {
 			return false
 		}
 
-
 		let disabled: boolean
 		if (disable !== null) {
 			this.group_el.dataset.disabled = disable.toString()
@@ -136,17 +138,19 @@ export class ConfigGroup {
 		} else {
 			let isParentDisabled = hasDisabledParent(this.group_el)
 			if (isParentDisabled) {
-				console.warn("Parent is disabled, cannot enable/disable child")
+				console.warn(
+					'Parent is disabled, cannot enable/disable child',
+				)
 				return
 			}
-			this.group_el.dataset.disabled = this.group_el.dataset.disabled=== "true" ? "false" : "true"
-			disabled = this.group_el.dataset.disabled === "true"
-
+			this.group_el.dataset.disabled =
+				this.group_el.dataset.disabled === 'true' ? 'false' : 'true'
+			disabled = this.group_el.dataset.disabled === 'true'
 		}
 		this.save()
 		// GLOBAL['groupsave'] = true
 		// @ts-ignore
-		let children = [...this.group_el.querySelectorAll("[data-uuid]")]
+		let children = [...this.group_el.querySelectorAll('[data-uuid]')]
 		children.forEach((element: HTMLDivElement) => {
 			// console.log("Disabling element:", element)
 			element.disable(disabled, true)
@@ -154,7 +158,6 @@ export class ConfigGroup {
 		// setTimeout(() => {
 		// 	GLOBAL['groupsave'] = false
 		// }, 20);
-		
 	}
 
 	return() {
@@ -169,13 +172,13 @@ export class ConfigGroup {
 		const disabled = this.group_el.dataset.disabled === 'true'
 		// console.log("Saving group:", this.group_el.dataset.name, "Disabled:", disabled)
 		saveKey(
-			"GROUP",
+			'GROUP',
 			this.group_el.dataset.name,
 			this.group_el.dataset.uuid,
 			this.group_el.dataset.position,
 			this.group_el.dataset.value,
 			this.group_el.dataset.comment,
-			disabled
+			disabled,
 		)
 	}
 }

@@ -10,7 +10,6 @@ export function jsViewerInit() {
 	let label = document.createElement('p')
 	label.innerHTML = 'Data rendered by the UI'
 
-
 	let debugWindow = document.querySelector('.config-set#debug')
 	debugWindow.appendChild(label)
 	debugWindow.appendChild(window.jsViewer)

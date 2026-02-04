@@ -9,18 +9,20 @@
 	justify-content: flex-end;
 	direction: ltr;
 	border: 1px solid var(--accent);
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.05), 0 5px 20px rgba(0, 0, 0, 0.1);
+	box-shadow:
+		0 0 5px rgba(0, 0, 0, 0.05),
+		0 5px 20px rgba(0, 0, 0, 0.1);
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
 }
 
 .clr-picker.clr-open,
-.clr-picker[data-inline="true"] {
+.clr-picker[data-inline='true'] {
 	display: flex;
 }
 
-.clr-picker[data-inline="true"] {
+.clr-picker[data-inline='true'] {
 	position: relative;
 }
 
@@ -30,7 +32,8 @@
 	height: 100px;
 	margin-bottom: 15px;
 	border-radius: 3px 3px 0 0;
-	background-image: linear-gradient(rgba(0, 0, 0, 0), #000),
+	background-image:
+		linear-gradient(rgba(0, 0, 0, 0), #000),
 		linear-gradient(90deg, #fff, currentColor);
 	cursor: pointer;
 }
@@ -46,25 +49,25 @@
 	cursor: pointer;
 }
 
-.clr-picker input[type="range"]::-webkit-slider-runnable-track {
+.clr-picker input[type='range']::-webkit-slider-runnable-track {
 	width: 100%;
 	height: 16px;
 	border: 1px solid red;
 }
 
-.clr-picker input[type="range"]::-webkit-slider-thumb {
+.clr-picker input[type='range']::-webkit-slider-thumb {
 	width: 16px;
 	height: 16px;
 	-webkit-appearance: none;
 }
 
-.clr-picker input[type="range"]::-moz-range-track {
+.clr-picker input[type='range']::-moz-range-track {
 	width: 100%;
 	height: 16px;
 	border: 0;
 }
 
-.clr-picker input[type="range"]::-moz-range-thumb {
+.clr-picker input[type='range']::-moz-range-thumb {
 	width: 16px;
 	height: 16px;
 	border: 0;
@@ -110,8 +113,8 @@
 	background-image: linear-gradient(90deg, rgba(0, 0, 0, 0), currentColor);
 }
 
-.clr-hue input[type="range"],
-.clr-alpha input[type="range"] {
+.clr-hue input[type='range'],
+.clr-alpha input[type='range'] {
 	position: absolute;
 	width: calc(100% + 32px);
 	height: 16px;
@@ -142,7 +145,7 @@
 }
 
 .clr-alpha div:before {
-	content: "";
+	content: '';
 	position: absolute;
 	height: 100%;
 	width: 100%;
@@ -239,7 +242,7 @@
 }
 
 .clr-swatches button:after {
-	content: "";
+	content: '';
 	display: block;
 	position: absolute;
 	width: 200%;
@@ -306,7 +309,7 @@ input.clr-color:focus {
 
 .clr-preview:before,
 .clr-preview:after {
-	content: "";
+	content: '';
 	position: absolute;
 	height: 100%;
 	width: 100%;
@@ -347,8 +350,8 @@ input.clr-color:focus {
 
 .clr-hue div,
 .clr-alpha div {
-/* height: 28px; */
-border-radius: 0;
+	/* height: 28px; */
+	border-radius: 0;
 }
 
 .clr-field {
@@ -389,7 +392,7 @@ border-radius: 0;
 }
 
 .clr-field button:after {
-	content: "";
+	content: '';
 	display: block;
 	position: absolute;
 	width: 100%;
@@ -406,7 +409,8 @@ border-radius: 0;
 .clr-swatches button,
 .clr-preview:before,
 .clr-field button {
-	background-image: repeating-linear-gradient(
+	background-image:
+		repeating-linear-gradient(
 			45deg,
 			#aaa 25%,
 			transparent 25%,
@@ -422,7 +426,9 @@ border-radius: 0;
 			#aaa 75%,
 			#aaa
 		);
-	background-position: 0 0, 4px 4px;
+	background-position:
+		0 0,
+		4px 4px;
 	background-size: 8px 8px;
 }
 
@@ -435,22 +441,24 @@ border-radius: 0;
 .clr-keyboard-nav .clr-alpha input:focus + div,
 .clr-keyboard-nav .clr-segmented input:focus + label {
 	outline: none;
-	box-shadow: 0 0 0 2px #1e90ff, 0 0 2px 2px #fff;
+	box-shadow:
+		0 0 0 2px #1e90ff,
+		0 0 2px 2px #fff;
 }
 
-.clr-picker[data-alpha="false"] .clr-alpha {
+.clr-picker[data-alpha='false'] .clr-alpha {
 	display: none;
 }
 
-.clr-picker[data-minimal="true"] {
+.clr-picker[data-minimal='true'] {
 	padding-top: 16px;
 }
 
-.clr-picker[data-minimal="true"] .clr-gradient,
-.clr-picker[data-minimal="true"] .clr-hue,
-.clr-picker[data-minimal="true"] .clr-alpha,
-.clr-picker[data-minimal="true"] .clr-color,
-.clr-picker[data-minimal="true"] .clr-preview {
+.clr-picker[data-minimal='true'] .clr-gradient,
+.clr-picker[data-minimal='true'] .clr-hue,
+.clr-picker[data-minimal='true'] .clr-alpha,
+.clr-picker[data-minimal='true'] .clr-color,
+.clr-picker[data-minimal='true'] .clr-preview {
 	display: none;
 }
 
@@ -486,7 +494,8 @@ border-radius: 0;
 .clr-dark .clr-alpha div,
 .clr-dark .clr-swatches button,
 .clr-dark .clr-preview:before {
-	background-image: repeating-linear-gradient(
+	background-image:
+		repeating-linear-gradient(
 			45deg,
 			#666 25%,
 			transparent 25%,
@@ -508,11 +517,13 @@ border-radius: 0;
 
 .clr-picker.clr-polaroid {
 	border-radius: 6px;
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1), 0 5px 30px rgba(0, 0, 0, 0.2);
+	box-shadow:
+		0 0 5px rgba(0, 0, 0, 0.1),
+		0 5px 30px rgba(0, 0, 0, 0.2);
 }
 
 .clr-picker.clr-polaroid:before {
-	content: "";
+	content: '';
 	display: block;
 	position: absolute;
 	width: 16px;

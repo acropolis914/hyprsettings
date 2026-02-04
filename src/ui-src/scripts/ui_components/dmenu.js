@@ -138,16 +138,12 @@ class DMenu {
 
 			if (e.key === 'ArrowDown') {
 				e.preventDefault()
-				;(
-					this._next(li) ?? this.listEl.firstElementChild
-				)?.focus()
+				;(this._next(li) ?? this.listEl.firstElementChild)?.focus()
 			}
 
 			if (e.key === 'ArrowUp') {
 				e.preventDefault()
-				;(
-					this._prev(li) ?? this.listEl.lastElementChild
-				)?.focus()
+				;(this._prev(li) ?? this.listEl.lastElementChild)?.focus()
 			}
 		})
 
@@ -195,12 +191,12 @@ export function selectFrom(options, addCustom = true) {
 			document.removeEventListener('click', outsideClick)
 		}
 		if (addCustom) {
-		let custom = {
-			name: 'Custom value...',
-			value: 'custom',
-			description: 'Enter a custom value',
-		}
-		options.push(custom)
+			let custom = {
+				name: 'Custom value...',
+				value: 'custom',
+				description: 'Enter a custom value',
+			}
+			options.push(custom)
 		}
 
 		menu = new DMenu({

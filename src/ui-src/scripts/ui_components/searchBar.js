@@ -9,16 +9,13 @@ export async function initializeSearchBar() {
 	searchBar = document.getElementById('search-bar')
 	searchResultEl = document.querySelector('#results')
 
-
 	function search() {
 		searchResultEl.style.display = 'flex'
 		searchResultEl.innerHTML = ''
 
-
-
 		const resultsPool = []
 		let searchItems = document.querySelectorAll('.editor-item')
-		searchItems.forEach(item => {
+		searchItems.forEach((item) => {
 			let itemProps = { ...item.dataset }
 			if (item.classList.contains('config-group')) {
 				itemProps['type'] = 'GROUP'
@@ -26,7 +23,10 @@ export async function initializeSearchBar() {
 			if (item.classList.contains('wiki-item')) {
 				itemProps['type'] = 'WIKI'
 			}
-			if (itemProps.type === 'COMMENT' && itemProps.comment.trim().startsWith('#####')) {
+			if (
+				itemProps.type === 'COMMENT' &&
+				itemProps.comment.trim().startsWith('#####')
+			) {
 				return
 			}
 			resultsPool.push(itemProps)
@@ -36,7 +36,14 @@ export async function initializeSearchBar() {
 		})
 		// console.log(resultsPool)
 		const fuse = new Fuse(resultsPool, {
-			keys: ['name', 'value', 'comment', 'position', 'type', 'cleanName']
+			keys: [
+				'name',
+				'value',
+				'comment',
+				'position',
+				'type',
+				'cleanName',
+			],
 		})
 
 		const results = fuse.search(searchBar.value)
@@ -59,9 +66,9 @@ export async function initializeSearchBar() {
 				  <span class="value">${result.item.value}</span>&nbsp;</br>
 				  <span class="comment" style ="font-size:1.2rem">${result.item.comment || ''}</span>
 				`
-			} else  if (result.item.type.toLowerCase() === 'group') {
+			} else if (result.item.type.toLowerCase() === 'group') {
 				configLineDiv.innerHTML = `Group: <span class="name">${result.item.name}</span>`
-			} else if(result.item.type.toLowerCase() === 'wiki'){
+			} else if (result.item.type.toLowerCase() === 'wiki') {
 				configLineDiv.innerHTML = `
 				<span class="wiki">${result.item.cleanName}</span>`
 			}
@@ -70,7 +77,7 @@ export async function initializeSearchBar() {
 			locationDiv.className = 'location'
 			try {
 				let slices = 1
-				result.item.type === "WIKI" ?  slices = 0 : 1
+				result.item.type === 'WIKI' ? (slices = 0) : 1
 				locationDiv.innerHTML = `${result.item.position.split(':').slice(slices).join(' 󰄾 ')}`
 			} catch (e) {
 				console.error(e, result.item)
@@ -81,15 +88,20 @@ export async function initializeSearchBar() {
 
 			if (result.item.type.toLowerCase() === 'wiki') {
 				resultDiv.addEventListener('click', (e) => {
-					const wikiView = document.getElementById("wikiView")
+					const wikiView = document.getElementById('wikiView')
 					searchAndScroll(wikiView, searchBar.value)
 				})
 			}
 
 			resultDiv.addEventListener('keydown', (e) => {
 				if (e.key === 'Enter') {
-					let goto = document.querySelector(`.editor-item[data-uuid="${result.item.uuid}"]`)
-					goto.scrollIntoView({ behavior: 'smooth', block: 'center' })
+					let goto = document.querySelector(
+						`.editor-item[data-uuid="${result.item.uuid}"]`,
+					)
+					goto.scrollIntoView({
+						behavior: 'smooth',
+						block: 'center',
+					})
 					resultDiv.click()
 				}
 				if (e.key === 'ArrowDown') {
@@ -104,26 +116,29 @@ export async function initializeSearchBar() {
 					}
 					resultDiv.classList.remove('selected')
 					next.focus({ preventScroll: true })
-
 				}
 				if (e.key === 'ArrowUp') {
 					e.preventDefault()
-					console.log('ArrowDown is clicked finding next element')
+					console.log(
+						'ArrowDown is clicked finding next element',
+					)
 					let previous = resultDiv.previousElementSibling
 					while (previous && previous.tagName !== 'DIV') {
 						previous = previous.previousElementSibling
 					}
 					if (!previous) {
-						previous = resultDiv.parentElement.lastElementChild
+						previous =
+							resultDiv.parentElement.lastElementChild
 					}
 					resultDiv.classList.remove('selected')
 					console.debug('Next element is focused')
 					previous.focus({ preventScroll: true })
-
 				}
 			})
 			resultDiv.addEventListener('click', (e) => {
-				let goto = document.querySelector(`.editor-item[data-uuid="${result.item.uuid}"]`)
+				let goto = document.querySelector(
+					`.editor-item[data-uuid="${result.item.uuid}"]`,
+				)
 				let closest = goto.closest('.config-set').id
 				// console.log(closest)
 				document.querySelector(`aside>ul>li#${closest}`).click()
@@ -149,11 +164,13 @@ export async function initializeSearchBar() {
 
 			resultDiv.addEventListener('focus', (e) => {
 				resultDiv.classList.add('selected')
-				resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+				resultDiv.scrollIntoView({
+					behavior: 'smooth',
+					block: 'nearest',
+				})
 			})
 
 			searchResultEl.appendChild(resultDiv)
-
 		})
 		if (results.length === 0 && searchBar.value) {
 			searchResultEl.innerHTML = 'No results found.'
@@ -180,7 +197,6 @@ export async function initializeSearchBar() {
 		if (e.key === 'Escape') {
 			e.preventDefault()
 			cleanUp()
-
 		}
 		if (e.key === 'Enter') {
 			searchResultEl.firstChild.click()
@@ -199,9 +215,9 @@ export async function initializeSearchBar() {
 		}
 
 		if (/^[a-zA-Z_.]$/.test(e.key)) {
-			e.preventDefault();
-			searchBar.focus();
-			searchBar.value += e.key;
+			e.preventDefault()
+			searchBar.focus()
+			searchBar.value += e.key
 		}
 		if (e.key === 'Escape') {
 			cleanUp()
@@ -210,7 +226,11 @@ export async function initializeSearchBar() {
 	document.addEventListener('click', (e) => {
 		let clickedInsideSearchbar = searchBar.contains(e.target)
 		let clickedInsideSearchResults = searchResultEl.contains(e.target)
-		if (!clickedInsideSearchbar && !clickedInsideSearchResults && GLOBAL['currentView'] === 'search') {
+		if (
+			!clickedInsideSearchbar &&
+			!clickedInsideSearchResults &&
+			GLOBAL['currentView'] === 'search'
+		) {
 			cleanUp()
 		}
 
@@ -232,29 +252,27 @@ export async function initializeSearchBar() {
 		}
 		// console.log(GLOBAL['currentView'])
 	}
-
 }
 
-
 const searchAndScroll = (container, query) => {
-	const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
-	let bestMatch = null;
-	let highestScore = -1;
+	const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT)
+	let bestMatch = null
+	let highestScore = -1
 
 	while (walker.nextNode()) {
-		const text = walker.currentNode.textContent.toLowerCase();
-		const search = query.toLowerCase();
+		const text = walker.currentNode.textContent.toLowerCase()
+		const search = query.toLowerCase()
 
 		// Minimal scoring: does it include it, or how many chars overlap?
 		if (text.includes(search)) {
-			bestMatch = walker.currentNode.parentElement;
-			break; // Exact(ish) match found, stop early
+			bestMatch = walker.currentNode.parentElement
+			break // Exact(ish) match found, stop early
 		}
 	}
 
 	if (bestMatch) {
-		bestMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
-		bestMatch.style.backgroundColor = 'yellow'; // Quick highlight
-		setTimeout(() => bestMatch.style.backgroundColor = '', 2000);
+		bestMatch.scrollIntoView({ behavior: 'smooth', block: 'center' })
+		bestMatch.style.backgroundColor = 'yellow' // Quick highlight
+		setTimeout(() => (bestMatch.style.backgroundColor = ''), 2000)
 	}
-};
+}
