@@ -18,17 +18,10 @@ document.addEventListener('keydown', (event) => {
 })
 
 testingScreen.addEventListener('transitionend', (e) => {
-	if (
-		e.propertyName === 'opacity' &&
-		getComputedStyle(e.target).opacity === '0'
-	) {
+	if (e.propertyName === 'opacity' && getComputedStyle(e.target).opacity === '0') {
 		console.log('Element is now invisible')
 		testingScreen.classList.add('hidden')
-	} else if (
-		e.propertyName === 'opacity' &&
-		getComputedStyle(e.target).opacity > '0' &&
-		open
-	) {
+	} else if (e.propertyName === 'opacity' && getComputedStyle(e.target).opacity > '0' && open) {
 		testingScreen.classList.remove('hidden')
 	}
 })
@@ -55,6 +48,7 @@ export async function renderTextPreview() {
 	let configPreview_el = document.getElementById('config-preview')
 	let configPreviewTabs_el = document.getElementById('config-preview-tabs')
 	let configPreviewCode_el = document.getElementById('config-preview-code')
+	configPreviewCode_el.contentEditable = true
 	configPreviewTabs_el.innerHTML = ''
 	configPreviewCode_el.innerHTML = ''
 	configPreviewCode_el.classList.add('language-ini')
@@ -78,9 +72,7 @@ export async function renderTextPreview() {
 		// console.log(element)
 		let path = element.path
 		let text = element.content
-		totalSize_configtext += new TextEncoder().encode(
-			element.content,
-		).length
+		totalSize_configtext += new TextEncoder().encode(element.content).length
 
 		// create tab
 		let tab = createTab(path)
@@ -95,9 +87,7 @@ export async function renderTextPreview() {
 			tab.click()
 		}
 		tab.addEventListener('dblclick', async (e) => {
-			const response = await fetch(
-				'/api/open_file?path=' + encodeURIComponent(path),
-			)
+			const response = await fetch('/api/open_file?path=' + encodeURIComponent(path))
 			if (!response.ok) {
 				console.error('Failed to open file:', response.statusText)
 			}

@@ -71,7 +71,7 @@ export class ConfigRenderer {
 	}
 	async invokeParser() {
 		await this.parse(this.json)
-		console.log(this.comment_stack)
+		console.log(this.comment_stack, this.comment_queue)
 		while (this.renderTo && this.temporaryElement.firstChild) {
 			let el = this.temporaryElement.firstElementChild
 			if (this.renderAfter) {
@@ -90,35 +90,44 @@ export class ConfigRenderer {
 		const self = this
 		function renderCommentStack() {
 			for (let i = 0; i < self.comment_stack.length; i++) {
-				let comment_item = new EditorItem_Comments(self.comment_stack[i])
-				comment_item.el.classList.add('block-comment')
+				let comment_element = new EditorItem_Comments(self.comment_stack[i])
+				comment_element.el.classList.add('block-comment')
 				if (!GLOBAL['config']['show_header_comments']) {
-					comment_item.el.classList.add('settings-hidden')
+					comment_element.el.classList.add('settings-hidden')
 				}
-				comment_item.addToParent(self.current_container.at(-1))
+				comment_element.addToParent(self.current_container.at(-1))
 			}
 			self.comment_stack = []
+		}
+
+		function renderCommentQueue(all: boolean) {
+			let left = all ? 0 : 1
+			while (self.comment_queue.length > 1) {
+				let comment_item: JSON = self.comment_queue[0]
+				let comment_item_el = new EditorItem_Comments(comment_item, false)
+				if (!GLOBAL['config']['show_line_comments']) {
+					comment_item_el.el.classList.add('settings-hidden')
+				}
+				comment_item_el.addToParent(self.current_container.at(-1))
+				self.comment_queue.shift()
+			}
 		}
 
 		if (
 			// is a comment that looks like the start of a comment block
 			json['type'] === 'COMMENT' &&
-			(json['comment'].startsWith('####') || json['comment'].startsWith('# ====')) &&
+			(json['comment'].startsWith('####') || json['comment'].startsWith('# =====')) &&
 			(this.comment_stack.length === 0 || this.comment_stack.length === 2)
 		) {
-			// console.debug({json})
 			this.comment_stack.push(json)
-			// @ts-ignore
-			if (this.comment_stack.length === 3) {
+			if (this.comment_stack.length > 2) {
 				renderCommentStack()
 			}
 		} else if (
 			//if there is a comment block start and there is another comment
 			json['type'] === 'COMMENT' &&
-			// json['comment'].includes('### ') &&
 			this.comment_stack.length > 0
 		) {
-			console.log(json['comment'])
 			this.comment_stack.push(json)
 			let comment = json['comment']
 				.trim()
@@ -127,59 +136,44 @@ export class ConfigRenderer {
 
 			for (const [key, value] of tabids) {
 				if (comment.toLowerCase().includes(key)) {
-					this.current_container.pop()
-					this.current_container.push(document.querySelector(`.config-set#${value}`))
-					if (!document.querySelector(`.config-set#${value}`)) {
-						await waitFor(() => this.current_container.push(document.querySelector(`.config-set#${value}`)))
-						break
+					// console.info(`Comment ${comment} includes [${key}]`)
+					let container = document.querySelector(`.config-set#${value}`)
+					if (container) {
+						this.current_container.pop()
+						this.current_container.push(container)
 					}
+					break
 				}
-			}
-
-			if (this.comment_stack.length > 0) {
-				//catch for when there is a comment stack that didnt end
-				renderCommentStack()
 			}
 		} // end of comment stacks
 
 		//inline comments
 		else if (json['type'] === 'COMMENT' && this.comment_stack.length === 0) {
 			// console.debug({json})
-			let comment_item = new EditorItem_Comments(json, false)
-			if (!GLOBAL['config']['show_line_comments']) {
-				comment_item.el.classList.add('settings-hidden')
-			}
-			this.comment_queue.push(comment_item)
+			this.comment_queue.push(json)
 			if (this.comment_queue.length > 1) {
-				for (let i = 0; i < this.comment_queue.length - 1; i++) {
-					comment_item = this.comment_queue[0]
-					comment_item.addToParent(this.current_container.at(-1))
-					this.comment_queue.splice(0, 1)
-				}
+				renderCommentQueue()
 			}
 		} else if (json['type'] === 'BLANK') {
 			if (this.comment_queue.length > 0) {
-				for (let i = 0; i < this.comment_queue.length; i++) {
-					let comment_item = this.comment_queue[0]
-					comment_item.addToParent(this.current_container.at(-1))
-					this.comment_queue.splice(0, 1)
-				}
+				renderCommentQueue()
 			}
-			// let blankline = document.createElement("div")
-			// blankline.classList.add("blank-line")
-			// blankline.textContent = "THIS IS A BLANK LINE"
+			// let blankline = document.createElement('div')
+			// blankline.classList.add('blank-line', 'editor-item')
+			// blankline.dataset.uuid = json['uuid']
+			// blankline.tabIndex = 0
+			// blankline.textContent = 'THIS IS A BLANK LINE'
 			// this.current_container.at(-1).appendChild(blankline)
-			/////fugly
+			///fugly
 		} else if (json['type'] === 'GROUP') {
 			if (json['position'] && json['position'].split(':').length > 1) {
-				if (this.comment_queue.length > 0) {
-					for (let i = 0; i < this.comment_queue.length; i++) {
-						let comment_item = this.comment_queue[0]
-						comment_item.addToParent(this.current_container.at(-1))
-						this.comment_queue.splice(0, 1)
-					}
+				if (this.comment_stack.length > 0) {
+					renderCommentStack()
 				}
 				//
+				if (this.comment_queue.length > 0) {
+					renderCommentQueue()
+				}
 				let group_el = new ConfigGroup(json).return()
 
 				// if (this.comment_queue.length > 0) {
@@ -204,8 +198,18 @@ export class ConfigRenderer {
 					this.current_container.at(-1).appendChild(group_el)
 				}
 				this.current_container.push(group_el)
+				try {
+					for (const child of json['children']) {
+						await this.parse(child)
+					}
+				} catch (e) {
+					console.error(e, json)
+				}
 			}
 		} else if (json['position'] && json['type'] === 'GROUPEND' && json['position'].split(':').length > 1) {
+			if (this.comment_queue.length > 0) {
+				renderCommentQueue()
+			}
 			this.current_container.pop()
 		} else if (json['type'] === 'KEY') {
 			try {
@@ -224,20 +228,17 @@ export class ConfigRenderer {
 					let excluded = exclude ? exclude : []
 					if (json.name.trim().startsWith(key) && !excluded.includes(json.name.trim())) {
 						tabToAddTo = document.querySelector(`.config-set#${value}`)
-						if (json.name.startsWith('bind')) {
-							// console.log()
-						}
 						break
 					}
 				}
 				if (!tabToAddTo) {
 					tabToAddTo = this.current_container.at(-1)
+				} else {
+					this.current_container.pop()
+					this.current_container.push(tabToAddTo)
 				}
 				if (this.comment_queue.length > 0) {
-					this.comment_queue.forEach((commentEl) => {
-						commentEl.addToParent(tabToAddTo)
-						this.comment_queue.pop()
-					})
+					renderCommentQueue()
 				}
 				genericItem.el.addEventListener('focus', () => {
 					GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
@@ -252,15 +253,48 @@ export class ConfigRenderer {
 				console.log(e, json)
 			}
 		} else if (json['type'] === 'FILE') {
+			if (this.comment_queue.length > 0) {
+				renderCommentQueue()
+			}
+			if (this.comment_stack.length > 0) {
+				renderCommentStack()
+			}
+			try {
+				if (this.comment_queue.length > 0) {
+					renderCommentQueue(true)
+				}
+				if (this.comment_stack.length > 0) {
+					renderCommentStack()
+				}
+				for (const child of json.children) {
+					await this.parse(child)
+				}
+				if (this.comment_queue.length > 0) {
+					renderCommentQueue(true)
+				}
+				if (this.comment_stack.length > 0) {
+					renderCommentStack()
+				}
+			} catch (e) {
+				console.error(e, json)
+			}
 			console.log()
 		} else {
 			console.error('Failed to render an item: ', json, 'Skipping')
 		}
 
 		//recursive children rendering
-		if (json['children']) {
+		if (json['children'] && json['name'] === 'root') {
+			console.log(json)
 			for (const child of json.children) {
 				await this.parse(child)
+			}
+
+			if (this.comment_queue.length > 0) {
+				renderCommentQueue()
+			}
+			if (this.comment_stack.length > 0) {
+				renderCommentStack()
 			}
 		}
 		setTimeout(() => destroyOverlay(), 1)

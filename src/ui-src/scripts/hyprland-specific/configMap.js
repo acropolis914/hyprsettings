@@ -1,8 +1,9 @@
 //tabids for comment stacks so configRenderer() knows where to put them
 //[HeaderCommentBlockName(case insensitive),tabID
 export let tabids = [
-	['general', 'general'],
-	['general layout', 'general'], //dank
+	['general layout', 'looknfeel'], //dank
+	['layouts', 'looknfeel'], //dank
+	['general', 'general'], //general layout should go first
 	['monitor', 'monitor'],
 	['keybindings', 'keybinds'],
 	['miscellaneous', 'miscellaneous'],

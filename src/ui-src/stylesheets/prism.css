@@ -132,3 +132,15 @@ pre[class*='language-'] {
 .token.deleted {
 	color: var(--red);
 }
+
+
+button.copy-to-clipboard-button {
+	padding: 0.5rem 1rem;
+	background: var(--surface-2);
+	content: '';
+	color: var(--text-0);
+
+	:hover {
+		color: var(--text-contrast);
+	}
+}

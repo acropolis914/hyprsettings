@@ -188,8 +188,7 @@ html {
 	height: 100%;
 	background-color: var(--surface-0);
 	color: var(--text-0);
-	font-family:
-		var(--font-primary), 'CommitMonoIconFont', monospace !important;
+	font-family: var(--font-primary), 'CommitMonoIconFont', monospace !important;
 	font-size: 52.5%;
 	opacity: 0;
 	transition: opacity 0.2s ease-in-out;
@@ -1726,13 +1725,12 @@ span {
 	@extend %overlay;
 	height: 90vh;
 	width: 90vw;
-	//background-color: rgba(var(--surface-0), 1);
-	background-color: var(--surface-0);
-	display: flex;
-	flex-direction: column;
+	background-color: rgba(var(--surface-0), \1);
+	//background-color: var(--surface-0);
+	//display: flex;
+	display: block;
+	justify-items: center;
 	backdrop-filter: blur(10px) brightness(0.4);
-	justify-content: center;
-	align-items: center;
 	color: var(--text-1);
 	border-bottom: 1px solid var(--text-0);
 	box-shadow: var(--accent) 0px 0px 5px;
@@ -1740,25 +1738,24 @@ span {
 	//height: 100vh;
 
 	#main-part {
-		flex: 1;
+		//flex: 1;
 		padding: 1rem;
-		display: flex;
-		flex-direction: column;
-		max-height: 95%;
+		display: block;
+		flex-direction: row;
+		max-height: 100%;
 		width: 100%;
 	}
 
 	#config-preview {
-		//height: 80vh;
-		max-height: 90%;
+		height: clamp(10rem, 80%, 80%);
+		overflow: hidden;
 		min-height: 90%;
 		width: 100%;
 		padding: var(--spacing-unit);
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-unit);
 
 		#config-preview-tabs {
+			//flex: 1;
+			height: 10%;
 			display: flex;
 			flex-direction: row;
 			justify-content: left;
@@ -1766,15 +1763,15 @@ span {
 			gap: 1rem;
 			//background-color: var(--surface-2);
 			//border-bottom: 1px solid var(--surface-border);
-			flex-shrink: 1;
+			//flex-shrink: 1;
 			z-index: 10;
 			cursor: pointer;
 			flex-wrap: wrap;
 		}
+
 		.config-preview-tab-item {
-			//flex: 1 1 0;
-			//overflow: hidden;
-			//text-overflow: ellipsis;
+			flex: 0 0 auto;
+			box-sizing: border-box;
 			padding-left: 0.5rem;
 			padding-right: 0.5rem;
 			z-index: 10;
@@ -1787,22 +1784,27 @@ span {
 				border: 1px solid var(--accent);
 			}
 		}
-		pre,
-		iframe {
-			max-height: 100%;
-			min-height: 100%;
-			max-width: 100%;
+		.code-toolbar {
+			display: block;
+			height: 40rem;
+			//overflow: scroll;
 			border-radius: var(--border-rad);
-			z-index: 1;
-			//overflow: hidden;
-			margin-top: var(--spacing-unit);
-			background-color: var(--surface-1);
+			button {
+				min-height: 10%;
+			}
+		}
+		pre {
+			max-height: 90%;
+			background-color: var(--surface-2);
+			outline: none;
+			* {
+				background-color: transparent !important;
+			}
 		}
 		#config-preview-code {
-			//color: unset;
-			overflow: scroll !important;
-			max-height: 100%;
-			//background-color: var(--surface-2);
+			overflow: hidden;
+			height: 10px;
+			box-sizing: border-box;
 		}
 
 		iframe {
