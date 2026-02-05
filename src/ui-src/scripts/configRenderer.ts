@@ -2,15 +2,12 @@
 import { EditorItem_Generic } from './hyprland-components/EditorItem_Generic.ts'
 import { EditorItem_Comments } from './hyprland-components/EditorItem_Comments.js'
 import { EditorItem_Binds } from './hyprland-components/EditorItem_Binds.ts'
-import {
-	tabids,
-	keyNameStarts,
-	configGroups,
-} from './hyprland-specific/configMap.js'
+import { tabids, keyNameStarts, configGroups } from './hyprland-specific/configMap.js'
 import { ConfigGroup } from './hyprland-components/ConfigGroup.ts'
 import { GLOBAL } from './GLOBAL.js'
 import { Backend } from '@scripts/backendAPI.js'
 import { destroyOverlay } from '@scripts/ui_components/darken_overlay.js'
+import { waitFor } from './helpers'
 
 export default async function getAndRenderConfig() {
 	GLOBAL.onChange('data', () => {
@@ -41,25 +38,19 @@ export class ConfigRenderer {
 	temporaryElement: HTMLDivElement
 	renderTo: HTMLElement
 	renderAfter: boolean
-	constructor(
-		json: Record<string, any>,
-		renderTo: HTMLElement = null,
-		renderAfter: boolean = true,
-	) {
+	constructor(json: Record<string, any>, renderTo: HTMLElement = null, renderAfter: boolean = true) {
 		this.renderTo = renderTo
 		this.renderAfter = renderAfter
 		this.json = json
 		this.current_container = []
 		if (renderTo) {
-			console.log('renderTo', renderTo)
+			// console.log('renderTo', renderTo)
 			this.temporaryElement = document.createElement('div')
 			this.temporaryElement.style.display = 'none'
 			document.body.appendChild(this.temporaryElement)
 			this.current_container.push(this.temporaryElement)
 		} else {
-			this.current_container.push(
-				document.querySelector('.config-set#general'),
-			)
+			this.current_container.push(document.querySelector('.config-set#general'))
 		}
 
 		this.comment_stack = [] //for the block comments
@@ -69,20 +60,18 @@ export class ConfigRenderer {
 			clearConfigItems()
 		}
 		this.invokeParser()
-		document
-			.querySelectorAll<HTMLElement>('.editor-item')
-			.forEach((element) => {
-				element.addEventListener('click', (e) => {
-					// let target = e.target
-					GLOBAL.setKey('currentView', 'main')
-					// @ts-ignore
-					GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-						element.dataset.uuid
-				})
+		document.querySelectorAll<HTMLElement>('.editor-item').forEach((element) => {
+			element.addEventListener('click', (e) => {
+				// let target = e.target
+				GLOBAL.setKey('currentView', 'main')
+				// @ts-ignore
+				GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
 			})
+		})
 	}
 	async invokeParser() {
 		await this.parse(this.json)
+		console.log(this.comment_stack)
 		while (this.renderTo && this.temporaryElement.firstChild) {
 			let el = this.temporaryElement.firstElementChild
 			if (this.renderAfter) {
@@ -101,9 +90,7 @@ export class ConfigRenderer {
 		const self = this
 		function renderCommentStack() {
 			for (let i = 0; i < self.comment_stack.length; i++) {
-				let comment_item = new EditorItem_Comments(
-					self.comment_stack[i],
-				)
+				let comment_item = new EditorItem_Comments(self.comment_stack[i])
 				comment_item.el.classList.add('block-comment')
 				if (!GLOBAL['config']['show_header_comments']) {
 					comment_item.el.classList.add('settings-hidden')
@@ -112,13 +99,12 @@ export class ConfigRenderer {
 			}
 			self.comment_stack = []
 		}
+
 		if (
 			// is a comment that looks like the start of a comment block
 			json['type'] === 'COMMENT' &&
-			(json['comment'].startsWith('####') ||
-				json['comment'].startsWith('# ====')) &&
-			(this.comment_stack.length === 0 ||
-				this.comment_stack.length === 2)
+			(json['comment'].startsWith('####') || json['comment'].startsWith('# ====')) &&
+			(this.comment_stack.length === 0 || this.comment_stack.length === 2)
 		) {
 			// console.debug({json})
 			this.comment_stack.push(json)
@@ -132,7 +118,7 @@ export class ConfigRenderer {
 			// json['comment'].includes('### ') &&
 			this.comment_stack.length > 0
 		) {
-			// console.log(json['comment'])
+			console.log(json['comment'])
 			this.comment_stack.push(json)
 			let comment = json['comment']
 				.trim()
@@ -142,33 +128,23 @@ export class ConfigRenderer {
 			for (const [key, value] of tabids) {
 				if (comment.toLowerCase().includes(key)) {
 					this.current_container.pop()
-					this.current_container.push(
-						document.querySelector(`.config-set#${value}`),
-					)
+					this.current_container.push(document.querySelector(`.config-set#${value}`))
 					if (!document.querySelector(`.config-set#${value}`)) {
-						await waitFor(() =>
-							this.current_container.push(
-								document.querySelector(
-									`.config-set#${value}`,
-								),
-							),
-						)
+						await waitFor(() => this.current_container.push(document.querySelector(`.config-set#${value}`)))
 						break
 					}
 				}
 			}
-		} // end of comment stacks
 
-		//inline comments
-		else if (
-			json['type'] === 'COMMENT' &&
-			this.comment_stack.length === 0
-		) {
-			// console.debug({json})
 			if (this.comment_stack.length > 0) {
 				//catch for when there is a comment stack that didnt end
 				renderCommentStack()
 			}
+		} // end of comment stacks
+
+		//inline comments
+		else if (json['type'] === 'COMMENT' && this.comment_stack.length === 0) {
+			// console.debug({json})
 			let comment_item = new EditorItem_Comments(json, false)
 			if (!GLOBAL['config']['show_line_comments']) {
 				comment_item.el.classList.add('settings-hidden')
@@ -199,9 +175,7 @@ export class ConfigRenderer {
 				if (this.comment_queue.length > 0) {
 					for (let i = 0; i < this.comment_queue.length; i++) {
 						let comment_item = this.comment_queue[0]
-						comment_item.addToParent(
-							this.current_container.at(-1),
-						)
+						comment_item.addToParent(this.current_container.at(-1))
 						this.comment_queue.splice(0, 1)
 					}
 				}
@@ -219,9 +193,7 @@ export class ConfigRenderer {
 				if (!this.renderTo) {
 					for (const [key, value] of configGroups) {
 						if (json.name.trim().startsWith(key)) {
-							document
-								.querySelector(`.config-set#${value}`)
-								.appendChild(group_el)
+							document.querySelector(`.config-set#${value}`).appendChild(group_el)
 							matched = true
 							break
 						}
@@ -233,44 +205,25 @@ export class ConfigRenderer {
 				}
 				this.current_container.push(group_el)
 			}
-		} else if (
-			json['position'] &&
-			json['type'] === 'GROUPEND' &&
-			json['position'].split(':').length > 1
-		) {
+		} else if (json['position'] && json['type'] === 'GROUPEND' && json['position'].split(':').length > 1) {
 			this.current_container.pop()
 		} else if (json['type'] === 'KEY') {
 			try {
 				let genericItem
 				if (json['name'].startsWith('bind')) {
-					genericItem = new EditorItem_Binds(
-						json,
-						json['disabled'],
-					)
+					genericItem = new EditorItem_Binds(json, json['disabled'])
 				} else {
-					genericItem = new EditorItem_Generic(
-						json,
-						json['disabled'],
-					)
+					genericItem = new EditorItem_Generic(json, json['disabled'])
 				}
 
 				let tabToAddTo
 				for (const [key, value, exclude] of keyNameStarts) {
-					if (
-						this.current_container
-							.at(-1)
-							.classList.contains('config-group')
-					) {
+					if (this.current_container.at(-1).classList.contains('config-group')) {
 						break
 					}
 					let excluded = exclude ? exclude : []
-					if (
-						json.name.trim().startsWith(key) &&
-						!excluded.includes(json.name.trim())
-					) {
-						tabToAddTo = document.querySelector(
-							`.config-set#${value}`,
-						)
+					if (json.name.trim().startsWith(key) && !excluded.includes(json.name.trim())) {
+						tabToAddTo = document.querySelector(`.config-set#${value}`)
 						if (json.name.startsWith('bind')) {
 							// console.log()
 						}
@@ -287,19 +240,21 @@ export class ConfigRenderer {
 					})
 				}
 				genericItem.el.addEventListener('focus', () => {
-					GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-						genericItem.el.dataset.uuid
+					GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
 					GLOBAL.setKey('currentView', 'main')
 				})
 				genericItem.el.addEventListener('click', () => {
-					GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-						genericItem.el.dataset.uuid
+					GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
 					GLOBAL.setKey('currentView', 'main')
 				})
 				genericItem.addToParent(tabToAddTo)
 			} catch (e) {
 				console.log(e, json)
 			}
+		} else if (json['type'] === 'FILE') {
+			console.log()
+		} else {
+			console.error('Failed to render an item: ', json, 'Skipping')
 		}
 
 		//recursive children rendering
