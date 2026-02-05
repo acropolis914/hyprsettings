@@ -1,12 +1,12 @@
 # Maintainer: Paul Harvey <hed-phsuarnaba@smu.edu.ph>
 pkgname=hyprsettings-git
-pkgver=0.9.0
+pkgver=0.9.1
 pkgrel=1
 pkgdesc="Configurator for Hyprland (alpha, development version, git snapshot)"
 arch=('x86_64')
 url="https://github.com/acropolis914/hyprsettings"
 license=('GPL3')
-depends=('python' 'python-gobject' 'gtk3' 'python-pywebview' 'python-tomlkit' 'python-rich' 'webkit2gtk' 'python-packaging' 'python-flask' 'python-dotenv')
+depends=('python' 'python-gobject' 'gtk3' 'python-pywebview' 'python-tomlkit' 'python-rich' 'webkit2gtk' 'python-packaging' 'python-flask' 'python-dotenv' 'python-flask-cors')
 makedepends=('git')
 provides=('hyprsettings')
 conflicts=('hyprsettings')

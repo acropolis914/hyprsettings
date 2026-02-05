@@ -3,7 +3,7 @@ import { changeTheme, incrementCurrentTheme } from './setupTheme.js'
 import { makeUUID, saveWindowConfig } from './utils.ts'
 
 let settingsEl = document.querySelector('.config-set#settings')
-let VERSION = '0.9.0'
+let VERSION = '0.9.1'
 
 export function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
