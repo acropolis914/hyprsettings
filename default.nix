@@ -18,6 +18,7 @@ let
     packaging
     flask
     python-dotenv
+    flask-cors
   ]);
 
   maintainersLocal = {

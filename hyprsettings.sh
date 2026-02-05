@@ -342,7 +342,7 @@ run_actions() {
                 [[ "$INSTALL_TYPE" == "system" ]] && cmd_prefix="sudo"
                 $cmd_prefix python -m venv "$venv_dir"
                 $cmd_prefix "$venv_dir/bin/pip" install -U pip setuptools wheel -q
-                $cmd_prefix "$venv_dir/bin/pip" install tomlkit rich pywebview packaging "pywebview[gtk]" flask python-dotenv -q
+                $cmd_prefix "$venv_dir/bin/pip" install tomlkit rich pywebview packaging "pywebview[gtk]" flask flask-cors python-dotenv -q
                 info "Venv ready"
                 ;;
 

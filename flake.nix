@@ -31,8 +31,9 @@
             python3Packages.tomlkit
             python3Packages.rich
             python3Packages.pygobject3
-            python3Packages.packaging # Added dependency for 'packaging'
+            python3Packages.packaging
             python3Packages.flask
+            python3Packages.flask-cors
             python3Packages.python-dotenv
             gtk3
             gobject-introspection
