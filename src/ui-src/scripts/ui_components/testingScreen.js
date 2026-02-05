@@ -73,11 +73,14 @@ export async function renderTextPreview() {
 		})
 		return tab
 	}
-
+	let totalSize_configtext = 0
 	GLOBAL.configText.forEach((element, index) => {
 		// console.log(element)
 		let path = element.path
 		let text = element.content
+		totalSize_configtext += new TextEncoder().encode(
+			element.content,
+		).length
 
 		// create tab
 		let tab = createTab(path)
@@ -100,6 +103,7 @@ export async function renderTextPreview() {
 			}
 		})
 	})
+	console.log({ totalSize_configtext })
 }
 
 GLOBAL.onChange('configText', renderTextPreview)

@@ -33,7 +33,7 @@ export const Backend = {
 				const query = path
 					? `?path=${encodeURIComponent(path)}`
 					: ''
-				GLOBAL.setKey('data', '')
+				GLOBAL.setKey('data', ' ')
 				let hyprlandConfig = await fetchFlask(
 					'get_hyprland_config' + query,
 				)

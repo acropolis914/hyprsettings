@@ -14,6 +14,7 @@ export function renderSettings() {
 	createSidebarIconsVisibilitySetting()
 	createAnimationsToggleSetting()
 	createThemeSelectorSetting()
+	// createShareConfigSetting()
 }
 
 /**

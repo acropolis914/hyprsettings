@@ -1,9 +1,12 @@
 from .pywebview_apis import api
 from flask import send_from_directory, jsonify, request, Flask
+from flask_cors import CORS
 
 
 # app = state.app
 def register_routes(app: Flask):
+	CORS(app, origins='*', supports_credentials=True)
+
 	@app.route('/')
 	def home():
 		return send_from_directory('ui', 'index.html')

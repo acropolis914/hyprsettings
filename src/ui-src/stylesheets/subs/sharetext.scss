@@ -1,0 +1,25 @@
+.setting-container#share-config-setting {
+	min-height: 50rem;
+	//overflow: hidden;
+	overflow: auto;
+	position: relative;
+	border: red;
+	background-color: red;
+	padding-bottom: 0.5rem;
+	flex-direction: column !important;
+	height: auto !important;
+}
+
+.setting-container#share-config-setting,
+.setting-container#share-config-setting * {
+	box-sizing: border-box;
+}
+#share-text {
+	max-width: 100%;
+	width: 100%;
+	white-space: wrap;
+	position: relative;
+	height: 50rem;
+	display: block;
+	text-overflow: ellipsis;
+}
