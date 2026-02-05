@@ -54,6 +54,10 @@ def register_routes(app: Flask):
 		preview = api.save_config(config, changedFiles)
 		return jsonify({'status': 'ok', 'preview': preview}), 200
 
+	@app.route('/api/get_hyprsettings_version', methods=['GET'])
+	def api_get_hyprsettings_version():
+		return jsonify(api.get_hyprsettings_version()), 200
+
 	@app.route('/api/new_uuid', methods=['GET'])
 	def api_new_uuid():
 		length = request.args.get('length', default=8, type=int)

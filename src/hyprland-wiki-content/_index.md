@@ -3,13 +3,15 @@ cascade:
   type: docs
 ---
 
-[//]: # (# Hyprland Wiki)
+# Hyprland Wiki
 
 Hello there, dear traveler! Welcome to the Hyprland Wiki!
 
-This wiki is sourced from the **hyprwm/hyprland-wiki** github page. It was pulled with version **v2026.02.01_1432**.
+Take a tour of the pages on the left and read ones that you may need.
 
-All rights reserve to vaxry and the hyprland contributors!
+***This wiki is versioned!*** By default, you are reading the wiki for _the latest Hyprland git commit_.
+Click on the version selector and select your version if you are running a tagged release
+(which you very likely are, you can check with `hyprctl version`).
 
 ## Wayland info (especially useful for Xorg users)
 

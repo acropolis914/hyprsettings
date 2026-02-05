@@ -1,13 +1,14 @@
 import { GLOBAL } from './GLOBAL.js'
 import { changeTheme, incrementCurrentTheme } from './setupTheme.js'
 import { makeUUID, saveWindowConfig } from './utils.ts'
+import { Backend } from '@scripts/backendAPI.js'
 
 let settingsEl = document.querySelector('.config-set#settings')
-let VERSION = '0.9.1'
+let VERSION = '0.9.0'
 
-export function renderSettings() {
+export async function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
-	createAbout()
+	await createAbout()
 	createHeaderCommentsVisibilitySetting()
 	createLineCommentsVisibilitySetting()
 	createItemPreviewCommentVisibilitySetting()
@@ -62,16 +63,14 @@ class CheckBoxItem {
 		this.settingContainer.addEventListener('click', (e) => {
 			// e.preventDefault()
 			GLOBAL.setKey('currentView', 'main')
-			GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-				this.settingContainer.dataset.uuid
+			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.settingContainer.dataset.uuid
 			this.checkbox.checked = !this.checkbox.checked
 			this.handleToggle()
 			// this.settingContainer.focus()
 		})
 		this.settingContainer.addEventListener('focus', () => {
 			GLOBAL.setKey('currentView', 'main')
-			GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-				this.settingContainer.dataset.uuid
+			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.settingContainer.dataset.uuid
 		})
 		this.checkbox.addEventListener('mousedown', (e) => {
 			// e.preventDefault()
@@ -102,9 +101,9 @@ class CheckBoxItem {
 	}
 }
 
-function createAbout({ compact = false } = {}) {
+async function createAbout({ compact = false } = {}) {
 	const aboutEl = document.createElement('div')
-	aboutEl.classList.add('editor-item', 'editor-item-about', 'compact')
+	aboutEl.classList.add('editor-item', 'editor-item-about')
 	if (compact) aboutEl.classList.add('compact')
 	aboutEl.tabIndex = 0
 
@@ -125,7 +124,7 @@ function createAbout({ compact = false } = {}) {
 	const versionEl = document.createElement('div')
 	versionEl.classList.add('version')
 	const versionText = document.createElement('span')
-	versionText.textContent = VERSION
+	versionText.textContent = (await Backend.getHyprSettingsVersion()) || VERSION
 	const versionDot = document.createElement('span')
 	versionDot.textContent = ' · '
 	const githubUrl = 'https://github.com/acropolis914/hyprsettings'
@@ -171,8 +170,7 @@ function createAbout({ compact = false } = {}) {
 	libsTitle.textContent = ' Javascript and Web'
 	const libsList = document.createElement('div')
 	libsList.classList.add('tech-list')
-	libsList.textContent =
-		'TomSelect, Coloris, Fuse.js, Eruda, Sortable, noUISlider'
+	libsList.textContent = 'TomSelect, Coloris, Fuse.js, Eruda, Sortable, noUISlider'
 	libsList.textContent = libsList.textContent.replaceAll(',', ' •')
 	libsEl.append(libsTitle, libsList)
 
@@ -196,124 +194,81 @@ function createAbout({ compact = false } = {}) {
 	aboutEl.addEventListener('focusin', () => {
 		aboutEl.classList.remove('compact')
 	})
+	if (compact) {
+		aboutEl.addEventListener('focusout', () => {
+			aboutEl.classList.add('compact')
+		})
+	}
 
-	aboutEl.addEventListener('focusout', () => {
-		aboutEl.classList.add('compact')
-	})
+	const res = await fetch('https://api.github.com/repos/acropolis914/hyprsettings/releases/latest')
+	const data = await res.json()
 
+	const fullVersion = data.tag_name
+	const version = fullVersion.split('.').slice(0, 4).join('.')
+
+	console.log(version)
 	settingsEl.appendChild(aboutEl)
 }
 
 function createLineCommentsVisibilitySetting() {
 	function onCheck() {
-		let commentItems = document.querySelectorAll(
-			'.editor-item:has(>.editor-item-comment):not(.block-comment)',
-		)
+		let commentItems = document.querySelectorAll('.editor-item:has(>.editor-item-comment):not(.block-comment)')
 		commentItems.forEach((i) => i.classList.remove('settings-hidden'))
 	}
 	function onUncheck() {
-		let commentItems = document.querySelectorAll(
-			'.editor-item:has(>.editor-item-comment):not(.block-comment)',
-		)
+		let commentItems = document.querySelectorAll('.editor-item:has(>.editor-item-comment):not(.block-comment)')
 		commentItems.forEach((i) => i.classList.add('settings-hidden'))
 	}
-	let tooltip_text =
-		'Shows or hides independent comments (not including the header comments)'
-	const item = new CheckBoxItem(
-		'Show line comments',
-		'show_line_comments',
-		true,
-		{ onCheck, onUncheck },
-		tooltip_text,
-	)
+	let tooltip_text = 'Shows or hides independent comments (not including the header comments)'
+	const item = new CheckBoxItem('Show line comments', 'show_line_comments', true, { onCheck, onUncheck }, tooltip_text)
 }
 
 function createHeaderCommentsVisibilitySetting() {
 	function onCheck() {
-		document
-			.querySelectorAll('.block-comment')
-			.forEach((i) => i.classList.remove('settings-hidden'))
+		document.querySelectorAll('.block-comment').forEach((i) => i.classList.remove('settings-hidden'))
 	}
 	function onUncheck() {
-		document
-			.querySelectorAll('.block-comment')
-			.forEach((i) => i.classList.add('settings-hidden'))
+		document.querySelectorAll('.block-comment').forEach((i) => i.classList.add('settings-hidden'))
 	}
 
 	const tooltip = 'Shows or hides header comments'
-	new CheckBoxItem(
-		'Show header comments',
-		'show_header_comments',
-		false,
-		{ onCheck, onUncheck },
-		tooltip,
-	)
+	new CheckBoxItem('Show header comments', 'show_header_comments', false, { onCheck, onUncheck }, tooltip)
 }
 
 function createItemPreviewCommentVisibilitySetting() {
 	function onCheck() {
-		document
-			.querySelectorAll('i.preview-comment')
-			.forEach((i) => i.classList.remove('settings-hidden'))
+		document.querySelectorAll('i.preview-comment').forEach((i) => i.classList.remove('settings-hidden'))
 	}
 	function onUncheck() {
-		document
-			.querySelectorAll('i.preview-comment')
-			.forEach((i) => i.classList.add('settings-hidden'))
+		document.querySelectorAll('i.preview-comment').forEach((i) => i.classList.add('settings-hidden'))
 	}
 
 	const tooltip = 'Shows or hides preview comments on config line previews.'
-	new CheckBoxItem(
-		'Show config line preview comments',
-		'show_config_line_comments',
-		true,
-		{ onCheck, onUncheck },
-		tooltip,
-	)
+	new CheckBoxItem('Show config line preview comments', 'show_config_line_comments', true, { onCheck, onUncheck }, tooltip)
 }
 
 function createSidebarIconsVisibilitySetting() {
 	function onCheck() {
-		document
-			.querySelectorAll('#sidebar-icon')
-			.forEach((i) => i.classList.remove('settings-hidden'))
+		document.querySelectorAll('#sidebar-icon').forEach((i) => i.classList.remove('settings-hidden'))
 	}
 	function onUncheck() {
-		document
-			.querySelectorAll('#sidebar-icon')
-			.forEach((i) => i.classList.add('settings-hidden'))
+		document.querySelectorAll('#sidebar-icon').forEach((i) => i.classList.add('settings-hidden'))
 	}
 
 	const tooltip = 'Shows or hides sidebar icons'
-	new CheckBoxItem(
-		'Show sidebar icons',
-		'show_sidebar_icons',
-		true,
-		{ onCheck, onUncheck },
-		tooltip,
-	)
+	new CheckBoxItem('Show sidebar icons', 'show_sidebar_icons', true, { onCheck, onUncheck }, tooltip)
 }
 
 function createCompactViewSetting() {
 	function onCheck() {
-		document
-			.querySelectorAll('.editor-item')
-			.forEach((i) => i.classList.remove('compact'))
+		document.querySelectorAll('.editor-item').forEach((i) => i.classList.remove('compact'))
 	}
 	function onUncheck() {
-		document
-			.querySelectorAll('.editor-item')
-			.forEach((i) => i.classList.add('compact'))
+		document.querySelectorAll('.editor-item').forEach((i) => i.classList.add('compact'))
 	}
 
 	const tooltip = 'Shows or hides sidebar icons'
-	new CheckBoxItem(
-		'Compact view',
-		'compact',
-		true,
-		{ onCheck, onUncheck },
-		tooltip,
-	)
+	new CheckBoxItem('Compact view', 'compact', true, { onCheck, onUncheck }, tooltip)
 }
 
 function createAnimationsToggleSetting() {
@@ -325,13 +280,7 @@ function createAnimationsToggleSetting() {
 	}
 
 	const tooltip = 'Shows or hides sidebar icons'
-	new CheckBoxItem(
-		'Enable Animations',
-		'ui_animations',
-		true,
-		{ onCheck, onUncheck },
-		tooltip,
-	)
+	new CheckBoxItem('Enable Animations', 'ui_animations', true, { onCheck, onUncheck }, tooltip)
 }
 
 function createThemeSelectorSetting() {
@@ -356,9 +305,7 @@ function createThemeSelectorSetting() {
 		let optionEl = document.createElement('option')
 		optionEl.value = theme.name
 		let optionName = String(theme.name)
-		optionEl.textContent = optionName.includes('[builtin]')
-			? theme.name.replace('[builtin]', ' ')
-			: ` ${theme.name}`
+		optionEl.textContent = optionName.includes('[builtin]') ? theme.name.replace('[builtin]', ' ') : ` ${theme.name}`
 		selectEl.appendChild(optionEl)
 	})
 	let currentTheme = GLOBAL['config']['theme']
@@ -369,14 +316,10 @@ function createThemeSelectorSetting() {
 
 	selectEl.addEventListener('change', (e) => {
 		let selectedThemeName = e.target.value
-		let selectedTheme = window.themes.find(
-			(t) => t.name === selectedThemeName,
-		)
+		let selectedTheme = window.themes.find((t) => t.name === selectedThemeName)
 		console.log(`Changing theme to ${selectedThemeName} from settings`)
 		if (selectedTheme) {
-			console.log(
-				`Changing theme to ${selectedTheme.name} from settings`,
-			)
+			console.log(`Changing theme to ${selectedTheme.name} from settings`)
 			changeTheme(selectedTheme)
 		}
 	})
@@ -392,3 +335,39 @@ function createThemeSelectorSetting() {
 		}
 	})
 }
+
+async function getGitDescribeLikeVersion(owner, repo) {
+	const base = `https://api.github.com/repos/${owner}/${repo}`
+
+	// 1. Get latest tag
+	const tagsRes = await fetch(`${base}/tags`)
+	if (!tagsRes.ok) throw new Error('Failed to fetch tags')
+	const tags = await tagsRes.json()
+
+	if (!tags.length) {
+		console.log('No tags found')
+		return
+	}
+
+	const latestTag = tags[0]
+	const tagName = latestTag.name
+	const tagSha = latestTag.commit.sha
+
+	// 2. Compare tag → HEAD
+	const compareRes = await fetch(`${base}/compare/${tagSha}...HEAD`)
+	if (!compareRes.ok) throw new Error('Failed to compare commits')
+	const compare = await compareRes.json()
+
+	const aheadBy = compare.ahead_by
+	const headSha = compare.commits.at(-1)?.sha ?? compare.head_commit.sha
+	const shortSha = headSha.slice(0, 7)
+
+	// 3. Construct version
+	const version = `${tagName}.${aheadBy}.rg${shortSha}`
+
+	console.log('Version:', version)
+	return version
+}
+
+// Usage
+getGitDescribeLikeVersion('acropolis914', 'hyprsettings').catch((err) => console.error(err))

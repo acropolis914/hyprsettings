@@ -72,7 +72,7 @@ class Globals:
 	CACHE_PATH = Path.home() / '.cache' / 'hyprsettings' / '.pywebview'
 	WIKI_PATH = Path.home() / '.cache' / 'hyprsettings' / 'hyprland-wiki'
 	HOST = '0.0.0.0'
-	CURRENT_VERSION = '0.9.0.r23.gdc655b9'
+	CURRENT_VERSION = '0.9.0.r24.g8d8370f'
 	HYPRSETTINGS_CONFIG_PATH: Path = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 	HYPRLAND_WIKI_CONTENT_FOLDER: Path = Path(__file__).parent.parent / 'hyprland-wiki-content'
 

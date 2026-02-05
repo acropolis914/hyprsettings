@@ -30,13 +30,9 @@ export const Backend = {
 				await waitFor(() => window.pywebview?.api.init)
 				return await window.pywebview.api.init()
 			case 'flask':
-				const query = path
-					? `?path=${encodeURIComponent(path)}`
-					: ''
+				const query = path ? `?path=${encodeURIComponent(path)}` : ''
 				GLOBAL.setKey('data', ' ')
-				let hyprlandConfig = await fetchFlask(
-					'get_hyprland_config' + query,
-				)
+				let hyprlandConfig = await fetchFlask('get_hyprland_config' + query)
 				let stringifiedHyprlandConfig = JSON.parse(hyprlandConfig)
 				GLOBAL.setKey('data', stringifiedHyprlandConfig)
 				return hyprlandConfig
@@ -50,16 +46,13 @@ export const Backend = {
 			case 'flask':
 				let json_string = JSON.stringify(GLOBAL['data']) || {}
 				// console.log(json_string)
-				const response = await fetchFlask(
-					'get_hyprland_config_texts',
-					{
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							json_string: json_string,
-						}),
-					},
-				)
+				const response = await fetchFlask('get_hyprland_config_texts', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						json_string: json_string,
+					}),
+				})
 				// console.log(response)
 				if (response) {
 					GLOBAL.setKey('configText', response)
@@ -70,18 +63,12 @@ export const Backend = {
 		}
 	},
 
+	async getHyprSettingsVersion() {
+		return await fetchFlask('get_hyprsettings_version')
+	},
+
 	async getDebugStatus() {
-		switch (GLOBAL.backend) {
-			case 'pywebview':
-				await waitFor(() => window.pywebview?.api.init)
-				return JSON.parse(
-					await window.pywebview.api.getDebugStatus(),
-				)
-			case 'flask':
-				return await fetchFlask('get_debug_status')
-			default:
-				throw new Error('Unknown backend: ' + GLOBAL.backend)
-		}
+		return await fetchFlask('get_debug_status')
 	},
 
 	async getBuiltinThemes() {
@@ -112,9 +99,7 @@ export const Backend = {
 				})
 				// console.log('response', response)
 				if (response.status !== 'ok') {
-					throw new Error(
-						'Failed to save config: ' + response.message,
-					)
+					throw new Error('Failed to save config: ' + response.message)
 				} else {
 					GLOBAL.setKey('configText', response.preview)
 					// console.log(response.preview)

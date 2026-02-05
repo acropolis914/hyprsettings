@@ -41,7 +41,7 @@ class Api:
 		return files
 
 	@staticmethod
-	def save_config(json_string: str, changedFiles: list = []):
+	def save_config(json_string: str, changedFiles=None):
 		# console.print_json(json)
 		node = Node.from_json(json_string)
 		files = node.to_hyprland(save=True, changedFiles=changedFiles)
@@ -52,10 +52,14 @@ class Api:
 	def new_uuid(length: int = 8) -> str:
 		return makeUUID(length)
 
+	@staticmethod
+	def get_hyprsettings_version():
+		return hs_globals.CURRENT_VERSION
+
 	def read_window_config(self):
 		def version_migration():
 			file_info = self.window_config['file_info']
-			if Version(file_info['version']) < Version(hs_globals.CURRENT_VERSION):
+			if Version(file_info['version']) < Version('.'.join(hs_globals.CURRENT_VERSION.split('.', 3)[:-1])):
 				log(
 					f'Config version {file_info["version"]} is older than current {hs_globals.CURRENT_VERSION}. Updating version, moving keys.'
 				)

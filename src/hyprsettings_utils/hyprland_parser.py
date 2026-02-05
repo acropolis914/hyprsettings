@@ -130,7 +130,9 @@ class Node:
 	def to_json(self) -> str:
 		return json.dumps(self.to_dict(), indent=4)
 
-	def to_hyprland(self, indent_level: int = 0, save=False, changedFiles: list = [], disabled=False) -> list | str | dict:
+	def to_hyprland(self, indent_level: int = 0, save=False, changedFiles=None, disabled=False) -> list | str | dict:
+		if changedFiles is None:
+			changedFiles = []
 		global changedFileList, files
 		if len(changedFiles) > 0:
 			# log(f"Some files are changed:{changedFiles}")
@@ -160,6 +162,7 @@ class Node:
 			if self.type == 'FILE':
 				path: str | None = self.resolved_path
 				contains_any: bool = any(sub in path for sub in changedFileList)
+				save_all: bool = changedFileList == 'all'
 
 				content = []
 				for child in self.children:
@@ -170,8 +173,11 @@ class Node:
 						content.append(file_content)
 				contents = '\n'.join(content)
 				files.append({'path': path, 'content': contents})
-				if save and contains_any:
-					log(f'File {path} has been changed. Saving.')
+				if save and (contains_any or save_all):
+					if save_all:
+						log(f'Saving file {path}')
+					if contains_any:
+						log(f'File {path} has been changed. Saving.')
 					debounced_write(Path(path), contents)
 
 				return {'path': path, 'contents': contents}

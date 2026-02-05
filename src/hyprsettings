@@ -115,10 +115,10 @@ def kill_hyprsettings():
 def print_title():
 	art = f"""\
 	
- [bold][blue]╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓
- ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓
- ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛[/bold][/blue]
-version {hs_globals.CURRENT_VERSION} [blue][link=https://github.com/acropolis914/hyprsettings] github.com/acropolis914/hyprsettings[/link][/blue]\n"""
+ [bold][blue]  ╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓
+   ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓
+   ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛[/bold][/blue]
+      version [green][bold]{hs_globals.CURRENT_VERSION}[/bold][/green]\n [blue][link=https://github.com/acropolis914/hyprsettings] github.com/acropolis914/hyprsettings[/link][/blue]\n"""
 	console.print(art, style='')
 	# return art
 
@@ -390,7 +390,9 @@ if __name__ == '__main__':
 		description='A loyal hyprland parser and gui editor for hyprland.conf',
 		epilog=print_title(),
 	)
+	parser.add_argument('-v', '--version', action='version', version='%(prog)s {print_title()}')
 	parser = createArgParse(parser)
+
 	state.args = parser.parse_args()
 
 	signal.signal(signal.SIGINT, handle_interrupt)
