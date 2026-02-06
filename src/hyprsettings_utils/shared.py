@@ -65,16 +65,22 @@ class State:
 			raise AttributeError(f"State variable '{key}' must be added explicitly using add() first")
 
 
-state = State()
+def get_version():
+	try:
+		# If running from a build/package
+		return Path(__file__).parent.parent.joinpath('.version').read_text().strip()
+	except:
+		return 'dev'
 
 
 class Globals:
 	CACHE_PATH = Path.home() / '.cache' / 'hyprsettings' / '.pywebview'
 	WIKI_PATH = Path.home() / '.cache' / 'hyprsettings' / 'hyprland-wiki'
 	HOST = '0.0.0.0'
-	CURRENT_VERSION = '0.9.0.r27.g000d505'
+	CURRENT_VERSION = get_version()
 	HYPRSETTINGS_CONFIG_PATH: Path = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 	HYPRLAND_WIKI_CONTENT_FOLDER: Path = Path(__file__).parent.parent / 'hyprland-wiki-content'
 
 
+state = State()
 hs_globals = Globals()
