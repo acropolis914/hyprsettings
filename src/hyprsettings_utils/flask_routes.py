@@ -1,6 +1,7 @@
 from .pywebview_apis import api
 from flask import send_from_directory, jsonify, request, Flask
 from flask_cors import CORS
+import urllib.request
 
 
 # app = state.app
@@ -87,3 +88,21 @@ def register_routes(app: Flask):
 		data = request.args.get('path')
 		api.open_file(data)
 		return jsonify({'status': 'ok'})
+
+	COPYANDPASTE_LOG_URL = 'https://copyandpaste.at/api/log'
+
+	@app.route('/api/share', methods=['POST'], strict_slashes=False)
+	def share_text():
+		data = request.json
+		if not data or 'text' not in data:
+			return jsonify({'error': "Missing 'text' in request body"}), 400
+
+		text = data['text'].encode('utf-8')  # encode as bytes
+
+		try:
+			req = urllib.request.Request(COPYANDPASTE_LOG_URL, data=text, method='POST', headers={'Content-Type': 'text/plain; charset=utf-8'})
+			with urllib.request.urlopen(req) as res:
+				url = res.read().decode('utf-8').strip()
+			return jsonify({'url': url})
+		except Exception as e:
+			return jsonify({'error': str(e)}), 500

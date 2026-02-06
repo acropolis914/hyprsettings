@@ -42,7 +42,7 @@ export default async function parseMarkdown(input: string) {
 	const { matter, content } = stripFrontmatter(input)
 
 	const processor = unified()
-		.use(remarkParse)
+		.use(remarkParse, { breaks: true })
 		.use(remarkDirective)
 		.use(remarkObsidianAdmonitions)
 		.use(remarkHugoTabsToDirectives)

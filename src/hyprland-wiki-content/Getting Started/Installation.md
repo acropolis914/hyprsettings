@@ -30,7 +30,8 @@ Installing Hyprland is very easy. Simply install it with your package manager.
 > [!WARNING]
 > It is **heavily** recommended you use **what the distro packages for you**, and **not** compiling manually
 > or using `-git` packages.
-> Hyprland's ecosystem and dependencies are vast and intertwined, and compiling manually will only potentially expose you to outdated,
+> Hyprland's ecosystem and dependencies are vast and intertwined, and compiling manually will only potentially expose
+> you to outdated,
 > or incompatible versions of these dependencies.
 >
 > If you get `.so` file mismatch / missing errors, it's _entirely your fault_ for doing this!
@@ -62,22 +63,27 @@ Install from the AUR, which compiles the latest source:
 yay -S hyprland-git
 ```
 
-Alternatively, install the `hyprland-meta` package to automatically fetch and compile the latest git versions of all components within the hypr* ecosystem.
+Alternatively, install the `hyprland-meta` package to automatically fetch and compile the latest git versions of all
+components within the hypr* ecosystem.
 
 ```shell
 yay -S hyprland-meta-git
 ```
 
 > [!WARNING]
-> With `-git` everytime a direct dependency like `hyprutils` has an ABI breaking update you need to recompile Hyprland and all other dependent tools.
+> With `-git` everytime a direct dependency like `hyprutils` has an ABI breaking update you need to recompile Hyprland
+> and all other dependent tools.
 > Otherwise you get a ".so not found" error.
 
 
-If you decide to use the `git` version from the AUR, you can use the [Chaotic Aur](https://aur.chaotic.cx/) to get pre-built binaries.
-Be aware that updating dependencies like `hyprutils` might still require you to recompile everything yourself as the Chaotic Aur does not do that automatically.
+If you decide to use the `git` version from the AUR, you can use the [Chaotic Aur](https://aur.chaotic.cx/) to get
+pre-built binaries.
+Be aware that updating dependencies like `hyprutils` might still require you to recompile everything yourself as the
+Chaotic Aur does not do that automatically.
 
 > [!NOTE]
-> You can downgrade easily with [downgrade](https://github.com/archlinux-downgrade/downgrade) to get to a previous -git version.
+> You can downgrade easily with [downgrade](https://github.com/archlinux-downgrade/downgrade) to get to a previous -git
+> version.
 
 {{% /details %}}
 
@@ -129,6 +135,7 @@ You can also compile it yourself by following the instructions
 [here](https://github.com/hyprwm/Hyprland/discussions/284)
 
 {{% /details %}}
+
 {{% details title="Debian*" closed="true" %}}
 
 Hyprland recently made it into the SID repository and can be installed with
@@ -191,7 +198,8 @@ Hyprland and related are in the default repository:
 {{% details title="Ubuntu*" closed="true" %}}
 
 > [!WARNING]
-> Ubuntu's Hyprland is **extremely** outdated. I do not recommend using the packaged versions at all. Build the entire stack manually instead.
+> Ubuntu's Hyprland is **extremely** outdated. I do not recommend using the packaged versions at all. Build the entire
+> stack manually instead.
 
 Hyprland made it into the Ubuntu 24.10 Oracular Oriole universe repo and can be installed with
 
@@ -233,7 +241,8 @@ for more information.
 > [!WARNING]
 > Always use the latest version of Ubuntu for the most up to date dependencies.
 >
-> Note: Your mileage may vary, as GDM has some bugs with Hyprland. Check the [Master Tutorial](../Master-Tutorial) for more info.
+> Note: Your mileage may vary, as GDM has some bugs with Hyprland. Check the [Master Tutorial](../Master-Tutorial) for
+> more info.
 >
 > Refer to the gist if anything fails.
 >
@@ -291,7 +300,8 @@ For detailed instructions on installing this build see
 
 {{% details title="Alpine*" closed="true" %}}
 
-Hyprland is currently available in Alpine's [community repository](https://wiki.alpinelinux.org/wiki/Repositories#Community)
+Hyprland is currently available in
+Alpine's [community repository](https://wiki.alpinelinux.org/wiki/Repositories#Community)
 and it is maintained by the community.
 
 The following command will install hyprland and its dependencies.

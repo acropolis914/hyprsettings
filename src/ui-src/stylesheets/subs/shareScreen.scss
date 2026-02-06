@@ -1,0 +1,73 @@
+@use '../_variables.scss' as v;
+#compressor_screen {
+	.share-config {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		padding: 1rem;
+		gap: 0.5rem;
+
+		.toolbar {
+			flex: 0 0 auto;
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 0.5rem;
+
+			button {
+				padding: 0.4rem 0.8rem;
+				cursor: pointer;
+			}
+
+			input[type='text'] {
+				font-size: 16pxrem;
+				padding: 0.3rem 0.5rem;
+				width: 150px;
+			}
+
+			input[type='range'] {
+				flex: 1;
+				min-width: 100px;
+			}
+
+			.file-size {
+				font-size: 1.6rem;
+				color: #555;
+				margin-left: auto; // pushes it to the right
+			}
+		}
+
+		textarea {
+			flex: 1 1 auto;
+			width: 100%;
+			min-height: 100px;
+			height: 90%;
+			font-family: v.$font;
+			font-size: 1.6rem;
+			//line-height: 1.2rem;
+			padding-right: 0;
+			margin-right: 0;
+			resize: none;
+			border: none;
+			scrollbar-gutter: both-edges;
+			padding-left: 2rem;
+			overflow-wrap: break-word; // wrap long lines at textarea bounds
+			white-space: normal;
+			word-break: break-word; // for long continuous strings like braille
+			background-color: var(--surface-0);
+			color: var(--text-0);
+			outline: none;
+		}
+
+		textarea.decompressed {
+			white-space: pre-wrap !important;
+		}
+	}
+
+	::-webkit-scrollbar {
+		width: 8px; /* width of vertical scrollbar */
+		height: 8px; /* height of horizontal scrollbar */
+		background: transparent; /* make background transparent */
+		position: absolute !important; /* optional, modern Chrome supports floating */
+	}
+}

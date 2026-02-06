@@ -15,6 +15,7 @@ import { renderSettings } from './settings.js'
 import { initializeSearchBar } from './ui_components/searchBar.js'
 import { Backend } from './backendAPI.js'
 import '@stylesheets/style.scss'
+import '@scripts/ui_components/shareConfig.ts'
 
 import { createLoadingOverlay } from './ui_components/darken_overlay.js'
 import createWiki from '@scripts/ui_components/wikiTab.ts'
@@ -31,10 +32,7 @@ export default function loadHyprsettingsConfig() {
 async function load_config() {
 	let windowConfig = await Backend.readWindowConfig()
 	if (windowConfig['configuration-error']) {
-		console.log(
-			'Configuration error: ',
-			windowConfig['configuration-error'],
-		)
+		console.log('Configuration error: ', windowConfig['configuration-error'])
 		return
 	}
 
@@ -111,15 +109,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 })
 
 window.addEventListener('error', (e) => {
-	console.error(
-		'🔥',
-		e.error?.stack || `${e.message}\n${e.filename}:${e.lineno}`,
-	)
+	console.error('🔥', e.error?.stack || `${e.message}\n${e.filename}:${e.lineno}`)
 })
 
 window.addEventListener('unhandledrejection', (e) => {
-	console.error(
-		'🚨 Unhandled Promise rejection:',
-		e.reason?.stack || e.reason,
-	)
+	console.error('🚨 Unhandled Promise rejection:', e.reason?.stack || e.reason)
 })

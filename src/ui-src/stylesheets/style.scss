@@ -11,6 +11,7 @@
 @use 'subs/tippy.css' as *;
 @use '_variables.scss' as v;
 @use 'subs/sharetext' as *;
+@use 'subs/shareScreen' as *;
 /* =================================
 1. Variables, Mixins & Placeholders
 ================================= */
@@ -408,13 +409,21 @@ footer {
 	align-items: center;
 	justify-content: flex-end;
 	z-index: 10;
+	box-shadow: 10px 10px 10px var(--accent);
 
 	> * {
 		font-size: 1rem;
+		@media (max-width: 768px) {
+			padding: 0.5rem;
+			font-size: 1.6rem;
+		}
 	}
 
 	#theme-toggle {
-		font-family: 'CommitMonoIconFont';
+		font-family: v.$font;
+		@media (max-width: 768px) {
+			font-size: 3rem !important;
+		}
 	}
 }
 
@@ -781,6 +790,9 @@ h1#config-set-title {
 	font-size: 1.6rem;
 	opacity: 0.8;
 	background-color: var(--surface-0);
+	@media (max-width: 768px) {
+		padding: 1.5rem;
+	}
 
 	&:focus {
 		outline: none;
@@ -810,6 +822,9 @@ h1#config-set-title {
 		margin-bottom: 2px;
 		font-size: 1.4rem;
 		word-break: break-word;
+		@media (max-width: 768px) {
+			font-size: 1.8rem;
+		}
 		//@include text-ellipsis;
 
 		i {
@@ -1395,6 +1410,10 @@ h1#config-set-title {
 	transition:
 		margin 0.3s ease,
 		scale 0.2s ease;
+	@media (max-width: 768px) {
+		padding: 0.5rem;
+		padding-top: 1.5rem;
+	}
 
 	> .config-group {
 		margin-top: 1.5rem;
@@ -1426,6 +1445,10 @@ h1#config-set-title {
 	text-transform: capitalize;
 	transform: translateY(-50%);
 	content: attr(data-name);
+	@media (max-width: 768px) {
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+	}
 }
 
 /* =================================

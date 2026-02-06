@@ -34,35 +34,36 @@ async function createWikiNavigation() {
 	})
 
 	let open = true
-	navigationEl.addEventListener('transitionend', (e) => {
-		if (
-			e.propertyName === 'opacity' &&
-			getComputedStyle(e.target).opacity === '0'
-		) {
-			navigationEl.classList.add('hidden')
-		} else if (
-			e.propertyName === 'opacity' &&
-			getComputedStyle(e.target).opacity > '0' &&
-			open
-		) {
-			navigationEl.classList.remove('hidden')
-		}
-	})
+	// navigationEl.addEventListener('transitionend', (e) => {
+	// 	if (
+	// 		e.propertyName === 'opacity' &&
+	// 		getComputedStyle(e.target).opacity === '0'
+	// 	) {
+	// 		navigationEl.classList.add('hidden')
+	// 	} else if (
+	// 		e.propertyName === 'opacity' &&
+	// 		getComputedStyle(e.target).opacity > '0' &&
+	// 		open
+	// 	) {
+	// 		navigationEl.classList.remove('hidden')
+	// 	}
+	// })
 
 	let navigationElToggle = document.createElement('div')
 	navigationElToggle.setAttribute('id', 'navigation_toggle')
 	navigationElToggle.addEventListener('click', (e) => {
-		if (!open) {
-			// testingScreen.classList.remove("hidden")
-			navigationEl.classList.remove('hidden')
-			requestAnimationFrame(() => {
-				navigationEl.style.opacity = '1'
-			})
-		} else {
-			navigationEl.style.opacity = '0'
-			// testingScreen.classList.add("hidden")
-		}
-		open = !open
+		navigationEl.classList.toggle('hidden')
+		// if (!open) {
+		// 	// testingScreen.classList.remove("hidden")
+		// 	navigationEl.classList.remove('hidden')
+		// 	requestAnimationFrame(() => {
+		// 		navigationEl.style.opacity = '1'
+		// 	})
+		// } else {
+		// 	navigationEl.style.opacity = '0'
+		// 	// testingScreen.classList.add("hidden")
+		// }
+		// open = !open
 	})
 
 	navigationElToggle.innerText = ''
@@ -94,11 +95,7 @@ async function createWikiNavigation() {
 	objectTree.push(navigationEl)
 
 	let tree: Object = GLOBAL.wikiTree
-	async function setupNavigation(
-		object: object,
-		indentation = 0,
-		path = 'wiki',
-	) {
+	async function setupNavigation(object: object, indentation = 0, path = 'wiki') {
 		let indent = '       '.repeat(indentation)
 		for (const [key, value] of Object.entries(object)) {
 			if (key === 'navigation.txt' || key === 'version-selector.md') {
@@ -115,10 +112,7 @@ async function createWikiNavigation() {
 			el.setAttribute('tabindex', 0)
 			el.dataset.uuid = makeUUID()
 			el.dataset.name = key
-			el.dataset.cleanName = key
-				.trim()
-				.replace('.md', '')
-				.replace('-', ' ')
+			el.dataset.cleanName = key.trim().replace('.md', '').replace('-', ' ')
 			el.dataset.position = path
 			function setElValue(el) {
 				setViewElValue(el.dataset.value, el.dataset.position)
@@ -144,18 +138,13 @@ async function createWikiNavigation() {
 				indentation -= 1
 
 				objectTree.pop()
-			} else if (
-				key == '_index.md' &&
-				typeof value === 'string' &&
-				objectTree.length != 1
-			) {
+			} else if (key == '_index.md' && typeof value === 'string' && objectTree.length != 1) {
 				// console.log(value)
 				let parsed = await parseMarkdown(value)
 				// el.dataset.value =
 
 				objectTree.at(-1).dataset.value = JSON.stringify(parsed)
-				objectTree.at(-1).dataset.weight =
-					parsed.data.matter.weight || -1
+				objectTree.at(-1).dataset.weight = parsed.data.matter.weight || -1
 				continue
 			} else if (objectTree.length === 1 && key == '_index.md') {
 				el.classList.add('wiki-file')
@@ -233,16 +222,11 @@ export function reorderByWeight(el: HTMLElement): void {
 function findWikiViewElement(target_element: string): HTMLElement {
 	let linkTargetName = target_element.replace('#', '').replaceAll('-', ' ')
 	let wikiView = document.getElementById('wikiView_content')
-	let element = Array.from(wikiView.childNodes).find(
-		(element: HTMLElement) => {
-			if (element.innerText) {
-				return (
-					element.innerText.toLowerCase() ===
-					linkTargetName.toLowerCase()
-				)
-			}
-		},
-	)
+	let element = Array.from(wikiView.childNodes).find((element: HTMLElement) => {
+		if (element.innerText) {
+			return element.innerText.toLowerCase() === linkTargetName.toLowerCase()
+		}
+	})
 	return <HTMLElement>element
 }
 
@@ -252,10 +236,7 @@ function fixLinxElement(element: HTMLElement, position: string) {
 
 	if (link.startsWith('..') || link.startsWith('.')) {
 		// console.log({ position })
-		let link_without_section = link.replace(
-			link.substring(link.indexOf('#')),
-			'',
-		)
+		let link_without_section = link.replace(link.substring(link.indexOf('#')), '')
 		// console.log(link_without_section)
 		let position_paths = position.split(':').filter(Boolean)
 		let link_parts = link
@@ -269,21 +250,14 @@ function fixLinxElement(element: HTMLElement, position: string) {
 		let linkToFix = link_parts.join(':')
 		while (link_parts[0] === '..') {
 			link_parts.shift()
-			if (
-				!link_without_section.endsWith('/') &&
-				position_paths.length > 1
-			) {
+			if (!link_without_section.endsWith('/') && position_paths.length > 1) {
 				position_paths.pop()
 			}
 		}
 		while (link_parts[0] === '.') {
 			link_parts.shift()
 		}
-		const newLink = [
-			...position_paths,
-			...link_parts,
-			...link_section,
-		].join(':')
+		const newLink = [...position_paths, ...link_parts, ...link_section].join(':')
 		title = newLink
 		// console.log('Fixing link element', { link_without_section, position,newLink })
 		element.addEventListener('click', (e) => {
@@ -352,13 +326,8 @@ export function gotoWiki(wikidir: string) {
 			.filter((e) => !e.startsWith('#'))
 			.at(-1)
 		console.log(directory)
-		let directories = Array.from(
-			wikiDirNavigationEl.querySelectorAll('.wiki-item'),
-		)
-		let found = directories.find(
-			(e) =>
-				normalizeText(e.dataset.name) === normalizeText(directory),
-		)
+		let directories = Array.from(wikiDirNavigationEl.querySelectorAll('.wiki-item'))
+		let found = directories.find((e) => normalizeText(e.dataset.name) === normalizeText(directory))
 		console.log({ directory, directories, found })
 		if (found) {
 			found.click()
@@ -374,8 +343,7 @@ export function gotoWiki(wikidir: string) {
 			// console.log(section)
 			section.scrollIntoView({ behavior: 'smooth', block: 'start' })
 		} else {
-			let wikiView_content =
-				document.querySelector('#wikiView_content')
+			let wikiView_content = document.querySelector('#wikiView_content')
 			wikiView_content.scrollTo(0, 0)
 		}
 	}, 100)
@@ -393,8 +361,7 @@ async function setViewElValue(value: string, position: string, title = '') {
 		let viewEl_content = document.getElementById('wikiView_content')
 		let viewEl_position = document.getElementById('wikiView_position')
 		if (parsed.data.matter.title) {
-			viewEl_title.textContent =
-				parsed.data.matter.title || 'Hyprland Wiki'
+			viewEl_title.textContent = parsed.data.matter.title || 'Hyprland Wiki'
 			viewEl_title.classList.remove('hidden')
 		} else if (title) {
 			viewEl_title.textContent = title
@@ -411,36 +378,30 @@ async function setViewElValue(value: string, position: string, title = '') {
 
 		viewEl_content.innerHTML = parsed['value']
 		// console.clear()
-		viewEl_content
-			.querySelectorAll('a')
-			.forEach((element: HTMLElement) => {
-				fixLinxElement(element, position)
-			})
-		viewEl_content
-			.querySelectorAll('pre')
-			.forEach((element: HTMLElement) => {
-				let code = element.querySelector('code') || element
-				code.classList.add('copy-to-clipboard-button')
-				let shebang = code.innerText.toLowerCase().split('\n')[0]
-				if (shebang && shebang.trim().endsWith('sh')) {
-					code.classList.add('language-bash')
-					element.classList.add('language-bash')
-					Prism.highlightElement(code)
-				} else if (
-					code.innerText.toLowerCase().includes('vga compatible')
-				) {
-					console.log(code.innerText)
-					code.classList.add('language-shell-session')
-					element.classList.add('language-shell-session')
-					code.classList.add('language-bash')
-					element.classList.add('language-bash')
-					Prism.highlightElement(code)
-				} else {
-					code.classList.add('language-ini')
-					element.classList.add('language-ini')
-					Prism.highlightElement(code)
-				}
-			})
+		viewEl_content.querySelectorAll('a').forEach((element: HTMLElement) => {
+			fixLinxElement(element, position)
+		})
+		viewEl_content.querySelectorAll('pre').forEach((element: HTMLElement) => {
+			let code = element.querySelector('code') || element
+			code.classList.add('copy-to-clipboard-button')
+			let shebang = code.innerText.toLowerCase().split('\n')[0]
+			if (shebang && shebang.trim().endsWith('sh')) {
+				code.classList.add('language-bash')
+				element.classList.add('language-bash')
+				Prism.highlightElement(code)
+			} else if (code.innerText.toLowerCase().includes('vga compatible')) {
+				console.log(code.innerText)
+				code.classList.add('language-shell-session')
+				element.classList.add('language-shell-session')
+				code.classList.add('language-bash')
+				element.classList.add('language-bash')
+				Prism.highlightElement(code)
+			} else {
+				code.classList.add('language-ini')
+				element.classList.add('language-ini')
+				Prism.highlightElement(code)
+			}
+		})
 		viewEl.scrollTo({ top: 0, behavior: 'smooth' })
 	}
 }

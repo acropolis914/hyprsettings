@@ -1,7 +1,4 @@
-import {
-	compress as cJsonCompress,
-	decompress as cJsonDecompress,
-} from 'compress-json'
+import { compress as cJsonCompress, decompress as cJsonDecompress } from 'compress-json'
 import pako from 'pako'
 
 export interface CompressorOptions {
@@ -28,8 +25,7 @@ const DEFAULTS = {
 
 function bytesToBase64(bytes: Uint8Array): string {
 	let binary = ''
-	for (let i = 0; i < bytes.byteLength; i++)
-		binary += String.fromCharCode(bytes[i])
+	for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
 	return btoa(binary)
 }
 
@@ -40,10 +36,13 @@ function base64ToBytes(base64: string): Uint8Array {
 	return bytes
 }
 
+// Fixed: Shift by 0x2801 to avoid 0x2800 (Blank)
 function toBraille(bytes: Uint8Array): string {
 	let res = ''
 	for (let i = 0; i < bytes.length; i++)
-		res += String.fromCharCode(0x2800 + bytes[i])
+		// 0x2801 avoids the blank '⠀' char.
+		// Range becomes U+2801 (⠁) to U+2900 (⤀)
+		res += String.fromCharCode(0x2801 + bytes[i])
 	return res
 }
 
@@ -51,17 +50,18 @@ function fromBrailleToBytes(str: string): Uint8Array {
 	const bytes: number[] = []
 	for (let i = 0; i < str.length; i++) {
 		const code = str.charCodeAt(i)
-		// Only accept Braille range (ignores interleaved text automatically)
-		if (code >= 0x2800 && code <= 0x28ff) bytes.push(code - 0x2800)
+		// Fixed: Updated detection range to match the new shift (0x2801 - 0x2900)
+		// This automatically ignores interleaved text which is outside this range.
+		if (code >= 0x2801 && code <= 0x2900) {
+			bytes.push(code - 0x2801)
+		}
 	}
 	return new Uint8Array(bytes)
 }
 
 export function cleanObject(obj: any): any {
 	if (Array.isArray(obj)) {
-		return obj
-			.map(cleanObject)
-			.filter((v) => v !== null && v !== undefined)
+		return obj.map(cleanObject).filter((v) => v !== null && v !== undefined)
 	} else if (typeof obj === 'object' && obj !== null) {
 		const newObj: any = {}
 		for (const key in obj) {
@@ -81,7 +81,14 @@ export function cleanObject(obj: any): any {
 			]
 			if (blocklist.includes(key)) continue
 			if (obj[key] === null) continue
-			newObj[key] = cleanObject(obj[key])
+
+			// Path Replacement Logic
+			if (key === 'value' && obj.type === 'FILE' && typeof obj[key] === 'string') {
+				// Replaces /home/<username>/ with ~/
+				newObj[key] = obj[key].replace(/^\/home\/[^/]+\//, '~/')
+			} else {
+				newObj[key] = cleanObject(obj[key])
+			}
 		}
 		return newObj
 	}
@@ -90,10 +97,7 @@ export function cleanObject(obj: any): any {
 
 // --- Main API ---
 
-export function compress(
-	inputData: any,
-	options: CompressorOptions = {},
-): string {
+export function compress(inputData: any, options: CompressorOptions = {}): string {
 	const algo = options.algorithm || 'combo'
 	const metaHeader = options.metaHeader || DEFAULTS.header
 	const algoLabel = options.algoLabel || DEFAULTS.label
@@ -148,7 +152,7 @@ export function compress(
 	// 5. Interleaving
 	const freq = options.interleaveFreq || 0
 	const txt = options.interleaveText || ''
-	const parts = txt.split(',').filter((x) => x.length > 0)
+	const parts = txt.split(/[ ,]+/).filter((x) => x.length > 0)
 
 	if (freq > 0 && parts.length > 0) {
 		let interleaved = ''
@@ -166,10 +170,7 @@ export function compress(
 	return finalStr
 }
 
-export function decompress(
-	rawString: string,
-	options: { metaHeader?: string; algoLabel?: string } = {},
-): any {
+export function decompress(rawString: string, options: { metaHeader?: string; algoLabel?: string } = {}): any {
 	const raw = rawString.trim()
 	if (!raw) throw new Error('Empty input')
 
@@ -199,24 +200,20 @@ export function decompress(
 			}
 		}
 
-		if (!algo)
-			throw new Error(
-				`Could not find '${labelPrefix}' line in header.`,
-			)
+		if (!algo) throw new Error(`Could not find '${labelPrefix}' line in header.`)
 
 		const content = lines.slice(contentStartLine).join('\n')
 
 		// Check if content part is Braille (Edge case: Header plain, Body braille)
 		// We check first few chars
-		const hasBraille = /[\u2800-\u28FF]/.test(content.substring(0, 100))
+		// Fix: Check for new Braille range AND U+2900 (⤀)
+		const hasBraille = /[\u2801-\u2900]/.test(content.substring(0, 100))
 
 		if (hasBraille) {
 			bodyBytes = fromBrailleToBytes(content)
 		} else {
 			const isBinary = algo.includes('pako') || algo.includes('combo')
-			bodyBytes = isBinary
-				? base64ToBytes(content)
-				: new TextEncoder().encode(content)
+			bodyBytes = isBinary ? base64ToBytes(content) : new TextEncoder().encode(content)
 		}
 	} else {
 		// Braille Header Mode (or fully interleaved)
@@ -234,7 +231,6 @@ export function decompress(
 				algo = parts[1].trim()
 
 				// Re-calculate where the body bytes start
-				// We can't just join the lines string because we need the raw bytes.
 				// We find the index of the newline character after this line.
 				const algoLineIndex = fullStr.indexOf(lines[i])
 				bodyStartIndex = fullStr.indexOf('\n', algoLineIndex) + 1

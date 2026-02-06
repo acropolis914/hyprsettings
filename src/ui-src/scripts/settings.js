@@ -9,6 +9,7 @@ let VERSION = '0.9.0'
 export async function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
 	await createAbout()
+	console.log(await getHyprsettingsVersion())
 	createHeaderCommentsVisibilitySetting()
 	createLineCommentsVisibilitySetting()
 	createItemPreviewCommentVisibilitySetting()
@@ -200,13 +201,6 @@ async function createAbout({ compact = false } = {}) {
 		})
 	}
 
-	const res = await fetch('https://api.github.com/repos/acropolis914/hyprsettings/releases/latest')
-	const data = await res.json()
-
-	const fullVersion = data.tag_name
-	const version = fullVersion.split('.').slice(0, 4).join('.')
-
-	console.log(version)
 	settingsEl.appendChild(aboutEl)
 }
 
@@ -336,38 +330,13 @@ function createThemeSelectorSetting() {
 	})
 }
 
-async function getGitDescribeLikeVersion(owner, repo) {
-	const base = `https://api.github.com/repos/${owner}/${repo}`
+export async function getHyprsettingsVersion() {
+	const res = await fetch('https://raw.githubusercontent.com/acropolis914/hyprsettings/refs/heads/master/src/.version')
+	const full = (await res.text()).trim()
 
-	// 1. Get latest tag
-	const tagsRes = await fetch(`${base}/tags`)
-	if (!tagsRes.ok) throw new Error('Failed to fetch tags')
-	const tags = await tagsRes.json()
-
-	if (!tags.length) {
-		console.log('No tags found')
-		return
+	return {
+		full,
+		base: full.split('.').slice(0, 4).join('.'),
+		rev: full.split('.')[4], // rgdc655b9
 	}
-
-	const latestTag = tags[0]
-	const tagName = latestTag.name
-	const tagSha = latestTag.commit.sha
-
-	// 2. Compare tag → HEAD
-	const compareRes = await fetch(`${base}/compare/${tagSha}...HEAD`)
-	if (!compareRes.ok) throw new Error('Failed to compare commits')
-	const compare = await compareRes.json()
-
-	const aheadBy = compare.ahead_by
-	const headSha = compare.commits.at(-1)?.sha ?? compare.head_commit.sha
-	const shortSha = headSha.slice(0, 7)
-
-	// 3. Construct version
-	const version = `${tagName}.${aheadBy}.rg${shortSha}`
-
-	console.log('Version:', version)
-	return version
 }
-
-// Usage
-getGitDescribeLikeVersion('acropolis914', 'hyprsettings').catch((err) => console.error(err))
