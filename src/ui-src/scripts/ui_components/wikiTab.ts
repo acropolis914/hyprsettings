@@ -57,17 +57,6 @@ async function createWikiNavigation() {
 		} else {
 			navigationEl.style.top = '0'
 		}
-		// navigationEl.classList.toggle('hidden')
-		// if (!open) {
-		// 	// testingScreen.classList.remove("hidden")
-		// 	navigationEl.classList.remove('hidden')
-		// 	requestAnimationFrame(() => {
-		// 		navigationEl.style.opacity = '1'
-		// 	})
-		// } else {
-		// 	navigationEl.style.opacity = '0'
-		// 	// testingScreen.classList.add("hidden")
-		// }
 		open = !open
 	})
 
@@ -100,6 +89,7 @@ async function createWikiNavigation() {
 	objectTree.push(navigationEl)
 
 	let tree: Object = GLOBAL.wikiTree
+	GLOBAL.setKey('wikiEntry', [])
 	async function setupNavigation(object: object, indentation = 0, path = 'wiki') {
 		let indent = '       '.repeat(indentation)
 		for (const [key, value] of Object.entries(object)) {
@@ -127,7 +117,10 @@ async function createWikiNavigation() {
 				el.classList.add('wiki-file')
 				el.innerHTML = el.dataset.cleanName
 				let parsed = await parseMarkdown(value)
-				el.dataset.value = JSON.stringify(parsed)
+				// el.dataset.value = JSON.stringify(parsed)
+				let uuid = makeUUID() //TODO
+				el.dataset.wikiEntry = uuid
+				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
 				el.dataset.weight = parsed.data.matter.weight || -1
 				if (key === 'LICENSE') {
 					el.dataset.weight = 1000
@@ -149,6 +142,10 @@ async function createWikiNavigation() {
 				// el.dataset.value =
 
 				objectTree.at(-1).dataset.value = JSON.stringify(parsed)
+				let uuid = makeUUID() //TODO
+				el.dataset.wikiEntry = uuid
+				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
+				objectTree.at(-1).dataset.wikiEntry = uuid
 				objectTree.at(-1).dataset.weight = parsed.data.matter.weight || -1
 				continue
 			} else if (objectTree.length === 1 && key == '_index.md') {
@@ -166,7 +163,10 @@ async function createWikiNavigation() {
 					<br><br>${parsed.value}
 					`
 				let markdown_json_parsed = JSON.stringify(parsed)
-				el.dataset.value = markdown_json_parsed
+				// el.dataset.value = markdown_json_parsed
+				let uuid = makeUUID() //todo
+				el.dataset.wikiEntry = uuid
+				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
 				setViewElValue(markdown_json_parsed, path, 'Hyprland Wiki')
 			} else {
 				console.warn(`Error parsing "${key}: ${value}"`)
@@ -182,13 +182,17 @@ async function createWikiNavigation() {
 				if (el.innerText.startsWith('Welcome')) {
 					console.warn(`Welcome to the Wiki!`)
 				}
-				setViewElValue(el.dataset.value, el.dataset.position)
+				let wikiContentUUID = el.dataset.wikiEntry //TODO
+				let wikiContent = GLOBAL['wikiEntry'][wikiContentUUID]
+				setViewElValue(wikiContent, el.dataset.position)
 			})
 			el.addEventListener('focus', (e) => {
 				if (e.target != el) {
 					return
 				}
-				setElValue(el)
+				let wikiContentUUID = el.dataset.wikiEntry //TODO
+				let wikiContent = GLOBAL['wikiEntry'][wikiContentUUID]
+				setViewElValue(wikiContent, el.dataset.position)
 			})
 		}
 	}
