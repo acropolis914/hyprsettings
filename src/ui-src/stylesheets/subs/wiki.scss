@@ -44,15 +44,18 @@
 		overflow-y: scroll;
 		overflow-x: hidden;
 		transition:
-			left 10s,
-			opacity 150ms,
-			transform 0s;
+			//all 1s ease-in-out,
+			left 10s ease-in-out,
+			opacity 150ms ease-in-out,
+			top 300ms ease-in-out,
+			transform 1s;
 		@media (max-width: 768px) {
-			display: block;
+			//display: block;
 			overflow-x: scroll;
 			justify-content: center;
 			position: absolute;
 			max-width: 100%;
+			min-width: 80%;
 			left: 50%;
 			transform: translateX(-50%);
 			background-color: var(--surface-1);
@@ -61,19 +64,24 @@
 			margin-bottom: 0;
 			max-height: 100%;
 			height: 80%;
-			border: 2px solid var(--text-1);
+			border: 1px solid var(--text-1);
 			box-shadow: 1px 2rem 0.5rem 0.9rem rgba(var(--surface-0), 0);
 			border-radius: var(--border-rad);
 			padding-right: 0;
-			//width: 0;
 		}
 
 		.config-group {
-			padding: calc(0.5 * var(--spacing-unit));
+			padding: calc(1 * var(--spacing-unit));
 			@media (max-width: 600px) {
-				min-width: 50%;
+				min-width: 70%;
 				padding: var(--spacing-unit);
 			}
+		}
+		.config-group::before {
+			white-space: nowrap;
+		}
+		.config-group::after {
+			white-space: nowrap;
 		}
 
 		.wiki-file {

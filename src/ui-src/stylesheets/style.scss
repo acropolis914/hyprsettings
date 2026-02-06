@@ -110,6 +110,9 @@ header#main-header {
 
 			background-color: var(--accent-warning);
 			border-radius: var(--border-radius) !important;
+			@media (max-width: 768px) {
+				display: none;
+			}
 		}
 
 		transition: all 0.1s ease-in-out;
@@ -908,70 +911,6 @@ h1#config-set-title {
 	}
 }
 
-.config-group {
-	background-color: var(--surface-1);
-	background-blend-mode: multiply;
-	position: relative;
-	display: flex;
-	margin-bottom: var(--spacing-unit);
-	margin-top: var(--spacing-unit);
-	padding: 2rem;
-	padding-top: 2.5rem;
-	padding-bottom: 1rem;
-	border: 3px solid var(--surface-0);
-	border-radius: var(--border-rad);
-	flex-direction: column;
-	opacity: 1;
-	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
-	transition:
-		margin 0.3s ease,
-		scale 0.2s ease;
-	@media (max-width: 768px) {
-		padding: 0.5rem;
-		padding-top: 1.5rem;
-	}
-
-	> .config-group {
-		margin-top: 1.5rem;
-	}
-
-	&.rule {
-		background-color: var(--surface-0);
-	}
-	&[data-disabled='true'] {
-		//border: 3px solid var(--accent-warning);
-		&::before {
-			content: attr(data-name) ' (Disabled)';
-			color: var(--accent-warning);
-		}
-	}
-}
-
-/* the floating label on the border */
-.config-group::before {
-	left: 1rem;
-	position: absolute;
-	top: 0;
-	padding: 0 0.5em;
-	background-color: var(--surface-1);
-	backdrop-filter: brightness(0.1);
-	color: var(--text-1);
-	font-size: 1.6rem;
-	font-weight: 800;
-	text-transform: capitalize;
-	transform: translateY(-50%);
-	content: attr(data-name);
-	@media (max-width: 768px) {
-		left: 50%;
-		transform: translateX(-50%) translateY(-50%);
-	}
-}
-
-/* =================================
-   5. Base Elements & Utilities
-   ================================= */
-
-/* --- Base Elements ---*/
 a {
 	background: none;
 	color: var(--accent);

@@ -52,7 +52,12 @@ async function createWikiNavigation() {
 	let navigationElToggle = document.createElement('div')
 	navigationElToggle.setAttribute('id', 'navigation_toggle')
 	navigationElToggle.addEventListener('click', (e) => {
-		navigationEl.classList.toggle('hidden')
+		if (open) {
+			navigationEl.style.top = '-100rem'
+		} else {
+			navigationEl.style.top = '0'
+		}
+		// navigationEl.classList.toggle('hidden')
 		// if (!open) {
 		// 	// testingScreen.classList.remove("hidden")
 		// 	navigationEl.classList.remove('hidden')
@@ -63,7 +68,7 @@ async function createWikiNavigation() {
 		// 	navigationEl.style.opacity = '0'
 		// 	// testingScreen.classList.add("hidden")
 		// }
-		// open = !open
+		open = !open
 	})
 
 	navigationElToggle.innerText = ''

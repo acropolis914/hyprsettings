@@ -35,6 +35,7 @@ export default defineConfig({
 			'/api': 'http://localhost:6969',
 			'/wiki': 'http://localhost:6969',
 		},
+		allowedHosts: ['pen-macro-tenant-supports.trycloudflare.com'],
 	},
 	resolve: {
 		alias: {
