@@ -6,185 +6,12 @@
  * and run on the same dir as style.scss:
  * sass --watch style.scss:style.css
  */
-@use 'subs/wiki.scss' as *;
-@use 'subs/scrollbars.css' as *;
-@use 'subs/tippy.css' as *;
+@use 'mixins' as *;
 @use '_variables.scss' as v;
-@use 'subs/sharetext' as *;
-@use 'subs/shareScreen' as *;
-/* =================================
-1. Variables, Mixins & Placeholders
-================================= */
-/* --- SCSS-only Vars (Internal) ---*/
-$transition-speed-fast: 0.05s;
-$transition-speed-normal: 0.5s;
-$transition-main:
-	background-color $transition-speed-normal ease,
-	color $transition-speed-fast ease;
+@use 'utils' as *;
+@use 'subs';
+@use 'editors';
 
-@mixin text-ellipsis {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-@mixin sidebar-item-active {
-	background-color: var(--accent);
-	color: var(--text-contrast);
-	font-weight: 600;
-}
-
-// Mixin for standard editor input reset
-@mixin editor-input-reset {
-	padding: 2px;
-	border: 0;
-	margin: 0;
-	outline: none;
-	resize: none;
-	color: var(--text-0);
-	background-color: var(--surface-1);
-}
-
-// Mixin for a standard focused editor item (non-group)
-@mixin editor-focused($content-code, $color-var) {
-	border: 1px solid var(--accent-hover);
-	opacity: 1;
-
-	&::after {
-		content: $content-code;
-		position: absolute;
-		left: -1.5rem;
-		top: 50%;
-		transform: translateY(-50%);
-		color: $color-var;
-		font-weight: bold;
-	}
-}
-
-// Mixin for a focused config group
-@mixin config-group-focused($content-code, $color-var) {
-	border: 3px solid var(--accent-hover);
-	opacity: 1;
-
-	&::after {
-		content: $content-code;
-		position: absolute;
-		left: 0.5rem;
-		top: 0rem;
-		transform: translateY(-50%);
-		color: $color-var;
-		font-weight: bold;
-		width: 1rem;
-		background-color: var(--surface-1);
-		align-content: center;
-		padding-left: 0.2rem;
-	}
-}
-
-/* --- Placeholders ---*/
-
-// Common input styling for text fields in modals (minimal reset)
-%input-clean {
-	border: 0;
-	border-radius: var(--border-rad);
-	background-color: transparent;
-	color: var(--text-1);
-	font-family: var(--font-primary), monospace;
-	font-weight: 400;
-	outline: none !important;
-	box-shadow: none !important;
-	resize: none;
-	overflow: hidden;
-
-	&:hover {
-		color: var(--text-1);
-		cursor: text;
-	}
-
-	&:focus,
-	&:focus-visible {
-		text-decoration: underline;
-	}
-}
-
-// Common button interaction/scale effect
-%btn-interactive {
-	position: relative;
-	background-color: var(--surface-2);
-	transition: transform 0.1s ease;
-
-	&:hover {
-		transform: scale(1.05);
-		background-color: var(--surface-border);
-	}
-
-	&:active {
-		transform: scale(0.95);
-	}
-}
-
-// Common slider styling
-%slider-base {
-	width: 90%;
-	background-color: var(--surface-2);
-	box-shadow: none;
-	border: 1px solid var(--surface-0);
-
-	&#slider-square {
-		border-radius: 0;
-
-		.noUi-handle {
-			border-radius: 0;
-			background-color: var(--accent);
-			height: 18px;
-			width: 1rem;
-			top: -1px;
-			right: -9px;
-			cursor: ew-resize;
-		}
-	}
-}
-
-/* =================================
-   2. Theming & Base Styles
-   ================================= */
-:root {
-	/* These are now themeable from JS!*/
-	--spacing-unit: 1rem;
-	--border-rad: 5px;
-	--background-alpha: 0.9;
-	--animation-margin: 2rem;
-	--surface-0: #1e1e2e;
-	--surface-1: #181825;
-	--surface-2: #11111b;
-	--surface-border: #585b70;
-	--text-0: #cdd6f4;
-	--text-1: #bac2de;
-	--text-2: #a6adc8;
-	--text-3: #9399b2;
-	--text-4: #7f849c;
-	--text-disabled: #6c7086;
-	--text-contrast: #11111b;
-	--accent: #89b4fa;
-	--accent-hover: #74c7ec;
-	--accent-active: #cba6f7;
-	--accent-success: #a6e3a1;
-	--accent-warning: #f9e2af;
-	--accent-danger: #f38ba8;
-	--red: #f38ba8;
-	--orange: #fab387;
-	--yellow: #f9e2af;
-	--green: #a6e3a1;
-	--teal: #94e2d5;
-	--blue: #89b4fa;
-	--pink: #f5c2e7;
-	--purple: #cba6f7;
-	--overlay: #7f849c;
-	--shadow: #6c7086;
-	--font-primary: 'CommitMono Nerd Font Mono';
-}
-
-/* --- Base & Resets ---*/
 html {
 	height: 100%;
 	background-color: var(--surface-0);
@@ -197,7 +24,9 @@ html {
 	overflow: hidden;
 	min-height: 0;
 	min-width: 400px;
-
+	* {
+		font-family: v.$font;
+	}
 	&,
 	body {
 		text-rendering: optimizeLegibility;
@@ -235,7 +64,7 @@ body {
 	max-width: 100%;
 	min-height: 0;
 	font-size: 1.6rem;
-	transition: $transition-main;
+	transition: v.$transition-main;
 	flex-direction: column;
 	overflow: hidden;
 	overflow-x: hidden;
@@ -250,7 +79,7 @@ header#main-header {
 	border-bottom: 1px solid var(--surface-border);
 	border-radius: 0;
 	font-weight: 800;
-	transition: transform $transition-speed-fast ease;
+	transition: transform v.$transition-speed-fast ease;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -309,7 +138,7 @@ header#main-header {
 	min-width: 0;
 	overflow-y: auto;
 	overflow-x: hidden;
-	transition: flex-basis 0.5s ease-out;
+	transition: flex-basis 0.2s ease-out;
 
 	ul {
 		display: flex;
@@ -346,7 +175,7 @@ header#main-header {
 		}
 	}
 
-	@media (max-width: 40rem) {
+	@media (max-width: 768px) {
 		flex: 0 0 10%;
 		> ul {
 			padding: 0;
@@ -356,6 +185,8 @@ header#main-header {
 			padding-left: 1rem;
 			justify-content: center;
 			position: relative;
+			padding-top: 2rem;
+			padding-bottom: 2rem;
 
 			.sidebar-text {
 				//position: absolute;
@@ -372,6 +203,13 @@ header#main-header {
 		}
 		#sidebar-icon.sidebar-icon {
 			display: inline-block !important;
+			padding-right: calc(var(--spacing-unit) * 2);
+		}
+		#sidebar-icon.sidebar-icon {
+			@media (pointer: coarse) {
+				transform: scale(1.2);
+				padding-right: calc(var(--spacing-unit) * 1.5);
+			}
 		}
 	}
 }
@@ -386,7 +224,7 @@ header#main-header {
 	flex-direction: column;
 	min-height: 0;
 	transition: none !important;
-	@media (max-width: 40rem) {
+	@media (max-width: 768px) {
 		flex: 0 0 90%;
 	}
 	@media (max-height: 30rem) {
@@ -394,11 +232,6 @@ header#main-header {
 	}
 
 	position: relative;
-}
-
-#content-area:has(#dmenu) {
-	//background-color: var(--red);
-	//position: a;
 }
 
 footer {
@@ -413,7 +246,7 @@ footer {
 
 	> * {
 		font-size: 1rem;
-		@media (max-width: 768px) {
+		@media (max-width: 768px) and (pointer: coarse) {
 			padding: 0.5rem;
 			font-size: 1.6rem;
 		}
@@ -421,7 +254,7 @@ footer {
 
 	#theme-toggle {
 		font-family: v.$font;
-		@media (max-width: 768px) {
+		@media (max-width: 768px) and (pointer: coarse) {
 			font-size: 3rem !important;
 		}
 	}
@@ -595,8 +428,8 @@ footer {
 	//flex: 0 1 100%;
 	flex-direction: column;
 	min-height: 0;
-	//background-color: red;
-	@media (max-width: 500px) {
+	transition: all 200ms ease-in-out;
+	@media (max-width: 768px) {
 		padding: 1rem 1rem;
 	}
 	/* Specific styles for the #settings tab*/
@@ -612,7 +445,7 @@ footer {
 				height: 2rem;
 				margin-right: var(--spacing-unit);
 				width: 2rem;
-				transition: $transition-main;
+				transition: v.$transition-main;
 
 				&:active {
 					transform: scale(1.5);
@@ -774,227 +607,6 @@ h1#config-set-title {
 	transition: all 1s ease;
 }
 
-/* --- Editor Item ---*/
-.editor-item {
-	position: relative;
-	border-radius: var(--border-rad);
-	border: 1px solid transparent;
-	padding: 0.5rem;
-	margin-bottom: var(--spacing-unit);
-	transition:
-		margin 0.2s ease,
-		border 100ms ease-in-out,
-		scale 0.2s ease;
-	display: flex;
-	flex-direction: column;
-	font-size: 1.6rem;
-	opacity: 0.8;
-	background-color: var(--surface-0);
-	@media (max-width: 768px) {
-		padding: 1.5rem;
-	}
-
-	&:focus {
-		outline: none;
-	}
-
-	// --- FOCUS STATES (Using Mixins) ---
-
-	// Focused (Keyboard/Direct) - Non-Group
-	&:is(:focus, :focus-visible):not(.config-group) {
-		@include editor-focused('', var(--accent-success));
-	}
-
-	// Focused-Within (Child Element Active) - Non-Group
-	&:focus-within:not(:focus):not(.config-group) {
-		@include editor-focused('', var(--accent-warning));
-	}
-
-	// Focused (Keyboard/Direct/Within) - Config Group
-	&:is(:focus, :focus-visible).config-group {
-		@include config-group-focused('', var(--accent-success));
-	}
-
-	// --- SUB-COMPONENTS (Flat Structure) ---
-
-	// 1. Preview
-	.editor-item-preview {
-		margin-bottom: 2px;
-		font-size: 1.4rem;
-		word-break: break-word;
-		@media (max-width: 768px) {
-			font-size: 1.8rem;
-		}
-		//@include text-ellipsis;
-
-		i {
-			color: var(--text-2);
-		}
-
-		span {
-			font-weight: bold;
-
-			&#key {
-				color: var(--accent);
-			}
-
-			&#value {
-				color: var(--teal);
-			}
-		}
-	}
-
-	// 2. Generic Editor (Base)
-	.generic-editor {
-		display: flex;
-		flex-direction: column;
-		flex: 1;
-		align-items: stretch;
-		height: 100%;
-		gap: 1rem;
-		margin-top: 1rem;
-		width: 100%;
-
-		@media (max-width: 40rem) {
-			flex-direction: column !important;
-			gap: 1rem;
-		}
-
-		// Input/Textarea Reset for Generic Editor
-		textarea,
-		input {
-			border: orange 1px solid;
-			@include editor-input-reset;
-			@include text-ellipsis;
-		}
-
-		> textarea {
-			@include editor-input-reset;
-			@include text-ellipsis;
-			height: 3rem;
-			width: 100%;
-		}
-	}
-
-	// 3. Keybind Editor (Input styling only)
-	.keybind-editor {
-		color: var(--text-0);
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		position: relative;
-
-		> textarea,
-		> input {
-			@include editor-input-reset;
-			@include text-ellipsis;
-			display: flex;
-			align-items: center;
-			height: 3rem !important;
-			// width: 100%;
-			border-radius: var(--border-rad);
-			&:disabled {
-				opacity: 0.5;
-			}
-		}
-
-		> textarea {
-			@include editor-input-reset;
-			@include text-ellipsis;
-			padding-top: 0.5rem;
-			padding-bottom: 0;
-			line-height: 2rem;
-			height: 3rem !important;
-		}
-	}
-
-	// 4. Comment Area (Specific Input)
-	.comment-area {
-		display: flex;
-		margin-top: 0.2rem;
-		padding: 0;
-		font-style: italic;
-		align-items: center;
-		justify-content: center;
-
-		&:has(> textarea:placeholder-shown) {
-			opacity: 0.6;
-		}
-
-		// Comment Input
-		.comment {
-			@include text-ellipsis;
-			display: flex;
-			height: 2rem;
-			padding: 2px;
-			width: 100%;
-			border: 0;
-			background-color: transparent;
-			color: var(--text-1);
-			font-style: italic;
-			align-items: center;
-			resize: none;
-
-			&:hover {
-				color: var(--text-1);
-				cursor: text;
-			}
-
-			&:focus {
-				color: var(--text-1);
-			}
-		}
-
-		.comment-hashtag {
-			padding-top: 0px;
-			color: var(--text-1);
-		}
-
-		> * {
-			height: 2rem;
-			align-items: center;
-			justify-content: center;
-
-			&:focus {
-				border: none;
-				border-bottom: 1px solid var(--accent) !important;
-				outline: none;
-			}
-		}
-	}
-
-	// --- MODIFIER/STATE CLASSES ---
-
-	&.compact {
-		.keybind-editor,
-		.generic-editor,
-		.comment-area {
-			display: none;
-			opacity: 0;
-		}
-	}
-
-	&.disabled {
-		.editor-item-preview {
-			padding-left: 6rem;
-
-			&::before {
-				height: 1.4rem;
-				position: absolute;
-				padding-left: 0.5ch;
-				padding-right: 0.5ch;
-				z-index: 7;
-				transform: translateY(2px) translateX(-100%);
-				border-radius: var(--border-rad);
-				color: var(--accent-warning);
-				font-size: 1.2rem;
-				content: 'Disabled';
-			}
-		}
-	}
-}
-
-// Placeholders for reuse
 %about-section {
 	display: flex;
 	flex-direction: column;
@@ -1175,6 +787,7 @@ h1#config-set-title {
 		}
 
 		button.addGradientButton {
+			font-family: v.$font;
 			flex: 1 0 auto;
 			color: var(--accent);
 			margin: 0;
@@ -1294,103 +907,6 @@ h1#config-set-title {
 		}
 	}
 }
-/* --- Line Comment Item ---*/
-.editor-item:has(> .editor-item-comment) {
-	margin: 0;
-	padding: 0;
-	border: 1px solid transparent;
-	background-color: transparent;
-	opacity: 1;
-	outline: none;
-	font-family: var(--font-primary), monospace;
-	font-size: 1.4rem;
-
-	textarea,
-	input {
-		font-family: var(--font-primary), monospace;
-	}
-
-	> .editor-item-comment {
-		@extend %input-clean; // Use placeholder for reset
-		margin-bottom: 0;
-		color: var(--text-4);
-		font-style: italic;
-		@include text-ellipsis;
-		font-size: 1.4rem;
-
-		&:focus,
-		&:focus-visible {
-			text-decoration: unset; // Override placeholder underline for comments
-		}
-	}
-
-	&:is(:focus-within, :focus-visible, :focus) {
-		border: 1px solid transparent;
-		border-bottom: 1px solid var(--accent-hover) !important;
-		opacity: 1 !important;
-
-		> * {
-			color: var(--text-1);
-		}
-	}
-}
-
-.editor-item-generic {
-	display: flex;
-	flex-direction: column;
-	border-radius: var(--border-rad);
-	position: relative;
-	color: var(--text-2);
-	width: 100%;
-
-	.generic-editor {
-		display: flex;
-		flex-direction: row;
-	}
-
-	&#key {
-		height: 100%;
-		padding-left: 0.5rem;
-		padding-right: 1rem;
-		border-radius: var(--border-rad);
-		color: var(--accent);
-		align-content: center;
-	}
-
-	&#value {
-		padding-left: 0.5rem;
-		color: var(--teal);
-		white-space: nowrap;
-		@include text-ellipsis;
-	}
-}
-
-.editor-item.focus-visible {
-	outline: 2px solid var(--accent-color) !important;
-	outline-offset: 2px !important;
-}
-
-.editor-item#theme-selector-setting {
-	select {
-		margin-left: auto;
-		margin-right: 1rem;
-		position: relative;
-		font-family: var(--font-primary), monospace;
-	}
-
-	select option {
-		background-color: #111;
-		color: #fff;
-	}
-	//&::after{
-	//	content: "󰅀";
-	//
-	//	position: absolute;
-	//	top: 50%;
-	//	right: 1rem;
-	//	transform: translateY(-50%);
-	//}
-}
 
 .config-group {
 	background-color: var(--surface-1);
@@ -1460,7 +976,7 @@ a {
 	background: none;
 	color: var(--accent);
 	text-decoration: none;
-	transition: color $transition-speed-normal ease;
+	transition: color v.$transition-speed-normal ease;
 
 	&:hover {
 		color: var(--accent-hover);
@@ -1498,342 +1014,12 @@ button#theme-toggle {
 	font-size: 2rem;
 	cursor: pointer;
 	transition:
-		transform $transition-speed-normal ease,
-		color $transition-speed-normal ease;
+		transform v.$transition-speed-normal ease,
+		color v.$transition-speed-normal ease;
 
 	&:hover {
 		color: var(--accent);
 		transform: scale(1.1);
-	}
-}
-
-/* --- Utility Classes ---*/
-.blank-line {
-	color: transparent;
-	max-width: 100%;
-}
-
-.hidden,
-.settings-hidden {
-	display: none !important;
-	visibility: hidden;
-	flex: 0;
-}
-
-select {
-	appearance: none;
-	color: inherit;
-	background-color: transparent;
-	outline: none;
-	border: 0px;
-}
-
-code {
-	border: var(--surface-border);
-	border-radius: var(--border-rad);
-	background-color: var(--surface-1) !important;
-	color: var(--accent-active);
-}
-
-span {
-	&.info,
-	&.success {
-		color: var(--accent-success);
-	}
-
-	&.warning {
-		color: var(--accent-warning);
-	}
-
-	&.danger {
-		color: var(--accent-danger);
-	}
-}
-
-.warn {
-	color: var(--accent-danger) !important;
-}
-
-.context-menu {
-	position: absolute;
-	right: 0%;
-	top: calc(100% + 1rem);
-	z-index: 300;
-	display: flex;
-	padding: calc(var(--spacing-unit) / 2);
-	border: 1px solid var(--surface-border);
-	border-radius: var(--border-rad);
-	background-color: var(--surface-0);
-	opacity: 0;
-	transition: all 0.5s ease;
-	flex-direction: row;
-
-	.ctx-button {
-		display: flex;
-		width: 4rem;
-		color: var(--text-1);
-		cursor: pointer;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-		gap: 0.2rem;
-		transition: all 0.2s ease;
-
-		.ctx-button-icon {
-			font-size: 3rem;
-			line-height: 2rem;
-		}
-
-		.ctx-button-label {
-			font-size: 1rem;
-			line-height: 1rem;
-			text-align: center;
-		}
-
-		&:hover {
-			transform: scale(1.05);
-			filter: brightness(1.2);
-		}
-
-		&:active {
-			transform: scale(0.95);
-		}
-	}
-}
-
-/* --- Scroll Bars Suck ---*/
-::-webkit-scrollbar {
-	width: 1rem;
-	background-color: transparent;
-	opacity: 0;
-	transition: opacity 1s linear;
-}
-
-::-webkit-scrollbar:hover {
-	width: 10px;
-	opacity: 1;
-}
-
-::-webkit-scrollbar-track {
-	background-color: transparent !important;
-}
-
-::-webkit-scrollbar-thumb {
-	border-radius: var(--border-rad);
-	background: var(--surface-2);
-	transition: opacity 1s linear;
-
-	&:hover {
-		background-color: var(--surface-border);
-	}
-}
-
-/* =================================
-   6. Modals & Overlays
-   ================================= */
-@mixin hex-opacity($color, $alpha) {
-	background-color: rgba(red($color), green($color), blue($color), $alpha);
-}
-
-%overlay {
-	left: 50%;
-	position: fixed;
-	top: 50%;
-	z-index: 22;
-	display: flex;
-	height: 100vh;
-	width: 100vw;
-	transform: translateX(-50%) translateY(-50%);
-	//transition: all 0.4s ease;
-	transition: opacity 0.5s ease;
-}
-
-#onboarding {
-	@extend %overlay;
-	background-color: var(--surface-1);
-	flex-direction: row;
-
-	.new::before {
-		position: absolute;
-		left: -7ch;
-		content: 'New!';
-		background-color: var(--yellow);
-		color: var(--text-contrast);
-		padding: 0.1rem;
-	}
-
-	#message {
-		flex: 6;
-	}
-
-	#instructions {
-		flex: 4;
-		padding-right: 5rem !important;
-
-		b {
-			color: #74c7ec;
-		}
-	}
-
-	.column {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 0 5rem;
-
-		* {
-			margin-bottom: 0;
-			text-shadow:
-				0 5px 20px 10px rgba(0, 0, 0, 1),
-				0 1px 5px rgba(0, 0, 0, 1);
-			line-height: 1.85rem;
-			font-size: 1.5rem;
-		}
-
-		h1,
-		h2,
-		a,
-		li {
-			margin-bottom: 0.3rem;
-		}
-
-		h1 {
-			font-size: 2rem !important;
-
-			> * {
-				font-size: 2rem !important;
-				color: var(--accent-danger);
-			}
-		}
-
-		p {
-			display: inline-block;
-			margin-bottom: 0.55rem;
-			text-align: center;
-		}
-
-		button {
-			font-weight: bold;
-			cursor: pointer;
-			transition: transform 0.1s ease;
-			transform: scale(1);
-
-			&:active {
-				transform: scale(0.9) !important;
-			}
-
-			&:hover {
-				transform: scale(1.05);
-			}
-		}
-
-		a {
-			white-space: nowrap;
-		}
-
-		ul {
-			padding: 0 2rem;
-			list-style: square;
-		}
-	}
-}
-
-.testing-screen-button {
-	z-index: 20;
-}
-
-.testing-screen {
-	@extend %overlay;
-	height: 90vh;
-	width: 90vw;
-	background-color: rgba(var(--surface-0), \1);
-	//background-color: var(--surface-0);
-	//display: flex;
-	display: block;
-	justify-items: center;
-	backdrop-filter: blur(10px) brightness(0.4);
-	color: var(--text-1);
-	border-bottom: 1px solid var(--text-0);
-	box-shadow: var(--accent) 0px 0px 5px;
-	border-radius: var(--border-rad);
-	//height: 100vh;
-
-	#main-part {
-		//flex: 1;
-		padding: 1rem;
-		display: block;
-		flex-direction: row;
-		max-height: 100%;
-		width: 100%;
-	}
-
-	#config-preview {
-		height: clamp(10rem, 80%, 80%);
-		overflow: hidden;
-		min-height: 90%;
-		width: 100%;
-		padding: var(--spacing-unit);
-
-		#config-preview-tabs {
-			//flex: 1;
-			height: 10%;
-			display: flex;
-			flex-direction: row;
-			justify-content: left;
-			align-items: center;
-			gap: 1rem;
-			//background-color: var(--surface-2);
-			//border-bottom: 1px solid var(--surface-border);
-			//flex-shrink: 1;
-			z-index: 10;
-			cursor: pointer;
-			flex-wrap: wrap;
-		}
-
-		.config-preview-tab-item {
-			flex: 0 0 auto;
-			box-sizing: border-box;
-			padding-left: 0.5rem;
-			padding-right: 0.5rem;
-			z-index: 10;
-			border-radius: var(--border-rad);
-			border: 1px solid var(--surface-border);
-
-			&.active {
-				color: var(--text-contrast);
-				background-color: var(--accent);
-				border: 1px solid var(--accent);
-			}
-		}
-		.code-toolbar {
-			display: block;
-			height: 40rem;
-			//overflow: scroll;
-			border-radius: var(--border-rad);
-			button {
-				min-height: 10%;
-			}
-		}
-		pre {
-			max-height: 90%;
-			background-color: var(--surface-2);
-			outline: none;
-			* {
-				background-color: transparent !important;
-			}
-		}
-		#config-preview-code {
-			overflow: hidden;
-			height: 10px;
-			box-sizing: border-box;
-		}
-
-		iframe {
-			background-color: transparent;
-			border-bottom: 100px solid var(--surface-1);
-		}
 	}
 }
 

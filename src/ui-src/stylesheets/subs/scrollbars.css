@@ -1,5 +1,3 @@
-/* ===== Scrollbar Reset ===== */
-
 /* Firefox */
 * {
 	scrollbar-width: auto; /* or thin */
@@ -13,15 +11,20 @@
 }
 
 *::-webkit-scrollbar-track {
-	background: transparent;
+	background: transparent !important;
 }
 
 *::-webkit-scrollbar-thumb {
-	background-color: transparent;
+	/*background-color: transparent !important;*/
 	border-radius: 0;
 	border: none;
 }
 
 *::-webkit-scrollbar-corner {
-	background: transparent;
+	background: transparent !important;
+}
+
+
+.scrollable::-webkit-scrollbar {
+	display: none; /* WebKitGTK */
 }

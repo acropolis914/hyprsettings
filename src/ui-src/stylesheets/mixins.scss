@@ -1,0 +1,119 @@
+@mixin text-ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+@mixin sidebar-item-active {
+	background-color: var(--accent);
+	color: var(--text-contrast);
+	font-weight: 600;
+}
+
+// Mixin for standard editor input reset
+@mixin editor-input-reset {
+	padding: 2px;
+	border: 0;
+	margin: 0;
+	outline: none;
+	resize: none;
+	color: var(--text-0);
+	background-color: var(--surface-1);
+}
+
+// Mixin for a standard focused editor item (non-group)
+@mixin editor-focused($content-code, $color-var) {
+	border: 1px solid var(--accent-hover);
+	opacity: 1;
+
+	&::after {
+		content: $content-code;
+		position: absolute;
+		left: -1.5rem;
+		top: 50%;
+		transform: translateY(-50%);
+		color: $color-var;
+		font-weight: bold;
+	}
+}
+
+// Mixin for a focused config group
+@mixin config-group-focused($content-code, $color-var) {
+	border: 3px solid var(--accent-hover);
+	opacity: 1;
+
+	&::after {
+		content: $content-code;
+		position: absolute;
+		left: 0.5rem;
+		top: 0rem;
+		transform: translateY(-50%);
+		color: $color-var;
+		font-weight: bold;
+		width: 1rem;
+		background-color: var(--surface-1);
+		align-content: center;
+		padding-left: 0.2rem;
+	}
+}
+
+// Common input styling for text fields in modals (minimal reset)
+%input-clean {
+	border: 0;
+	border-radius: var(--border-rad);
+	background-color: transparent;
+	color: var(--text-1);
+	font-family: var(--font-primary), monospace;
+	font-weight: 400;
+	outline: none !important;
+	box-shadow: none !important;
+	resize: none;
+	overflow: hidden;
+
+	&:hover {
+		color: var(--text-1);
+		cursor: text;
+	}
+
+	&:focus,
+	&:focus-visible {
+		text-decoration: underline;
+	}
+}
+
+// Common button interaction/scale effect
+%btn-interactive {
+	position: relative;
+	background-color: var(--surface-2);
+	transition: transform 0.1s ease;
+
+	&:hover {
+		transform: scale(1.05);
+		background-color: var(--surface-border);
+	}
+
+	&:active {
+		transform: scale(0.95);
+	}
+}
+
+%slider-base {
+	width: 90%;
+	background-color: var(--surface-2);
+	box-shadow: none;
+	border: 1px solid var(--surface-0);
+
+	&#slider-square {
+		border-radius: 0;
+
+		.noUi-handle {
+			border-radius: 0;
+			background-color: var(--accent);
+			height: 18px;
+			width: 1rem;
+			top: -1px;
+			right: -9px;
+			cursor: ew-resize;
+		}
+	}
+}

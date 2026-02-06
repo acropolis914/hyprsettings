@@ -104,7 +104,7 @@ def kill_hyprsettings():
 		except subprocess.TimeoutExpired:
 			log('Bun vite process did not terminate in time. Forcing kill.')
 			os.killpg(state.vite_process.pid, signal.SIGKILL)
-
+	print(result)
 	if result.returncode == 0:
 		log('Hyprsettings killed')
 	else:
@@ -423,8 +423,8 @@ if __name__ == '__main__':
 	if state.args.verbose:
 		state.verbose = state.args.verbose
 
-	if state.args.bun_dev:
-		state.vite_process = subprocess.Popen(['bun', 'run', 'vite'], cwd=thisfile_path / 'ui-src')
+	# if state.args.bun_dev:
+	# 	state.vite_process = subprocess.Popen(['bun', 'run', 'vite'], cwd=thisfile_path / 'ui-src')
 
 	def gotoMain():
 		with redirect_stderr(LogFilter()), redirect_stdout(LogFilter()):

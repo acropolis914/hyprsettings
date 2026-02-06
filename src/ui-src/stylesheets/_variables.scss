@@ -1,1 +1,42 @@
 $font: var(--font-primary), 'CommitMonoIconFont', 'Courier New', monospace;
+$transition-speed-fast: 0.05s;
+$transition-speed-normal: 0.5s;
+$transition-main:
+	background-color $transition-speed-normal ease,
+	color $transition-speed-fast ease;
+
+:root {
+	/* These are now themeable from JS!*/
+	--spacing-unit: 1rem;
+	--border-rad: 5px;
+	--background-alpha: 0.9;
+	--animation-margin: 2rem;
+	--surface-0: #1e1e2e;
+	--surface-1: #181825;
+	--surface-2: #11111b;
+	--surface-border: #585b70;
+	--text-0: #cdd6f4;
+	--text-1: #bac2de;
+	--text-2: #a6adc8;
+	--text-3: #9399b2;
+	--text-4: #7f849c;
+	--text-disabled: #6c7086;
+	--text-contrast: #11111b;
+	--accent: #89b4fa;
+	--accent-hover: #74c7ec;
+	--accent-active: #cba6f7;
+	--accent-success: #a6e3a1;
+	--accent-warning: #f9e2af;
+	--accent-danger: #f38ba8;
+	--red: #f38ba8;
+	--orange: #fab387;
+	--yellow: #f9e2af;
+	--green: #a6e3a1;
+	--teal: #94e2d5;
+	--blue: #89b4fa;
+	--pink: #f5c2e7;
+	--purple: #cba6f7;
+	--overlay: #7f849c;
+	--shadow: #6c7086;
+	--font-primary: 'CommitMono Nerd Font Mono';
+}

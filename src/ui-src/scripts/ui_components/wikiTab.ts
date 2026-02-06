@@ -9,9 +9,9 @@ import 'prismjs/components/prism-ini.min.js'
 import 'prismjs/components/prism-bash.min.js'
 import 'prismjs/plugins/toolbar/prism-toolbar.min.js'
 import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js'
-import '@stylesheets/prism.css'
-import tippy, { followCursor } from 'tippy.js'
+import '@stylesheets/subs/prism.css'
 import '@stylesheets/subs/tippy.css'
+import tippy, { followCursor } from 'tippy.js'
 
 export default async function createWiki() {
 	console.log('Creating Wiki...')

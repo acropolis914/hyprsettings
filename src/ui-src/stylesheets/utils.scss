@@ -1,0 +1,46 @@
+/* --- Utility Classes ---*/
+.blank-line {
+	color: transparent;
+	max-width: 100%;
+}
+
+.hidden,
+.settings-hidden {
+	display: none !important;
+	visibility: hidden;
+	flex: 0;
+}
+
+select {
+	appearance: none;
+	color: inherit;
+	background-color: transparent;
+	outline: none;
+	border: 0px;
+}
+
+code {
+	border: var(--surface-border);
+	border-radius: var(--border-rad);
+	background-color: var(--surface-1) !important;
+	color: var(--accent-active);
+}
+
+span {
+	&.info,
+	&.success {
+		color: var(--accent-success);
+	}
+
+	&.warning {
+		color: var(--accent-warning);
+	}
+
+	&.danger {
+		color: var(--accent-danger);
+	}
+}
+
+.warn {
+	color: var(--accent-danger) !important;
+}

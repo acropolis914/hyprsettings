@@ -42,7 +42,7 @@ function toggleTestingScreen() {
 
 import Prism from 'prismjs'
 import 'prismjs/components/prism-ini.js'
-import '@stylesheets/prism.css'
+import '@stylesheets/subs/prism.css'
 
 export async function renderTextPreview() {
 	let configPreview_el = document.getElementById('config-preview')

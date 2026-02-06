@@ -1,0 +1,254 @@
+@use '../mixins' as *;
+@use '../_variables' as v;
+
+.editor-item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 0.5rem;
+	margin-bottom: var(--spacing-unit);
+	border: 1px solid transparent;
+	border-radius: var(--border-rad);
+	background-color: var(--surface-0);
+	font-size: 1.6rem;
+	opacity: 0.8;
+	transition:
+		margin 0.2s ease,
+		border 100ms ease-in-out,
+		scale 0.2s ease;
+
+	@media (max-width: 768px) and (pointer: coarse) {
+		padding: 1.3rem;
+	}
+
+	&:focus {
+		outline: none;
+	}
+
+	// --- State Handling ---
+	&:is(:focus, :focus-visible) {
+		&.config-group {
+			@include config-group-focused('', var(--accent-success));
+		}
+		&:not(.config-group) {
+			@include editor-focused('', var(--accent-success));
+		}
+	}
+
+	&:focus-within:not(:focus):not(.config-group) {
+		@include editor-focused('', var(--accent-warning));
+	}
+
+	// --- Sub-Components ---
+	&-preview {
+		margin-bottom: 2px;
+		font-size: 1.4rem;
+		word-break: break-word;
+
+		@media (max-width: 768px) and (pointer: coarse) {
+			font-size: 1.8rem;
+		}
+
+		i {
+			color: var(--text-2);
+		}
+		span {
+			font-weight: bold;
+			&#key {
+				color: var(--accent);
+			}
+			&#value {
+				color: var(--teal);
+			}
+		}
+	}
+
+	.generic-editor,
+	.keybind-editor {
+		display: flex;
+		flex-direction: column;
+
+		textarea,
+		input {
+			@include editor-input-reset;
+			@include text-ellipsis;
+		}
+	}
+
+	.generic-editor {
+		flex: 1;
+		align-items: stretch;
+		gap: 1rem;
+		margin-top: 1rem;
+		width: 100%;
+
+		@media (max-width: 40rem) {
+			flex-direction: column !important;
+		}
+
+		textarea,
+		input {
+			border: orange 1px solid;
+		}
+		> textarea {
+			height: 3rem;
+			width: 100%;
+		}
+	}
+
+	.keybind-editor {
+		gap: 0.5rem;
+		position: relative;
+		color: var(--text-0);
+
+		> textarea,
+		> input {
+			height: 3rem !important;
+			border-radius: var(--border-rad);
+			&:disabled {
+				opacity: 0.5;
+			}
+		}
+
+		> textarea {
+			padding: 0.5rem 0 0;
+			line-height: 2rem;
+		}
+	}
+
+	.comment-area {
+		display: flex;
+		margin-top: 0.2rem;
+		font-style: italic;
+		align-items: center;
+		justify-content: center;
+
+		&:has(> textarea:placeholder-shown) {
+			opacity: 0.6;
+		}
+
+		.comment {
+			@include text-ellipsis;
+			display: flex;
+			height: 2rem;
+			width: 100%;
+			background: transparent;
+			border: 0;
+			color: var(--text-1);
+			resize: none;
+			&:hover,
+			&:focus {
+				color: var(--text-1);
+				cursor: text;
+			}
+		}
+
+		> * {
+			height: 2rem;
+			&:focus {
+				border: none;
+				border-bottom: 1px solid var(--accent) !important;
+				outline: none;
+			}
+		}
+	}
+
+	// --- Modifiers ---
+	&.compact {
+		.keybind-editor,
+		.generic-editor,
+		.comment-area {
+			display: none;
+			opacity: 0;
+		}
+	}
+
+	&.disabled .editor-item-preview {
+		padding-left: 6rem;
+		&::before {
+			content: 'Disabled';
+			position: absolute;
+			transform: translateY(2px) translateX(-100%);
+			padding: 0 0.5ch;
+			color: var(--accent-warning);
+			font-size: 1.2rem;
+		}
+	}
+
+	&.focus-visible {
+		outline: 2px solid var(--accent-color) !important;
+		outline-offset: 2px !important;
+	}
+
+	// --- Specific ID overrides ---
+	&#theme-selector-setting {
+		select {
+			margin: 0 1rem 0 auto;
+			font-family: var(--font-primary), monospace;
+			option {
+				background: #111;
+				color: #fff;
+			}
+		}
+	}
+}
+
+// --- Line Comment Item ---
+.editor-item:has(> .editor-item-comment) {
+	margin: 0;
+	padding: 0;
+	background: transparent;
+	font-family: v.$font;
+	font-size: 1.4rem;
+
+	textarea,
+	input {
+		font-family: v.$font;
+	}
+
+	> .editor-item-comment {
+		@extend %input-clean;
+		color: var(--text-4);
+		font-style: italic;
+		font-size: 1.4rem;
+		@media (pointer: coarse) {
+			font-size: 1.8rem;
+		}
+		@include text-ellipsis;
+		&:focus {
+			text-decoration: unset;
+		}
+	}
+
+	&:is(:focus-within, :focus-visible, :focus) {
+		border-bottom: 1px solid var(--accent-hover) !important;
+		opacity: 1 !important;
+		> * {
+			color: var(--text-1);
+		}
+	}
+}
+
+// --- Generic Helpers ---
+.editor-item-generic {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	color: var(--text-2);
+
+	.generic-editor {
+		flex-direction: row;
+	}
+
+	&#key {
+		padding: 0 1rem 0 0.5rem;
+		color: var(--accent);
+	}
+
+	&#value {
+		padding-left: 0.5rem;
+		color: var(--teal);
+		white-space: nowrap;
+		@include text-ellipsis;
+	}
+}
