@@ -42,5 +42,35 @@ span {
 }
 
 .warn {
-	color: var(--accent-danger) !important;
+	color: var(--accent-warning) !important;
+}
+
+/* Blockquotes */
+blockquote,
+.blockquote {
+	background: var(--surface-1);
+	border-left: 3px solid var(--accent);
+	padding: 0.75rem 1rem;
+	border-radius: var(--border-rad);
+	color: var(--text-2);
+
+	&.note {
+		border-left-color: var(--accent);
+		background: var(--surface-2);
+	}
+
+	&.tip {
+		border-left-color: var(--accent-success);
+		background: var(--surface-2);
+	}
+
+	&.warning {
+		border-left-color: var(--accent-warning);
+		background: var(--surface-2);
+	}
+
+	&.caution {
+		border-left-color: var(--accent-danger);
+		background: var(--surface-2);
+	}
 }

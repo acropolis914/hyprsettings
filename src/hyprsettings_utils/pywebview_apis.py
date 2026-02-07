@@ -59,41 +59,55 @@ class Api:
 	def read_window_config(self):
 		def version_migration():
 			file_info = self.window_config['file_info']
-			if Version(file_info['version']) < Version('.'.join(hs_globals.CURRENT_VERSION.split('.', 3)[:-1])):
-				log(
-					f'Config version {file_info["version"]} is older than current {hs_globals.CURRENT_VERSION}. Updating version, moving keys.'
-				)
+			persistence = self.window_config.setdefault('persistence', toml.table())
+
+			# Define the migration map: (key, from_table, to_table)
+			migrations = [
+				('last_tab', 'config', 'persistence'),
+				('first_run', 'config', 'persistence'),
+				('onboarding_version', 'file_info', 'persistence'),
+			]
+
+			def move_key(key, src, dest):
+				try:
+					if key in self.window_config.get(src, {}):
+						self.window_config[dest][key] = self.window_config[src].pop(key)
+						return True
+				except Exception as e:
+					log(f'{e} in hyprsettings.toml[{src}]', prefix='Config Version Migrator')
+				return False
+
+			# Check version and migrate
+			current_v = Version('.'.join(hs_globals.CURRENT_VERSION.split('.')[:3]))
+			if Version(file_info['version']) < current_v:
+				log(f'Config version {file_info["version"]} older than {hs_globals.CURRENT_VERSION}. Migrating...')
 				file_info['version'] = hs_globals.CURRENT_VERSION
-				persistence = self.window_config.get('persistence')
-				if persistence is None:
-					self.window_config['persistence'] = toml.table()
-				try:
-					# self.window_config["config"]["last_tab"]
-					self.window_config['persistence']['last_tab'] = self.window_config['config']['last_tab']
-					self.window_config['config'].pop('last_tab')
-					self.window_config = self.window_config
-				except Exception as exception:
-					log(
-						str(exception) + 'in hyprsettings.toml[config]',
-						prefix='Config Version Migrator',
-					)
-				try:
-					# self.window_config["config"]["last_tab"]
-					self.window_config['persistence']['first_run'] = self.window_config['config']['first_run']
-					self.window_config['config'].pop('first_run')
-					self.window_config = self.window_config
-				except Exception as exception:
-					log(
-						str(exception) + 'in hyprsettings.toml[config]',
-						prefix='Config Version Migrator',
-					)
+
+				for key, src, dest in migrations[:2]:  # Handles last_tab and first_run
+					move_key(key, src, dest)
+
+			# Handle onboarding specifically
+			if persistence.get('onboarding_version') != hs_globals.ONBOARDING_VERSION:
+				if move_key('onboarding_version', 'file_info', 'persistence'):
+					persistence['onboarding_version'] = hs_globals.ONBOARDING_VERSION
+
+			self.window_config = self.window_config
 
 		def add_missing_keys():
 			defaults = {'daemon': False}
+			persistence_keys = {'onboarding_version': 0.8}
 			config_lines = self.window_config['config']
+
 			for key, val in defaults.items():
 				if key not in config_lines:
 					config_lines[key] = val
+
+			persistence = self.window_config.get('persistence')
+			if persistence is None:
+				self.window_config['persistence'] = toml.table()
+			for key, val in persistence_keys.items():
+				if key not in persistence:
+					persistence[key] = val
 
 		hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 		template = Path(thisfile_path_parent / 'default_config.toml')
@@ -116,6 +130,8 @@ class Api:
 			self.window_config = toml.parse(default_config_text)
 			self.window_config['config']['font'] = temporary_font if temporary_font else 'Monospace'
 			add_missing_keys()
+			if self.window_config['file_info']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
+				self.window_config['persistence']['fist_run'] = True
 			version_migration()
 			if self.window_config['config']['daemon']:
 				state.daemon = True
@@ -131,8 +147,10 @@ class Api:
 					log(e)
 					return {'configuration-error': str(e)}
 				self.window_config = config
-				version_migration()
 				add_missing_keys()
+				if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
+					self.window_config['persistence']['first_run'] = True
+				version_migration()
 				if self.window_config['config']['daemon']:
 					state.daemon = True
 				return self.window_config

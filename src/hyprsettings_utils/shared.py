@@ -80,6 +80,7 @@ class Globals:
 	CURRENT_VERSION = get_version()
 	HYPRSETTINGS_CONFIG_PATH: Path = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 	HYPRLAND_WIKI_CONTENT_FOLDER: Path = Path(__file__).parent.parent / 'hyprland-wiki-content'
+	ONBOARDING_VERSION = 0.9
 
 
 state = State()

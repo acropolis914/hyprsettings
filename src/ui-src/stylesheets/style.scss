@@ -688,6 +688,7 @@ h1#config-set-title {
 
 	.version {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		gap: 0.25rem;
 		font-weight: 600;
@@ -703,6 +704,22 @@ h1#config-set-title {
 			&:hover {
 				text-decoration: underline;
 			}
+		}
+		.outdated-text {
+			display: flex;
+			text-align: center;
+			flex-direction: column;
+			justify-content: center;
+			justify-items: center;
+			align-items: center;
+			margin-top: var(--spacing-unit);
+			margin-bottom: var(--spacing-unit);
+			//> * {
+			//	align-self: flex-end;
+			//}
+		}
+		.outdated-message {
+			@extend %about-body;
 		}
 	}
 

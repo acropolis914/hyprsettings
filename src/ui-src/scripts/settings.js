@@ -9,7 +9,7 @@ let VERSION = '0.9.0'
 export default async function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
 	await createAbout()
-	getHyprsettingsVersion()
+	getHyprsettingsGithubVersion()
 	Backend.getHyprSettingsVersion()
 	createHeaderCommentsVisibilitySetting()
 	createLineCommentsVisibilitySetting()
@@ -126,6 +126,7 @@ async function createAbout({ compact = false } = {}) {
 	const versionEl = document.createElement('div')
 	versionEl.classList.add('version')
 	const versionText = document.createElement('span')
+	versionText.classList.add('version-text')
 	versionText.textContent = VERSION
 	GLOBAL.onChange('version', (value) => {
 		versionText.textContent = value
@@ -138,7 +139,15 @@ async function createAbout({ compact = false } = {}) {
 	versionLink.target = '_blank'
 	versionLink.rel = 'noopener noreferrer'
 	versionLink.textContent = githubUrl
-	versionEl.append(versionText, versionDot, versionLink)
+
+	const oudatedText = document.createElement('span')
+	oudatedText.classList.add('outdated-text', 'hidden')
+	oudatedText.textContent = 'Getting update info from Github....'
+	versionText.addEventListener('click', (e) => {
+		getHyprsettingsGithubVersion()
+	})
+
+	versionEl.append(versionLink, versionText, oudatedText)
 	infoBoxEl.appendChild(versionEl)
 
 	// Credits block
@@ -334,13 +343,26 @@ function createThemeSelectorSetting() {
 	})
 }
 
-export async function getHyprsettingsVersion(element) {
+export async function getHyprsettingsGithubVersion(element) {
 	const res = await fetch('https://raw.githubusercontent.com/acropolis914/hyprsettings/refs/heads/master/src/.version')
 	const full = (await res.text()).trim()
-
-	return {
+	console.log({
 		full,
 		base: full.split('.').slice(0, 4).join('.'),
-		rev: full.split('.')[4], // rgdc655b9
+	})
+	GLOBAL.setKey('githubVersion', full)
+
+	if (full !== GLOBAL.version) {
+		console.error('Version', GLOBAL.version, 'is older than github version', GLOBAL.githubVersion)
+		let versionEl = settingsEl.querySelector('.version-text')
+
+		let outdatedEl = settingsEl.querySelector('.outdated-text')
+		outdatedEl.classList.remove('hidden')
+		outdatedEl.innerHTML = `
+<span class="warn"> Outdated </span>
+<span>Github version is ${full}</span>
+<span class="outdated-message">Please update by running the same command</span>
+<span class="outdated-message">you used for installing this.</span>
+`
 	}
 }

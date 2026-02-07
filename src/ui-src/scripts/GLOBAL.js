@@ -7,6 +7,8 @@ export class GLOBAL {
 	static wikiVersion
 	static activeTab
 	static currentView
+	static version
+	static githubVersion
 
 	static onChange(key, callback) {
 		if (!this._listeners.has(key)) {

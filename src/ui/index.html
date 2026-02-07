@@ -24,7 +24,7 @@ Manually adding tabs might come at a later update.-->
 		<script type="module" crossorigin src="/index.js"></script>
 		<link rel="modulepreload" crossorigin href="/chunks/vendor-D8lt7FiJ.js">
 		<link rel="stylesheet" crossorigin href="/assets/vendor-gRdVuIfX.css">
-		<link rel="stylesheet" crossorigin href="/assets/index-1To8I79S.css">
+		<link rel="stylesheet" crossorigin href="/assets/index-BmnGrBDc.css">
 	</head>
 	<body>
 		<header  id="main-header" >
@@ -72,19 +72,20 @@ Manually adding tabs might come at a later update.-->
 
 		<div id="onboarding" class="hidden">
 			<div class="column" id="message">
-			<h1>Hello! <span class="danger">Please read!</span></h1>
+			<h1>Hello! <span class="danger">How are you?</span></h1>
+				<blockquote>
 			<p>
-				This is very much in its
-				<span class="warning">alpha state</span>. Things may
-				break, things may not work, things <span class="danger">will still change</span>. If you have time, dive in
-				and make changes, and submit pull requests at
-				the
+				We are now in <span class="warning">beta!</span>. (yay!)
+				Lots of things has changed since and we are now at a more stable version.
+				Still, please visit the
 				<a
 					href="https://github.com/acropolis914/hyprsettings"
 					target="_blank"
 					> Github repo</a
-				>
+				> and don't hesistate to <span class="success">ask for help</span>
+				and <span class="warning">report pesky bugs.</span>
 			</p>
+				</blockquote>
 			<p>
 				A config has been written to
 				<code>~/.config/hypr/hyprsettings.toml</code><br />
@@ -100,8 +101,9 @@ Manually adding tabs might come at a later update.-->
 					<li>You can remove # to
 						turn line comment to a key(if valid)</li>
 					<li>Theming, settings, Autosaving! a lot actually. just check it out!</li>
-					<li class="new">Adding items now exist*</li>
-					*for now, it auto adds random keys available for a group
+					<li class="new">Adding items from the known lists</li>
+					<li class="new">Group duplication</li>
+				<li>Bezier animation editing with preview</li>
 				</ul>
 			</p>
 
@@ -117,21 +119,27 @@ Manually adding tabs might come at a later update.-->
 	<div class="column" id="instructions">
 <h1>Usage:</h1>
 <ul>
-	<li><b>F1:</b> Show/hide this screen</li>
-	<li><b>F5:</b> Reload Window(will update some elements)</li>
-	<li><b>Arrows:</b> Navigation </li>
-	<li><b>Enter:</b> Open a key editor modal</li>
+	<li><b>Arrows, Tab:</b> Navigation </li>
+	<li><b>Enter, Space:</b> Open a key editor modal/ Modify value</li>
 	<li><b>Esc:</b> Leave the opened editor modal</li>
-	<li><b>Delete:</b> Delete(lol) (will ask for confirmation)</li>
+	<li><b>Delete:</b> Delete(lol)</li>
 </ul>
+		<h1>Extra keys:(feature testing)</h1>
+		<ul>
+			<li><b>F1:</b> Show/hide this screen</li>
+			<li><b>F3: </b>See your config Texts</li>
+			<li><b>F5: </b>Reload everything</li>
+			<li><b>F6: </b>Secret share screen</li>
+		</ul>
 <h1>Next updates:</h1>
 <ul>
 	<li>Prio: Navigation inside keys</li>
-	<li>Easy: Tooltips and Hyprland Documentation</li>
-	<li>Easy but theres so many: Item sliders,Color/Gradient Selectors</li>
+	<li></li>
+	<li>More editor modals</li>
 </ul><hr>
-<p>For people who cloned this repo, remember to<code>git pull</code> on the folder you installed it in</p>
-<button
+<p>To check for updates, go to the settings tab. You can always rerun the installation method you did and it will automatically fetch updates from the repo</p>
+<p>You can go back here by pressing <b>F1</b></p>
+		<button
 type="button"
 id="onboarding-finish"
 >
