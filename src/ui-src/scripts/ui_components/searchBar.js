@@ -1,6 +1,7 @@
 import Fuse from '../jslib/fuse.basic.min.mjs'
 import { GLOBAL } from '../GLOBAL.js'
 import { createOverlay, destroyOverlay } from './darken_overlay.js'
+import hotkeys from 'hotkeys-js'
 
 let searchBar
 let searchResultEl
@@ -132,12 +133,8 @@ export async function initializeSearchBar() {
 			resultDiv.addEventListener('click', (e) => {
 				let goto = document.querySelector(`.editor-item[data-uuid="${result.item.uuid}"]`)
 				let closest = goto.closest('.config-set').id
-				// console.log(closest)
 				document.querySelector(`aside>ul>li#${closest}`).click()
-				// console.debug(goto)
 				goto.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				// goto.click()
-				// goto.style.outline = '1px solid red'
 
 				goto.focus()
 				goto.click()
@@ -148,7 +145,7 @@ export async function initializeSearchBar() {
 						goto.style.scale = '1.0'
 					}, 300)
 				}
-				cleanUp()
+				cleanUp(true)
 			})
 
 			resultDiv.addEventListener('focus', (e) => {
@@ -181,9 +178,15 @@ export async function initializeSearchBar() {
 		createOverlay()
 		search()
 	})
-	GLOBAL.onChange('currentView', () => {
-		cleanUp()
+	searchBar.addEventListener('focus', (e) => {
+		e.stopPropagation()
+		GLOBAL['previousView'] = GLOBAL['currentView']
+		GLOBAL['currentView'] = 'search'
+		searchResultEl.style.display = 'flex'
+		createOverlay()
+		search()
 	})
+
 	searchBar.addEventListener('keydown', (e) => {
 		if (e.key === 'Escape') {
 			e.preventDefault()
@@ -218,26 +221,19 @@ export async function initializeSearchBar() {
 		let clickedInsideSearchbar = searchBar.contains(e.target)
 		let clickedInsideSearchResults = searchResultEl.contains(e.target)
 		if (!clickedInsideSearchbar && !clickedInsideSearchResults && GLOBAL['currentView'] === 'search') {
+			GLOBAL.setKey('currentView', GLOBAL.previousView)
+			GLOBAL.setKey('previousView', 'search')
 			cleanUp()
 		}
+	})
 
-		// GLOBAL['currentView'] = GLOBAL['previousView']
-	})
-	hotkeys('*', (event) => {
-		const pressedKey = event.key
-		const target = event.target
-	})
-	function cleanUp() {
+	function cleanUp(resultClicked = false) {
 		searchResultEl.style.display = 'none'
 		searchBar.value = ''
 		searchBar.blur()
 		destroyOverlay()
-
-		if (GLOBAL['previousView']) {
-			GLOBAL['currentView'] = GLOBAL['previousView']
-			GLOBAL['previousView'] = 'search'
-		}
-		// console.log(GLOBAL['currentView'])
+		GLOBAL.setKey('currentView', GLOBAL.previousView)
+		GLOBAL.setKey('previousView', 'search')
 	}
 }
 

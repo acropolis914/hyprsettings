@@ -248,6 +248,7 @@ header#main-header {
 
 footer {
 	display: flex;
+	padding: 0;
 	padding-left: var(--spacing-unit);
 	padding-right: var(--spacing-unit);
 	flex-direction: row;
@@ -264,6 +265,7 @@ footer {
 		}
 	}
 	#shortcuts {
+		display: none;
 		margin-right: auto;
 		button {
 			padding: 0.1 0.6rem;

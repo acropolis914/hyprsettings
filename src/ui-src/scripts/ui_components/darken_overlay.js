@@ -1,4 +1,5 @@
 export function createOverlay() {
+	destroyOverlay()
 	const overlay = document.createElement('div')
 	overlay.id = 'dmenu-overlay'
 	overlay.className = 'darken-overlay'

@@ -78,6 +78,12 @@ class ConfigTab {
 		item.classList.add('config-set')
 		item.id = this.id
 		item.classList.add('hidden')
+		item.addEventListener('click', (e) => {
+			if (GLOBAL.currentView !== 'main') {
+				GLOBAL.setKey('previousView', GLOBAL.currentView)
+				GLOBAL.setKey('currentView', 'main')
+			}
+		})
 		if (this.shown) {
 			document.querySelectorAll('#content-area>.config-set').forEach((i) => i.classList.add('hidden'))
 			item.classList.remove('hidden')

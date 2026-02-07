@@ -12,7 +12,8 @@
 		"hs": "cd ../../ && sh ./run.sh --debug --no-daemon",
 		"preview": "vite preview",
 		"clean-font": "glyphhanger --delay=5000 --whitelist=\"U+E000-U+F8FF,U+F0000-U+FFFFD\" --formats=woff2 --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:3000/",
-		"format": "prettier --write \"**/*.{js,ts,jsx,tsx,css,scss}\""
+		"format": "prettier --write \"**/*.{js,ts,jsx,tsx,css,scss}\"",
+		"update_version": "python ../../tooling/git_tag_version.py && git add ."
 	},
 	"devDependencies": {
 		"@types/bun": "latest",

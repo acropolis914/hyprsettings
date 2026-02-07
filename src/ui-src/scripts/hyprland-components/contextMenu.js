@@ -12,10 +12,7 @@ export class ContextMenu {
 		this.el.classList.add('context-menu', 'hidden')
 		this.el.setAttribute('contenteditable', 'false')
 		this.el.addEventListener('transitionend', (e) => {
-			if (
-				e.propertyName === 'opacity' &&
-				getComputedStyle(e.target).opacity === '0'
-			) {
+			if (e.propertyName === 'opacity' && getComputedStyle(e.target).opacity === '0') {
 				this.el.classList.add('hidden')
 			}
 		})
@@ -41,10 +38,7 @@ export class ContextMenu {
 			}
 			labelEl.textContent = label
 
-			if (
-				label.toLowerCase().includes('delete') ||
-				label.toLowerCase().includes('reset')
-			) {
+			if (label.toLowerCase().includes('delete') || label.toLowerCase().includes('reset')) {
 				let clickCount = 0
 				let timeoutId
 				btnEl.addEventListener('click', (e) => {
@@ -101,8 +95,8 @@ export class ContextMenu {
 	}
 	hide() {
 		this.el.style.opacity = 0
-		setTimeout(() => {
-			this.el.classList.add('hidden')
-		}, 500)
+		// setTimeout(() => {
+		// 	this.el.classList.add('hidden')
+		// }, 500)
 	}
 }

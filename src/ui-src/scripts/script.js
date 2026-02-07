@@ -21,6 +21,7 @@ import { createLoadingOverlay } from './ui_components/darken_overlay.js'
 import createWiki from '@scripts/ui_components/wikiTab.ts'
 import tippy from 'tippy.js'
 import '@stylesheets/subs/tippy.css'
+import getDebugStatus from './utils/getDebugStatus.ts'
 window.Global = GLOBAL
 GLOBAL.setKey('backend', 'flask')
 
@@ -62,24 +63,6 @@ async function load_config() {
 	}
 }
 
-async function getDebugStatus() {
-	let debugIndicator = document.getElementById('debug-indicator')
-	let isDebug
-	try {
-		console.log('Contacting backend if debug mode is on')
-		isDebug = await Backend.getDebugStatus()
-	} catch (e) {
-		console.log('Error while contacting backend: ', e)
-		isDebug = false
-	}
-	GLOBAL.setKey('isDebugging', isDebug)
-	if (isDebug) {
-		console.log('Debug mode is turned on.')
-		debugIndicator.classList.remove('hidden')
-	} else {
-		debugIndicator.classList.add('hidden')
-	}
-}
 export async function reinitialize() {
 	createLoadingOverlay('Reloading your hyprland config..')
 	await Backend.getHyprlandConfig()
@@ -93,11 +76,12 @@ export async function initialize() {
 	await setupTheme()
 	await getDebugStatus()
 	await createDynamicTabs()
-	getAndRenderConfig()
+	getAndRenderConfig().then(() => console.log('Done rendering received config'))
 	initializeJSViewer()
-	renderSettings()
-	initializeSearchBar()
-	createWiki()
+	renderSettings().then(() => console.log('Done rendering received settings tab'))
+	initializeSearchBar().then(() => console.log('Done initializing search bar'))
+	createWiki().then(() => console.log('Done initializing wikit tab'))
+	// createWiki()
 	tippy.setDefaultProps({ delay: 200, arrow: true })
 }
 

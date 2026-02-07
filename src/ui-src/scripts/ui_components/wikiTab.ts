@@ -42,7 +42,19 @@ async function createWikiNavigation() {
 
 	let navigationElToggle = document.createElement('div')
 	navigationElToggle.setAttribute('id', 'navigation_toggle')
-	navigationElToggle.classList.add('hidden')
+	navigationElToggle.innerText = ''
+
+	if (GLOBAL.activeTab !== 'wiki') {
+		navigationElToggle.classList.add('hidden')
+	}
+
+	GLOBAL.onChange('activeTab', (value) => {
+		if (GLOBAL.activeTab !== 'wiki') {
+			navigationElToggle.classList.add('hidden')
+		} else {
+			navigationElToggle.classList.remove('hidden')
+		}
+	})
 	navigationElToggle.addEventListener('click', (e) => {
 		if (open) {
 			navigationEl.style.display = 'none'
@@ -54,17 +66,15 @@ async function createWikiNavigation() {
 		open = !open
 	})
 
-	navigationElToggle.innerText = ''
+	navigationEl.addEventListener('click', (e) => {
+		if (!open) {
+			navigationElToggle.click()
+		}
+		open = !open
+	})
+
 	let configSetInfoEl = document.getElementById('config-set-info')
 	configSetInfoEl.appendChild(navigationElToggle)
-	GLOBAL.onChange('activeTab', (value) => {
-		console.log(value)
-		if (GLOBAL.activeTab !== 'wiki') {
-			navigationElToggle.classList.add('hidden')
-		} else {
-			navigationElToggle.classList.remove('hidden')
-		}
-	})
 
 	let viewEl_title = document.createElement('div')
 	viewEl_title.setAttribute('id', 'wikiView_title')

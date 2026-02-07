@@ -24,8 +24,7 @@ hotkeys('*', { keydown: true, keyup: true }, (event) => {
 			pressed.delete(event.key)
 		}, 200)
 	}
-	document.querySelector('#keys-display').innerHTML =
-		Array.from(pressed).join(' + ')
+	document.querySelector('#keys-display').innerHTML = Array.from(pressed).join(' + ')
 	setTimeout(() => {
 		pressed.clear()
 		document.querySelector('#keys-display').textContent = ''
@@ -42,25 +41,15 @@ hotkeys('*', (event) => {
 
 	if (event.key === 'Escape') {
 		event.preventDefault()
-	}
-	if (event.key === 'Tab') {
+	} else if (event.key === 'Tab') {
 		// event.preventDefault();
-	}
-	if (pressedKey === '/') {
-		if (GLOBAL['currentView'] !== 'search') {
+	} else if (pressedKey === '/') {
+		if (event.target.tagName !== 'INPUT' || event.target.tagName !== 'TEXTAREA') {
 			event.preventDefault()
-			GLOBAL['previousView'] = GLOBAL['currentView']
-			GLOBAL['currentView'] = 'search'
-			createOverlay()
-
 			document.getElementById('search-bar').focus()
 		}
-	}
-
-	if (event.key === 'ArrowRight' && GLOBAL['currentView'] === 'tabs') {
-		const currentSet = document.querySelector(
-			`.config-set#${GLOBAL['activeTab']}`,
-		)
+	} else if (event.key === 'ArrowRight' && GLOBAL['currentView'] === 'tabs') {
+		const currentSet = document.querySelector(`.config-set#${GLOBAL['activeTab']}`)
 		if (!currentSet) {
 			console.log(`Config set ${GLOBAL['activeTab']} doesnt exist.`)
 			return
@@ -69,13 +58,9 @@ hotkeys('*', (event) => {
 		}
 		if (
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] &&
-			currentSet.querySelector(
-				`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`,
-			)
+			currentSet.querySelector(`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`)
 		) {
-			const prevFocus = currentSet.querySelector(
-				`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`,
-			)
+			const prevFocus = currentSet.querySelector(`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`)
 			if (prevFocus) {
 				window.currentFocus = prevFocus
 				prevFocus.focus({ preventScroll: true })
@@ -83,25 +68,19 @@ hotkeys('*', (event) => {
 			}
 		} else {
 			const firstChild = Array.from(currentSet.children).find(
-				(child) =>
-					!child.classList.contains('settings-hidden') &&
-					child.getAttribute('tabindex') != null,
+				(child) => !child.classList.contains('settings-hidden') && child.getAttribute('tabindex') != null,
 			)
 			if (firstChild) {
 				window.currentFocus = firstChild
 				firstChild.focus({ preventScroll: true })
-				GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-					firstChild.dataset.uuid || 0
+				GLOBAL['mainFocus'][GLOBAL['activeTab']] = firstChild.dataset.uuid || 0
 				GLOBAL.setKey('currentView', 'main')
 			}
 		}
-	}
-
-	if (event.key === 'ArrowLeft' && GLOBAL['currentView'] === 'main') {
+	} else if (event.key === 'ArrowLeft' && GLOBAL['currentView'] === 'main') {
 		const activeElem = document.activeElement
 		if (activeElem && activeElem.dataset.uuid != null) {
-			GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-				activeElem.dataset.uuid
+			GLOBAL['mainFocus'][GLOBAL['activeTab']] = activeElem.dataset.uuid
 		}
 		window.currentFocus.blur()
 		GLOBAL.setKey('currentView', 'tabs')
@@ -114,14 +93,10 @@ hotkeys('*', (event) => {
 
 	switch (GLOBAL['currentView']) {
 		case 'main': {
-			const currentSet = document.querySelector(
-				`.config-set#${GLOBAL['activeTab']}`,
-			)
+			const currentSet = document.querySelector(`.config-set#${GLOBAL['activeTab']}`)
 			if (!currentSet) break
 
-			let activeElement = currentSet.querySelector(
-				`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`,
-			)
+			let activeElement = currentSet.querySelector(`[data-uuid='${GLOBAL['mainFocus'][GLOBAL['activeTab']]}']`)
 			if (!activeElement) {
 				activeElement = document.activeElement
 				if (activeElement.getAttribute('tabindex') == null) {
@@ -129,37 +104,23 @@ hotkeys('*', (event) => {
 				}
 			}
 
-			const children = Array.from(
-				currentSet.querySelectorAll('.editor-item'),
-			)
+			const children = Array.from(currentSet.querySelectorAll('.editor-item'))
 			let index = children.indexOf(activeElement)
 			let newIndex = index
 
 			switch (event.key) {
 				case 'ArrowDown':
 					event.preventDefault()
-					newIndex =
-						index === children.length - 1 ? 0 : index + 1
-					while (
-						children[newIndex].classList.contains(
-							'settings-hidden',
-						)
-					) {
+					newIndex = index === children.length - 1 ? 0 : index + 1
+					while (children[newIndex].classList.contains('settings-hidden')) {
 						newIndex = (newIndex + 1) % children.length
 					}
 					break
 				case 'ArrowUp':
 					event.preventDefault()
-					newIndex =
-						index === 0 ? children.length - 1 : index - 1
-					while (
-						children[newIndex].classList.contains(
-							'settings-hidden',
-						)
-					) {
-						newIndex =
-							(newIndex - 1 + children.length) %
-							children.length
+					newIndex = index === 0 ? children.length - 1 : index - 1
+					while (children[newIndex].classList.contains('settings-hidden')) {
+						newIndex = (newIndex - 1 + children.length) % children.length
 					}
 					break
 			}
@@ -169,16 +130,12 @@ hotkeys('*', (event) => {
 			if (!newActiveElement) break
 			window.currentFocus = newActiveElement
 			newActiveElement.focus()
-			GLOBAL['mainFocus'][GLOBAL['activeTab']] =
-				newActiveElement.dataset.uuid
+			GLOBAL['mainFocus'][GLOBAL['activeTab']] = newActiveElement.dataset.uuid
 
 			if (newActiveElement.classList.contains('config-group')) {
 				// console.log(newActiveElement.classList)
 				const offset = 80
-				const top =
-					newActiveElement.getBoundingClientRect().top +
-					window.scrollY -
-					offset
+				const top = newActiveElement.getBoundingClientRect().top + window.scrollY - offset
 				window.scrollTo({ top, behavior: 'smooth' })
 			} else {
 				newActiveElement.scrollIntoView({
@@ -199,30 +156,19 @@ hotkeys('*', (event) => {
 			let index = children.indexOf(currentSelected)
 			let newIndex = index
 
-			// console.debug(GLOBAL['currentView'])
 			switch (event.key) {
 				case 'ArrowDown':
 					event.preventDefault()
-					newIndex =
-						index === children.length - 1 ? 0 : index + 1
-					while (
-						children[newIndex].tagName === 'DIV' ||
-						children[newIndex].classList.contains('hidden')
-					) {
+					newIndex = index === children.length - 1 ? 0 : index + 1
+					while (children[newIndex].tagName === 'DIV' || children[newIndex].classList.contains('hidden')) {
 						newIndex = (newIndex + 1) % children.length
 					}
 					break
 				case 'ArrowUp':
 					event.preventDefault()
-					newIndex =
-						index === 0 ? children.length - 1 : index - 1
-					while (
-						children[newIndex].tagName === 'DIV' ||
-						children[newIndex].classList.contains('hidden')
-					) {
-						newIndex =
-							(newIndex - 1 + children.length) %
-							children.length
+					newIndex = index === 0 ? children.length - 1 : index - 1
+					while (children[newIndex].tagName === 'DIV' || children[newIndex].classList.contains('hidden')) {
+						newIndex = (newIndex - 1 + children.length) % children.length
 					}
 					break
 			}
@@ -238,13 +184,10 @@ hotkeys('*', (event) => {
 				block: 'nearest',
 			})
 			GLOBAL['activeTab'] = newSelected.id
-			// console.log(GLOBAL['currentView'])
 			break
 		}
 
 		case 'search': {
-			// GLOBAL['previousView'] = GLOBAL['currentView']
-			// GLOBAL['currentView'] = 'search'
 			break
 		}
 
@@ -253,10 +196,7 @@ hotkeys('*', (event) => {
 		}
 
 		case 'default': {
-			console.log(
-				'No current handler for this view: ',
-				GLOBAL['currentView'],
-			)
+			console.log('No current handler for this view: ', GLOBAL['currentView'])
 		}
 	}
 })
@@ -264,9 +204,7 @@ hotkeys('*', (event) => {
 GLOBAL.onChange('currentView', (/** @type {string} */ value) => {
 	switch (value) {
 		case 'main':
-			document
-				.querySelector('.sidebar-item.keyboard-selected')
-				?.classList.remove('keyboard-selected')
+			document.querySelector('.sidebar-item.keyboard-selected')?.classList.remove('keyboard-selected')
 			break
 		case 'tabs':
 			const selectedTab = document.querySelector(`li.selected`)

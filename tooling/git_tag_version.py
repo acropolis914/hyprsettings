@@ -1,9 +1,9 @@
-import subprocess
 import re
 from pathlib import Path
 from rich.console import Console
 from rich.prompt import Prompt
 from rich.text import Text
+import subprocess
 
 console = Console()
 
@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).parent.resolve()
 # 1️⃣ Get Git version
 result = subprocess.run(['git', 'describe', '--long', '--tags', '--abbrev=7'], capture_output=True, text=True, check=True)
 git_desc = result.stdout.strip()
-git_version = re.sub(r'-(\d+)-g([0-9a-f]+)$', r'.r\1.g\2', git_desc)
+git_version = re.sub(r'-(\d+)-g([0-9a-f]+)$', lambda m: f'.{int(m.group(1)) + 1}', git_desc)
 git_version = git_version.replace('-', '.')
 console.print(f'[bold green]Current version:[/bold green] {git_version}\n')
 

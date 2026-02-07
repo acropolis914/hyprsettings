@@ -44,7 +44,6 @@ export class ConfigRenderer {
 		this.json = json
 		this.current_container = []
 		if (renderTo) {
-			// console.log('renderTo', renderTo)
 			this.temporaryElement = document.createElement('div')
 			this.temporaryElement.style.display = 'none'
 			document.body.appendChild(this.temporaryElement)
@@ -71,7 +70,7 @@ export class ConfigRenderer {
 	}
 	async invokeParser() {
 		await this.parse(this.json)
-		console.log(this.comment_stack, this.comment_queue)
+		// console.log(this.comment_stack, this.comment_queue)
 		while (this.renderTo && this.temporaryElement.firstChild) {
 			let el = this.temporaryElement.firstElementChild
 			if (this.renderAfter) {
@@ -172,7 +171,7 @@ export class ConfigRenderer {
 				}
 				//
 				if (this.comment_queue.length > 0) {
-					renderCommentQueue()
+					renderCommentQueue(false)
 				}
 				let group_el = new ConfigGroup(json).return()
 
@@ -183,7 +182,7 @@ export class ConfigRenderer {
 				// 		this.comment_queue.splice(0, 1)
 				// 	}
 				// }
-				let matched
+				let matched: boolean
 				if (!this.renderTo) {
 					for (const [key, value] of configGroups) {
 						if (json.name.trim().startsWith(key)) {
@@ -208,7 +207,7 @@ export class ConfigRenderer {
 			}
 		} else if (json['position'] && json['type'] === 'GROUPEND' && json['position'].split(':').length > 1) {
 			if (this.comment_queue.length > 0) {
-				renderCommentQueue()
+				renderCommentQueue(false)
 			}
 			this.current_container.pop()
 		} else if (json['type'] === 'KEY') {
@@ -219,7 +218,6 @@ export class ConfigRenderer {
 				} else {
 					genericItem = new EditorItem_Generic(json, json['disabled'])
 				}
-
 				let tabToAddTo
 				for (const [key, value, exclude] of keyNameStarts) {
 					if (this.current_container.at(-1).classList.contains('config-group')) {
@@ -253,12 +251,8 @@ export class ConfigRenderer {
 				console.log(e, json)
 			}
 		} else if (json['type'] === 'FILE') {
-			if (this.comment_queue.length > 0) {
-				renderCommentQueue()
-			}
-			if (this.comment_stack.length > 0) {
-				renderCommentStack()
-			}
+			renderCommentQueue()
+			renderCommentStack()
 			try {
 				if (this.comment_queue.length > 0) {
 					renderCommentQueue(true)
@@ -276,16 +270,16 @@ export class ConfigRenderer {
 					renderCommentStack()
 				}
 			} catch (e) {
-				console.error(e, json)
+				console.warn(e, json)
 			}
-			console.log()
+			// console.log()
 		} else {
-			console.error('Failed to render an item: ', json, 'Skipping')
+			console.warn('Failed to render an item: ', json, 'Skipping')
 		}
 
 		//recursive children rendering
 		if (json['children'] && json['name'] === 'root') {
-			console.log(json)
+			// console.log(json)
 			for (const child of json.children) {
 				await this.parse(child)
 			}
