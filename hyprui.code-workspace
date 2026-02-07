@@ -9,6 +9,9 @@
 		{
 			"path": "../git-clones/Hyprland",
 		},
+		{
+			"path": "../hyprsettings-git",
+		},
 	],
 	"settings": {
 		"files.associations": {
