@@ -280,6 +280,15 @@ footer {
 			font-size: 3rem !important;
 		}
 	}
+
+	.footer-outdated-text {
+		display: inline-block;
+		width: 0ch;
+		overflow: hidden;
+		transition: all 1s ease;
+		line-height: 0.9;
+		transform: translateY(0.05rem);
+	}
 }
 
 /* =================================

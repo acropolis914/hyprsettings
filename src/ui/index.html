@@ -24,8 +24,21 @@ Manually adding tabs might come at a later update.-->
 		<script type="module" crossorigin src="/index.js"></script>
 		<link rel="modulepreload" crossorigin href="/chunks/vendor-D8lt7FiJ.js">
 		<link rel="stylesheet" crossorigin href="/assets/vendor-gRdVuIfX.css">
-		<link rel="stylesheet" crossorigin href="/assets/index-BmnGrBDc.css">
+		<link rel="stylesheet" crossorigin href="/assets/index-DJi3AZVK.css">
 	</head>
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-1HDCZV8DTZ"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-1HDCZV8DTZ',{
+			'cookie_domain': 'none'
+		});
+	</script>
+
 	<body>
 		<header  id="main-header" >
 			<span id="header-title" onclick="reinitialize();" oldonclick="location.reload()" title="Click to reinitialize session">
@@ -67,6 +80,7 @@ Manually adding tabs might come at a later update.-->
 				<a target="_blank" href="https://github.com/AcroPolis914/hyprsettings"
 					>HyprSettings</a
 				>
+				<span class="footer-outdated-text warn" title="Go to settings tab for more info">Outdated</span>
 			</p>
 		</footer>
 

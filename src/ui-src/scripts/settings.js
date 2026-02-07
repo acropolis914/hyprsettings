@@ -364,5 +364,8 @@ export async function getHyprsettingsGithubVersion(element) {
 <span class="outdated-message">Please update by running the same command</span>
 <span class="outdated-message">you used for installing this.</span>
 `
+		let footerOutdatedEl = document.querySelector('.footer-outdated-text')
+		footerOutdatedEl.classList.remove('hidden')
+		footerOutdatedEl.style.width = '9ch'
 	}
 }

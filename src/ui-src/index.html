@@ -29,6 +29,19 @@ Manually adding tabs might come at a later update.-->
 <!--		 <script src="https://cdnjs.cloudflare.com/ajax/libs/eruda/3.4.3/eruda.min.js" integrity="sha512-cDmB70h28kl47NuDUcO3/hqJ29T+Gxue9DA6hoENF9RPGN/AZuyI94ATk5MN9VXTiuTHw2v3iVT9sXLzMMF1sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
 <!--		 <script>eruda.init();</script>-->
 	</head>
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-1HDCZV8DTZ"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-1HDCZV8DTZ',{
+			'cookie_domain': 'none'
+		});
+	</script>
+
 	<body>
 		<header  id="main-header" >
 			<span id="header-title" onclick="reinitialize();" oldonclick="location.reload()" title="Click to reinitialize session">
@@ -70,6 +83,7 @@ Manually adding tabs might come at a later update.-->
 				<a target="_blank" href="https://github.com/AcroPolis914/hyprsettings"
 					>HyprSettings</a
 				>
+				<span class="footer-outdated-text warn" title="Go to settings tab for more info">Outdated</span>
 			</p>
 		</footer>
 
