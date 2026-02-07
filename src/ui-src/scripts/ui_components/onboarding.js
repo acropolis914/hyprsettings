@@ -18,7 +18,7 @@ onboardingUI.addEventListener('transitionend', () => {
 finishBtn.addEventListener('click', finishOnboarding)
 
 function finishOnboarding() {
-	if (isFading) return // Prevent multiple clicks during fade
+	if (isFading) return
 	isFading = true
 	console.log('finish onboarding')
 	onboardingUI.style.opacity = 0
@@ -26,7 +26,6 @@ function finishOnboarding() {
 	saveWindowConfig()
 }
 
-// Explicitly show/hide with F1
 document.addEventListener('keydown', (event) => {
 	if (event.key === 'F1') {
 		event.preventDefault()

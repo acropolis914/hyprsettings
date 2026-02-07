@@ -26,7 +26,7 @@ export async function destroyOverlay() {
 	}
 }
 
-export function createLoadingOverlay(message = 'Loading your Hyprland config') {
+export default function createLoadingOverlay(message = 'Loading your Hyprland config') {
 	const overlay = document.createElement('div')
 	overlay.id = 'loading-overlay'
 	overlay.className = 'darken-overlay'

@@ -26,12 +26,6 @@ async function createWikiNavigation() {
 	navigationEl.setAttribute('id', 'wikiNavigation')
 	navigationEl.setAttribute('tabindex', '0')
 	navigationEl.dataset.uuid = 'wikiNavigation'
-	navigationEl.addEventListener('focus', (e) => {
-		if (e.target != navigationEl) {
-			return
-		}
-		navigationEl.firstElementChild.focus()
-	})
 
 	let open = true
 
@@ -164,11 +158,11 @@ async function createWikiNavigation() {
 				let parsed = await parseMarkdown(value)
 				parsed.value = `
 					<blockquote class="info">
-					This wiki is sourced from the hyprwm/hyprland-wiki github page. It was pulled with version <strong>${GLOBAL.wikiVersion.split('\n')[0]}</strong>.
-					
+					This wiki is sourced from the hyprwm/hyprland-wiki github page. It was pulled with version <strong>${GLOBAL.wikiVersion.split('\n')[0]}.</strong>
+					<br>
 					All rights reserved to vaxry and the hyprland contributors! See <a href="./LICENSE">LICENSE</a> for the hyprland wiki.
 					</blockquote>
-					<br><br>${parsed.value}
+					${parsed.value}
 					`
 				let markdown_json_parsed = JSON.stringify(parsed)
 				el.dataset.value = markdown_json_parsed
@@ -388,9 +382,6 @@ async function setViewElValue(value: string, position: string, title = '') {
 			// viewEl_title.classList.add('hidden')
 		}
 
-		if (parsed.data) {
-			// console.log(parsed.data)
-		}
 		viewEl_position.innerHTML = ` ${position.split(':').join('  ')} `
 
 		viewEl_content.innerHTML = parsed['value']
@@ -398,27 +389,35 @@ async function setViewElValue(value: string, position: string, title = '') {
 		viewEl_content.querySelectorAll('a').forEach((element: HTMLElement) => {
 			fixLinxElement(element, position)
 		})
-		viewEl_content.querySelectorAll('pre').forEach((element: HTMLElement) => {
-			let code = element.querySelector('code') || element
-			code.classList.add('copy-to-clipboard-button')
-			let shebang = code.innerText.toLowerCase().split('\n')[0]
-			if (shebang && shebang.trim().endsWith('sh')) {
-				code.classList.add('language-bash')
-				element.classList.add('language-bash')
-				Prism.highlightElement(code)
-			} else if (code.innerText.toLowerCase().includes('vga compatible')) {
-				console.log(code.innerText)
-				code.classList.add('language-shell-session')
-				element.classList.add('language-shell-session')
-				code.classList.add('language-bash')
-				element.classList.add('language-bash')
-				Prism.highlightElement(code)
-			} else {
-				code.classList.add('language-ini')
-				element.classList.add('language-ini')
-				Prism.highlightElement(code)
-			}
-		})
+		const wikiWarning = viewEl_content.querySelector('p:has(> em > strong)')
+		if (wikiWarning) {
+			wikiWarning.style.border = '1px solid #ff4444'
+			wikiWarning.classList.add('hidden')
+		}
+		let codePreEl = viewEl_content.querySelectorAll('pre')
+		if (codePreEl) {
+			codePreEl.forEach((element: HTMLElement) => {
+				let code = element.querySelector('code') || element
+				code.classList.add('copy-to-clipboard-button')
+				let shebang = code.innerText.toLowerCase().split('\n')[0]
+				if (shebang && shebang.trim().endsWith('sh')) {
+					code.classList.add('language-bash')
+					element.classList.add('language-bash')
+					Prism.highlightElement(code)
+				} else if (code.innerText.toLowerCase().includes('vga compatible')) {
+					console.log(code.innerText)
+					code.classList.add('language-shell-session')
+					element.classList.add('language-shell-session')
+					code.classList.add('language-bash')
+					element.classList.add('language-bash')
+					Prism.highlightElement(code)
+				} else {
+					code.classList.add('language-ini')
+					element.classList.add('language-ini')
+					Prism.highlightElement(code)
+				}
+			})
+		}
 		viewEl.scrollTo({ top: 0, behavior: 'smooth' })
 	}
 }

@@ -16,7 +16,7 @@ html {
 	height: 100%;
 	background-color: var(--surface-0);
 	color: var(--text-0);
-	font-family: var(--font-primary), 'CommitMonoIconFont', monospace !important;
+	font-family: var(--font-primary), v.$font;
 	font-size: 52.5%;
 	opacity: 0;
 	transition: opacity 0.2s ease-in-out;
@@ -313,6 +313,7 @@ footer {
 
 	&.keyboard-selected {
 		&::after {
+			font: v.$font-nerd;
 			content: '';
 			position: absolute;
 			left: 2px;
@@ -585,6 +586,7 @@ h1#config-set-title {
 
 				&::after {
 					content: '';
+					font: v.$font-nerd;
 					position: absolute;
 					left: -1.5rem;
 					top: 50%;

@@ -6,10 +6,9 @@ let themeButton = document.getElementById('theme-toggle')
 const root = document.querySelector(':root')
 let headers = ['description', 'link', 'author', 'variant']
 
-export async function setupTheme() {
+export default async function setupTheme() {
 	let currentTheme = GLOBAL['config']['current_theme']
-	document.documentElement.style.opacity =
-		GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
+	document.documentElement.style.opacity = GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
 	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])
 
 	const index = window.themes.findIndex((t) => t.name === currentTheme)
@@ -19,9 +18,7 @@ export async function setupTheme() {
 		console.log(`Initially setting ${theme.name} as theme from config`)
 		applyThemeVars(theme)
 	} else {
-		console.log(
-			`No theme found matching ${currentTheme}, defaulting to first theme`,
-		)
+		console.log(`No theme found matching ${currentTheme}, defaulting to first theme`)
 		applyThemeVars(window.themes[0])
 		GLOBAL.currentThemeIndex = 0
 	}
@@ -34,10 +31,7 @@ themeButton.addEventListener('click', (e) => {
 })
 
 export function incrementCurrentTheme() {
-	GLOBAL.setKey(
-		'currentThemeIndex',
-		(GLOBAL.currentThemeIndex + 1) % window.themes.length,
-	)
+	GLOBAL.setKey('currentThemeIndex', (GLOBAL.currentThemeIndex + 1) % window.themes.length)
 	let theme = GLOBAL.themes[GLOBAL['currentThemeIndex']]
 	changeTheme(theme)
 }
@@ -60,11 +54,8 @@ function applyThemeVars(theme) {
 
 export function changeTheme(theme) {
 	console.log(`Changing theme to ${theme.name}`)
-	let settingsThemeChanger = document.getElementById(
-		'theme-selector-setting',
-	)
-	let settingsThemeChangerSelect =
-		settingsThemeChanger.querySelector('select')
+	let settingsThemeChanger = document.getElementById('theme-selector-setting')
+	let settingsThemeChangerSelect = settingsThemeChanger.querySelector('select')
 	settingsThemeChangerSelect.value = theme.name
 	// settingsThemeChanger.value = theme.name
 	applyThemeVars(theme)
@@ -115,9 +106,7 @@ export function getSwatch() {
 	if (!currentTheme) return []
 
 	const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
-	const colors = Object.values(currentTheme).filter(
-		(value) => typeof value === 'string' && hexRegex.test(value),
-	)
+	const colors = Object.values(currentTheme).filter((value) => typeof value === 'string' && hexRegex.test(value))
 	// Ensure uniqueness
 	return [...new Set(colors)]
 }
@@ -147,7 +136,5 @@ function luminance([r, g, b]) {
 }
 
 export function sortSwatchesByValue(colors) {
-	return colors
-		.slice()
-		.sort((a, b) => luminance(hexToRgb(a)) - luminance(hexToRgb(b)))
+	return colors.slice().sort((a, b) => luminance(hexToRgb(a)) - luminance(hexToRgb(b)))
 }

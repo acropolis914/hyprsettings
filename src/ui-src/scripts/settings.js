@@ -6,7 +6,7 @@ import { Backend } from '@scripts/backendAPI.js'
 let settingsEl = document.querySelector('.config-set#settings')
 let VERSION = '0.9.0'
 
-export async function renderSettings() {
+export default async function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
 	await createAbout()
 	getHyprsettingsVersion()

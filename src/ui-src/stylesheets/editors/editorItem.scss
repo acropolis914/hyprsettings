@@ -184,7 +184,7 @@
 	&#theme-selector-setting {
 		select {
 			margin: 0 1rem 0 auto;
-			font-family: var(--font-primary), monospace;
+			font-family: v.$font;
 			option {
 				background: #111;
 				color: #fff;

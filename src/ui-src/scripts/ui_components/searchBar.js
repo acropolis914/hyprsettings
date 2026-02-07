@@ -6,7 +6,7 @@ import hotkeys from 'hotkeys-js'
 let searchBar
 let searchResultEl
 
-export async function initializeSearchBar() {
+export default async function initializeSearchBar() {
 	searchBar = document.getElementById('search-bar')
 	searchResultEl = document.querySelector('#results')
 
@@ -49,7 +49,7 @@ export async function initializeSearchBar() {
 		const results = fuse.search(searchBar.value)
 		results.forEach((result) => {
 			const resultDiv = document.createElement('div')
-			resultDiv.classList.add('result')
+			resultDiv.classList.add('result', 'search-result')
 			resultDiv.setAttribute('tabindex', '0')
 			const configLineDiv = document.createElement('div')
 			configLineDiv.classList.add('config-line')
@@ -133,11 +133,10 @@ export async function initializeSearchBar() {
 			resultDiv.addEventListener('click', (e) => {
 				let goto = document.querySelector(`.editor-item[data-uuid="${result.item.uuid}"]`)
 				let closest = goto.closest('.config-set').id
-				document.querySelector(`aside>ul>li#${closest}`).click()
+				document.querySelector(`aside>ul>li#${closest}`).click() //tab navigation to show tab first
+
 				goto.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
-				goto.focus()
-				goto.click()
 				if (GLOBAL.config.ui_animations) {
 					goto.style.scale = '1.03'
 					setTimeout(() => {
@@ -146,6 +145,8 @@ export async function initializeSearchBar() {
 					}, 300)
 				}
 				cleanUp(true)
+				goto.focus()
+				goto.click()
 			})
 
 			resultDiv.addEventListener('focus', (e) => {
@@ -221,19 +222,33 @@ export async function initializeSearchBar() {
 		let clickedInsideSearchbar = searchBar.contains(e.target)
 		let clickedInsideSearchResults = searchResultEl.contains(e.target)
 		if (!clickedInsideSearchbar && !clickedInsideSearchResults && GLOBAL['currentView'] === 'search') {
-			GLOBAL.setKey('currentView', GLOBAL.previousView)
-			GLOBAL.setKey('previousView', 'search')
+			console.log('pota')
 			cleanUp()
 		}
 	})
 
 	function cleanUp(resultClicked = false) {
+		console.log('Cleaning up result')
+		const stack = new Error().stack
+		console.log(stack)
 		searchResultEl.style.display = 'none'
 		searchBar.value = ''
 		searchBar.blur()
 		destroyOverlay()
-		GLOBAL.setKey('currentView', GLOBAL.previousView)
-		GLOBAL.setKey('previousView', 'search')
+
+		document.querySelectorAll('.search-result').forEach((el) => {
+			el.remove()
+		})
+		console.log('current:', GLOBAL.currentView, 'prev:', GLOBAL.previousView)
+		if (GLOBAL['currentView'] === 'search') {
+			if (!resultClicked) {
+				GLOBAL.setKey('currentView', GLOBAL.previousView)
+			} else {
+				GLOBAL.setKey('currentView', 'main')
+			}
+			GLOBAL.setKey('previousView', 'search')
+		}
+		console.log('current:', GLOBAL.currentView, 'prev:', GLOBAL.previousView)
 	}
 }
 

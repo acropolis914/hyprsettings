@@ -1,27 +1,33 @@
 //@ts-check
 /* eslint-env browser */
 /* global pywebview, TomSelect */
-import getAndRenderConfig from './configRenderer.ts'
+import '@stylesheets/style.scss'
+import '@stylesheets/subs/tippy.css'
+
 import './ui_components/documentListeners.js'
 import './ui_components/onboarding.js'
 import './ui_components/testingScreen.js'
-import './hyprland-components/keyEditor_Slider.js'
 import './ui_components/searchBar.js'
-import { GLOBAL } from './GLOBAL.js'
-import initializeJSViewer from './ui_components/jsViewer.js'
-import { setupTheme } from './setupTheme.js'
-import { createDynamicTabs } from './ui_components/createDynamicTabs.js'
-import { renderSettings } from './settings.js'
-import { initializeSearchBar } from './ui_components/searchBar.js'
-import { Backend } from './backendAPI.js'
-import '@stylesheets/style.scss'
+import './hyprland-components/keyEditor_Slider.js'
 import '@scripts/ui_components/shareConfig.ts'
 
-import { createLoadingOverlay } from './ui_components/darken_overlay.js'
-import createWiki from '@scripts/ui_components/wikiTab.ts'
-import tippy from 'tippy.js'
-import '@stylesheets/subs/tippy.css'
+import { GLOBAL } from './GLOBAL.js'
+import { Backend } from './backendAPI.js'
+import setupTheme from './setupTheme.js'
+
+import initializeJSViewer from './ui_components/jsViewer.js'
+import initializeSearchBar from './ui_components/searchBar.js'
+import createDynamicTabs from './ui_components/createDynamicTabs.js'
+import createLoadingOverlay from './ui_components/darken_overlay.js'
+import createWiki from './ui_components/wikiTab.ts'
+
+import getAndRenderConfig from './configRenderer.ts'
+import renderSettings from './settings.js'
+
 import getDebugStatus from './utils/getDebugStatus.ts'
+
+import tippy from 'tippy.js'
+
 window.Global = GLOBAL
 GLOBAL.setKey('backend', 'flask')
 
