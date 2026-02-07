@@ -404,7 +404,7 @@ if __name__ == '__main__':
 		log(f'Using UI {state.args.ui}')
 	log(f'Debug mode: {state.args.debug}')
 	log(f'Verbose: {state.args.verbose}')
-	log(f'Daemon: {state.args.no_daemon or state.args.daemon}')
+	log(f'Daemon: {not state.args.no_daemon and state.args.daemon}')
 	log(f'Window: {not state.args.no_window}')
 
 	if state.args.hidden:
@@ -415,7 +415,7 @@ if __name__ == '__main__':
 			state.hyprland_config_path = Path(str(state.args.config).strip('"').strip("'"))
 		else:
 			warn(f'Given config file is not a ".conf file". Using default config path {state.hyprland_config_path}')
-	state.daemon = state.args.no_daemon or state.args.daemon
+	state.daemon = not state.args.no_daemon and state.args.daemon
 	log(state.args.no_daemon)
 	log(state.args.daemon)
 	log(state.daemon)
