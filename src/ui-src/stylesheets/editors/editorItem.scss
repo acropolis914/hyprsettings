@@ -82,13 +82,13 @@
 		margin-top: 1rem;
 		width: 100%;
 
-		@media (max-width: 40rem) {
+		@media (max-width: 768px) {
 			flex-direction: column !important;
 		}
 
 		textarea,
 		input {
-			border: orange 1px solid;
+			//border: orange 1px solid;
 		}
 		> textarea {
 			height: 3rem;

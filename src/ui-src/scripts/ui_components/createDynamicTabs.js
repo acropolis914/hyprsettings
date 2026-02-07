@@ -58,9 +58,7 @@ class ConfigTab {
 		item.dataset.label = this.name
 		// console.log(item.dataset.label)
 		if (this.shown) {
-			document
-				.querySelectorAll('aside#sidebar>ul>li')
-				.forEach((i) => i.classList.remove('selected'))
+			document.querySelectorAll('aside#sidebar>ul>li').forEach((i) => i.classList.remove('selected'))
 			item.classList.add('selected')
 		}
 		item.addEventListener('click', () => {
@@ -81,32 +79,32 @@ class ConfigTab {
 		item.id = this.id
 		item.classList.add('hidden')
 		if (this.shown) {
-			document
-				.querySelectorAll('#content-area>.config-set')
-				.forEach((i) => i.classList.add('hidden'))
+			document.querySelectorAll('#content-area>.config-set').forEach((i) => i.classList.add('hidden'))
 			item.classList.remove('hidden')
-			document.getElementById('config-set-title').textContent =
-				this.name
+			document.getElementById('config-set-title').textContent = this.name
 		}
 		this.configview.appendChild(item)
 	}
 
 	handleTabClick(id) {
 		document.querySelectorAll('.config-set').forEach((element) => {
-			element.id === id
-				? element.classList.remove('hidden')
-				: element.classList.add('hidden')
+			element.id === id ? element.classList.remove('hidden') : element.classList.add('hidden')
+			// if (element.innerHTML === '') {
+			// 	let content = document.createElement('div')
+			// 	content.id = 'empty-config-set'
+			// 	content.innerHTML = 'No entires here'
+			// 	element.appendChild(content)
+			// }
 		})
 		document.querySelectorAll('.sidebar-item').forEach((element) => {
-			element.id === id
-				? element.classList.add('selected')
-				: element.classList.remove('selected', 'keyboard-selected')
+			element.id === id ? element.classList.add('selected') : element.classList.remove('selected', 'keyboard-selected')
 		})
 		const sidebarItem = document.querySelector(`aside#sidebar>ul>#${id}`)
 		const sidebarItemTitle = sidebarItem.dataset.label
 		const configSetTitle = document.querySelector('#config-set-title')
 		configSetTitle.textContent = sidebarItemTitle
-		if (sidebarItemTitle.toLowerCase() === 'settings') {
+		if (id === 'settings') {
+			console.log(id)
 			configSetTitle.classList.add('hidden')
 		} else {
 			configSetTitle.classList.remove('hidden')
@@ -142,9 +140,7 @@ export async function createDynamicTabs() {
 
 		if (GLOBAL['persistence']['last_tab']) {
 			let id = GLOBAL['persistence']['last_tab']
-			let selected_tab = document.querySelector(
-				`aside#sidebar>ul>#${id}`,
-			)
+			let selected_tab = document.querySelector(`aside#sidebar>ul>#${id}`)
 			if (selected_tab) {
 				selected_tab.click()
 			}

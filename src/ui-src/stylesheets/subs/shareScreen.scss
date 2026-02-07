@@ -1,28 +1,42 @@
 @use '../_variables.scss' as v;
+
 #compressor_screen {
+	background-color: var(--surface-0);
 	.share-config {
-		height: 100%;
 		display: flex;
 		flex-direction: column;
+		height: 90%;
 		padding: 1rem;
 		gap: 0.5rem;
 
+		/* ===== Toolbar ===== */
 		.toolbar {
-			flex: 0 0 auto;
+			> * {
+				height: 3rem;
+			}
 			display: flex;
 			flex-wrap: wrap;
 			align-items: center;
 			gap: 0.5rem;
+			margin-bottom: 1rem;
+			flex: 0 0 auto; // don't stretch
 
 			button {
 				padding: 0.4rem 0.8rem;
+				color: var(--text-contrast);
 				cursor: pointer;
+				//background-color: transparent;
+				aspect-ratio: 1/1;
 			}
 
 			input[type='text'] {
-				font-size: 16pxrem;
+				font-size: 1rem;
 				padding: 0.3rem 0.5rem;
 				width: 150px;
+				background-color: var(--surface-0);
+				outline: none;
+				border: none;
+				font-size: 1.6rem;
 			}
 
 			input[type='range'] {
@@ -31,43 +45,36 @@
 			}
 
 			.file-size {
-				font-size: 1.6rem;
+				margin-left: auto; // push to right
+				font-size: 1rem;
 				color: #555;
-				margin-left: auto; // pushes it to the right
 			}
 		}
 
+		/* ===== Textarea ===== */
 		textarea {
-			flex: 1 1 auto;
+			flex: 1 1 auto; // take remaining space
 			width: 100%;
 			min-height: 100px;
-			height: 90%;
 			font-family: v.$font;
-			font-size: 1.6rem;
-			//line-height: 1.2rem;
-			padding-right: 0;
-			margin-right: 0;
-			resize: none;
+			//font-size: 1rem;
+			padding: 1rem;
+			padding-right: 0.5rem;
 			border: none;
-			scrollbar-gutter: both-edges;
-			padding-left: 2rem;
-			overflow-wrap: break-word; // wrap long lines at textarea bounds
-			white-space: normal;
-			word-break: break-word; // for long continuous strings like braille
+			outline: none;
+			resize: none;
+
+			overflow: auto; // scroll when content exceeds
+			white-space: pre-wrap; // wrap text, keep line breaks
+			overflow-wrap: break-word; // wrap long words
+			word-break: break-word;
+
 			background-color: var(--surface-0);
 			color: var(--text-0);
-			outline: none;
 		}
 
 		textarea.decompressed {
-			white-space: pre-wrap !important;
+			white-space: pre-wrap !important; // preserve formatting
 		}
-	}
-
-	::-webkit-scrollbar {
-		width: 8px; /* width of vertical scrollbar */
-		height: 8px; /* height of horizontal scrollbar */
-		background: transparent; /* make background transparent */
-		position: absolute !important; /* optional, modern Chrome supports floating */
 	}
 }

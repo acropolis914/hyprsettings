@@ -11,7 +11,7 @@
 }
 
 *::-webkit-scrollbar-track {
-	background: transparent !important;
+	background: var(--surface-1);
 }
 
 *::-webkit-scrollbar-thumb {

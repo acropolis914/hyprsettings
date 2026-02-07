@@ -34,39 +34,37 @@ async function createWikiNavigation() {
 	})
 
 	let open = true
-	// navigationEl.addEventListener('transitionend', (e) => {
-	// 	if (
-	// 		e.propertyName === 'opacity' &&
-	// 		getComputedStyle(e.target).opacity === '0'
-	// 	) {
-	// 		navigationEl.classList.add('hidden')
-	// 	} else if (
-	// 		e.propertyName === 'opacity' &&
-	// 		getComputedStyle(e.target).opacity > '0' &&
-	// 		open
-	// 	) {
-	// 		navigationEl.classList.remove('hidden')
-	// 	}
-	// })
-
-	let navigationElToggle = document.createElement('div')
-	navigationElToggle.setAttribute('id', 'navigation_toggle')
-	navigationElToggle.addEventListener('click', (e) => {
-		if (open) {
-			navigationEl.style.top = '-100rem'
-		} else {
-			navigationEl.style.top = '0'
-		}
-		open = !open
-	})
-
-	navigationElToggle.innerText = ''
-	wikiRoot_el.appendChild(navigationElToggle)
 
 	let viewEl = document.createElement('div')
 	viewEl.setAttribute('id', 'wikiView')
 	viewEl.setAttribute('tabindex', '0')
 	viewEl.dataset.uuid = 'wikiView'
+
+	let navigationElToggle = document.createElement('div')
+	navigationElToggle.setAttribute('id', 'navigation_toggle')
+	navigationElToggle.classList.add('hidden')
+	navigationElToggle.addEventListener('click', (e) => {
+		if (open) {
+			navigationEl.style.display = 'none'
+			viewEl.style.display = 'block'
+		} else {
+			navigationEl.style.display = 'block'
+			viewEl.style.display = 'none'
+		}
+		open = !open
+	})
+
+	navigationElToggle.innerText = ''
+	let configSetInfoEl = document.getElementById('config-set-info')
+	configSetInfoEl.appendChild(navigationElToggle)
+	GLOBAL.onChange('activeTab', (value) => {
+		console.log(value)
+		if (GLOBAL.activeTab !== 'wiki') {
+			navigationElToggle.classList.add('hidden')
+		} else {
+			navigationElToggle.classList.remove('hidden')
+		}
+	})
 
 	let viewEl_title = document.createElement('div')
 	viewEl_title.setAttribute('id', 'wikiView_title')
@@ -117,7 +115,7 @@ async function createWikiNavigation() {
 				el.classList.add('wiki-file')
 				el.innerHTML = el.dataset.cleanName
 				let parsed = await parseMarkdown(value)
-				// el.dataset.value = JSON.stringify(parsed)
+				el.dataset.value = JSON.stringify(parsed)
 				let uuid = makeUUID() //TODO
 				el.dataset.wikiEntry = uuid
 				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
@@ -163,7 +161,7 @@ async function createWikiNavigation() {
 					<br><br>${parsed.value}
 					`
 				let markdown_json_parsed = JSON.stringify(parsed)
-				// el.dataset.value = markdown_json_parsed
+				el.dataset.value = markdown_json_parsed
 				let uuid = makeUUID() //todo
 				el.dataset.wikiEntry = uuid
 				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)

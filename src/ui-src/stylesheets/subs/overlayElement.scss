@@ -8,7 +8,7 @@
 	width: 100vw;
 	transform: translateX(-50%) translateY(-50%);
 	//transition: all 0.4s ease;
-	transition: opacity 0.5s ease;
+	//transition: opacity 0.5s ease;
 }
 
 #onboarding {
@@ -110,15 +110,15 @@
 	@extend %overlay;
 	height: 90vh;
 	width: 90vw;
-	background-color: rgba(var(--surface-0), \1);
+	background-color: var(--surface-0);
 	//background-color: var(--surface-0);
 	//display: flex;
 	display: block;
 	justify-items: center;
-	backdrop-filter: blur(10px) brightness(0.4);
+	//backdrop-filter: blur(10px) brightness(0.4);
 	color: var(--text-1);
-	border-bottom: 1px solid var(--text-0);
-	box-shadow: var(--accent) 0px 0px 5px;
+	//border-bottom: 1px solid var(--text-0);
+	box-shadow: var(--surface-2) 0px 0px 5px;
 	border-radius: var(--border-rad);
 	//height: 100vh;
 
@@ -180,7 +180,7 @@
 		}
 		pre {
 			max-height: 90%;
-			background-color: var(--surface-2);
+			background-color: var(--surface-1);
 			outline: none;
 			* {
 				background-color: transparent !important;
@@ -194,7 +194,7 @@
 
 		iframe {
 			background-color: transparent;
-			border-bottom: 100px solid var(--surface-1);
+			//border-bottom: 100px solid var(--surface-1);
 		}
 	}
 }

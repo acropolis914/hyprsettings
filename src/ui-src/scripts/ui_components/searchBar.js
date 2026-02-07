@@ -27,16 +27,10 @@ export async function initializeSearchBar() {
 					itemProps.cleanName = 'Wiki Homepage'
 				}
 				let html_string = JSON.parse(itemProps.value).value
-				let text_string = new DOMParser().parseFromString(
-					html_string,
-					'text/html',
-				).body.textContent
+				let text_string = new DOMParser().parseFromString(html_string, 'text/html').body.textContent
 				itemProps['value'] = text_string
 			}
-			if (
-				itemProps.type === 'COMMENT' &&
-				itemProps.comment.trim().startsWith('#####')
-			) {
+			if (itemProps.type === 'COMMENT' && itemProps.comment.trim().startsWith('#####')) {
 				return
 			}
 			resultsPool.push(itemProps)
@@ -46,14 +40,7 @@ export async function initializeSearchBar() {
 		})
 		// console.log(resultsPool)
 		const fuse = new Fuse(resultsPool, {
-			keys: [
-				'name',
-				'value',
-				'comment',
-				'position',
-				'type',
-				'cleanName',
-			],
+			keys: ['name', 'value', 'comment', 'position', 'type', 'cleanName'],
 			ignoreLocation: true,
 			threshold: 0.4,
 		})
@@ -107,9 +94,7 @@ export async function initializeSearchBar() {
 
 			resultDiv.addEventListener('keydown', (e) => {
 				if (e.key === 'Enter') {
-					let goto = document.querySelector(
-						`.editor-item[data-uuid="${result.item.uuid}"]`,
-					)
+					let goto = document.querySelector(`.editor-item[data-uuid="${result.item.uuid}"]`)
 					goto.scrollIntoView({
 						behavior: 'smooth',
 						block: 'center',
@@ -131,16 +116,13 @@ export async function initializeSearchBar() {
 				}
 				if (e.key === 'ArrowUp') {
 					e.preventDefault()
-					console.log(
-						'ArrowDown is clicked finding next element',
-					)
+					console.log('ArrowDown is clicked finding next element')
 					let previous = resultDiv.previousElementSibling
 					while (previous && previous.tagName !== 'DIV') {
 						previous = previous.previousElementSibling
 					}
 					if (!previous) {
-						previous =
-							resultDiv.parentElement.lastElementChild
+						previous = resultDiv.parentElement.lastElementChild
 					}
 					resultDiv.classList.remove('selected')
 					console.debug('Next element is focused')
@@ -148,9 +130,7 @@ export async function initializeSearchBar() {
 				}
 			})
 			resultDiv.addEventListener('click', (e) => {
-				let goto = document.querySelector(
-					`.editor-item[data-uuid="${result.item.uuid}"]`,
-				)
+				let goto = document.querySelector(`.editor-item[data-uuid="${result.item.uuid}"]`)
 				let closest = goto.closest('.config-set').id
 				// console.log(closest)
 				document.querySelector(`aside>ul>li#${closest}`).click()
@@ -201,7 +181,9 @@ export async function initializeSearchBar() {
 		createOverlay()
 		search()
 	})
-
+	GLOBAL.onChange('currentView', () => {
+		cleanUp()
+	})
 	searchBar.addEventListener('keydown', (e) => {
 		if (e.key === 'Escape') {
 			e.preventDefault()
@@ -235,11 +217,7 @@ export async function initializeSearchBar() {
 	document.addEventListener('click', (e) => {
 		let clickedInsideSearchbar = searchBar.contains(e.target)
 		let clickedInsideSearchResults = searchResultEl.contains(e.target)
-		if (
-			!clickedInsideSearchbar &&
-			!clickedInsideSearchResults &&
-			GLOBAL['currentView'] === 'search'
-		) {
+		if (!clickedInsideSearchbar && !clickedInsideSearchResults && GLOBAL['currentView'] === 'search') {
 			cleanUp()
 		}
 
@@ -254,7 +232,7 @@ export async function initializeSearchBar() {
 		searchBar.value = ''
 		searchBar.blur()
 		destroyOverlay()
-		// console.log(GLOBAL['currentView'])
+
 		if (GLOBAL['previousView']) {
 			GLOBAL['currentView'] = GLOBAL['previousView']
 			GLOBAL['previousView'] = 'search'

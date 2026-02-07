@@ -142,6 +142,7 @@ header#main-header {
 	overflow-y: auto;
 	overflow-x: hidden;
 	transition: flex-basis 0.2s ease-out;
+	//scrollbar-gutter: stable;
 
 	ul {
 		display: flex;
@@ -203,15 +204,23 @@ header#main-header {
 		> ul > div {
 			opacity: 0;
 			height: 0;
+			overflow: hidden;
+			padding: 0;
+			margin: 0;
 		}
 		#sidebar-icon.sidebar-icon {
 			display: inline-block !important;
 			padding-right: calc(var(--spacing-unit) * 2);
 		}
 		#sidebar-icon.sidebar-icon {
-			@media (pointer: coarse) {
-				transform: scale(1.2);
-				padding-right: calc(var(--spacing-unit) * 1.5);
+			@media (max-width: 768px) {
+				@media (pointer: coarse) {
+					transform: scale(1.2);
+					padding-right: calc(var(--spacing-unit) * 1.6);
+				}
+				@supports (-webkit-touch-callout: none) {
+					padding-right: calc(var(--spacing-unit) * 1);
+				}
 			}
 		}
 	}
@@ -254,7 +263,15 @@ footer {
 			font-size: 1.6rem;
 		}
 	}
-
+	#shortcuts {
+		margin-right: auto;
+		button {
+			padding: 0.1 0.6rem;
+			font-size: 2rem;
+			color: var(--text-0);
+			background-color: transparent;
+		}
+	}
 	#theme-toggle {
 		font-family: v.$font;
 		@media (max-width: 768px) and (pointer: coarse) {
@@ -345,7 +362,7 @@ footer {
 		top: 50%;
 		left: -2rem;
 		transform: translateY(-50%);
-		color: var(--text-0);
+		color: var(--text-2);
 	}
 
 	#search-bar {
@@ -361,20 +378,26 @@ footer {
 		top: calc(100% + 0.5rem);
 		z-index: 9;
 		background-color: var(--surface-0);
-		width: 50vw;
+		width: clamp(40vw, 60vw, 100vw);
 		min-width: 10rem;
 		padding: var(--spacing-unit);
 		flex-direction: column;
 		gap: var(--spacing-unit);
 		overflow-y: scroll;
 		font-weight: normal;
-		border: 1px solid var(--accent);
+		border: 1px solid rgba(var(--accent), 0.7);
 		border-radius: var(--border-rad);
 		font-size: 1.6rem;
 		height: 8rem;
 		padding-left: 1rem;
-		transition: height 0.2s ease-in-out;
+		transition:
+			height 0.2s ease-in-out,
+			all 1s ease;
 		//box-shadow: var(--surface);
+		@media (max-width: 768px) {
+			right: 0;
+			width: 85vw;
+		}
 
 		&:has(> div) {
 			height: 20rem;
@@ -387,6 +410,9 @@ footer {
 			border-radius: var(--border-rad);
 			padding-left: var(--spacing-unit);
 			outline: none;
+			@media (max-width: 768px) {
+				font-size: 1.8rem;
+			}
 
 			.config-line {
 				@include text-ellipsis;

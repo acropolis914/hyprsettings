@@ -12,10 +12,10 @@ let interleaveSliderValue: number = 100
 const templateString = html`
 	<div class="share-config">
 		<div class="toolbar">
-			<button id="share-button">Share</button>
-			<button id="copy-button">Copy</button>
-			<button id="decode-button">Decode</button>
-			<input type="text" name="interleave" id="interleave-text" placeholder="type,words,here" />
+			<button id="share-button">󰕒</button>
+			<button id="copy-button"></button>
+			<button id="decode-button"></button>
+			<input type="text" name="interleave" id="interleave-text" placeholder="type,words,here" maxlength="50" />
 			<input type="range" name="frequency" min="0" max="200" id="interleave-slider" />
 			<span class="file-size" id="file-size">Size: 0 KB</span>
 		</div>

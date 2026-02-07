@@ -5,13 +5,24 @@ export function createOverlay() {
 	document.getElementById('content-area').appendChild(overlay)
 }
 
-export function destroyOverlay() {
-	let overlays = document.querySelectorAll('.darken-overlay')
-	try {
-		overlays.forEach((overlay) => {
-			overlay.parentNode.removeChild(overlay)
-		})
-	} catch (err) {}
+export async function destroyOverlay() {
+	const overlays = document.querySelectorAll('.darken-overlay')
+
+	for (const overlay of overlays) {
+		overlay.remove()
+		// let opacity = 1
+		// const step = 0.01
+		//
+		// const interval = setInterval(() => {
+		// 	opacity -= step
+		// 	overlay.style.opacity = opacity
+		//
+		// 	if (opacity <= 0) {
+		// 		clearInterval(interval)
+		// 		overlay.remove()
+		// 	}
+		// }, 1)
+	}
 }
 
 export function createLoadingOverlay(message = 'Loading your Hyprland config') {

@@ -1,5 +1,43 @@
 @use '@stylesheets/_variables.scss' as v;
 
+@supports (-webkit-touch-callout: none) {
+	#wikiView_content {
+		overflow-x: hidden;
+		padding-right: 3rem;
+	}
+}
+
+#config-set-info {
+	display: flex;
+	flex-direction: column;
+	//background-color: var(--red);
+	padding: 0;
+	padding-right: var(--spacing-unit);
+
+	#navigation_toggle {
+		max-width: 10rem;
+		flex-grow: 0;
+		justify-content: center;
+		align-self: flex-end;
+		color: var(--text-0);
+		font-size: 5rem;
+		max-height: 3rem;
+		transition: all 300ms ease;
+		box-sizing: border-box;
+		font-family: v.$font;
+		line-height: 0.7;
+		@media (max-width: 600px) {
+			font-size: 5rem;
+			display: block;
+		}
+		&:hover {
+			//transform: scale(1.5);
+		}
+		&:active {
+			background-color: var(--accent);
+		}
+	}
+}
 .config-set#wiki {
 	display: flex;
 	position: relative;
@@ -50,28 +88,33 @@
 			top 300ms ease-in-out,
 			transform 1s;
 		@media (max-width: 768px) {
-			//display: block;
+			display: none;
 			overflow-x: scroll;
 			justify-content: center;
-			position: absolute;
+			//position: absolute;
 			max-width: 100%;
-			min-width: 80%;
-			left: 50%;
-			transform: translateX(-50%);
+			width: 100%;
+			//min-width: 80%;
+			//left: 50%;
+			//transform: translateX(-50%);
 			background-color: var(--surface-1);
-			padding: var(--spacing-unit) var(--spacing-unit);
-			margin: calc(2 * var(--spacing-unit)) 0;
+			//padding: var(--spacing-unit) var(--spacing-unit);
+			//margin: calc(2 * var(--spacing-unit)) 0;
 			margin-bottom: 0;
-			max-height: 100%;
-			height: 80%;
-			border: 1px solid var(--text-1);
+			//max-height: 100%;
+			//height: 80%;
+			//border: 1px solid var(--text-1);
 			box-shadow: 1px 2rem 0.5rem 0.9rem rgba(var(--surface-0), 0);
 			border-radius: var(--border-rad);
 			padding-right: 0;
 		}
+		@media (min-width: 768px) {
+			display: block;
+		}
 
 		.config-group {
-			padding: calc(1 * var(--spacing-unit));
+			padding: calc(1.5 * var(--spacing-unit));
+			margin-top: calc(2 * var(--spacing-unit));
 			@media (max-width: 600px) {
 				min-width: 70%;
 				padding: var(--spacing-unit);
@@ -98,26 +141,7 @@
 			//word-wrap:
 		}
 	}
-	#navigation_toggle {
-		position: absolute;
-		z-index: 10;
-		color: var(--text-0);
-		font-size: 3rem;
-		right: calc(2 * var(--spacing-unit));
-		transition: all 300ms ease;
-		//color: red;
-		//top: 10rem;
-		@media (max-width: 600px) {
-			font-size: 5rem;
-			display: block;
-			position: absolute;
-			top: 0;
-			transform: scale(1.5);
-		}
-		&:hover {
-			transform: scale(1.5);
-		}
-	}
+
 	#wikiView {
 		flex: 1 1 auto;
 		padding: var(--spacing-unit);
@@ -136,6 +160,9 @@
 			max-width: 100%;
 			width: 100%;
 			margin-right: 0;
+		}
+		@media (min-width: 768px) {
+			display: flex !important;
 		}
 
 		#wikiView_title {

@@ -64,7 +64,9 @@ export const Backend = {
 	},
 
 	async getHyprSettingsVersion() {
-		return await fetchFlask('get_hyprsettings_version')
+		let currentVersion = await fetchFlask('get_hyprsettings_version')
+		GLOBAL.setKey('version', currentVersion)
+		return currentVersion
 	},
 
 	async getDebugStatus() {

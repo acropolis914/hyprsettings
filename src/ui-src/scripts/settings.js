@@ -9,7 +9,8 @@ let VERSION = '0.9.0'
 export async function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
 	await createAbout()
-	console.log(await getHyprsettingsVersion())
+	getHyprsettingsVersion()
+	Backend.getHyprSettingsVersion()
 	createHeaderCommentsVisibilitySetting()
 	createLineCommentsVisibilitySetting()
 	createItemPreviewCommentVisibilitySetting()
@@ -125,7 +126,10 @@ async function createAbout({ compact = false } = {}) {
 	const versionEl = document.createElement('div')
 	versionEl.classList.add('version')
 	const versionText = document.createElement('span')
-	versionText.textContent = (await Backend.getHyprSettingsVersion()) || VERSION
+	versionText.textContent = VERSION
+	GLOBAL.onChange('version', (value) => {
+		versionText.textContent = value
+	})
 	const versionDot = document.createElement('span')
 	versionDot.textContent = ' · '
 	const githubUrl = 'https://github.com/acropolis914/hyprsettings'
@@ -330,7 +334,7 @@ function createThemeSelectorSetting() {
 	})
 }
 
-export async function getHyprsettingsVersion() {
+export async function getHyprsettingsVersion(element) {
 	const res = await fetch('https://raw.githubusercontent.com/acropolis914/hyprsettings/refs/heads/master/src/.version')
 	const full = (await res.text()).trim()
 
