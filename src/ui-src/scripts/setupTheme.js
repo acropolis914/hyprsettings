@@ -146,10 +146,12 @@ export function changeTheme(theme) {
 }
 
 export function updateJsonViewerTheme(themeVariant) {
-	if (themeVariant === 'dark') {
-		window.jsViewer.setAttribute('theme', 'default-dark')
-	} else {
-		window.jsViewer.setAttribute('theme', 'default-light')
+	if (window.jsViewer) {
+		if (themeVariant === 'dark') {
+			window.jsViewer.setAttribute('theme', 'default-dark')
+		} else {
+			window.jsViewer.setAttribute('theme', 'default-light')
+		}
 	}
 }
 
