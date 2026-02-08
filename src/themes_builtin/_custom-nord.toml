@@ -1,0 +1,86 @@
+[[theme]]
+name = "Nord Custom"
+author = "arcticicestudio"
+variant = "Dark"
+description = "Calm, arctic-inspired color scheme."
+link = "https://www.nordtheme.com/"
+
+# Surfaces
+surface-0 = "#2E3440"
+surface-1 = "#3B4252"
+surface-2 = "#434C5E"
+surface-border = "#4C566A"
+
+# Text hierarchy
+text-0 = "#D8DEE9"
+text-1 = "#E5E9F0"
+text-2 = "#ECEFF4"
+text-3 = "#8FBCBB"
+text-disabled = "#4C566A"
+text-contrast = "#2E3440"
+
+# Accents
+accent = "#81A1C1"
+accent-hover = "#88C0D0"
+accent-active = "#B48EAD"
+accent-success = "#A3BE8C"
+accent-warning = "#D08770"
+accent-danger = "#BF616A"
+
+# Common colors
+red = "#BF616A"
+orange = "#D08770"
+yellow = "#EBCB8B"
+green = "#A3BE8C"
+teal = "#88C0D0"
+blue = "#81A1C1"
+purple = "#B48EAD"
+pink = "#B48EAD"
+
+# Utilities
+overlay = "#4C566A"
+shadow = "#2E3440"
+
+
+[[theme]]
+name = "Janna"
+author = "Misterio77 (http://github.com/Misterio77)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = ""
+
+# Surfaces
+surface-0 = "#feedf3"
+surface-1 = "#f8e2e7"
+surface-2 = "#e0ccd1"
+surface-border = "#755f64"
+
+# Text hierarchy
+text-0 = "#423538"
+text-1 = "#514547"
+text-2 = "#564448"
+text-3 = "#665055"
+text-disabled = "#f8e2e7"
+text-contrast = "#feedf3"
+
+# Accents
+accent = "#df5f8e"
+accent-hover = "#c29461"
+accent-active = "#5e2180"
+accent-success = "#2e916d"
+accent-warning = "#f68c33"
+accent-danger = "#df2d52"
+
+# Common colors
+red = "#df2d52"
+orange = "#f68c33"
+yellow = "#c29461"
+green = "#2e916d"
+teal = "#1d8991"
+blue = "#006e93"
+purple = "#5e2180"
+pink = "#ba0d35"
+
+# Utilities
+overlay = "#f8e2e7"
+shadow = "#feedf3"
