@@ -38,10 +38,13 @@ class CheckBoxItem {
 		this.settingContainer.classList.add('editor-item')
 		this.settingContainer.setAttribute('tabindex', 0)
 		this.settingContainer.dataset.uuid = makeUUID()
-		this.checkbox = document.createElement('input')
+		this.checkbox = document.createElement('div')
+		this.settingContainer.setAttribute('role', 'checkbox')
+		this.settingContainer.setAttribute('aria-checked', this.checkbox.dataset.checked)
 		this.checkbox.id = config_key
-		this.checkbox.setAttribute('type', 'checkbox')
-		this.checkbox.checked = GLOBAL['config'][config_key] ?? default_value
+		// this.checkbox.setAttribute('type', 'checkbox')
+		this.checkbox.classList.add('checkbox')
+		this.checkbox.dataset.checked = GLOBAL['config'][config_key] ?? default_value
 		this.label = document.createElement('label')
 		this.label.setAttribute('for', config_key)
 		this.label.textContent = label
@@ -49,7 +52,7 @@ class CheckBoxItem {
 		this.settingContainer.appendChild(this.label)
 		this.addListeners()
 		settingsEl.appendChild(this.settingContainer)
-		if (this.checkbox.checked) {
+		if (this.checkbox.dataset.checked === 'true') {
 			this.actions.onCheck()
 		} else {
 			this.actions.onUncheck()
@@ -58,7 +61,7 @@ class CheckBoxItem {
 	addListeners() {
 		this.settingContainer.addEventListener('keydown', (e) => {
 			if (e.key === ' ' || e.key === 'Enter') {
-				this.checkbox.checked = !this.checkbox.checked
+				this.checkbox.dataset.checked = this.checkbox.dataset.checked === 'true' ? 'false' : 'true'
 				this.handleToggle()
 			}
 		})
@@ -66,36 +69,40 @@ class CheckBoxItem {
 			// e.preventDefault()
 			GLOBAL.setKey('currentView', 'main')
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.settingContainer.dataset.uuid
-			this.checkbox.checked = !this.checkbox.checked
+			this.checkbox.dataset.checked = this.checkbox.dataset.checked === 'true' ? 'false' : 'true'
 			this.handleToggle()
+			this.settingContainer.focus()
 			// this.settingContainer.focus()
 		})
 		this.settingContainer.addEventListener('focus', () => {
 			GLOBAL.setKey('currentView', 'main')
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.settingContainer.dataset.uuid
 		})
-		this.checkbox.addEventListener('mousedown', (e) => {
-			// e.preventDefault()
-			this.checkbox.checked = !this.checkbox.checked
-			this.handleToggle()
-			this.settingContainer.focus()
-		})
+		// this.checkbox.addEventListener('mousedown', (e) => {
+		// 	// e.preventDefault()
+		// 	e.stopPropagation()
+		// 	e.stopImmediatePropagation()
+		// 	this.checkbox.dataset.checked = this.checkbox.dataset.checked === 'true' ? 'false' : 'true'
+		// 	this.handleToggle()
+		// 	this.settingContainer.focus()
+		// })
 		this.checkbox.addEventListener('change', async (e) => {
 			this.handleToggle()
 		})
 	}
 
 	handleToggle() {
-		const checked = this.checkbox.checked
+		const checked = this.checkbox.dataset.checked === 'true' ? true : false
 		GLOBAL['config'][this.configKey] = checked
-		saveWindowConfig()
+		this.settingContainer.setAttribute('aria-checked', this.checkbox.dataset.checked)
+		// saveWindowConfig()
 		if (checked && this.actions.onCheck) {
 			this.actions.onCheck()
 		}
 		if (!checked && this.actions.onUncheck) {
 			this.actions.onUncheck()
 		}
-		console.log(`${this.label.textContent}: ${this.checkbox.checked}`)
+		console.log(`${this.label.textContent}: ${this.checkbox.dataset.checked}`)
 		saveWindowConfig()
 	}
 	return() {
@@ -315,12 +322,11 @@ function createThemeSelectorSetting() {
 		optionEl.textContent = optionName.includes('[builtin]') ? theme.name.replace('[builtin]', ' ') : ` ${theme.name}`
 		selectEl.appendChild(optionEl)
 	})
-	let currentTheme = GLOBAL['config']['theme']
-
+	let currentTheme = GLOBAL['config']['current_theme']
 	settingContainer.appendChild(selectEl)
 	// this.addListeners()
 	settingsEl.appendChild(settingContainer)
-
+	selectEl.value = currentTheme
 	selectEl.addEventListener('change', (e) => {
 		let selectedThemeName = e.target.value
 		let selectedTheme = window.themes.find((t) => t.name === selectedThemeName)
@@ -352,7 +358,7 @@ export async function getHyprsettingsGithubVersion(element) {
 	})
 	GLOBAL.setKey('githubVersion', full)
 
-	if (full !== GLOBAL.version) {
+	if (full !== (await Backend.getHyprSettingsVersion())) {
 		console.error('Version', GLOBAL.version, 'is older than github version', GLOBAL.githubVersion)
 		let versionEl = settingsEl.querySelector('.version-text')
 

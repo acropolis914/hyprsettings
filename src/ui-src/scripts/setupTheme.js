@@ -37,6 +37,8 @@ export function incrementCurrentTheme() {
 }
 
 function applyThemeVars(theme) {
+	// document.documentElement.removeAttribute('style')
+	// document.documentElement.setAttribute('style', '')
 	Object.entries(theme).forEach(([key, value]) => {
 		if (headers.includes(key)) {
 			return
@@ -51,17 +53,96 @@ function applyThemeVars(theme) {
 	root.classList.remove('light')
 	root.classList.add(theme.variant.toLowerCase())
 }
+//
+// export function changeTheme(theme) {
+// 	document.body.querySelectorAll('*').forEach((e) => {
+// 		e.classList.add('themeAnimation')
+// 	})
+// 	console.log(`Changing theme to ${theme.name}`)
+// 	let settingsThemeChanger = document.getElementById('theme-selector-setting')
+// 	let settingsThemeChangerSelect = settingsThemeChanger.querySelector('select')
+// 	settingsThemeChangerSelect.value = theme.name
+// 	// settingsThemeChanger.value = theme.name
+// 	applyThemeVars(theme)
+// 	saveWindowConfig()
+// 	updateJsonViewerTheme(theme.variant.toLowerCase())
+// 	updateColoris()
+// 	setTimeout(() => {
+// 		document.body.querySelectorAll('*').forEach((e) => {
+// 			e.classList.remove('themeAnimation')
+// 		})
+// 	}, 1000)
+// }
 
 export function changeTheme(theme) {
-	console.log(`Changing theme to ${theme.name}`)
-	let settingsThemeChanger = document.getElementById('theme-selector-setting')
-	let settingsThemeChangerSelect = settingsThemeChanger.querySelector('select')
-	settingsThemeChangerSelect.value = theme.name
-	// settingsThemeChanger.value = theme.name
+	// 1. Skip animation logic if disabled
+	if (!GLOBAL['config']['ui_animations']) {
+		const settingsSelect = document.querySelector('#theme-selector-setting select')
+		if (settingsSelect) settingsSelect.value = theme.name
+
+		applyThemeVars(theme)
+		saveWindowConfig()
+		updateJsonViewerTheme(theme.variant.toLowerCase())
+		updateColoris()
+		return // Exit early
+	}
+
+	// 2. Snapshot: Clone the body (Animation path)
+	const settingsSelect = document.querySelector('#theme-selector-setting select')
+	if (settingsSelect) settingsSelect.value = theme.name
+
+	const clone = document.body.cloneNode(true)
+
+	// Freeze State
+	const rootStyles = getComputedStyle(document.documentElement)
+	for (const prop of rootStyles) {
+		if (prop.startsWith('--')) {
+			clone.style.setProperty(prop, rootStyles.getPropertyValue(prop))
+		}
+	}
+
+	clone.style.background = rootStyles.background || rootStyles.backgroundColor
+	clone.style.color = rootStyles.color
+
+	// Position & Setup
+	Object.assign(clone.style, {
+		position: 'fixed',
+		top: `-${window.scrollY}px`,
+		left: '0',
+		width: '100vw',
+		height: '100vh',
+		zIndex: '99999',
+		pointerEvents: 'none',
+		overflow: 'hidden',
+		transition: 'clip-path 1s ease-in-out',
+		clipPath: 'inset(0 0 0 0)',
+	})
+
+	clone.querySelectorAll('script, input, textarea, select').forEach((e) => {
+		if (e.tagName === 'SCRIPT') e.remove()
+		else e.setAttribute('readonly', 'true')
+	})
+
+	clone.querySelectorAll('select').forEach((e) => {
+		if (e.parentNode.id === 'theme-selector-setting') {
+			e.value = theme.name
+		}
+	})
+
+	document.documentElement.appendChild(clone)
+
+	// Apply New Theme
 	applyThemeVars(theme)
 	saveWindowConfig()
 	updateJsonViewerTheme(theme.variant.toLowerCase())
 	updateColoris()
+
+	// Animate
+	requestAnimationFrame(() => {
+		clone.getBoundingClientRect()
+		clone.style.clipPath = 'inset(0 0 0 100%)'
+		setTimeout(() => clone.remove(), 1000)
+	})
 }
 
 export function updateJsonViewerTheme(themeVariant) {

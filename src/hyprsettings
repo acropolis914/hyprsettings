@@ -42,20 +42,6 @@ def start_flask_server():
 	state.app.run(host=hs_globals.HOST, port=state.flask_port, use_reloader=False)
 
 
-# def start_hyprland_wiki_server():
-# 	wikiport = 7654
-# 	if is_port_open(wikiport):
-# 		wikiport += 1
-# 	hugo_folder = Path(__file__).parent / 'ui' / 'hyprland-wiki'
-#
-# 	class Handler(http.server.SimpleHTTPRequestHandler):
-# 		def __init__(self, *args, **kwargs):
-# 			super().__init__(*args, directory=str(hugo_folder), **kwargs)
-#
-# 	with socketserver.TCPServer((hs_globals.HOST, wikiport), Handler) as httpd:
-# 		log(f'Serving hyprland wiki at http://{hs_globals.HOST}:{wikiport}')
-# 		httpd.serve_forever()
-
 
 def ui_print(*args, **kwargs):
 	console.print('[blue][UIBackend][/blue]', *args, **kwargs)

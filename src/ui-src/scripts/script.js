@@ -21,7 +21,7 @@ import createDynamicTabs from './ui_components/createDynamicTabs.js'
 import createLoadingOverlay from './ui_components/darken_overlay.js'
 import createWiki from './ui_components/wikiTab.ts'
 
-import getAndRenderConfig from './configRenderer.ts'
+import getAndRenderConfig, { clearConfigItems } from './configRenderer.ts'
 import renderSettings from './settings.js'
 
 import getDebugStatus from './utils/getDebugStatus.ts'
@@ -37,42 +37,36 @@ export default function loadHyprsettingsConfig() {
 }
 
 async function load_config() {
-	let windowConfig = await Backend.readWindowConfig()
+	const windowConfig = await Backend.readWindowConfig()
+	const builtin_themes = await Backend.getBuiltinThemes()
+
 	if (windowConfig['configuration-error']) {
-		console.log('Configuration error: ', windowConfig['configuration-error'])
-		return
+		return console.error('Configuration error:', windowConfig['configuration-error'])
 	}
 
-	window.themes = windowConfig.theme //just to globally access it for setupTheme
-	GLOBAL.setKey('themes', windowConfig.theme)
-	let builtin_themes = await Backend.getBuiltinThemes()
-	for (let builtin_theme of builtin_themes) {
-		builtin_theme.name = `[builtin] ${builtin_theme.name}`
-		window.themes.push(builtin_theme)
-	}
+	// Merge and set themes
+	const themes = [...windowConfig.theme, ...builtin_themes.map((t) => ({ ...t, name: `[builtin] ${t.name}` }))]
+	window.themes = themes
+	GLOBAL.setKey('themes', themes)
 
-	GLOBAL['config'] = {}
-	GLOBAL['persistence'] = {}
-	for (let key in windowConfig.config) {
-		GLOBAL['config'][key] = windowConfig.config[key]
-	}
-	if (windowConfig['persistence']) {
-		for (let key in windowConfig.persistence) {
-			GLOBAL['persistence'][key] = windowConfig.persistence[key]
-		}
-	}
+	// Clean object assignment
+	GLOBAL.config = { ...windowConfig.config }
+	GLOBAL.persistence = { ...windowConfig.persistence }
 
-	if (GLOBAL['persistence']['first_run']) {
-		document.getElementById('onboarding').classList.remove('hidden')
-	} else {
-		GLOBAL['persistence']['first_run'] = false
-	}
+	// Onboarding logic
+	const isFirstRun = GLOBAL.persistence.first_run
+	document.getElementById('onboarding').classList.toggle('hidden', !isFirstRun)
+
+	if (!isFirstRun) GLOBAL.persistence.first_run = false
 }
 
 export async function reinitialize() {
 	createLoadingOverlay('Reloading your hyprland config..')
 	await Backend.getHyprlandConfig()
-	await Backend.getHyprlandConfigTexts()
+	setTimeout(async () => {
+		await Backend.getHyprlandConfigTexts()
+	}, 2000)
+	// }
 }
 
 export async function initialize() {
@@ -82,7 +76,7 @@ export async function initialize() {
 	await setupTheme()
 	await getDebugStatus()
 	await createDynamicTabs()
-	getAndRenderConfig().then(() => console.log('Done rendering received config'))
+	await getAndRenderConfig().then(() => console.log('Done rendering received config'))
 	initializeJSViewer()
 	renderSettings().then(() => console.log('Done rendering received settings tab'))
 	initializeSearchBar().then(() => console.log('Done initializing search bar'))

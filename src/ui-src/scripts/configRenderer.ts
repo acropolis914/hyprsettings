@@ -10,14 +10,19 @@ import { destroyOverlay } from '@scripts/ui_components/darken_overlay.js'
 import { waitFor } from './helpers'
 
 export default async function getAndRenderConfig() {
-	GLOBAL.onChange('data', () => {
-		new ConfigRenderer(GLOBAL.data)
+	GLOBAL.onChange('data', (value) => {
+		if (value !== '') {
+			new ConfigRenderer(GLOBAL.data)
+		}
 	})
 	await Backend.getHyprlandConfig()
-	await Backend.getHyprlandConfigTexts()
+	setTimeout(async () => {
+		await Backend.getHyprlandConfigTexts()
+	}, 2000)
+	// }
 }
 
-function clearConfigItems() {
+export function clearConfigItems() {
 	document.querySelectorAll('.config-set').forEach((element) => {
 		if (['settings', 'debug', 'wiki'].includes(element.id)) {
 			return
@@ -59,17 +64,12 @@ export class ConfigRenderer {
 			clearConfigItems()
 		}
 		this.invokeParser()
-		document.querySelectorAll<HTMLElement>('.editor-item').forEach((element) => {
-			element.addEventListener('click', (e) => {
-				// let target = e.target
-				GLOBAL.setKey('currentView', 'main')
-				// @ts-ignore
-				GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
-			})
-		})
 	}
 	async invokeParser() {
+		console.time('parseJSON')
 		await this.parse(this.json)
+		console.timeEnd('parseJSON')
+
 		// console.log(this.comment_stack, this.comment_queue)
 		while (this.renderTo && this.temporaryElement.firstChild) {
 			let el = this.temporaryElement.firstElementChild
@@ -82,6 +82,13 @@ export class ConfigRenderer {
 			el.focus()
 			el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 		}
+
+		document.querySelector('.config-set').addEventListener('click', (e) => {
+			// let target = e.target
+			GLOBAL.setKey('currentView', 'main')
+			// @ts-ignore
+			GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
+		})
 	}
 
 	async parse(json: string | Record<string, any> | JSON) {
@@ -174,14 +181,6 @@ export class ConfigRenderer {
 					renderCommentQueue(false)
 				}
 				let group_el = new ConfigGroup(json).return()
-
-				// if (this.comment_queue.length > 0) {
-				// 	for (let i = 0; i < this.comment_queue.length; i++) {
-				// 		let comment_item = this.comment_queue[0]
-				// 		comment_item.addToParent(this.current_container.at(-1))
-				// 		this.comment_queue.splice(0, 1)
-				// 	}
-				// }
 				let matched: boolean
 				if (!this.renderTo) {
 					for (const [key, value] of configGroups) {
@@ -199,7 +198,7 @@ export class ConfigRenderer {
 				this.current_container.push(group_el)
 				try {
 					for (const child of json['children']) {
-						await this.parse(child)
+						this.parse(child)
 					}
 				} catch (e) {
 					console.error(e, json)
@@ -238,14 +237,14 @@ export class ConfigRenderer {
 				if (this.comment_queue.length > 0) {
 					renderCommentQueue()
 				}
-				genericItem.el.addEventListener('focus', () => {
-					GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
-					GLOBAL.setKey('currentView', 'main')
-				})
-				genericItem.el.addEventListener('click', () => {
-					GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
-					GLOBAL.setKey('currentView', 'main')
-				})
+				// genericItem.el.addEventListener('focus', () => {
+				// 	GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
+				// 	GLOBAL.setKey('currentView', 'main')
+				// })
+				// genericItem.el.addEventListener('click', () => {
+				// 	GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
+				// 	GLOBAL.setKey('currentView', 'main')
+				// })
 				genericItem.addToParent(tabToAddTo)
 			} catch (e) {
 				console.log(e, json)
@@ -260,9 +259,12 @@ export class ConfigRenderer {
 				if (this.comment_stack.length > 0) {
 					renderCommentStack()
 				}
-				for (const child of json.children) {
-					await this.parse(child)
+				if (json.children) {
+					for (const child of json.children) {
+						this.parse(child)
+					}
 				}
+
 				if (this.comment_queue.length > 0) {
 					renderCommentQueue(true)
 				}
@@ -274,14 +276,14 @@ export class ConfigRenderer {
 			}
 			// console.log()
 		} else {
-			console.warn('Failed to render an item: ', json, 'Skipping')
+			console.log('Failed to render an item: ', json, 'Skipping')
 		}
 
 		//recursive children rendering
 		if (json['children'] && json['name'] === 'root') {
 			// console.log(json)
 			for (const child of json.children) {
-				await this.parse(child)
+				this.parse(child)
 			}
 
 			if (this.comment_queue.length > 0) {

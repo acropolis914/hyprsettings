@@ -1,0 +1,6538 @@
+[[theme]]
+name = "3024"
+author = "Jan T. Sott (http://github.com/idleberg)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#090300"
+surface-1 = "#3a3432"
+surface-2 = "#4a4543"
+surface-border = "#5c5855"
+
+# Text hierarchy
+text-0 = "#f7f7f7"
+text-1 = "#d6d5d4"
+text-2 = "#a5a2a2"
+text-3 = "#807d7c"
+text-disabled = "#3a3432"
+text-contrast = "#090300"
+
+# Accents
+accent = "#01a0e4"
+accent-hover = "#b5e4f4"
+accent-active = "#a16a94"
+accent-success = "#01a252"
+accent-warning = "#e8bbd0"
+accent-danger = "#db2d20"
+
+# Common colors
+red = "#db2d20"
+orange = "#e8bbd0"
+yellow = "#fded02"
+green = "#01a252"
+teal = "#b5e4f4"
+blue = "#01a0e4"
+purple = "#a16a94"
+pink = "#cdab53"
+
+# Utilities
+overlay = "#3a3432"
+shadow = "#090300"
+
+[[theme]]
+name = "Apathy"
+author = "Jannik Siebert (https://github.com/janniks)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#031a16"
+surface-1 = "#0b342d"
+surface-2 = "#184e45"
+surface-border = "#2b685e"
+
+# Text hierarchy
+text-0 = "#d2e7e4"
+text-1 = "#a7cec8"
+text-2 = "#81b5ac"
+text-3 = "#5f9c92"
+text-disabled = "#0b342d"
+text-contrast = "#031a16"
+
+# Accents
+accent = "#96883e"
+accent-hover = "#963e4c"
+accent-active = "#4c963e"
+accent-success = "#883e96"
+accent-warning = "#967b38"
+accent-danger = "#963e4c"
+
+# Common colors
+red = "#3e9688"
+orange = "#96883e"
+yellow = "#967b38"
+green = "#883e96"
+teal = "#963e4c"
+blue = "#3e7996"
+purple = "#4c963e"
+pink = "#3e965b"
+
+# Utilities
+overlay = "#0b342d"
+shadow = "#031a16"
+
+[[theme]]
+name = "Ashes"
+author = "Jannik Siebert (https://github.com/janniks)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#1c2023"
+surface-1 = "#393f45"
+surface-2 = "#565e65"
+surface-border = "#747c84"
+
+# Text hierarchy
+text-0 = "#f3f4f5"
+text-1 = "#dfe2e5"
+text-2 = "#c7ccd1"
+text-3 = "#adb3ba"
+text-disabled = "#393f45"
+text-contrast = "#1c2023"
+
+# Accents
+accent = "#ae95c7"
+accent-hover = "#95aec7"
+accent-active = "#c795ae"
+accent-success = "#95c7ae"
+accent-warning = "#c7c795"
+accent-danger = "#c7ae95"
+
+# Common colors
+red = "#c7ae95"
+orange = "#c7c795"
+yellow = "#aec795"
+green = "#95c7ae"
+teal = "#95aec7"
+blue = "#ae95c7"
+purple = "#c795ae"
+pink = "#c79595"
+
+# Utilities
+overlay = "#393f45"
+shadow = "#1c2023"
+
+[[theme]]
+name = "Atelier Cave Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#efecf4"
+surface-1 = "#e2dfe7"
+surface-2 = "#8b8792"
+surface-border = "#7e7887"
+
+# Text hierarchy
+text-0 = "#19171c"
+text-1 = "#26232a"
+text-2 = "#585260"
+text-3 = "#655f6d"
+text-disabled = "#e2dfe7"
+text-contrast = "#efecf4"
+
+# Accents
+accent = "#576ddb"
+accent-hover = "#398bc6"
+accent-active = "#955ae7"
+accent-success = "#2a9292"
+accent-warning = "#aa573c"
+accent-danger = "#be4678"
+
+# Common colors
+red = "#be4678"
+orange = "#aa573c"
+yellow = "#a06e3b"
+green = "#2a9292"
+teal = "#398bc6"
+blue = "#576ddb"
+purple = "#955ae7"
+pink = "#bf40bf"
+
+# Utilities
+overlay = "#e2dfe7"
+shadow = "#efecf4"
+
+[[theme]]
+name = "Atelier Cave"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#19171c"
+surface-1 = "#26232a"
+surface-2 = "#585260"
+surface-border = "#655f6d"
+
+# Text hierarchy
+text-0 = "#efecf4"
+text-1 = "#e2dfe7"
+text-2 = "#8b8792"
+text-3 = "#7e7887"
+text-disabled = "#26232a"
+text-contrast = "#19171c"
+
+# Accents
+accent = "#576ddb"
+accent-hover = "#398bc6"
+accent-active = "#955ae7"
+accent-success = "#2a9292"
+accent-warning = "#aa573c"
+accent-danger = "#be4678"
+
+# Common colors
+red = "#be4678"
+orange = "#aa573c"
+yellow = "#a06e3b"
+green = "#2a9292"
+teal = "#398bc6"
+blue = "#576ddb"
+purple = "#955ae7"
+pink = "#bf40bf"
+
+# Utilities
+overlay = "#26232a"
+shadow = "#19171c"
+
+[[theme]]
+name = "Atelier Dune Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#fefbec"
+surface-1 = "#e8e4cf"
+surface-2 = "#a6a28c"
+surface-border = "#999580"
+
+# Text hierarchy
+text-0 = "#20201d"
+text-1 = "#292824"
+text-2 = "#6e6b5e"
+text-3 = "#7d7a68"
+text-disabled = "#e8e4cf"
+text-contrast = "#fefbec"
+
+# Accents
+accent = "#6684e1"
+accent-hover = "#1fad83"
+accent-active = "#b854d4"
+accent-success = "#60ac39"
+accent-warning = "#b65611"
+accent-danger = "#d73737"
+
+# Common colors
+red = "#d73737"
+orange = "#b65611"
+yellow = "#ae9513"
+green = "#60ac39"
+teal = "#1fad83"
+blue = "#6684e1"
+purple = "#b854d4"
+pink = "#d43552"
+
+# Utilities
+overlay = "#e8e4cf"
+shadow = "#fefbec"
+
+[[theme]]
+name = "Atelier Dune"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#20201d"
+surface-1 = "#292824"
+surface-2 = "#6e6b5e"
+surface-border = "#7d7a68"
+
+# Text hierarchy
+text-0 = "#fefbec"
+text-1 = "#e8e4cf"
+text-2 = "#a6a28c"
+text-3 = "#999580"
+text-disabled = "#292824"
+text-contrast = "#20201d"
+
+# Accents
+accent = "#6684e1"
+accent-hover = "#1fad83"
+accent-active = "#b854d4"
+accent-success = "#60ac39"
+accent-warning = "#b65611"
+accent-danger = "#d73737"
+
+# Common colors
+red = "#d73737"
+orange = "#b65611"
+yellow = "#ae9513"
+green = "#60ac39"
+teal = "#1fad83"
+blue = "#6684e1"
+purple = "#b854d4"
+pink = "#d43552"
+
+# Utilities
+overlay = "#292824"
+shadow = "#20201d"
+
+[[theme]]
+name = "Atelier Estuary Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#f4f3ec"
+surface-1 = "#e7e6df"
+surface-2 = "#929181"
+surface-border = "#878573"
+
+# Text hierarchy
+text-0 = "#22221b"
+text-1 = "#302f27"
+text-2 = "#5f5e4e"
+text-3 = "#6c6b5a"
+text-disabled = "#e7e6df"
+text-contrast = "#f4f3ec"
+
+# Accents
+accent = "#36a166"
+accent-hover = "#5b9d48"
+accent-active = "#5f9182"
+accent-success = "#7d9726"
+accent-warning = "#ae7313"
+accent-danger = "#ba6236"
+
+# Common colors
+red = "#ba6236"
+orange = "#ae7313"
+yellow = "#a5980d"
+green = "#7d9726"
+teal = "#5b9d48"
+blue = "#36a166"
+purple = "#5f9182"
+pink = "#9d6c7c"
+
+# Utilities
+overlay = "#e7e6df"
+shadow = "#f4f3ec"
+
+[[theme]]
+name = "Atelier Estuary"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#22221b"
+surface-1 = "#302f27"
+surface-2 = "#5f5e4e"
+surface-border = "#6c6b5a"
+
+# Text hierarchy
+text-0 = "#f4f3ec"
+text-1 = "#e7e6df"
+text-2 = "#929181"
+text-3 = "#878573"
+text-disabled = "#302f27"
+text-contrast = "#22221b"
+
+# Accents
+accent = "#36a166"
+accent-hover = "#5b9d48"
+accent-active = "#5f9182"
+accent-success = "#7d9726"
+accent-warning = "#ae7313"
+accent-danger = "#ba6236"
+
+# Common colors
+red = "#ba6236"
+orange = "#ae7313"
+yellow = "#a5980d"
+green = "#7d9726"
+teal = "#5b9d48"
+blue = "#36a166"
+purple = "#5f9182"
+pink = "#9d6c7c"
+
+# Utilities
+overlay = "#302f27"
+shadow = "#22221b"
+
+[[theme]]
+name = "Atelier Forest Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#f1efee"
+surface-1 = "#e6e2e0"
+surface-2 = "#a8a19f"
+surface-border = "#9c9491"
+
+# Text hierarchy
+text-0 = "#1b1918"
+text-1 = "#2c2421"
+text-2 = "#68615e"
+text-3 = "#766e6b"
+text-disabled = "#e6e2e0"
+text-contrast = "#f1efee"
+
+# Accents
+accent = "#407ee7"
+accent-hover = "#3d97b8"
+accent-active = "#6666ea"
+accent-success = "#7b9726"
+accent-warning = "#df5320"
+accent-danger = "#f22c40"
+
+# Common colors
+red = "#f22c40"
+orange = "#df5320"
+yellow = "#c38418"
+green = "#7b9726"
+teal = "#3d97b8"
+blue = "#407ee7"
+purple = "#6666ea"
+pink = "#c33ff3"
+
+# Utilities
+overlay = "#e6e2e0"
+shadow = "#f1efee"
+
+[[theme]]
+name = "Atelier Forest"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#1b1918"
+surface-1 = "#2c2421"
+surface-2 = "#68615e"
+surface-border = "#766e6b"
+
+# Text hierarchy
+text-0 = "#f1efee"
+text-1 = "#e6e2e0"
+text-2 = "#a8a19f"
+text-3 = "#9c9491"
+text-disabled = "#2c2421"
+text-contrast = "#1b1918"
+
+# Accents
+accent = "#407ee7"
+accent-hover = "#3d97b8"
+accent-active = "#6666ea"
+accent-success = "#7b9726"
+accent-warning = "#df5320"
+accent-danger = "#f22c40"
+
+# Common colors
+red = "#f22c40"
+orange = "#df5320"
+yellow = "#c38418"
+green = "#7b9726"
+teal = "#3d97b8"
+blue = "#407ee7"
+purple = "#6666ea"
+pink = "#c33ff3"
+
+# Utilities
+overlay = "#2c2421"
+shadow = "#1b1918"
+
+[[theme]]
+name = "Atelier Heath Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#f7f3f7"
+surface-1 = "#d8cad8"
+surface-2 = "#ab9bab"
+surface-border = "#9e8f9e"
+
+# Text hierarchy
+text-0 = "#1b181b"
+text-1 = "#292329"
+text-2 = "#695d69"
+text-3 = "#776977"
+text-disabled = "#d8cad8"
+text-contrast = "#f7f3f7"
+
+# Accents
+accent = "#516aec"
+accent-hover = "#159393"
+accent-active = "#7b59c0"
+accent-success = "#918b3b"
+accent-warning = "#a65926"
+accent-danger = "#ca402b"
+
+# Common colors
+red = "#ca402b"
+orange = "#a65926"
+yellow = "#bb8a35"
+green = "#918b3b"
+teal = "#159393"
+blue = "#516aec"
+purple = "#7b59c0"
+pink = "#cc33cc"
+
+# Utilities
+overlay = "#d8cad8"
+shadow = "#f7f3f7"
+
+[[theme]]
+name = "Atelier Heath"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#1b181b"
+surface-1 = "#292329"
+surface-2 = "#695d69"
+surface-border = "#776977"
+
+# Text hierarchy
+text-0 = "#f7f3f7"
+text-1 = "#d8cad8"
+text-2 = "#ab9bab"
+text-3 = "#9e8f9e"
+text-disabled = "#292329"
+text-contrast = "#1b181b"
+
+# Accents
+accent = "#516aec"
+accent-hover = "#159393"
+accent-active = "#7b59c0"
+accent-success = "#918b3b"
+accent-warning = "#a65926"
+accent-danger = "#ca402b"
+
+# Common colors
+red = "#ca402b"
+orange = "#a65926"
+yellow = "#bb8a35"
+green = "#918b3b"
+teal = "#159393"
+blue = "#516aec"
+purple = "#7b59c0"
+pink = "#cc33cc"
+
+# Utilities
+overlay = "#292329"
+shadow = "#1b181b"
+
+[[theme]]
+name = "Atelier Lakeside Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#ebf8ff"
+surface-1 = "#c1e4f6"
+surface-2 = "#7ea2b4"
+surface-border = "#7195a8"
+
+# Text hierarchy
+text-0 = "#161b1d"
+text-1 = "#1f292e"
+text-2 = "#516d7b"
+text-3 = "#5a7b8c"
+text-disabled = "#c1e4f6"
+text-contrast = "#ebf8ff"
+
+# Accents
+accent = "#257fad"
+accent-hover = "#2d8f6f"
+accent-active = "#6b6bb8"
+accent-success = "#568c3b"
+accent-warning = "#935c25"
+accent-danger = "#d22d72"
+
+# Common colors
+red = "#d22d72"
+orange = "#935c25"
+yellow = "#8a8a0f"
+green = "#568c3b"
+teal = "#2d8f6f"
+blue = "#257fad"
+purple = "#6b6bb8"
+pink = "#b72dd2"
+
+# Utilities
+overlay = "#c1e4f6"
+shadow = "#ebf8ff"
+
+[[theme]]
+name = "Atelier Lakeside"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#161b1d"
+surface-1 = "#1f292e"
+surface-2 = "#516d7b"
+surface-border = "#5a7b8c"
+
+# Text hierarchy
+text-0 = "#ebf8ff"
+text-1 = "#c1e4f6"
+text-2 = "#7ea2b4"
+text-3 = "#7195a8"
+text-disabled = "#1f292e"
+text-contrast = "#161b1d"
+
+# Accents
+accent = "#257fad"
+accent-hover = "#2d8f6f"
+accent-active = "#6b6bb8"
+accent-success = "#568c3b"
+accent-warning = "#935c25"
+accent-danger = "#d22d72"
+
+# Common colors
+red = "#d22d72"
+orange = "#935c25"
+yellow = "#8a8a0f"
+green = "#568c3b"
+teal = "#2d8f6f"
+blue = "#257fad"
+purple = "#6b6bb8"
+pink = "#b72dd2"
+
+# Utilities
+overlay = "#1f292e"
+shadow = "#161b1d"
+
+[[theme]]
+name = "Atelier Plateau Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#f4ecec"
+surface-1 = "#e7dfdf"
+surface-2 = "#8a8585"
+surface-border = "#7e7777"
+
+# Text hierarchy
+text-0 = "#1b1818"
+text-1 = "#292424"
+text-2 = "#585050"
+text-3 = "#655d5d"
+text-disabled = "#e7dfdf"
+text-contrast = "#f4ecec"
+
+# Accents
+accent = "#7272ca"
+accent-hover = "#5485b6"
+accent-active = "#8464c4"
+accent-success = "#4b8b8b"
+accent-warning = "#b45a3c"
+accent-danger = "#ca4949"
+
+# Common colors
+red = "#ca4949"
+orange = "#b45a3c"
+yellow = "#a06e3b"
+green = "#4b8b8b"
+teal = "#5485b6"
+blue = "#7272ca"
+purple = "#8464c4"
+pink = "#bd5187"
+
+# Utilities
+overlay = "#e7dfdf"
+shadow = "#f4ecec"
+
+[[theme]]
+name = "Atelier Plateau"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#1b1818"
+surface-1 = "#292424"
+surface-2 = "#585050"
+surface-border = "#655d5d"
+
+# Text hierarchy
+text-0 = "#f4ecec"
+text-1 = "#e7dfdf"
+text-2 = "#8a8585"
+text-3 = "#7e7777"
+text-disabled = "#292424"
+text-contrast = "#1b1818"
+
+# Accents
+accent = "#7272ca"
+accent-hover = "#5485b6"
+accent-active = "#8464c4"
+accent-success = "#4b8b8b"
+accent-warning = "#b45a3c"
+accent-danger = "#ca4949"
+
+# Common colors
+red = "#ca4949"
+orange = "#b45a3c"
+yellow = "#a06e3b"
+green = "#4b8b8b"
+teal = "#5485b6"
+blue = "#7272ca"
+purple = "#8464c4"
+pink = "#bd5187"
+
+# Utilities
+overlay = "#292424"
+shadow = "#1b1818"
+
+[[theme]]
+name = "Atelier Savanna Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#ecf4ee"
+surface-1 = "#dfe7e2"
+surface-2 = "#87928a"
+surface-border = "#78877d"
+
+# Text hierarchy
+text-0 = "#171c19"
+text-1 = "#232a25"
+text-2 = "#526057"
+text-3 = "#5f6d64"
+text-disabled = "#dfe7e2"
+text-contrast = "#ecf4ee"
+
+# Accents
+accent = "#478c90"
+accent-hover = "#1c9aa0"
+accent-active = "#55859b"
+accent-success = "#489963"
+accent-warning = "#9f713c"
+accent-danger = "#b16139"
+
+# Common colors
+red = "#b16139"
+orange = "#9f713c"
+yellow = "#a07e3b"
+green = "#489963"
+teal = "#1c9aa0"
+blue = "#478c90"
+purple = "#55859b"
+pink = "#867469"
+
+# Utilities
+overlay = "#dfe7e2"
+shadow = "#ecf4ee"
+
+[[theme]]
+name = "Atelier Savanna"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#171c19"
+surface-1 = "#232a25"
+surface-2 = "#526057"
+surface-border = "#5f6d64"
+
+# Text hierarchy
+text-0 = "#ecf4ee"
+text-1 = "#dfe7e2"
+text-2 = "#87928a"
+text-3 = "#78877d"
+text-disabled = "#232a25"
+text-contrast = "#171c19"
+
+# Accents
+accent = "#478c90"
+accent-hover = "#1c9aa0"
+accent-active = "#55859b"
+accent-success = "#489963"
+accent-warning = "#9f713c"
+accent-danger = "#b16139"
+
+# Common colors
+red = "#b16139"
+orange = "#9f713c"
+yellow = "#a07e3b"
+green = "#489963"
+teal = "#1c9aa0"
+blue = "#478c90"
+purple = "#55859b"
+pink = "#867469"
+
+# Utilities
+overlay = "#232a25"
+shadow = "#171c19"
+
+[[theme]]
+name = "Atelier Seaside Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#f4fbf4"
+surface-1 = "#cfe8cf"
+surface-2 = "#8ca68c"
+surface-border = "#809980"
+
+# Text hierarchy
+text-0 = "#131513"
+text-1 = "#242924"
+text-2 = "#5e6e5e"
+text-3 = "#687d68"
+text-disabled = "#cfe8cf"
+text-contrast = "#f4fbf4"
+
+# Accents
+accent = "#3d62f5"
+accent-hover = "#1999b3"
+accent-active = "#ad2bee"
+accent-success = "#29a329"
+accent-warning = "#87711d"
+accent-danger = "#e6193c"
+
+# Common colors
+red = "#e6193c"
+orange = "#87711d"
+yellow = "#98981b"
+green = "#29a329"
+teal = "#1999b3"
+blue = "#3d62f5"
+purple = "#ad2bee"
+pink = "#e619c3"
+
+# Utilities
+overlay = "#cfe8cf"
+shadow = "#f4fbf4"
+
+[[theme]]
+name = "Atelier Seaside"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#131513"
+surface-1 = "#242924"
+surface-2 = "#5e6e5e"
+surface-border = "#687d68"
+
+# Text hierarchy
+text-0 = "#f4fbf4"
+text-1 = "#cfe8cf"
+text-2 = "#8ca68c"
+text-3 = "#809980"
+text-disabled = "#242924"
+text-contrast = "#131513"
+
+# Accents
+accent = "#3d62f5"
+accent-hover = "#1999b3"
+accent-active = "#ad2bee"
+accent-success = "#29a329"
+accent-warning = "#87711d"
+accent-danger = "#e6193c"
+
+# Common colors
+red = "#e6193c"
+orange = "#87711d"
+yellow = "#98981b"
+green = "#29a329"
+teal = "#1999b3"
+blue = "#3d62f5"
+purple = "#ad2bee"
+pink = "#e619c3"
+
+# Utilities
+overlay = "#242924"
+shadow = "#131513"
+
+[[theme]]
+name = "Atelier Sulphurpool Light"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#f5f7ff"
+surface-1 = "#dfe2f1"
+surface-2 = "#979db4"
+surface-border = "#898ea4"
+
+# Text hierarchy
+text-0 = "#202746"
+text-1 = "#293256"
+text-2 = "#5e6687"
+text-3 = "#6b7394"
+text-disabled = "#dfe2f1"
+text-contrast = "#f5f7ff"
+
+# Accents
+accent = "#3d8fd1"
+accent-hover = "#22a2c9"
+accent-active = "#6679cc"
+accent-success = "#ac9739"
+accent-warning = "#c76b29"
+accent-danger = "#c94922"
+
+# Common colors
+red = "#c94922"
+orange = "#c76b29"
+yellow = "#c08b30"
+green = "#ac9739"
+teal = "#22a2c9"
+blue = "#3d8fd1"
+purple = "#6679cc"
+pink = "#9c637a"
+
+# Utilities
+overlay = "#dfe2f1"
+shadow = "#f5f7ff"
+
+[[theme]]
+name = "Atelier Sulphurpool"
+author = "Bram de Haan (http://atelierbramdehaan.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/atelierbram/base16-atelier-schemes"
+
+# Surfaces
+surface-0 = "#202746"
+surface-1 = "#293256"
+surface-2 = "#5e6687"
+surface-border = "#6b7394"
+
+# Text hierarchy
+text-0 = "#f5f7ff"
+text-1 = "#dfe2f1"
+text-2 = "#979db4"
+text-3 = "#898ea4"
+text-disabled = "#293256"
+text-contrast = "#202746"
+
+# Accents
+accent = "#3d8fd1"
+accent-hover = "#22a2c9"
+accent-active = "#6679cc"
+accent-success = "#ac9739"
+accent-warning = "#c76b29"
+accent-danger = "#c94922"
+
+# Common colors
+red = "#c94922"
+orange = "#c76b29"
+yellow = "#c08b30"
+green = "#ac9739"
+teal = "#22a2c9"
+blue = "#3d8fd1"
+purple = "#6679cc"
+pink = "#9c637a"
+
+# Utilities
+overlay = "#293256"
+shadow = "#202746"
+
+[[theme]]
+name = "Atlas"
+author = "Alex Lende (https://ajlende.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/ajlende/base16-atlas-scheme"
+
+# Surfaces
+surface-0 = "#002635"
+surface-1 = "#00384d"
+surface-2 = "#517f8d"
+surface-border = "#6c8b91"
+
+# Text hierarchy
+text-0 = "#fafaf8"
+text-1 = "#e6e6dc"
+text-2 = "#a1a19a"
+text-3 = "#869696"
+text-disabled = "#00384d"
+text-contrast = "#002635"
+
+# Accents
+accent = "#14747e"
+accent-hover = "#5dd7b9"
+accent-active = "#9a70a4"
+accent-success = "#7fc06e"
+accent-warning = "#f08e48"
+accent-danger = "#ff5a67"
+
+# Common colors
+red = "#ff5a67"
+orange = "#f08e48"
+yellow = "#ffcc1b"
+green = "#7fc06e"
+teal = "#5dd7b9"
+blue = "#14747e"
+purple = "#9a70a4"
+pink = "#c43060"
+
+# Utilities
+overlay = "#00384d"
+shadow = "#002635"
+
+[[theme]]
+name = "Bespin"
+author = "Jan T. Sott"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#28211c"
+surface-1 = "#36312e"
+surface-2 = "#5e5d5c"
+surface-border = "#666666"
+
+# Text hierarchy
+text-0 = "#baae9e"
+text-1 = "#9d9b97"
+text-2 = "#8a8986"
+text-3 = "#797977"
+text-disabled = "#36312e"
+text-contrast = "#28211c"
+
+# Accents
+accent = "#5ea6ea"
+accent-hover = "#afc4db"
+accent-active = "#9b859d"
+accent-success = "#54be0d"
+accent-warning = "#cf7d34"
+accent-danger = "#cf6a4c"
+
+# Common colors
+red = "#cf6a4c"
+orange = "#cf7d34"
+yellow = "#f9ee98"
+green = "#54be0d"
+teal = "#afc4db"
+blue = "#5ea6ea"
+purple = "#9b859d"
+pink = "#937121"
+
+# Utilities
+overlay = "#36312e"
+shadow = "#28211c"
+
+[[theme]]
+name = "Brewer"
+author = "Timothée Poisot (http://github.com/tpoisot)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#0c0d0e"
+surface-1 = "#2e2f30"
+surface-2 = "#515253"
+surface-border = "#737475"
+
+# Text hierarchy
+text-0 = "#fcfdfe"
+text-1 = "#dadbdc"
+text-2 = "#b7b8b9"
+text-3 = "#959697"
+text-disabled = "#2e2f30"
+text-contrast = "#0c0d0e"
+
+# Accents
+accent = "#3182bd"
+accent-hover = "#80b1d3"
+accent-active = "#756bb1"
+accent-success = "#31a354"
+accent-warning = "#e6550d"
+accent-danger = "#e31a1c"
+
+# Common colors
+red = "#e31a1c"
+orange = "#e6550d"
+yellow = "#dca060"
+green = "#31a354"
+teal = "#80b1d3"
+blue = "#3182bd"
+purple = "#756bb1"
+pink = "#b15928"
+
+# Utilities
+overlay = "#2e2f30"
+shadow = "#0c0d0e"
+
+[[theme]]
+name = "Bright"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#303030"
+surface-2 = "#505050"
+surface-border = "#b0b0b0"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#f5f5f5"
+text-2 = "#e0e0e0"
+text-3 = "#d0d0d0"
+text-disabled = "#303030"
+text-contrast = "#000000"
+
+# Accents
+accent = "#6fb3d2"
+accent-hover = "#76c7b7"
+accent-active = "#d381c3"
+accent-success = "#a1c659"
+accent-warning = "#fc6d24"
+accent-danger = "#fb0120"
+
+# Common colors
+red = "#fb0120"
+orange = "#fc6d24"
+yellow = "#fda331"
+green = "#a1c659"
+teal = "#76c7b7"
+blue = "#6fb3d2"
+purple = "#d381c3"
+pink = "#be643c"
+
+# Utilities
+overlay = "#303030"
+shadow = "#000000"
+
+[[theme]]
+name = "Brush Trees Dark"
+author = "Abraham White <abelincoln.white@gmail.com>"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/whiteabelincoln/base16-brushtrees-scheme"
+
+# Surfaces
+surface-0 = "#485867"
+surface-1 = "#5a6d7a"
+surface-2 = "#6d828e"
+surface-border = "#8299a1"
+
+# Text hierarchy
+text-0 = "#e3efef"
+text-1 = "#c9dbdc"
+text-2 = "#b0c5c8"
+text-3 = "#98afb5"
+text-disabled = "#5a6d7a"
+text-contrast = "#485867"
+
+# Accents
+accent = "#868cb3"
+accent-hover = "#86b3b3"
+accent-active = "#b386b2"
+accent-success = "#87b386"
+accent-warning = "#d8bba2"
+accent-danger = "#b38686"
+
+# Common colors
+red = "#b38686"
+orange = "#d8bba2"
+yellow = "#aab386"
+green = "#87b386"
+teal = "#86b3b3"
+blue = "#868cb3"
+purple = "#b386b2"
+pink = "#b39f9f"
+
+# Utilities
+overlay = "#5a6d7a"
+shadow = "#485867"
+
+[[theme]]
+name = "Brush Trees"
+author = "Abraham White <abelincoln.white@gmail.com>"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/whiteabelincoln/base16-brushtrees-scheme"
+
+# Surfaces
+surface-0 = "#e3efef"
+surface-1 = "#c9dbdc"
+surface-2 = "#b0c5c8"
+surface-border = "#98afb5"
+
+# Text hierarchy
+text-0 = "#485867"
+text-1 = "#5a6d7a"
+text-2 = "#6d828e"
+text-3 = "#8299a1"
+text-disabled = "#c9dbdc"
+text-contrast = "#e3efef"
+
+# Accents
+accent = "#868cb3"
+accent-hover = "#86b3b3"
+accent-active = "#b386b2"
+accent-success = "#87b386"
+accent-warning = "#d8bba2"
+accent-danger = "#b38686"
+
+# Common colors
+red = "#b38686"
+orange = "#d8bba2"
+yellow = "#aab386"
+green = "#87b386"
+teal = "#86b3b3"
+blue = "#868cb3"
+purple = "#b386b2"
+pink = "#b39f9f"
+
+# Utilities
+overlay = "#c9dbdc"
+shadow = "#e3efef"
+
+[[theme]]
+name = "Chalk"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#151515"
+surface-1 = "#202020"
+surface-2 = "#303030"
+surface-border = "#505050"
+
+# Text hierarchy
+text-0 = "#f5f5f5"
+text-1 = "#e0e0e0"
+text-2 = "#d0d0d0"
+text-3 = "#b0b0b0"
+text-disabled = "#202020"
+text-contrast = "#151515"
+
+# Accents
+accent = "#6fc2ef"
+accent-hover = "#12cfc0"
+accent-active = "#e1a3ee"
+accent-success = "#acc267"
+accent-warning = "#eda987"
+accent-danger = "#fb9fb1"
+
+# Common colors
+red = "#fb9fb1"
+orange = "#eda987"
+yellow = "#ddb26f"
+green = "#acc267"
+teal = "#12cfc0"
+blue = "#6fc2ef"
+purple = "#e1a3ee"
+pink = "#deaf8f"
+
+# Utilities
+overlay = "#202020"
+shadow = "#151515"
+
+[[theme]]
+name = "Circus"
+author = "Stephan Boyer (https://github.com/stepchowfun) and Esther Wang (https://github.com/ewang12)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/stepchowfun/base16-circus-scheme"
+
+# Surfaces
+surface-0 = "#191919"
+surface-1 = "#202020"
+surface-2 = "#303030"
+surface-border = "#5f5a60"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#808080"
+text-2 = "#a7a7a7"
+text-3 = "#505050"
+text-disabled = "#202020"
+text-contrast = "#191919"
+
+# Accents
+accent = "#639ee4"
+accent-hover = "#4bb1a7"
+accent-active = "#b888e2"
+accent-success = "#84b97c"
+accent-warning = "#4bb1a7"
+accent-danger = "#dc657d"
+
+# Common colors
+red = "#dc657d"
+orange = "#4bb1a7"
+yellow = "#c3ba63"
+green = "#84b97c"
+teal = "#4bb1a7"
+blue = "#639ee4"
+purple = "#b888e2"
+pink = "#b888e2"
+
+# Utilities
+overlay = "#202020"
+shadow = "#191919"
+
+[[theme]]
+name = "Classic Dark"
+author = "Jason Heeris (http://heeris.id.au)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/detly/base16-classic-scheme"
+
+# Surfaces
+surface-0 = "#151515"
+surface-1 = "#202020"
+surface-2 = "#303030"
+surface-border = "#505050"
+
+# Text hierarchy
+text-0 = "#f5f5f5"
+text-1 = "#e0e0e0"
+text-2 = "#d0d0d0"
+text-3 = "#b0b0b0"
+text-disabled = "#202020"
+text-contrast = "#151515"
+
+# Accents
+accent = "#6a9fb5"
+accent-hover = "#75b5aa"
+accent-active = "#aa759f"
+accent-success = "#90a959"
+accent-warning = "#d28445"
+accent-danger = "#ac4142"
+
+# Common colors
+red = "#ac4142"
+orange = "#d28445"
+yellow = "#f4bf75"
+green = "#90a959"
+teal = "#75b5aa"
+blue = "#6a9fb5"
+purple = "#aa759f"
+pink = "#8f5536"
+
+# Utilities
+overlay = "#202020"
+shadow = "#151515"
+
+[[theme]]
+name = "Classic Light"
+author = "Jason Heeris (http://heeris.id.au)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/detly/base16-classic-scheme"
+
+# Surfaces
+surface-0 = "#f5f5f5"
+surface-1 = "#e0e0e0"
+surface-2 = "#d0d0d0"
+surface-border = "#b0b0b0"
+
+# Text hierarchy
+text-0 = "#151515"
+text-1 = "#202020"
+text-2 = "#303030"
+text-3 = "#505050"
+text-disabled = "#e0e0e0"
+text-contrast = "#f5f5f5"
+
+# Accents
+accent = "#6a9fb5"
+accent-hover = "#75b5aa"
+accent-active = "#aa759f"
+accent-success = "#90a959"
+accent-warning = "#d28445"
+accent-danger = "#ac4142"
+
+# Common colors
+red = "#ac4142"
+orange = "#d28445"
+yellow = "#f4bf75"
+green = "#90a959"
+teal = "#75b5aa"
+blue = "#6a9fb5"
+purple = "#aa759f"
+pink = "#8f5536"
+
+# Utilities
+overlay = "#e0e0e0"
+shadow = "#f5f5f5"
+
+[[theme]]
+name = "Codeschool"
+author = "blockloop"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/blockloop/base16-codeschool-scheme"
+
+# Surfaces
+surface-0 = "#232c31"
+surface-1 = "#1c3657"
+surface-2 = "#2a343a"
+surface-border = "#3f4944"
+
+# Text hierarchy
+text-0 = "#b5d8f6"
+text-1 = "#a7cfa3"
+text-2 = "#9ea7a6"
+text-3 = "#84898c"
+text-disabled = "#1c3657"
+text-contrast = "#232c31"
+
+# Accents
+accent = "#484d79"
+accent-hover = "#b02f30"
+accent-active = "#c59820"
+accent-success = "#237986"
+accent-warning = "#43820d"
+accent-danger = "#2a5491"
+
+# Common colors
+red = "#2a5491"
+orange = "#43820d"
+yellow = "#a03b1e"
+green = "#237986"
+teal = "#b02f30"
+blue = "#484d79"
+purple = "#c59820"
+pink = "#c98344"
+
+# Utilities
+overlay = "#1c3657"
+shadow = "#232c31"
+
+[[theme]]
+name = "Colors"
+author = "mrmrs (http://clrs.cc)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/hakatashi/base16-colors-scheme"
+
+# Surfaces
+surface-0 = "#111111"
+surface-1 = "#333333"
+surface-2 = "#555555"
+surface-border = "#777777"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#dddddd"
+text-2 = "#bbbbbb"
+text-3 = "#999999"
+text-disabled = "#333333"
+text-contrast = "#111111"
+
+# Accents
+accent = "#0074d9"
+accent-hover = "#7fdbff"
+accent-active = "#b10dc9"
+accent-success = "#2ecc40"
+accent-warning = "#ff851b"
+accent-danger = "#ff4136"
+
+# Common colors
+red = "#ff4136"
+orange = "#ff851b"
+yellow = "#ffdc00"
+green = "#2ecc40"
+teal = "#7fdbff"
+blue = "#0074d9"
+purple = "#b10dc9"
+pink = "#85144b"
+
+# Utilities
+overlay = "#333333"
+shadow = "#111111"
+
+[[theme]]
+name = "Cupcake"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-default-scheme"
+
+# Surfaces
+surface-0 = "#fbf1f2"
+surface-1 = "#f2f1f4"
+surface-2 = "#d8d5dd"
+surface-border = "#bfb9c6"
+
+# Text hierarchy
+text-0 = "#585062"
+text-1 = "#72677e"
+text-2 = "#8b8198"
+text-3 = "#a59daf"
+text-disabled = "#f2f1f4"
+text-contrast = "#fbf1f2"
+
+# Accents
+accent = "#7297b9"
+accent-hover = "#69a9a7"
+accent-active = "#bb99b4"
+accent-success = "#a3b367"
+accent-warning = "#ebb790"
+accent-danger = "#d57e85"
+
+# Common colors
+red = "#d57e85"
+orange = "#ebb790"
+yellow = "#dcb16c"
+green = "#a3b367"
+teal = "#69a9a7"
+blue = "#7297b9"
+purple = "#bb99b4"
+pink = "#baa58c"
+
+# Utilities
+overlay = "#f2f1f4"
+shadow = "#fbf1f2"
+
+[[theme]]
+name = "Cupertino"
+author = "Defman21"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Defman21/base16-cupertino"
+
+# Surfaces
+surface-0 = "#ffffff"
+surface-1 = "#c0c0c0"
+surface-2 = "#c0c0c0"
+surface-border = "#808080"
+
+# Text hierarchy
+text-0 = "#5e5e5e"
+text-1 = "#404040"
+text-2 = "#404040"
+text-3 = "#808080"
+text-disabled = "#c0c0c0"
+text-contrast = "#ffffff"
+
+# Accents
+accent = "#0000ff"
+accent-hover = "#318495"
+accent-active = "#a90d91"
+accent-success = "#007400"
+accent-warning = "#eb8500"
+accent-danger = "#c41a15"
+
+# Common colors
+red = "#c41a15"
+orange = "#eb8500"
+yellow = "#826b28"
+green = "#007400"
+teal = "#318495"
+blue = "#0000ff"
+purple = "#a90d91"
+pink = "#826b28"
+
+# Utilities
+overlay = "#c0c0c0"
+shadow = "#ffffff"
+
+[[theme]]
+name = "DanQing Light"
+author = "Wenhan Zhu (Cosmos) (zhuwenhan950913@gmail.com)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/CosmosAtlas/base16-danqing-scheme"
+
+# Surfaces
+surface-0 = "#fcfefd"
+surface-1 = "#ecf6f2"
+surface-2 = "#e0f0ef"
+surface-border = "#cad8d2"
+
+# Text hierarchy
+text-0 = "#2d302f"
+text-1 = "#434846"
+text-2 = "#5a605d"
+text-3 = "#9da8a3"
+text-disabled = "#ecf6f2"
+text-contrast = "#fcfefd"
+
+# Accents
+accent = "#b0a4e3"
+accent-hover = "#30dff3"
+accent-active = "#cca4e3"
+accent-success = "#8ab361"
+accent-warning = "#b38a61"
+accent-danger = "#f9906f"
+
+# Common colors
+red = "#f9906f"
+orange = "#b38a61"
+yellow = "#f0c239"
+green = "#8ab361"
+teal = "#30dff3"
+blue = "#b0a4e3"
+purple = "#cca4e3"
+pink = "#ca6924"
+
+# Utilities
+overlay = "#ecf6f2"
+shadow = "#fcfefd"
+
+[[theme]]
+name = "DanQing"
+author = "Wenhan Zhu (Cosmos) (zhuwenhan950913@gmail.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/CosmosAtlas/base16-danqing-scheme"
+
+# Surfaces
+surface-0 = "#2d302f"
+surface-1 = "#434846"
+surface-2 = "#5a605d"
+surface-border = "#9da8a3"
+
+# Text hierarchy
+text-0 = "#fcfefd"
+text-1 = "#ecf6f2"
+text-2 = "#e0f0ef"
+text-3 = "#cad8d2"
+text-disabled = "#434846"
+text-contrast = "#2d302f"
+
+# Accents
+accent = "#b0a4e3"
+accent-hover = "#30dff3"
+accent-active = "#cca4e3"
+accent-success = "#8ab361"
+accent-warning = "#b38a61"
+accent-danger = "#f9906f"
+
+# Common colors
+red = "#f9906f"
+orange = "#b38a61"
+yellow = "#f0c239"
+green = "#8ab361"
+teal = "#30dff3"
+blue = "#b0a4e3"
+purple = "#cca4e3"
+pink = "#ca6924"
+
+# Utilities
+overlay = "#434846"
+shadow = "#2d302f"
+
+[[theme]]
+name = "Darcula"
+author = "jetbrains"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/casonadams/base16-darcula-scheme"
+
+# Surfaces
+surface-0 = "#2b2b2b"
+surface-1 = "#323232"
+surface-2 = "#323232"
+surface-border = "#606366"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#ffc66d"
+text-2 = "#a9b7c6"
+text-3 = "#a4a3a3"
+text-disabled = "#323232"
+text-contrast = "#2b2b2b"
+
+# Accents
+accent = "#9876aa"
+accent-hover = "#629755"
+accent-active = "#cc7832"
+accent-success = "#6a8759"
+accent-warning = "#689757"
+accent-danger = "#4eade5"
+
+# Common colors
+red = "#4eade5"
+orange = "#689757"
+yellow = "#bbb529"
+green = "#6a8759"
+teal = "#629755"
+blue = "#9876aa"
+purple = "#cc7832"
+pink = "#808080"
+
+# Utilities
+overlay = "#323232"
+shadow = "#2b2b2b"
+
+[[theme]]
+name = "Darktooth"
+author = "Jason Milkins (https://github.com/jasonm23)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#1d2021"
+surface-1 = "#32302f"
+surface-2 = "#504945"
+surface-border = "#665c54"
+
+# Text hierarchy
+text-0 = "#fdf4c1"
+text-1 = "#d5c4a1"
+text-2 = "#a89984"
+text-3 = "#928374"
+text-disabled = "#32302f"
+text-contrast = "#1d2021"
+
+# Accents
+accent = "#0d6678"
+accent-hover = "#8ba59b"
+accent-active = "#8f4673"
+accent-success = "#95c085"
+accent-warning = "#fe8625"
+accent-danger = "#fb543f"
+
+# Common colors
+red = "#fb543f"
+orange = "#fe8625"
+yellow = "#fac03b"
+green = "#95c085"
+teal = "#8ba59b"
+blue = "#0d6678"
+purple = "#8f4673"
+pink = "#a87322"
+
+# Utilities
+overlay = "#32302f"
+shadow = "#1d2021"
+
+[[theme]]
+name = "Dark Violet"
+author = "ruler501 (https://github.com/ruler501/base16-darkviolet)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/ruler501/base16-darkviolet-scheme"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#231a40"
+surface-2 = "#432d59"
+surface-border = "#593380"
+
+# Text hierarchy
+text-0 = "#a366ff"
+text-1 = "#9045e6"
+text-2 = "#b08ae6"
+text-3 = "#00ff00"
+text-disabled = "#231a40"
+text-contrast = "#000000"
+
+# Accents
+accent = "#4136d9"
+accent-hover = "#40dfff"
+accent-active = "#7e5ce6"
+accent-success = "#4595e6"
+accent-warning = "#bb66cc"
+accent-danger = "#a82ee6"
+
+# Common colors
+red = "#a82ee6"
+orange = "#bb66cc"
+yellow = "#f29df2"
+green = "#4595e6"
+teal = "#40dfff"
+blue = "#4136d9"
+purple = "#7e5ce6"
+pink = "#a886bf"
+
+# Utilities
+overlay = "#231a40"
+shadow = "#000000"
+
+[[theme]]
+name = "Decaf"
+author = "Alex Mirrington (https://github.com/alexmirrington)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/alexmirrington/base16-espresso-scheme"
+
+# Surfaces
+surface-0 = "#2d2d2d"
+surface-1 = "#393939"
+surface-2 = "#515151"
+surface-border = "#777777"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#e0e0e0"
+text-2 = "#cccccc"
+text-3 = "#b4b7b4"
+text-disabled = "#393939"
+text-contrast = "#2d2d2d"
+
+# Accents
+accent = "#90bee1"
+accent-hover = "#bed6ff"
+accent-active = "#efb3f7"
+accent-success = "#beda78"
+accent-warning = "#ffbf70"
+accent-danger = "#ff7f7b"
+
+# Common colors
+red = "#ff7f7b"
+orange = "#ffbf70"
+yellow = "#ffd67c"
+green = "#beda78"
+teal = "#bed6ff"
+blue = "#90bee1"
+purple = "#efb3f7"
+pink = "#ff93b3"
+
+# Utilities
+overlay = "#393939"
+shadow = "#2d2d2d"
+
+[[theme]]
+name = "Default Dark"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-default-scheme"
+
+# Surfaces
+surface-0 = "#181818"
+surface-1 = "#282828"
+surface-2 = "#383838"
+surface-border = "#585858"
+
+# Text hierarchy
+text-0 = "#f8f8f8"
+text-1 = "#e8e8e8"
+text-2 = "#d8d8d8"
+text-3 = "#b8b8b8"
+text-disabled = "#282828"
+text-contrast = "#181818"
+
+# Accents
+accent = "#7cafc2"
+accent-hover = "#86c1b9"
+accent-active = "#ba8baf"
+accent-success = "#a1b56c"
+accent-warning = "#dc9656"
+accent-danger = "#ab4642"
+
+# Common colors
+red = "#ab4642"
+orange = "#dc9656"
+yellow = "#f7ca88"
+green = "#a1b56c"
+teal = "#86c1b9"
+blue = "#7cafc2"
+purple = "#ba8baf"
+pink = "#a16946"
+
+# Utilities
+overlay = "#282828"
+shadow = "#181818"
+
+[[theme]]
+name = "Default Light"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-default-scheme"
+
+# Surfaces
+surface-0 = "#f8f8f8"
+surface-1 = "#e8e8e8"
+surface-2 = "#d8d8d8"
+surface-border = "#b8b8b8"
+
+# Text hierarchy
+text-0 = "#181818"
+text-1 = "#282828"
+text-2 = "#383838"
+text-3 = "#585858"
+text-disabled = "#e8e8e8"
+text-contrast = "#f8f8f8"
+
+# Accents
+accent = "#7cafc2"
+accent-hover = "#86c1b9"
+accent-active = "#ba8baf"
+accent-success = "#a1b56c"
+accent-warning = "#dc9656"
+accent-danger = "#ab4642"
+
+# Common colors
+red = "#ab4642"
+orange = "#dc9656"
+yellow = "#f7ca88"
+green = "#a1b56c"
+teal = "#86c1b9"
+blue = "#7cafc2"
+purple = "#ba8baf"
+pink = "#a16946"
+
+# Utilities
+overlay = "#e8e8e8"
+shadow = "#f8f8f8"
+
+[[theme]]
+name = "Dracula"
+author = "Mike Barkmin (http://github.com/mikebarkmin) based on Dracula Theme (http://github.com/dracula)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/dracula/base16-dracula-scheme"
+
+# Surfaces
+surface-0 = "#282936"
+surface-1 = "#3a3c4e"
+surface-2 = "#4d4f68"
+surface-border = "#626483"
+
+# Text hierarchy
+text-0 = "#f7f7fb"
+text-1 = "#f1f2f8"
+text-2 = "#e9e9f4"
+text-3 = "#62d6e8"
+text-disabled = "#3a3c4e"
+text-contrast = "#282936"
+
+# Accents
+accent = "#62d6e8"
+accent-hover = "#a1efe4"
+accent-active = "#b45bcf"
+accent-success = "#ebff87"
+accent-warning = "#b45bcf"
+accent-danger = "#ea51b2"
+
+# Common colors
+red = "#ea51b2"
+orange = "#b45bcf"
+yellow = "#00f769"
+green = "#ebff87"
+teal = "#a1efe4"
+blue = "#62d6e8"
+purple = "#b45bcf"
+pink = "#00f769"
+
+# Utilities
+overlay = "#3a3c4e"
+shadow = "#282936"
+
+[[theme]]
+name = "Eighties"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-default-scheme"
+
+# Surfaces
+surface-0 = "#2d2d2d"
+surface-1 = "#393939"
+surface-2 = "#515151"
+surface-border = "#747369"
+
+# Text hierarchy
+text-0 = "#f2f0ec"
+text-1 = "#e8e6df"
+text-2 = "#d3d0c8"
+text-3 = "#a09f93"
+text-disabled = "#393939"
+text-contrast = "#2d2d2d"
+
+# Accents
+accent = "#6699cc"
+accent-hover = "#66cccc"
+accent-active = "#cc99cc"
+accent-success = "#99cc99"
+accent-warning = "#f99157"
+accent-danger = "#f2777a"
+
+# Common colors
+red = "#f2777a"
+orange = "#f99157"
+yellow = "#ffcc66"
+green = "#99cc99"
+teal = "#66cccc"
+blue = "#6699cc"
+purple = "#cc99cc"
+pink = "#d27b53"
+
+# Utilities
+overlay = "#393939"
+shadow = "#2d2d2d"
+
+[[theme]]
+name = "Embers"
+author = "Jannik Siebert (https://github.com/janniks)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#16130f"
+surface-1 = "#2c2620"
+surface-2 = "#433b32"
+surface-border = "#5a5047"
+
+# Text hierarchy
+text-0 = "#dbd6d1"
+text-1 = "#beb6ae"
+text-2 = "#a39a90"
+text-3 = "#8a8075"
+text-disabled = "#2c2620"
+text-contrast = "#16130f"
+
+# Accents
+accent = "#6d5782"
+accent-hover = "#576d82"
+accent-active = "#82576d"
+accent-success = "#57826d"
+accent-warning = "#828257"
+accent-danger = "#826d57"
+
+# Common colors
+red = "#826d57"
+orange = "#828257"
+yellow = "#6d8257"
+green = "#57826d"
+teal = "#576d82"
+blue = "#6d5782"
+purple = "#82576d"
+pink = "#825757"
+
+# Utilities
+overlay = "#2c2620"
+shadow = "#16130f"
+
+[[theme]]
+name = "Equilibrium Dark"
+author = "Carlo Abelli"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/carloabelli/base16-equilibrium-scheme"
+
+# Surfaces
+surface-0 = "#0c1118"
+surface-1 = "#181c22"
+surface-2 = "#22262d"
+surface-border = "#7b776e"
+
+# Text hierarchy
+text-0 = "#e7e2d9"
+text-1 = "#cac6bd"
+text-2 = "#afaba2"
+text-3 = "#949088"
+text-disabled = "#181c22"
+text-contrast = "#0c1118"
+
+# Accents
+accent = "#008dd1"
+accent-hover = "#00948b"
+accent-active = "#6a7fd2"
+accent-success = "#7f8b00"
+accent-warning = "#df5923"
+accent-danger = "#f04339"
+
+# Common colors
+red = "#f04339"
+orange = "#df5923"
+yellow = "#bb8801"
+green = "#7f8b00"
+teal = "#00948b"
+blue = "#008dd1"
+purple = "#6a7fd2"
+pink = "#e3488e"
+
+# Utilities
+overlay = "#181c22"
+shadow = "#0c1118"
+
+[[theme]]
+name = "Equilibrium Gray Dark"
+author = "Carlo Abelli"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/carloabelli/base16-equilibrium-scheme"
+
+# Surfaces
+surface-0 = "#111111"
+surface-1 = "#1b1b1b"
+surface-2 = "#262626"
+surface-border = "#777777"
+
+# Text hierarchy
+text-0 = "#e2e2e2"
+text-1 = "#c6c6c6"
+text-2 = "#ababab"
+text-3 = "#919191"
+text-disabled = "#1b1b1b"
+text-contrast = "#111111"
+
+# Accents
+accent = "#008dd1"
+accent-hover = "#00948b"
+accent-active = "#6a7fd2"
+accent-success = "#7f8b00"
+accent-warning = "#df5923"
+accent-danger = "#f04339"
+
+# Common colors
+red = "#f04339"
+orange = "#df5923"
+yellow = "#bb8801"
+green = "#7f8b00"
+teal = "#00948b"
+blue = "#008dd1"
+purple = "#6a7fd2"
+pink = "#e3488e"
+
+# Utilities
+overlay = "#1b1b1b"
+shadow = "#111111"
+
+[[theme]]
+name = "Equilibrium Gray Light"
+author = "Carlo Abelli"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/carloabelli/base16-equilibrium-scheme"
+
+# Surfaces
+surface-0 = "#f1f1f1"
+surface-1 = "#e2e2e2"
+surface-2 = "#d4d4d4"
+surface-border = "#777777"
+
+# Text hierarchy
+text-0 = "#1b1b1b"
+text-1 = "#303030"
+text-2 = "#474747"
+text-3 = "#5e5e5e"
+text-disabled = "#e2e2e2"
+text-contrast = "#f1f1f1"
+
+# Accents
+accent = "#0073b5"
+accent-hover = "#007a72"
+accent-active = "#4e66b6"
+accent-success = "#637200"
+accent-warning = "#bf3e05"
+accent-danger = "#d02023"
+
+# Common colors
+red = "#d02023"
+orange = "#bf3e05"
+yellow = "#9d6f00"
+green = "#637200"
+teal = "#007a72"
+blue = "#0073b5"
+purple = "#4e66b6"
+pink = "#c42775"
+
+# Utilities
+overlay = "#e2e2e2"
+shadow = "#f1f1f1"
+
+[[theme]]
+name = "Equilibrium Light"
+author = "Carlo Abelli"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/carloabelli/base16-equilibrium-scheme"
+
+# Surfaces
+surface-0 = "#f5f0e7"
+surface-1 = "#e7e2d9"
+surface-2 = "#d8d4cb"
+surface-border = "#73777f"
+
+# Text hierarchy
+text-0 = "#181c22"
+text-1 = "#2c3138"
+text-2 = "#43474e"
+text-3 = "#5a5f66"
+text-disabled = "#e7e2d9"
+text-contrast = "#f5f0e7"
+
+# Accents
+accent = "#0073b5"
+accent-hover = "#007a72"
+accent-active = "#4e66b6"
+accent-success = "#637200"
+accent-warning = "#bf3e05"
+accent-danger = "#d02023"
+
+# Common colors
+red = "#d02023"
+orange = "#bf3e05"
+yellow = "#9d6f00"
+green = "#637200"
+teal = "#007a72"
+blue = "#0073b5"
+purple = "#4e66b6"
+pink = "#c42775"
+
+# Utilities
+overlay = "#e7e2d9"
+shadow = "#f5f0e7"
+
+[[theme]]
+name = "Espresso"
+author = "Unknown. Maintained by Alex Mirrington (https://github.com/alexmirrington)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/alexmirrington/base16-espresso-scheme"
+
+# Surfaces
+surface-0 = "#2d2d2d"
+surface-1 = "#393939"
+surface-2 = "#515151"
+surface-border = "#777777"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#e0e0e0"
+text-2 = "#cccccc"
+text-3 = "#b4b7b4"
+text-disabled = "#393939"
+text-contrast = "#2d2d2d"
+
+# Accents
+accent = "#6c99bb"
+accent-hover = "#bed6ff"
+accent-active = "#d197d9"
+accent-success = "#a5c261"
+accent-warning = "#f9a959"
+accent-danger = "#d25252"
+
+# Common colors
+red = "#d25252"
+orange = "#f9a959"
+yellow = "#ffc66d"
+green = "#a5c261"
+teal = "#bed6ff"
+blue = "#6c99bb"
+purple = "#d197d9"
+pink = "#f97394"
+
+# Utilities
+overlay = "#393939"
+shadow = "#2d2d2d"
+
+[[theme]]
+name = "Eva Darken"
+author = "kjakapat (https://github.com/kjakapat)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/kjakapat/base16-eva-scheme"
+
+# Surfaces
+surface-0 = "#193145"
+surface-1 = "#2b4458"
+surface-2 = "#43596c"
+surface-border = "#5e707f"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#d2d2d2"
+text-2 = "#a6a6a6"
+text-3 = "#7f8992"
+text-disabled = "#2b4458"
+text-contrast = "#193145"
+
+# Accents
+accent = "#16d2ce"
+accent-hover = "#379d80"
+accent-active = "#a277e3"
+accent-success = "#66ff66"
+accent-warning = "#ff9966"
+accent-danger = "#df676a"
+
+# Common colors
+red = "#df676a"
+orange = "#ff9966"
+yellow = "#ffff66"
+green = "#66ff66"
+teal = "#379d80"
+blue = "#16d2ce"
+purple = "#a277e3"
+pink = "#dd5bb9"
+
+# Utilities
+overlay = "#2b4458"
+shadow = "#193145"
+
+[[theme]]
+name = "Eva Dim"
+author = "kjakapat (https://github.com/kjakapat)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/kjakapat/base16-eva-scheme"
+
+# Surfaces
+surface-0 = "#2a3b4d"
+surface-1 = "#3d566f"
+surface-2 = "#4b6988"
+surface-border = "#55799c"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#d6d7d9"
+text-2 = "#9fa2a6"
+text-3 = "#7e90a3"
+text-disabled = "#3d566f"
+text-contrast = "#2a3b4d"
+
+# Accents
+accent = "#1ae1dc"
+accent-hover = "#4b8f77"
+accent-active = "#9c6cd3"
+accent-success = "#5de561"
+accent-warning = "#ff9966"
+accent-danger = "#c4676c"
+
+# Common colors
+red = "#c4676c"
+orange = "#ff9966"
+yellow = "#cfd05d"
+green = "#5de561"
+teal = "#4b8f77"
+blue = "#1ae1dc"
+purple = "#9c6cd3"
+pink = "#bb64a9"
+
+# Utilities
+overlay = "#3d566f"
+shadow = "#2a3b4d"
+
+[[theme]]
+name = "Eva"
+author = "kjakapat (https://github.com/kjakapat)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/kjakapat/base16-eva-scheme"
+
+# Surfaces
+surface-0 = "#2a3b4d"
+surface-1 = "#3d566f"
+surface-2 = "#4b6988"
+surface-border = "#55799c"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#d6d7d9"
+text-2 = "#9fa2a6"
+text-3 = "#7e90a3"
+text-disabled = "#3d566f"
+text-contrast = "#2a3b4d"
+
+# Accents
+accent = "#15f4ee"
+accent-hover = "#4b8f77"
+accent-active = "#9c6cd3"
+accent-success = "#66ff66"
+accent-warning = "#ff9966"
+accent-danger = "#c4676c"
+
+# Common colors
+red = "#c4676c"
+orange = "#ff9966"
+yellow = "#ffff66"
+green = "#66ff66"
+teal = "#4b8f77"
+blue = "#15f4ee"
+purple = "#9c6cd3"
+pink = "#bb64a9"
+
+# Utilities
+overlay = "#3d566f"
+shadow = "#2a3b4d"
+
+[[theme]]
+name = "Flat"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#2c3e50"
+surface-1 = "#34495e"
+surface-2 = "#7f8c8d"
+surface-border = "#95a5a6"
+
+# Text hierarchy
+text-0 = "#ecf0f1"
+text-1 = "#f5f5f5"
+text-2 = "#e0e0e0"
+text-3 = "#bdc3c7"
+text-disabled = "#34495e"
+text-contrast = "#2c3e50"
+
+# Accents
+accent = "#3498db"
+accent-hover = "#1abc9c"
+accent-active = "#9b59b6"
+accent-success = "#2ecc71"
+accent-warning = "#e67e22"
+accent-danger = "#e74c3c"
+
+# Common colors
+red = "#e74c3c"
+orange = "#e67e22"
+yellow = "#f1c40f"
+green = "#2ecc71"
+teal = "#1abc9c"
+blue = "#3498db"
+purple = "#9b59b6"
+pink = "#be643c"
+
+# Utilities
+overlay = "#34495e"
+shadow = "#2c3e50"
+
+[[theme]]
+name = "Framer"
+author = "Framer (Maintained by Jesse Hoyos)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/jssee/base16-framer-scheme"
+
+# Surfaces
+surface-0 = "#181818"
+surface-1 = "#151515"
+surface-2 = "#464646"
+surface-border = "#747474"
+
+# Text hierarchy
+text-0 = "#eeeeee"
+text-1 = "#e8e8e8"
+text-2 = "#d0d0d0"
+text-3 = "#b9b9b9"
+text-disabled = "#151515"
+text-contrast = "#181818"
+
+# Accents
+accent = "#20bcfc"
+accent-hover = "#acddfd"
+accent-active = "#ba8cfc"
+accent-success = "#32ccdc"
+accent-warning = "#fc4769"
+accent-danger = "#fd886b"
+
+# Common colors
+red = "#fd886b"
+orange = "#fc4769"
+yellow = "#fecb6e"
+green = "#32ccdc"
+teal = "#acddfd"
+blue = "#20bcfc"
+purple = "#ba8cfc"
+pink = "#b15f4a"
+
+# Utilities
+overlay = "#151515"
+shadow = "#181818"
+
+[[theme]]
+name = "Fruit Soda"
+author = "jozip"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/jozip/base16-fruit-soda-scheme"
+
+# Surfaces
+surface-0 = "#f1ecf1"
+surface-1 = "#e0dee0"
+surface-2 = "#d8d5d5"
+surface-border = "#b5b4b6"
+
+# Text hierarchy
+text-0 = "#2d2c2c"
+text-1 = "#474545"
+text-2 = "#515151"
+text-3 = "#979598"
+text-disabled = "#e0dee0"
+text-contrast = "#f1ecf1"
+
+# Accents
+accent = "#2931df"
+accent-hover = "#0f9cfd"
+accent-active = "#611fce"
+accent-success = "#47f74c"
+accent-warning = "#fe6d08"
+accent-danger = "#fe3e31"
+
+# Common colors
+red = "#fe3e31"
+orange = "#fe6d08"
+yellow = "#f7e203"
+green = "#47f74c"
+teal = "#0f9cfd"
+blue = "#2931df"
+purple = "#611fce"
+pink = "#b16f40"
+
+# Utilities
+overlay = "#e0dee0"
+shadow = "#f1ecf1"
+
+[[theme]]
+name = "Gigavolt"
+author = "Aidan Swope (http://github.com/Whillikers)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Whillikers/base16-gigavolt-scheme"
+
+# Surfaces
+surface-0 = "#202126"
+surface-1 = "#2d303d"
+surface-2 = "#5a576e"
+surface-border = "#a1d2e6"
+
+# Text hierarchy
+text-0 = "#f2fbff"
+text-1 = "#eff0f9"
+text-2 = "#e9e7e1"
+text-3 = "#cad3ff"
+text-disabled = "#2d303d"
+text-contrast = "#202126"
+
+# Accents
+accent = "#40bfff"
+accent-hover = "#fb6acb"
+accent-active = "#ae94f9"
+accent-success = "#f2e6a9"
+accent-warning = "#19f988"
+accent-danger = "#ff661a"
+
+# Common colors
+red = "#ff661a"
+orange = "#19f988"
+yellow = "#ffdc2d"
+green = "#f2e6a9"
+teal = "#fb6acb"
+blue = "#40bfff"
+purple = "#ae94f9"
+pink = "#6187ff"
+
+# Utilities
+overlay = "#2d303d"
+shadow = "#202126"
+
+[[theme]]
+name = "Google Dark"
+author = "Seth Wright (http://sethawright.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#1d1f21"
+surface-1 = "#282a2e"
+surface-2 = "#373b41"
+surface-border = "#969896"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#e0e0e0"
+text-2 = "#c5c8c6"
+text-3 = "#b4b7b4"
+text-disabled = "#282a2e"
+text-contrast = "#1d1f21"
+
+# Accents
+accent = "#3971ed"
+accent-hover = "#3971ed"
+accent-active = "#a36ac7"
+accent-success = "#198844"
+accent-warning = "#f96a38"
+accent-danger = "#cc342b"
+
+# Common colors
+red = "#cc342b"
+orange = "#f96a38"
+yellow = "#fba922"
+green = "#198844"
+teal = "#3971ed"
+blue = "#3971ed"
+purple = "#a36ac7"
+pink = "#3971ed"
+
+# Utilities
+overlay = "#282a2e"
+shadow = "#1d1f21"
+
+[[theme]]
+name = "Google Light"
+author = "Seth Wright (http://sethawright.com)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#ffffff"
+surface-1 = "#e0e0e0"
+surface-2 = "#c5c8c6"
+surface-border = "#b4b7b4"
+
+# Text hierarchy
+text-0 = "#1d1f21"
+text-1 = "#282a2e"
+text-2 = "#373b41"
+text-3 = "#969896"
+text-disabled = "#e0e0e0"
+text-contrast = "#ffffff"
+
+# Accents
+accent = "#3971ed"
+accent-hover = "#3971ed"
+accent-active = "#a36ac7"
+accent-success = "#198844"
+accent-warning = "#f96a38"
+accent-danger = "#cc342b"
+
+# Common colors
+red = "#cc342b"
+orange = "#f96a38"
+yellow = "#fba922"
+green = "#198844"
+teal = "#3971ed"
+blue = "#3971ed"
+purple = "#a36ac7"
+pink = "#3971ed"
+
+# Utilities
+overlay = "#e0e0e0"
+shadow = "#ffffff"
+
+[[theme]]
+name = "Grayscale Dark"
+author = "Alexandre Gavioli (https://github.com/Alexx2/)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#101010"
+surface-1 = "#252525"
+surface-2 = "#464646"
+surface-border = "#525252"
+
+# Text hierarchy
+text-0 = "#f7f7f7"
+text-1 = "#e3e3e3"
+text-2 = "#b9b9b9"
+text-3 = "#ababab"
+text-disabled = "#252525"
+text-contrast = "#101010"
+
+# Accents
+accent = "#686868"
+accent-hover = "#868686"
+accent-active = "#747474"
+accent-success = "#8e8e8e"
+accent-warning = "#999999"
+accent-danger = "#7c7c7c"
+
+# Common colors
+red = "#7c7c7c"
+orange = "#999999"
+yellow = "#a0a0a0"
+green = "#8e8e8e"
+teal = "#868686"
+blue = "#686868"
+purple = "#747474"
+pink = "#5e5e5e"
+
+# Utilities
+overlay = "#252525"
+shadow = "#101010"
+
+[[theme]]
+name = "Grayscale Light"
+author = "Alexandre Gavioli (https://github.com/Alexx2/)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#f7f7f7"
+surface-1 = "#e3e3e3"
+surface-2 = "#b9b9b9"
+surface-border = "#ababab"
+
+# Text hierarchy
+text-0 = "#101010"
+text-1 = "#252525"
+text-2 = "#464646"
+text-3 = "#525252"
+text-disabled = "#e3e3e3"
+text-contrast = "#f7f7f7"
+
+# Accents
+accent = "#686868"
+accent-hover = "#868686"
+accent-active = "#747474"
+accent-success = "#8e8e8e"
+accent-warning = "#999999"
+accent-danger = "#7c7c7c"
+
+# Common colors
+red = "#7c7c7c"
+orange = "#999999"
+yellow = "#a0a0a0"
+green = "#8e8e8e"
+teal = "#868686"
+blue = "#686868"
+purple = "#747474"
+pink = "#5e5e5e"
+
+# Utilities
+overlay = "#e3e3e3"
+shadow = "#f7f7f7"
+
+[[theme]]
+name = "Green Screen"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#001100"
+surface-1 = "#003300"
+surface-2 = "#005500"
+surface-border = "#007700"
+
+# Text hierarchy
+text-0 = "#00ff00"
+text-1 = "#00dd00"
+text-2 = "#00bb00"
+text-3 = "#009900"
+text-disabled = "#003300"
+text-contrast = "#001100"
+
+# Accents
+accent = "#009900"
+accent-hover = "#005500"
+accent-active = "#00bb00"
+accent-success = "#00bb00"
+accent-warning = "#009900"
+accent-danger = "#007700"
+
+# Common colors
+red = "#007700"
+orange = "#009900"
+yellow = "#007700"
+green = "#00bb00"
+teal = "#005500"
+blue = "#009900"
+purple = "#00bb00"
+pink = "#005500"
+
+# Utilities
+overlay = "#003300"
+shadow = "#001100"
+
+[[theme]]
+name = "Gruvbox dark, hard"
+author = "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/dawikur/base16-gruvbox-scheme"
+
+# Surfaces
+surface-0 = "#1d2021"
+surface-1 = "#3c3836"
+surface-2 = "#504945"
+surface-border = "#665c54"
+
+# Text hierarchy
+text-0 = "#fbf1c7"
+text-1 = "#ebdbb2"
+text-2 = "#d5c4a1"
+text-3 = "#bdae93"
+text-disabled = "#3c3836"
+text-contrast = "#1d2021"
+
+# Accents
+accent = "#83a598"
+accent-hover = "#8ec07c"
+accent-active = "#d3869b"
+accent-success = "#b8bb26"
+accent-warning = "#fe8019"
+accent-danger = "#fb4934"
+
+# Common colors
+red = "#fb4934"
+orange = "#fe8019"
+yellow = "#fabd2f"
+green = "#b8bb26"
+teal = "#8ec07c"
+blue = "#83a598"
+purple = "#d3869b"
+pink = "#d65d0e"
+
+# Utilities
+overlay = "#3c3836"
+shadow = "#1d2021"
+
+[[theme]]
+name = "Gruvbox dark, medium"
+author = "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/dawikur/base16-gruvbox-scheme"
+
+# Surfaces
+surface-0 = "#282828"
+surface-1 = "#3c3836"
+surface-2 = "#504945"
+surface-border = "#665c54"
+
+# Text hierarchy
+text-0 = "#fbf1c7"
+text-1 = "#ebdbb2"
+text-2 = "#d5c4a1"
+text-3 = "#bdae93"
+text-disabled = "#3c3836"
+text-contrast = "#282828"
+
+# Accents
+accent = "#83a598"
+accent-hover = "#8ec07c"
+accent-active = "#d3869b"
+accent-success = "#b8bb26"
+accent-warning = "#fe8019"
+accent-danger = "#fb4934"
+
+# Common colors
+red = "#fb4934"
+orange = "#fe8019"
+yellow = "#fabd2f"
+green = "#b8bb26"
+teal = "#8ec07c"
+blue = "#83a598"
+purple = "#d3869b"
+pink = "#d65d0e"
+
+# Utilities
+overlay = "#3c3836"
+shadow = "#282828"
+
+[[theme]]
+name = "Gruvbox dark, pale"
+author = "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/dawikur/base16-gruvbox-scheme"
+
+# Surfaces
+surface-0 = "#262626"
+surface-1 = "#3a3a3a"
+surface-2 = "#4e4e4e"
+surface-border = "#8a8a8a"
+
+# Text hierarchy
+text-0 = "#ebdbb2"
+text-1 = "#d5c4a1"
+text-2 = "#dab997"
+text-3 = "#949494"
+text-disabled = "#3a3a3a"
+text-contrast = "#262626"
+
+# Accents
+accent = "#83adad"
+accent-hover = "#85ad85"
+accent-active = "#d485ad"
+accent-success = "#afaf00"
+accent-warning = "#ff8700"
+accent-danger = "#d75f5f"
+
+# Common colors
+red = "#d75f5f"
+orange = "#ff8700"
+yellow = "#ffaf00"
+green = "#afaf00"
+teal = "#85ad85"
+blue = "#83adad"
+purple = "#d485ad"
+pink = "#d65d0e"
+
+# Utilities
+overlay = "#3a3a3a"
+shadow = "#262626"
+
+[[theme]]
+name = "Gruvbox dark, soft"
+author = "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/dawikur/base16-gruvbox-scheme"
+
+# Surfaces
+surface-0 = "#32302f"
+surface-1 = "#3c3836"
+surface-2 = "#504945"
+surface-border = "#665c54"
+
+# Text hierarchy
+text-0 = "#fbf1c7"
+text-1 = "#ebdbb2"
+text-2 = "#d5c4a1"
+text-3 = "#bdae93"
+text-disabled = "#3c3836"
+text-contrast = "#32302f"
+
+# Accents
+accent = "#83a598"
+accent-hover = "#8ec07c"
+accent-active = "#d3869b"
+accent-success = "#b8bb26"
+accent-warning = "#fe8019"
+accent-danger = "#fb4934"
+
+# Common colors
+red = "#fb4934"
+orange = "#fe8019"
+yellow = "#fabd2f"
+green = "#b8bb26"
+teal = "#8ec07c"
+blue = "#83a598"
+purple = "#d3869b"
+pink = "#d65d0e"
+
+# Utilities
+overlay = "#3c3836"
+shadow = "#32302f"
+
+[[theme]]
+name = "Gruvbox light, hard"
+author = "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/dawikur/base16-gruvbox-scheme"
+
+# Surfaces
+surface-0 = "#f9f5d7"
+surface-1 = "#ebdbb2"
+surface-2 = "#d5c4a1"
+surface-border = "#bdae93"
+
+# Text hierarchy
+text-0 = "#282828"
+text-1 = "#3c3836"
+text-2 = "#504945"
+text-3 = "#665c54"
+text-disabled = "#ebdbb2"
+text-contrast = "#f9f5d7"
+
+# Accents
+accent = "#076678"
+accent-hover = "#427b58"
+accent-active = "#8f3f71"
+accent-success = "#79740e"
+accent-warning = "#af3a03"
+accent-danger = "#9d0006"
+
+# Common colors
+red = "#9d0006"
+orange = "#af3a03"
+yellow = "#b57614"
+green = "#79740e"
+teal = "#427b58"
+blue = "#076678"
+purple = "#8f3f71"
+pink = "#d65d0e"
+
+# Utilities
+overlay = "#ebdbb2"
+shadow = "#f9f5d7"
+
+[[theme]]
+name = "Gruvbox light, medium"
+author = "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/dawikur/base16-gruvbox-scheme"
+
+# Surfaces
+surface-0 = "#fbf1c7"
+surface-1 = "#ebdbb2"
+surface-2 = "#d5c4a1"
+surface-border = "#bdae93"
+
+# Text hierarchy
+text-0 = "#282828"
+text-1 = "#3c3836"
+text-2 = "#504945"
+text-3 = "#665c54"
+text-disabled = "#ebdbb2"
+text-contrast = "#fbf1c7"
+
+# Accents
+accent = "#076678"
+accent-hover = "#427b58"
+accent-active = "#8f3f71"
+accent-success = "#79740e"
+accent-warning = "#af3a03"
+accent-danger = "#9d0006"
+
+# Common colors
+red = "#9d0006"
+orange = "#af3a03"
+yellow = "#b57614"
+green = "#79740e"
+teal = "#427b58"
+blue = "#076678"
+purple = "#8f3f71"
+pink = "#d65d0e"
+
+# Utilities
+overlay = "#ebdbb2"
+shadow = "#fbf1c7"
+
+[[theme]]
+name = "Gruvbox light, soft"
+author = "Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/dawikur/base16-gruvbox-scheme"
+
+# Surfaces
+surface-0 = "#f2e5bc"
+surface-1 = "#ebdbb2"
+surface-2 = "#d5c4a1"
+surface-border = "#bdae93"
+
+# Text hierarchy
+text-0 = "#282828"
+text-1 = "#3c3836"
+text-2 = "#504945"
+text-3 = "#665c54"
+text-disabled = "#ebdbb2"
+text-contrast = "#f2e5bc"
+
+# Accents
+accent = "#076678"
+accent-hover = "#427b58"
+accent-active = "#8f3f71"
+accent-success = "#79740e"
+accent-warning = "#af3a03"
+accent-danger = "#9d0006"
+
+# Common colors
+red = "#9d0006"
+orange = "#af3a03"
+yellow = "#b57614"
+green = "#79740e"
+teal = "#427b58"
+blue = "#076678"
+purple = "#8f3f71"
+pink = "#d65d0e"
+
+# Utilities
+overlay = "#ebdbb2"
+shadow = "#f2e5bc"
+
+[[theme]]
+name = "Hardcore"
+author = "Chris Caller"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/callerc1/base16-hardcore-scheme"
+
+# Surfaces
+surface-0 = "#212121"
+surface-1 = "#303030"
+surface-2 = "#353535"
+surface-border = "#4a4a4a"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#e5e5e5"
+text-2 = "#cdcdcd"
+text-3 = "#707070"
+text-disabled = "#303030"
+text-contrast = "#212121"
+
+# Accents
+accent = "#66d9ef"
+accent-hover = "#708387"
+accent-active = "#9e6ffe"
+accent-success = "#a6e22e"
+accent-warning = "#fd971f"
+accent-danger = "#f92672"
+
+# Common colors
+red = "#f92672"
+orange = "#fd971f"
+yellow = "#e6db74"
+green = "#a6e22e"
+teal = "#708387"
+blue = "#66d9ef"
+purple = "#9e6ffe"
+pink = "#e8b882"
+
+# Utilities
+overlay = "#303030"
+shadow = "#212121"
+
+[[theme]]
+name = "Harmonic16 Dark"
+author = "Jannik Siebert (https://github.com/janniks)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#0b1c2c"
+surface-1 = "#223b54"
+surface-2 = "#405c79"
+surface-border = "#627e99"
+
+# Text hierarchy
+text-0 = "#f7f9fb"
+text-1 = "#e5ebf1"
+text-2 = "#cbd6e2"
+text-3 = "#aabcce"
+text-disabled = "#223b54"
+text-contrast = "#0b1c2c"
+
+# Accents
+accent = "#8b56bf"
+accent-hover = "#568bbf"
+accent-active = "#bf568b"
+accent-success = "#56bf8b"
+accent-warning = "#bfbf56"
+accent-danger = "#bf8b56"
+
+# Common colors
+red = "#bf8b56"
+orange = "#bfbf56"
+yellow = "#8bbf56"
+green = "#56bf8b"
+teal = "#568bbf"
+blue = "#8b56bf"
+purple = "#bf568b"
+pink = "#bf5656"
+
+# Utilities
+overlay = "#223b54"
+shadow = "#0b1c2c"
+
+[[theme]]
+name = "Harmonic16 Light"
+author = "Jannik Siebert (https://github.com/janniks)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#f7f9fb"
+surface-1 = "#e5ebf1"
+surface-2 = "#cbd6e2"
+surface-border = "#aabcce"
+
+# Text hierarchy
+text-0 = "#0b1c2c"
+text-1 = "#223b54"
+text-2 = "#405c79"
+text-3 = "#627e99"
+text-disabled = "#e5ebf1"
+text-contrast = "#f7f9fb"
+
+# Accents
+accent = "#8b56bf"
+accent-hover = "#568bbf"
+accent-active = "#bf568b"
+accent-success = "#56bf8b"
+accent-warning = "#bfbf56"
+accent-danger = "#bf8b56"
+
+# Common colors
+red = "#bf8b56"
+orange = "#bfbf56"
+yellow = "#8bbf56"
+green = "#56bf8b"
+teal = "#568bbf"
+blue = "#8b56bf"
+purple = "#bf568b"
+pink = "#bf5656"
+
+# Utilities
+overlay = "#e5ebf1"
+shadow = "#f7f9fb"
+
+[[theme]]
+name = "Heetch Light"
+author = "Geoffrey Teale (tealeg@gmail.com)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/tealeg/base16-heetch-scheme"
+
+# Surfaces
+surface-0 = "#feffff"
+surface-1 = "#392551"
+surface-2 = "#7b6d8b"
+surface-border = "#9c92a8"
+
+# Text hierarchy
+text-0 = "#190134"
+text-1 = "#470546"
+text-2 = "#5a496e"
+text-3 = "#ddd6e5"
+text-disabled = "#392551"
+text-contrast = "#feffff"
+
+# Accents
+accent = "#47f9f5"
+accent-hover = "#c33678"
+accent-active = "#bd0152"
+accent-success = "#f80059"
+accent-warning = "#bdb6c5"
+accent-danger = "#27d9d5"
+
+# Common colors
+red = "#27d9d5"
+orange = "#bdb6c5"
+yellow = "#5ba2b6"
+green = "#f80059"
+teal = "#c33678"
+blue = "#47f9f5"
+purple = "#bd0152"
+pink = "#dedae2"
+
+# Utilities
+overlay = "#392551"
+shadow = "#feffff"
+
+[[theme]]
+name = "Heetch Dark"
+author = "Geoffrey Teale (tealeg@gmail.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/tealeg/base16-heetch-scheme"
+
+# Surfaces
+surface-0 = "#190134"
+surface-1 = "#392551"
+surface-2 = "#5a496e"
+surface-border = "#7b6d8b"
+
+# Text hierarchy
+text-0 = "#feffff"
+text-1 = "#dedae2"
+text-2 = "#bdb6c5"
+text-3 = "#9c92a8"
+text-disabled = "#392551"
+text-contrast = "#190134"
+
+# Accents
+accent = "#bd0152"
+accent-hover = "#f80059"
+accent-active = "#82034c"
+accent-success = "#c33678"
+accent-warning = "#5ba2b6"
+accent-danger = "#27d9d5"
+
+# Common colors
+red = "#27d9d5"
+orange = "#5ba2b6"
+yellow = "#8f6c97"
+green = "#c33678"
+teal = "#f80059"
+blue = "#bd0152"
+purple = "#82034c"
+pink = "#470546"
+
+# Utilities
+overlay = "#392551"
+shadow = "#190134"
+
+[[theme]]
+name = "Helios"
+author = "Alex Meyer (https://github.com/reyemxela)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/reyemxela/base16-helios-scheme"
+
+# Surfaces
+surface-0 = "#1d2021"
+surface-1 = "#383c3e"
+surface-2 = "#53585b"
+surface-border = "#6f7579"
+
+# Text hierarchy
+text-0 = "#e5e5e5"
+text-1 = "#dddddd"
+text-2 = "#d5d5d5"
+text-3 = "#cdcdcd"
+text-disabled = "#383c3e"
+text-contrast = "#1d2021"
+
+# Accents
+accent = "#1e8bac"
+accent-hover = "#1ba595"
+accent-active = "#be4264"
+accent-success = "#88b92d"
+accent-warning = "#eb8413"
+accent-danger = "#d72638"
+
+# Common colors
+red = "#d72638"
+orange = "#eb8413"
+yellow = "#f19d1a"
+green = "#88b92d"
+teal = "#1ba595"
+blue = "#1e8bac"
+purple = "#be4264"
+pink = "#c85e0d"
+
+# Utilities
+overlay = "#383c3e"
+shadow = "#1d2021"
+
+[[theme]]
+name = "Hopscotch"
+author = "Jan T. Sott"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#322931"
+surface-1 = "#433b42"
+surface-2 = "#5c545b"
+surface-border = "#797379"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#d5d3d5"
+text-2 = "#b9b5b8"
+text-3 = "#989498"
+text-disabled = "#433b42"
+text-contrast = "#322931"
+
+# Accents
+accent = "#1290bf"
+accent-hover = "#149b93"
+accent-active = "#c85e7c"
+accent-success = "#8fc13e"
+accent-warning = "#fd8b19"
+accent-danger = "#dd464c"
+
+# Common colors
+red = "#dd464c"
+orange = "#fd8b19"
+yellow = "#fdcc59"
+green = "#8fc13e"
+teal = "#149b93"
+blue = "#1290bf"
+purple = "#c85e7c"
+pink = "#b33508"
+
+# Utilities
+overlay = "#433b42"
+shadow = "#322931"
+
+[[theme]]
+name = "Horizon Dark"
+author = "Michaël Ball (http://github.com/michael-ball/)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/michael-ball/base16-horizon-scheme"
+
+# Surfaces
+surface-0 = "#1c1e26"
+surface-1 = "#232530"
+surface-2 = "#2e303e"
+surface-border = "#6f6f70"
+
+# Text hierarchy
+text-0 = "#e3e6ee"
+text-1 = "#dcdfe4"
+text-2 = "#cbced0"
+text-3 = "#9da0a2"
+text-disabled = "#232530"
+text-contrast = "#1c1e26"
+
+# Accents
+accent = "#df5273"
+accent-hover = "#24a8b4"
+accent-active = "#b072d1"
+accent-success = "#efaf8e"
+accent-warning = "#e58d7d"
+accent-danger = "#e93c58"
+
+# Common colors
+red = "#e93c58"
+orange = "#e58d7d"
+yellow = "#efb993"
+green = "#efaf8e"
+teal = "#24a8b4"
+blue = "#df5273"
+purple = "#b072d1"
+pink = "#e4a382"
+
+# Utilities
+overlay = "#232530"
+shadow = "#1c1e26"
+
+[[theme]]
+name = "Horizon Light"
+author = "Michaël Ball (http://github.com/michael-ball/)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/michael-ball/base16-horizon-scheme"
+
+# Surfaces
+surface-0 = "#fdf0ed"
+surface-1 = "#fadad1"
+surface-2 = "#f9cbbe"
+surface-border = "#bdb3b1"
+
+# Text hierarchy
+text-0 = "#201c1d"
+text-1 = "#302c2d"
+text-2 = "#403c3d"
+text-3 = "#948c8a"
+text-disabled = "#fadad1"
+text-contrast = "#fdf0ed"
+
+# Accents
+accent = "#da103f"
+accent-hover = "#dc3318"
+accent-active = "#1d8991"
+accent-success = "#94e1b0"
+accent-warning = "#f6661e"
+accent-danger = "#f7939b"
+
+# Common colors
+red = "#f7939b"
+orange = "#f6661e"
+yellow = "#fbe0d9"
+green = "#94e1b0"
+teal = "#dc3318"
+blue = "#da103f"
+purple = "#1d8991"
+pink = "#e58c92"
+
+# Utilities
+overlay = "#fadad1"
+shadow = "#fdf0ed"
+
+[[theme]]
+name = "Horizon Dark"
+author = "Michaël Ball (http://github.com/michael-ball/)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/michael-ball/base16-horizon-scheme"
+
+# Surfaces
+surface-0 = "#1c1e26"
+surface-1 = "#232530"
+surface-2 = "#2e303e"
+surface-border = "#6f6f70"
+
+# Text hierarchy
+text-0 = "#e3e6ee"
+text-1 = "#dcdfe4"
+text-2 = "#cbced0"
+text-3 = "#9da0a2"
+text-disabled = "#232530"
+text-contrast = "#1c1e26"
+
+# Accents
+accent = "#26bbd9"
+accent-hover = "#59e1e3"
+accent-active = "#ee64ac"
+accent-success = "#29d398"
+accent-warning = "#fab795"
+accent-danger = "#e95678"
+
+# Common colors
+red = "#e95678"
+orange = "#fab795"
+yellow = "#fac29a"
+green = "#29d398"
+teal = "#59e1e3"
+blue = "#26bbd9"
+purple = "#ee64ac"
+pink = "#f09383"
+
+# Utilities
+overlay = "#232530"
+shadow = "#1c1e26"
+
+[[theme]]
+name = "Horizon Light"
+author = "Michaël Ball (http://github.com/michael-ball/)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/michael-ball/base16-horizon-scheme"
+
+# Surfaces
+surface-0 = "#fdf0ed"
+surface-1 = "#fadad1"
+surface-2 = "#f9cbbe"
+surface-border = "#bdb3b1"
+
+# Text hierarchy
+text-0 = "#201c1d"
+text-1 = "#302c2d"
+text-2 = "#403c3d"
+text-3 = "#948c8a"
+text-disabled = "#fadad1"
+text-contrast = "#fdf0ed"
+
+# Accents
+accent = "#26bbd9"
+accent-hover = "#59e1e3"
+accent-active = "#ee64ac"
+accent-success = "#29d398"
+accent-warning = "#f9cec3"
+accent-danger = "#e95678"
+
+# Common colors
+red = "#e95678"
+orange = "#f9cec3"
+yellow = "#fadad1"
+green = "#29d398"
+teal = "#59e1e3"
+blue = "#26bbd9"
+purple = "#ee64ac"
+pink = "#f9cbbe"
+
+# Utilities
+overlay = "#fadad1"
+shadow = "#fdf0ed"
+
+[[theme]]
+name = "Humanoid dark"
+author = "Thomas (tasmo) Friese"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/humanoid-colors/base16-humanoid-schemes"
+
+# Surfaces
+surface-0 = "#232629"
+surface-1 = "#333b3d"
+surface-2 = "#484e54"
+surface-border = "#60615d"
+
+# Text hierarchy
+text-0 = "#fcfcfc"
+text-1 = "#fcfcf6"
+text-2 = "#f8f8f2"
+text-3 = "#c0c0bd"
+text-disabled = "#333b3d"
+text-contrast = "#232629"
+
+# Accents
+accent = "#00a6fb"
+accent-hover = "#0dd9d6"
+accent-active = "#f15ee3"
+accent-success = "#02d849"
+accent-warning = "#ff9505"
+accent-danger = "#f11235"
+
+# Common colors
+red = "#f11235"
+orange = "#ff9505"
+yellow = "#ffb627"
+green = "#02d849"
+teal = "#0dd9d6"
+blue = "#00a6fb"
+purple = "#f15ee3"
+pink = "#b27701"
+
+# Utilities
+overlay = "#333b3d"
+shadow = "#232629"
+
+[[theme]]
+name = "Humanoid light"
+author = "Thomas (tasmo) Friese"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/humanoid-colors/base16-humanoid-schemes"
+
+# Surfaces
+surface-0 = "#f8f8f2"
+surface-1 = "#efefe9"
+surface-2 = "#deded8"
+surface-border = "#c0c0bd"
+
+# Text hierarchy
+text-0 = "#070708"
+text-1 = "#2f3337"
+text-2 = "#232629"
+text-3 = "#60615d"
+text-disabled = "#efefe9"
+text-contrast = "#f8f8f2"
+
+# Accents
+accent = "#0082c9"
+accent-hover = "#008e8e"
+accent-active = "#700f98"
+accent-success = "#388e3c"
+accent-warning = "#ff3d00"
+accent-danger = "#b0151a"
+
+# Common colors
+red = "#b0151a"
+orange = "#ff3d00"
+yellow = "#ffb627"
+green = "#388e3c"
+teal = "#008e8e"
+blue = "#0082c9"
+purple = "#700f98"
+pink = "#b27701"
+
+# Utilities
+overlay = "#efefe9"
+shadow = "#f8f8f2"
+
+[[theme]]
+name = "Icy Dark"
+author = "icyphox (https://icyphox.ga)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/icyphox/base16-icy-scheme"
+
+# Surfaces
+surface-0 = "#021012"
+surface-1 = "#031619"
+surface-2 = "#041f23"
+surface-border = "#052e34"
+
+# Text hierarchy
+text-0 = "#109cb0"
+text-1 = "#0c7c8c"
+text-2 = "#095b67"
+text-3 = "#064048"
+text-disabled = "#031619"
+text-contrast = "#021012"
+
+# Accents
+accent = "#00bcd4"
+accent-hover = "#26c6da"
+accent-active = "#00acc1"
+accent-success = "#4dd0e1"
+accent-warning = "#b3ebf2"
+accent-danger = "#16c1d9"
+
+# Common colors
+red = "#16c1d9"
+orange = "#b3ebf2"
+yellow = "#80deea"
+green = "#4dd0e1"
+teal = "#26c6da"
+blue = "#00bcd4"
+purple = "#00acc1"
+pink = "#0097a7"
+
+# Utilities
+overlay = "#031619"
+shadow = "#021012"
+
+[[theme]]
+name = "IR Black"
+author = "Timothée Poisot (http://timotheepoisot.fr)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#242422"
+surface-2 = "#484844"
+surface-border = "#6c6c66"
+
+# Text hierarchy
+text-0 = "#fdfbee"
+text-1 = "#d9d7cc"
+text-2 = "#b5b3aa"
+text-3 = "#918f88"
+text-disabled = "#242422"
+text-contrast = "#000000"
+
+# Accents
+accent = "#96cbfe"
+accent-hover = "#c6c5fe"
+accent-active = "#ff73fd"
+accent-success = "#a8ff60"
+accent-warning = "#e9c062"
+accent-danger = "#ff6c60"
+
+# Common colors
+red = "#ff6c60"
+orange = "#e9c062"
+yellow = "#ffffb6"
+green = "#a8ff60"
+teal = "#c6c5fe"
+blue = "#96cbfe"
+purple = "#ff73fd"
+pink = "#b18a3d"
+
+# Utilities
+overlay = "#242422"
+shadow = "#000000"
+
+[[theme]]
+name = "Isotope"
+author = "Jan T. Sott"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#404040"
+surface-2 = "#606060"
+surface-border = "#808080"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#e0e0e0"
+text-2 = "#d0d0d0"
+text-3 = "#c0c0c0"
+text-disabled = "#404040"
+text-contrast = "#000000"
+
+# Accents
+accent = "#0066ff"
+accent-hover = "#00ffff"
+accent-active = "#cc00ff"
+accent-success = "#33ff00"
+accent-warning = "#ff9900"
+accent-danger = "#ff0000"
+
+# Common colors
+red = "#ff0000"
+orange = "#ff9900"
+yellow = "#ff0099"
+green = "#33ff00"
+teal = "#00ffff"
+blue = "#0066ff"
+purple = "#cc00ff"
+pink = "#3300ff"
+
+# Utilities
+overlay = "#404040"
+shadow = "#000000"
+
+[[theme]]
+name = "Kimber"
+author = "Mishka Nguyen (https://github.com/akhsiM)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/akhsiM/base16-kimber-scheme"
+
+# Surfaces
+surface-0 = "#222222"
+surface-1 = "#313131"
+surface-2 = "#555d55"
+surface-border = "#644646"
+
+# Text hierarchy
+text-0 = "#ffffe6"
+text-1 = "#c3c3b4"
+text-2 = "#dedee7"
+text-3 = "#5a5a5a"
+text-disabled = "#313131"
+text-contrast = "#222222"
+
+# Accents
+accent = "#537c9c"
+accent-hover = "#78b4b4"
+accent-active = "#86cacd"
+accent-success = "#99c899"
+accent-warning = "#476c88"
+accent-danger = "#c88c8c"
+
+# Common colors
+red = "#c88c8c"
+orange = "#476c88"
+yellow = "#d8b56d"
+green = "#99c899"
+teal = "#78b4b4"
+blue = "#537c9c"
+purple = "#86cacd"
+pink = "#704f4f"
+
+# Utilities
+overlay = "#313131"
+shadow = "#222222"
+
+[[theme]]
+name = "Macintosh"
+author = "Rebecca Bettencourt (http://www.kreativekorp.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#404040"
+surface-2 = "#404040"
+surface-border = "#808080"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#c0c0c0"
+text-2 = "#c0c0c0"
+text-3 = "#808080"
+text-disabled = "#404040"
+text-contrast = "#000000"
+
+# Accents
+accent = "#0000d3"
+accent-hover = "#02abea"
+accent-active = "#4700a5"
+accent-success = "#1fb714"
+accent-warning = "#ff6403"
+accent-danger = "#dd0907"
+
+# Common colors
+red = "#dd0907"
+orange = "#ff6403"
+yellow = "#fbf305"
+green = "#1fb714"
+teal = "#02abea"
+blue = "#0000d3"
+purple = "#4700a5"
+pink = "#90713a"
+
+# Utilities
+overlay = "#404040"
+shadow = "#000000"
+
+[[theme]]
+name = "Marrakesh"
+author = "Alexandre Gavioli (http://github.com/Alexx2/)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#201602"
+surface-1 = "#302e00"
+surface-2 = "#5f5b17"
+surface-border = "#6c6823"
+
+# Text hierarchy
+text-0 = "#faf0a5"
+text-1 = "#ccc37a"
+text-2 = "#948e48"
+text-3 = "#86813b"
+text-disabled = "#302e00"
+text-contrast = "#201602"
+
+# Accents
+accent = "#477ca1"
+accent-hover = "#75a738"
+accent-active = "#8868b3"
+accent-success = "#18974e"
+accent-warning = "#b36144"
+accent-danger = "#c35359"
+
+# Common colors
+red = "#c35359"
+orange = "#b36144"
+yellow = "#a88339"
+green = "#18974e"
+teal = "#75a738"
+blue = "#477ca1"
+purple = "#8868b3"
+pink = "#b3588e"
+
+# Utilities
+overlay = "#302e00"
+shadow = "#201602"
+
+[[theme]]
+name = "Materia"
+author = "Defman21"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Defman21/base16-materia"
+
+# Surfaces
+surface-0 = "#263238"
+surface-1 = "#2c393f"
+surface-2 = "#37474f"
+surface-border = "#707880"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#d5dbe5"
+text-2 = "#cdd3de"
+text-3 = "#c9ccd3"
+text-disabled = "#2c393f"
+text-contrast = "#263238"
+
+# Accents
+accent = "#89ddff"
+accent-hover = "#80cbc4"
+accent-active = "#82aaff"
+accent-success = "#8bd649"
+accent-warning = "#ea9560"
+accent-danger = "#ec5f67"
+
+# Common colors
+red = "#ec5f67"
+orange = "#ea9560"
+yellow = "#ffcc00"
+green = "#8bd649"
+teal = "#80cbc4"
+blue = "#89ddff"
+purple = "#82aaff"
+pink = "#ec5f67"
+
+# Utilities
+overlay = "#2c393f"
+shadow = "#263238"
+
+[[theme]]
+name = "Material Darker"
+author = "Nate Peterson"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/ntpeters/base16-materialtheme-scheme"
+
+# Surfaces
+surface-0 = "#212121"
+surface-1 = "#303030"
+surface-2 = "#353535"
+surface-border = "#4a4a4a"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#eeffff"
+text-2 = "#eeffff"
+text-3 = "#b2ccd6"
+text-disabled = "#303030"
+text-contrast = "#212121"
+
+# Accents
+accent = "#82aaff"
+accent-hover = "#89ddff"
+accent-active = "#c792ea"
+accent-success = "#c3e88d"
+accent-warning = "#f78c6c"
+accent-danger = "#f07178"
+
+# Common colors
+red = "#f07178"
+orange = "#f78c6c"
+yellow = "#ffcb6b"
+green = "#c3e88d"
+teal = "#89ddff"
+blue = "#82aaff"
+purple = "#c792ea"
+pink = "#ff5370"
+
+# Utilities
+overlay = "#303030"
+shadow = "#212121"
+
+[[theme]]
+name = "Material Lighter"
+author = "Nate Peterson"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/ntpeters/base16-materialtheme-scheme"
+
+# Surfaces
+surface-0 = "#fafafa"
+surface-1 = "#e7eaec"
+surface-2 = "#cceae7"
+surface-border = "#ccd7da"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#80cbc4"
+text-2 = "#80cbc4"
+text-3 = "#8796b0"
+text-disabled = "#e7eaec"
+text-contrast = "#fafafa"
+
+# Accents
+accent = "#6182b8"
+accent-hover = "#39adb5"
+accent-active = "#7c4dff"
+accent-success = "#91b859"
+accent-warning = "#f76d47"
+accent-danger = "#ff5370"
+
+# Common colors
+red = "#ff5370"
+orange = "#f76d47"
+yellow = "#ffb62c"
+green = "#91b859"
+teal = "#39adb5"
+blue = "#6182b8"
+purple = "#7c4dff"
+pink = "#e53935"
+
+# Utilities
+overlay = "#e7eaec"
+shadow = "#fafafa"
+
+[[theme]]
+name = "Material Palenight"
+author = "Nate Peterson"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/ntpeters/base16-materialtheme-scheme"
+
+# Surfaces
+surface-0 = "#292d3e"
+surface-1 = "#444267"
+surface-2 = "#32374d"
+surface-border = "#676e95"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#959dcb"
+text-2 = "#959dcb"
+text-3 = "#8796b0"
+text-disabled = "#444267"
+text-contrast = "#292d3e"
+
+# Accents
+accent = "#82aaff"
+accent-hover = "#89ddff"
+accent-active = "#c792ea"
+accent-success = "#c3e88d"
+accent-warning = "#f78c6c"
+accent-danger = "#f07178"
+
+# Common colors
+red = "#f07178"
+orange = "#f78c6c"
+yellow = "#ffcb6b"
+green = "#c3e88d"
+teal = "#89ddff"
+blue = "#82aaff"
+purple = "#c792ea"
+pink = "#ff5370"
+
+# Utilities
+overlay = "#444267"
+shadow = "#292d3e"
+
+[[theme]]
+name = "Material Vivid"
+author = "joshyrobot"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/joshyrobot/base16-material-vivid-scheme"
+
+# Surfaces
+surface-0 = "#202124"
+surface-1 = "#27292c"
+surface-2 = "#323639"
+surface-border = "#44464d"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#9e9e9e"
+text-2 = "#80868b"
+text-3 = "#676c71"
+text-disabled = "#27292c"
+text-contrast = "#202124"
+
+# Accents
+accent = "#2196f3"
+accent-hover = "#00bcd4"
+accent-active = "#673ab7"
+accent-success = "#00e676"
+accent-warning = "#ff9800"
+accent-danger = "#f44336"
+
+# Common colors
+red = "#f44336"
+orange = "#ff9800"
+yellow = "#ffeb3b"
+green = "#00e676"
+teal = "#00bcd4"
+blue = "#2196f3"
+purple = "#673ab7"
+pink = "#8d6e63"
+
+# Utilities
+overlay = "#27292c"
+shadow = "#202124"
+
+[[theme]]
+name = "Material"
+author = "Nate Peterson"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/ntpeters/base16-materialtheme-scheme"
+
+# Surfaces
+surface-0 = "#263238"
+surface-1 = "#2e3c43"
+surface-2 = "#314549"
+surface-border = "#546e7a"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#eeffff"
+text-2 = "#eeffff"
+text-3 = "#b2ccd6"
+text-disabled = "#2e3c43"
+text-contrast = "#263238"
+
+# Accents
+accent = "#82aaff"
+accent-hover = "#89ddff"
+accent-active = "#c792ea"
+accent-success = "#c3e88d"
+accent-warning = "#f78c6c"
+accent-danger = "#f07178"
+
+# Common colors
+red = "#f07178"
+orange = "#f78c6c"
+yellow = "#ffcb6b"
+green = "#c3e88d"
+teal = "#89ddff"
+blue = "#82aaff"
+purple = "#c792ea"
+pink = "#ff5370"
+
+# Utilities
+overlay = "#2e3c43"
+shadow = "#263238"
+
+[[theme]]
+name = "Mellow Purple"
+author = "gidsi"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/gidsi/base16-mellow-scheme"
+
+# Surfaces
+surface-0 = "#1e0528"
+surface-1 = "#1a092d"
+surface-2 = "#331354"
+surface-border = "#320f55"
+
+# Text hierarchy
+text-0 = "#f8c0ff"
+text-1 = "#ffeeff"
+text-2 = "#ffeeff"
+text-3 = "#873582"
+text-disabled = "#1a092d"
+text-contrast = "#1e0528"
+
+# Accents
+accent = "#550068"
+accent-hover = "#b900b1"
+accent-active = "#8991bb"
+accent-success = "#05cb0d"
+accent-warning = "#aa00a3"
+accent-danger = "#00d9e9"
+
+# Common colors
+red = "#00d9e9"
+orange = "#aa00a3"
+yellow = "#955ae7"
+green = "#05cb0d"
+teal = "#b900b1"
+blue = "#550068"
+purple = "#8991bb"
+pink = "#4d6fff"
+
+# Utilities
+overlay = "#1a092d"
+shadow = "#1e0528"
+
+[[theme]]
+name = "Mexico Light"
+author = "Sheldon Johnson"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/drzel/base16-mexico-light-scheme"
+
+# Surfaces
+surface-0 = "#f8f8f8"
+surface-1 = "#e8e8e8"
+surface-2 = "#d8d8d8"
+surface-border = "#b8b8b8"
+
+# Text hierarchy
+text-0 = "#181818"
+text-1 = "#282828"
+text-2 = "#383838"
+text-3 = "#585858"
+text-disabled = "#e8e8e8"
+text-contrast = "#f8f8f8"
+
+# Accents
+accent = "#7cafc2"
+accent-hover = "#4b8093"
+accent-active = "#96609e"
+accent-success = "#538947"
+accent-warning = "#dc9656"
+accent-danger = "#ab4642"
+
+# Common colors
+red = "#ab4642"
+orange = "#dc9656"
+yellow = "#f79a0e"
+green = "#538947"
+teal = "#4b8093"
+blue = "#7cafc2"
+purple = "#96609e"
+pink = "#a16946"
+
+# Utilities
+overlay = "#e8e8e8"
+shadow = "#f8f8f8"
+
+[[theme]]
+name = "Mocha"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-default-scheme"
+
+# Surfaces
+surface-0 = "#3b3228"
+surface-1 = "#534636"
+surface-2 = "#645240"
+surface-border = "#7e705a"
+
+# Text hierarchy
+text-0 = "#f5eeeb"
+text-1 = "#e9e1dd"
+text-2 = "#d0c8c6"
+text-3 = "#b8afad"
+text-disabled = "#534636"
+text-contrast = "#3b3228"
+
+# Accents
+accent = "#8ab3b5"
+accent-hover = "#7bbda4"
+accent-active = "#a89bb9"
+accent-success = "#beb55b"
+accent-warning = "#d28b71"
+accent-danger = "#cb6077"
+
+# Common colors
+red = "#cb6077"
+orange = "#d28b71"
+yellow = "#f4bc87"
+green = "#beb55b"
+teal = "#7bbda4"
+blue = "#8ab3b5"
+purple = "#a89bb9"
+pink = "#bb9584"
+
+# Utilities
+overlay = "#534636"
+shadow = "#3b3228"
+
+[[theme]]
+name = "Monokai"
+author = "Wimer Hazenberg (http://www.monokai.nl)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#272822"
+surface-1 = "#383830"
+surface-2 = "#49483e"
+surface-border = "#75715e"
+
+# Text hierarchy
+text-0 = "#f9f8f5"
+text-1 = "#f5f4f1"
+text-2 = "#f8f8f2"
+text-3 = "#a59f85"
+text-disabled = "#383830"
+text-contrast = "#272822"
+
+# Accents
+accent = "#66d9ef"
+accent-hover = "#a1efe4"
+accent-active = "#ae81ff"
+accent-success = "#a6e22e"
+accent-warning = "#fd971f"
+accent-danger = "#f92672"
+
+# Common colors
+red = "#f92672"
+orange = "#fd971f"
+yellow = "#f4bf75"
+green = "#a6e22e"
+teal = "#a1efe4"
+blue = "#66d9ef"
+purple = "#ae81ff"
+pink = "#cc6633"
+
+# Utilities
+overlay = "#383830"
+shadow = "#272822"
+
+[[theme]]
+name = "Nebula"
+author = "Gabriel Fontes (https://github.com/Misterio77)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Misterio77/base16-nebula-scheme"
+
+# Surfaces
+surface-0 = "#22273b"
+surface-1 = "#414f60"
+surface-2 = "#5a8380"
+surface-border = "#6e6f72"
+
+# Text hierarchy
+text-0 = "#8dbdaa"
+text-1 = "#c7c9cd"
+text-2 = "#a4a6a9"
+text-3 = "#87888b"
+text-disabled = "#414f60"
+text-contrast = "#22273b"
+
+# Accents
+accent = "#4d6bb6"
+accent-hover = "#226f68"
+accent-active = "#716cae"
+accent-success = "#6562a8"
+accent-warning = "#94929e"
+accent-danger = "#777abc"
+
+# Common colors
+red = "#777abc"
+orange = "#94929e"
+yellow = "#4f9062"
+green = "#6562a8"
+teal = "#226f68"
+blue = "#4d6bb6"
+purple = "#716cae"
+pink = "#8c70a7"
+
+# Utilities
+overlay = "#414f60"
+shadow = "#22273b"
+
+[[theme]]
+name = "Nord"
+author = "arcticicestudio"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/8-uh/base16-nord-scheme"
+
+# Surfaces
+surface-0 = "#2e3440"
+surface-1 = "#3b4252"
+surface-2 = "#434c5e"
+surface-border = "#4c566a"
+
+# Text hierarchy
+text-0 = "#8fbcbb"
+text-1 = "#eceff4"
+text-2 = "#e5e9f0"
+text-3 = "#d8dee9"
+text-disabled = "#3b4252"
+text-contrast = "#2e3440"
+
+# Accents
+accent = "#ebcb8b"
+accent-hover = "#d08770"
+accent-active = "#a3be8c"
+accent-success = "#bf616a"
+accent-warning = "#81a1c1"
+accent-danger = "#88c0d0"
+
+# Common colors
+red = "#88c0d0"
+orange = "#81a1c1"
+yellow = "#5e81ac"
+green = "#bf616a"
+teal = "#d08770"
+blue = "#ebcb8b"
+purple = "#a3be8c"
+pink = "#b48ead"
+
+# Utilities
+overlay = "#3b4252"
+shadow = "#2e3440"
+
+[[theme]]
+name = "Nova"
+author = "George Essig (https://github.com/gessig), Trevor D. Miller (https://trevordmiller.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/gessig/base16-nova-scheme"
+
+# Surfaces
+surface-0 = "#3c4c55"
+surface-1 = "#556873"
+surface-2 = "#6a7d89"
+surface-border = "#82939d"
+
+# Text hierarchy
+text-0 = "#c5d4dd"
+text-1 = "#a0b4bf"
+text-2 = "#8798a3"
+text-3 = "#647a87"
+text-disabled = "#556873"
+text-contrast = "#3c4c55"
+
+# Accents
+accent = "#83afe5"
+accent-hover = "#f2c38f"
+accent-active = "#9a93e1"
+accent-success = "#7fc1ca"
+accent-warning = "#7fc1ca"
+accent-danger = "#83afe5"
+
+# Common colors
+red = "#83afe5"
+orange = "#7fc1ca"
+yellow = "#a8ce93"
+green = "#7fc1ca"
+teal = "#f2c38f"
+blue = "#83afe5"
+purple = "#9a93e1"
+pink = "#f2c38f"
+
+# Utilities
+overlay = "#556873"
+shadow = "#3c4c55"
+
+[[theme]]
+name = "Ocean"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-default-scheme"
+
+# Surfaces
+surface-0 = "#2b303b"
+surface-1 = "#343d46"
+surface-2 = "#4f5b66"
+surface-border = "#65737e"
+
+# Text hierarchy
+text-0 = "#eff1f5"
+text-1 = "#dfe1e8"
+text-2 = "#c0c5ce"
+text-3 = "#a7adba"
+text-disabled = "#343d46"
+text-contrast = "#2b303b"
+
+# Accents
+accent = "#8fa1b3"
+accent-hover = "#96b5b4"
+accent-active = "#b48ead"
+accent-success = "#a3be8c"
+accent-warning = "#d08770"
+accent-danger = "#bf616a"
+
+# Common colors
+red = "#bf616a"
+orange = "#d08770"
+yellow = "#ebcb8b"
+green = "#a3be8c"
+teal = "#96b5b4"
+blue = "#8fa1b3"
+purple = "#b48ead"
+pink = "#ab7967"
+
+# Utilities
+overlay = "#343d46"
+shadow = "#2b303b"
+
+[[theme]]
+name = "OceanicNext"
+author = "https://github.com/voronianski/oceanic-next-color-scheme"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#1b2b34"
+surface-1 = "#343d46"
+surface-2 = "#4f5b66"
+surface-border = "#65737e"
+
+# Text hierarchy
+text-0 = "#d8dee9"
+text-1 = "#cdd3de"
+text-2 = "#c0c5ce"
+text-3 = "#a7adba"
+text-disabled = "#343d46"
+text-contrast = "#1b2b34"
+
+# Accents
+accent = "#6699cc"
+accent-hover = "#5fb3b3"
+accent-active = "#c594c5"
+accent-success = "#99c794"
+accent-warning = "#f99157"
+accent-danger = "#ec5f67"
+
+# Common colors
+red = "#ec5f67"
+orange = "#f99157"
+yellow = "#fac863"
+green = "#99c794"
+teal = "#5fb3b3"
+blue = "#6699cc"
+purple = "#c594c5"
+pink = "#ab7967"
+
+# Utilities
+overlay = "#343d46"
+shadow = "#1b2b34"
+
+[[theme]]
+name = "One Light"
+author = "Daniel Pfeifer (http://github.com/purpleKarrot)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/purpleKarrot/base16-one-light-scheme"
+
+# Surfaces
+surface-0 = "#fafafa"
+surface-1 = "#f0f0f1"
+surface-2 = "#e5e5e6"
+surface-border = "#a0a1a7"
+
+# Text hierarchy
+text-0 = "#090a0b"
+text-1 = "#202227"
+text-2 = "#383a42"
+text-3 = "#696c77"
+text-disabled = "#f0f0f1"
+text-contrast = "#fafafa"
+
+# Accents
+accent = "#4078f2"
+accent-hover = "#0184bc"
+accent-active = "#a626a4"
+accent-success = "#50a14f"
+accent-warning = "#d75f00"
+accent-danger = "#ca1243"
+
+# Common colors
+red = "#ca1243"
+orange = "#d75f00"
+yellow = "#c18401"
+green = "#50a14f"
+teal = "#0184bc"
+blue = "#4078f2"
+purple = "#a626a4"
+pink = "#986801"
+
+# Utilities
+overlay = "#f0f0f1"
+shadow = "#fafafa"
+
+[[theme]]
+name = "OneDark"
+author = "Lalit Magant (http://github.com/tilal6991)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/tilal6991/base16-onedark-scheme"
+
+# Surfaces
+surface-0 = "#282c34"
+surface-1 = "#353b45"
+surface-2 = "#3e4451"
+surface-border = "#545862"
+
+# Text hierarchy
+text-0 = "#c8ccd4"
+text-1 = "#b6bdca"
+text-2 = "#abb2bf"
+text-3 = "#565c64"
+text-disabled = "#353b45"
+text-contrast = "#282c34"
+
+# Accents
+accent = "#61afef"
+accent-hover = "#56b6c2"
+accent-active = "#c678dd"
+accent-success = "#98c379"
+accent-warning = "#d19a66"
+accent-danger = "#e06c75"
+
+# Common colors
+red = "#e06c75"
+orange = "#d19a66"
+yellow = "#e5c07b"
+green = "#98c379"
+teal = "#56b6c2"
+blue = "#61afef"
+purple = "#c678dd"
+pink = "#be5046"
+
+# Utilities
+overlay = "#353b45"
+shadow = "#282c34"
+
+[[theme]]
+name = "Outrun Dark"
+author = "Hugo Delahousse (http://github.com/hugodelahousse/)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/hugodelahousse/base16-outrun-schemes"
+
+# Surfaces
+surface-0 = "#00002a"
+surface-1 = "#20204a"
+surface-2 = "#30305a"
+surface-border = "#50507a"
+
+# Text hierarchy
+text-0 = "#f5f5ff"
+text-1 = "#e0e0ff"
+text-2 = "#d0d0fa"
+text-3 = "#b0b0da"
+text-disabled = "#20204a"
+text-contrast = "#00002a"
+
+# Accents
+accent = "#66b0ff"
+accent-hover = "#0ef0f0"
+accent-active = "#f10596"
+accent-success = "#59f176"
+accent-warning = "#fc8d28"
+accent-danger = "#ff4242"
+
+# Common colors
+red = "#ff4242"
+orange = "#fc8d28"
+yellow = "#f3e877"
+green = "#59f176"
+teal = "#0ef0f0"
+blue = "#66b0ff"
+purple = "#f10596"
+pink = "#f003ef"
+
+# Utilities
+overlay = "#20204a"
+shadow = "#00002a"
+
+[[theme]]
+name = "PaperColor Dark"
+author = "Jon Leopard (http://github.com/jonleopard) based on PaperColor Theme (https://github.com/NLKNguyen/papercolor-theme)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/jonleopard/base16-papercolor-scheme"
+
+# Surfaces
+surface-0 = "#1c1c1c"
+surface-1 = "#af005f"
+surface-2 = "#5faf00"
+surface-border = "#d7af5f"
+
+# Text hierarchy
+text-0 = "#d0d0d0"
+text-1 = "#d7875f"
+text-2 = "#808080"
+text-3 = "#5fafd7"
+text-disabled = "#af005f"
+text-contrast = "#1c1c1c"
+
+# Accents
+accent = "#ff5faf"
+accent-hover = "#ffaf00"
+accent-active = "#00afaf"
+accent-success = "#af87d7"
+accent-warning = "#5faf5f"
+accent-danger = "#585858"
+
+# Common colors
+red = "#585858"
+orange = "#5faf5f"
+yellow = "#afd700"
+green = "#af87d7"
+teal = "#ffaf00"
+blue = "#ff5faf"
+purple = "#00afaf"
+pink = "#5f8787"
+
+# Utilities
+overlay = "#af005f"
+shadow = "#1c1c1c"
+
+[[theme]]
+name = "PaperColor Light"
+author = "Jon Leopard (http://github.com/jonleopard) based on PaperColor Theme (https://github.com/NLKNguyen/papercolor-theme)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/jonleopard/base16-papercolor-scheme"
+
+# Surfaces
+surface-0 = "#eeeeee"
+surface-1 = "#af0000"
+surface-2 = "#008700"
+surface-border = "#5f8700"
+
+# Text hierarchy
+text-0 = "#878787"
+text-1 = "#005f87"
+text-2 = "#444444"
+text-3 = "#0087af"
+text-disabled = "#af0000"
+text-contrast = "#eeeeee"
+
+# Accents
+accent = "#d75f00"
+accent-hover = "#d75f00"
+accent-active = "#005faf"
+accent-success = "#8700af"
+accent-warning = "#d70000"
+accent-danger = "#bcbcbc"
+
+# Common colors
+red = "#bcbcbc"
+orange = "#d70000"
+yellow = "#d70087"
+green = "#8700af"
+teal = "#d75f00"
+blue = "#d75f00"
+purple = "#005faf"
+pink = "#005f87"
+
+# Utilities
+overlay = "#af0000"
+shadow = "#eeeeee"
+
+[[theme]]
+name = "Paraiso"
+author = "Jan T. Sott"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#2f1e2e"
+surface-1 = "#41323f"
+surface-2 = "#4f424c"
+surface-border = "#776e71"
+
+# Text hierarchy
+text-0 = "#e7e9db"
+text-1 = "#b9b6b0"
+text-2 = "#a39e9b"
+text-3 = "#8d8687"
+text-disabled = "#41323f"
+text-contrast = "#2f1e2e"
+
+# Accents
+accent = "#06b6ef"
+accent-hover = "#5bc4bf"
+accent-active = "#815ba4"
+accent-success = "#48b685"
+accent-warning = "#f99b15"
+accent-danger = "#ef6155"
+
+# Common colors
+red = "#ef6155"
+orange = "#f99b15"
+yellow = "#fec418"
+green = "#48b685"
+teal = "#5bc4bf"
+blue = "#06b6ef"
+purple = "#815ba4"
+pink = "#e96ba8"
+
+# Utilities
+overlay = "#41323f"
+shadow = "#2f1e2e"
+
+[[theme]]
+name = "Pasque"
+author = "Gabriel Fontes (https://github.com/Misterio77)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Misterio77/base16-pasque-scheme"
+
+# Surfaces
+surface-0 = "#271c3a"
+surface-1 = "#100323"
+surface-2 = "#3e2d5c"
+surface-border = "#5d5766"
+
+# Text hierarchy
+text-0 = "#bbaadd"
+text-1 = "#edeaef"
+text-2 = "#dedcdf"
+text-3 = "#bebcbf"
+text-disabled = "#100323"
+text-contrast = "#271c3a"
+
+# Accents
+accent = "#8e7dc6"
+accent-hover = "#7263aa"
+accent-active = "#953b9d"
+accent-success = "#c6914b"
+accent-warning = "#918889"
+accent-danger = "#a92258"
+
+# Common colors
+red = "#a92258"
+orange = "#918889"
+yellow = "#804ead"
+green = "#c6914b"
+teal = "#7263aa"
+blue = "#8e7dc6"
+purple = "#953b9d"
+pink = "#59325c"
+
+# Utilities
+overlay = "#100323"
+shadow = "#271c3a"
+
+[[theme]]
+name = "PhD"
+author = "Hennig Hasemann (http://leetless.de/vim.html)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#061229"
+surface-1 = "#2a3448"
+surface-2 = "#4d5666"
+surface-border = "#717885"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#dbdde0"
+text-2 = "#b8bbc2"
+text-3 = "#9a99a3"
+text-disabled = "#2a3448"
+text-contrast = "#061229"
+
+# Accents
+accent = "#5299bf"
+accent-hover = "#72b9bf"
+accent-active = "#9989cc"
+accent-success = "#99bf52"
+accent-warning = "#f0a000"
+accent-danger = "#d07346"
+
+# Common colors
+red = "#d07346"
+orange = "#f0a000"
+yellow = "#fbd461"
+green = "#99bf52"
+teal = "#72b9bf"
+blue = "#5299bf"
+purple = "#9989cc"
+pink = "#b08060"
+
+# Utilities
+overlay = "#2a3448"
+shadow = "#061229"
+
+[[theme]]
+name = "Pico"
+author = "PICO-8 (http://www.lexaloffle.com/pico-8.php)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#1d2b53"
+surface-2 = "#7e2553"
+surface-border = "#008751"
+
+# Text hierarchy
+text-0 = "#fff1e8"
+text-1 = "#c2c3c7"
+text-2 = "#5f574f"
+text-3 = "#ab5236"
+text-disabled = "#1d2b53"
+text-contrast = "#000000"
+
+# Accents
+accent = "#83769c"
+accent-hover = "#29adff"
+accent-active = "#ff77a8"
+accent-success = "#00e756"
+accent-warning = "#ffa300"
+accent-danger = "#ff004d"
+
+# Common colors
+red = "#ff004d"
+orange = "#ffa300"
+yellow = "#fff024"
+green = "#00e756"
+teal = "#29adff"
+blue = "#83769c"
+purple = "#ff77a8"
+pink = "#ffccaa"
+
+# Utilities
+overlay = "#1d2b53"
+shadow = "#000000"
+
+[[theme]]
+name = "pinky"
+author = "Benjamin (https://github.com/b3nj5m1n)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/b3nj5m1n/base16-pinky-scheme"
+
+# Surfaces
+surface-0 = "#171517"
+surface-1 = "#1b181b"
+surface-2 = "#1d1b1d"
+surface-border = "#383338"
+
+# Text hierarchy
+text-0 = "#f7f3f7"
+text-1 = "#ffffff"
+text-2 = "#f5f5f5"
+text-3 = "#e7dbdb"
+text-disabled = "#1b181b"
+text-contrast = "#171517"
+
+# Accents
+accent = "#00ffff"
+accent-hover = "#6600ff"
+accent-active = "#007fff"
+accent-success = "#ff0066"
+accent-warning = "#00ff66"
+accent-danger = "#ffa600"
+
+# Common colors
+red = "#ffa600"
+orange = "#00ff66"
+yellow = "#20df6c"
+green = "#ff0066"
+teal = "#6600ff"
+blue = "#00ffff"
+purple = "#007fff"
+pink = "#df206c"
+
+# Utilities
+overlay = "#1b181b"
+shadow = "#171517"
+
+[[theme]]
+name = "Pop"
+author = "Chris Kempson (http://chriskempson.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#202020"
+surface-2 = "#303030"
+surface-border = "#505050"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#e0e0e0"
+text-2 = "#d0d0d0"
+text-3 = "#b0b0b0"
+text-disabled = "#202020"
+text-contrast = "#000000"
+
+# Accents
+accent = "#0e5a94"
+accent-hover = "#00aabb"
+accent-active = "#b31e8d"
+accent-success = "#37b349"
+accent-warning = "#f29333"
+accent-danger = "#eb008a"
+
+# Common colors
+red = "#eb008a"
+orange = "#f29333"
+yellow = "#f8ca12"
+green = "#37b349"
+teal = "#00aabb"
+blue = "#0e5a94"
+purple = "#b31e8d"
+pink = "#7a2d00"
+
+# Utilities
+overlay = "#202020"
+shadow = "#000000"
+
+[[theme]]
+name = "Porple"
+author = "Niek den Breeje (https://github.com/AuditeMarlow)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/AuditeMarlow/base16-porple-scheme"
+
+# Surfaces
+surface-0 = "#292c36"
+surface-1 = "#333344"
+surface-2 = "#474160"
+surface-border = "#65568a"
+
+# Text hierarchy
+text-0 = "#f8f8f8"
+text-1 = "#e8e8e8"
+text-2 = "#d8d8d8"
+text-3 = "#b8b8b8"
+text-disabled = "#333344"
+text-contrast = "#292c36"
+
+# Accents
+accent = "#8485ce"
+accent-hover = "#64878f"
+accent-active = "#b74989"
+accent-success = "#95c76f"
+accent-warning = "#d28e5d"
+accent-danger = "#f84547"
+
+# Common colors
+red = "#f84547"
+orange = "#d28e5d"
+yellow = "#efa16b"
+green = "#95c76f"
+teal = "#64878f"
+blue = "#8485ce"
+purple = "#b74989"
+pink = "#986841"
+
+# Utilities
+overlay = "#333344"
+shadow = "#292c36"
+
+[[theme]]
+name = "Rebecca"
+author = "Victor Borja (http://github.com/vic) based on Rebecca Theme (http://github.com/vic/rebecca-theme)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/vic/base16-rebecca"
+
+# Surfaces
+surface-0 = "#292a44"
+surface-1 = "#4c2c78"
+surface-2 = "#383a62"
+surface-border = "#666699"
+
+# Text hierarchy
+text-0 = "#f1eff8"
+text-1 = "#ccccff"
+text-2 = "#a0a0c5"
+text-3 = "#776885"
+text-disabled = "#663399"
+text-contrast = "#292a44"
+
+# Accents
+accent = "#2de0a7"
+accent-hover = "#8eaee0"
+accent-active = "#7aa5ff"
+accent-success = "#6dfedf"
+accent-warning = "#efe4a1"
+accent-danger = "#a0a0c5"
+
+# Common colors
+red = "#a0a0c5"
+orange = "#efe4a1"
+yellow = "#ae81ff"
+green = "#6dfedf"
+teal = "#8eaee0"
+blue = "#2de0a7"
+purple = "#7aa5ff"
+pink = "#ff79c6"
+
+# Utilities
+overlay = "#663399"
+shadow = "#292a44"
+
+
+[[theme]]
+name = "Rosé Pine Moon"
+author = "Emilia Dunfelt <edun@dunfelt.se>"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/edunfelt/base16-rose-pine-scheme"
+
+# Surfaces
+surface-0 = "#232136"
+surface-1 = "#2a273f"
+surface-2 = "#393552"
+surface-border = "#6e6a86"
+
+# Text hierarchy
+text-0 = "#e0def4"
+text-1 = "#aba7c9"
+text-2 = "#a09cbc"
+text-3 = "#908caa"
+text-disabled = "#2a273f"
+text-contrast = "#232136"
+
+# Accents
+accent = "#c4a7e7"
+accent-hover = "#9ccfd8"
+accent-active = "#f6c177"
+accent-success = "#3e8fb0"
+accent-warning = "#f6c177"
+accent-danger = "#eb6f92"
+
+# Common colors
+red = "#eb6f92"
+orange = "#f6c177"
+yellow = "#ea9a97"
+green = "#3e8fb0"
+teal = "#9ccfd8"
+blue = "#c4a7e7"
+purple = "#f6c177"
+pink = "#56526e"
+
+# Utilities
+overlay = "#2a273f"
+shadow = "#232136"
+
+[[theme]]
+name = "Rosé Pine"
+author = "Emilia Dunfelt <edun@dunfelt.se>"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/edunfelt/base16-rose-pine-scheme"
+
+# Surfaces
+surface-0 = "#191724"
+surface-1 = "#1f1d2e"
+surface-2 = "#26233a"
+surface-border = "#6e6a86"
+
+# Text hierarchy
+text-0 = "#524f67"
+text-1 = "#e0def4"
+text-2 = "#e0def4"
+text-3 = "#908caa"
+text-disabled = "#1f1d2e"
+text-contrast = "#191724"
+
+# Accents
+accent = "#c4a7e7"
+accent-hover = "#9ccfd8"
+accent-active = "#f6c177"
+accent-success = "#31748f"
+accent-warning = "#f6c177"
+accent-danger = "#eb6f92"
+
+# Common colors
+red = "#eb6f92"
+orange = "#f6c177"
+yellow = "#ebbcba"
+green = "#31748f"
+teal = "#9ccfd8"
+blue = "#c4a7e7"
+purple = "#f6c177"
+pink = "#524f67"
+
+# Utilities
+overlay = "#1f1d2e"
+shadow = "#191724"
+
+[[theme]]
+name = "Sagelight"
+author = "Carter Veldhuizen"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/cveldy/base16-sagelight-scheme"
+
+# Surfaces
+surface-0 = "#f8f8f8"
+surface-1 = "#e8e8e8"
+surface-2 = "#d8d8d8"
+surface-border = "#b8b8b8"
+
+# Text hierarchy
+text-0 = "#181818"
+text-1 = "#282828"
+text-2 = "#383838"
+text-3 = "#585858"
+text-disabled = "#e8e8e8"
+text-contrast = "#f8f8f8"
+
+# Accents
+accent = "#a0a7d2"
+accent-hover = "#a2d6f5"
+accent-active = "#c8a0d2"
+accent-success = "#a0d2c8"
+accent-warning = "#ffaa61"
+accent-danger = "#fa8480"
+
+# Common colors
+red = "#fa8480"
+orange = "#ffaa61"
+yellow = "#ffdc61"
+green = "#a0d2c8"
+teal = "#a2d6f5"
+blue = "#a0a7d2"
+purple = "#c8a0d2"
+pink = "#d2b2a0"
+
+# Utilities
+overlay = "#e8e8e8"
+shadow = "#f8f8f8"
+
+[[theme]]
+name = "Sakura"
+author = "Misterio77 (http://github.com/Misterio77)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Misterio77/base16-sakura-scheme"
+
+# Surfaces
+surface-0 = "#feedf3"
+surface-1 = "#f8e2e7"
+surface-2 = "#e0ccd1"
+surface-border = "#755f64"
+
+# Text hierarchy
+text-0 = "#33292b"
+text-1 = "#42383a"
+text-2 = "#564448"
+text-3 = "#665055"
+text-disabled = "#f8e2e7"
+text-contrast = "#feedf3"
+
+# Accents
+accent = "#006e93"
+accent-hover = "#1d8991"
+accent-active = "#5e2180"
+accent-success = "#2e916d"
+accent-warning = "#f6661e"
+accent-danger = "#df2d52"
+
+# Common colors
+red = "#df2d52"
+orange = "#f6661e"
+yellow = "#c29461"
+green = "#2e916d"
+teal = "#1d8991"
+blue = "#006e93"
+purple = "#5e2180"
+pink = "#ba0d35"
+
+# Utilities
+overlay = "#f8e2e7"
+shadow = "#feedf3"
+
+[[theme]]
+name = "Sandcastle"
+author = "George Essig (https://github.com/gessig)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/gessig/base16-sandcastle-scheme"
+
+# Surfaces
+surface-0 = "#282c34"
+surface-1 = "#2c323b"
+surface-2 = "#3e4451"
+surface-border = "#665c54"
+
+# Text hierarchy
+text-0 = "#fdf4c1"
+text-1 = "#d5c4a1"
+text-2 = "#a89984"
+text-3 = "#928374"
+text-disabled = "#2c323b"
+text-contrast = "#282c34"
+
+# Accents
+accent = "#83a598"
+accent-hover = "#83a598"
+accent-active = "#d75f5f"
+accent-success = "#528b8b"
+accent-warning = "#a07e3b"
+accent-danger = "#83a598"
+
+# Common colors
+red = "#83a598"
+orange = "#a07e3b"
+yellow = "#a07e3b"
+green = "#528b8b"
+teal = "#83a598"
+blue = "#83a598"
+purple = "#d75f5f"
+pink = "#a87322"
+
+# Utilities
+overlay = "#2c323b"
+shadow = "#282c34"
+
+[[theme]]
+name = "Seti UI"
+author = ""
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#151718"
+surface-1 = "#282a2b"
+surface-2 = "#3b758c"
+surface-border = "#41535b"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#eeeeee"
+text-2 = "#d6d6d6"
+text-3 = "#43a5d5"
+text-disabled = "#282a2b"
+text-contrast = "#151718"
+
+# Accents
+accent = "#55b5db"
+accent-hover = "#55dbbe"
+accent-active = "#a074c4"
+accent-success = "#9fca56"
+accent-warning = "#db7b55"
+accent-danger = "#cd3f45"
+
+# Common colors
+red = "#cd3f45"
+orange = "#db7b55"
+yellow = "#e6cd69"
+green = "#9fca56"
+teal = "#55dbbe"
+blue = "#55b5db"
+purple = "#a074c4"
+pink = "#8a553f"
+
+# Utilities
+overlay = "#282a2b"
+shadow = "#151718"
+
+
+[[theme]]
+name = "Shapeshifter"
+author = "Tyler Benziger (http://tybenz.com)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#f9f9f9"
+surface-1 = "#e0e0e0"
+surface-2 = "#ababab"
+surface-border = "#555555"
+
+# Text hierarchy
+text-0 = "#000000"
+text-1 = "#040404"
+text-2 = "#102015"
+text-3 = "#343434"
+text-disabled = "#e0e0e0"
+text-contrast = "#f9f9f9"
+
+# Accents
+accent = "#3b48e3"
+accent-hover = "#23edda"
+accent-active = "#f996e2"
+accent-success = "#0ed839"
+accent-warning = "#e09448"
+accent-danger = "#e92f2f"
+
+# Common colors
+red = "#e92f2f"
+orange = "#e09448"
+yellow = "#dddd13"
+green = "#0ed839"
+teal = "#23edda"
+blue = "#3b48e3"
+purple = "#f996e2"
+pink = "#69542d"
+
+# Utilities
+overlay = "#e0e0e0"
+shadow = "#f9f9f9"
+
+[[theme]]
+name = "Silk Dark"
+author = "Gabriel Fontes (https://github.com/Misterio77)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Misterio77/base16-silk-scheme"
+
+# Surfaces
+surface-0 = "#0e3c46"
+surface-1 = "#1d494e"
+surface-2 = "#2a5054"
+surface-border = "#587073"
+
+# Text hierarchy
+text-0 = "#d2faff"
+text-1 = "#cbf2f7"
+text-2 = "#c7dbdd"
+text-3 = "#9dc8cd"
+text-disabled = "#1d494e"
+text-contrast = "#0e3c46"
+
+# Accents
+accent = "#46bddd"
+accent-hover = "#3fb2b9"
+accent-active = "#756b8a"
+accent-success = "#73d8ad"
+accent-warning = "#fcab74"
+accent-danger = "#fb6953"
+
+# Common colors
+red = "#fb6953"
+orange = "#fcab74"
+yellow = "#fce380"
+green = "#73d8ad"
+teal = "#3fb2b9"
+blue = "#46bddd"
+purple = "#756b8a"
+pink = "#9b647b"
+
+# Utilities
+overlay = "#1d494e"
+shadow = "#0e3c46"
+
+[[theme]]
+name = "Silk Light"
+author = "Gabriel Fontes (https://github.com/Misterio77)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Misterio77/base16-silk-scheme"
+
+# Surfaces
+surface-border = "#5b7779"
+surface-2 = "#90b7b6"
+surface-1 = "#c7d8d7"
+surface-0 = "#e6f1ef"
+
+# Text hierarchy
+text-0 = "#6b7f82"
+text-1 = "#7d9598"
+text-2 = "#a1bfc4"
+text-3 = "#b2d4d9"
+text-disabled = "#ccd4d3"
+text-contrast = "#e9f1ef"
+
+# Accents
+accent = "#39aac9"
+accent-hover = "#329ca2"
+accent-active = "#6e6582"
+accent-success = "#6ca38c"
+accent-warning = "#d27f46"
+accent-danger = "#cf432e"
+
+# Common colors
+red = "#cf432e"
+orange = "#d27f46"
+yellow = "#cfad25"
+green = "#6ca38c"
+teal = "#329ca2"
+blue = "#39aac9"
+purple = "#6e6582"
+pink = "#865369"
+
+# Utilities
+overlay = "#ccd4d3"
+shadow = "#e9f1ef"
+
+[[theme]]
+name = "Snazzy"
+author = "Chawye Hsu (https://github.com/chawyehsu) based on Hyper Snazzy Theme (https://github.com/sindresorhus/hyper-snazzy)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/h404bi/base16-snazzy-scheme"
+
+# Surfaces
+surface-0 = "#282a36"
+surface-1 = "#34353e"
+surface-2 = "#43454f"
+surface-border = "#78787e"
+
+# Text hierarchy
+text-0 = "#f1f1f0"
+text-1 = "#eff0eb"
+text-2 = "#e2e4e5"
+text-3 = "#a5a5a9"
+text-disabled = "#34353e"
+text-contrast = "#282a36"
+
+# Accents
+accent = "#57c7ff"
+accent-hover = "#9aedfe"
+accent-active = "#ff6ac1"
+accent-success = "#5af78e"
+accent-warning = "#ff9f43"
+accent-danger = "#ff5c57"
+
+# Common colors
+red = "#ff5c57"
+orange = "#ff9f43"
+yellow = "#f3f99d"
+green = "#5af78e"
+teal = "#9aedfe"
+blue = "#57c7ff"
+purple = "#ff6ac1"
+pink = "#b2643c"
+
+# Utilities
+overlay = "#34353e"
+shadow = "#282a36"
+
+[[theme]]
+name = "Solar Flare Light"
+author = "Chuck Harmston (https://chuck.harmston.ch)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/mnussbaum/base16-solarflare-scheme"
+
+# Surfaces
+surface-0 = "#f5f7fa"
+surface-1 = "#e8e9ed"
+surface-2 = "#a6afb8"
+surface-border = "#85939e"
+
+# Text hierarchy
+text-0 = "#18262f"
+text-1 = "#222e38"
+text-2 = "#586875"
+text-3 = "#667581"
+text-disabled = "#e8e9ed"
+text-contrast = "#f5f7fa"
+
+# Accents
+accent = "#33b5e1"
+accent-hover = "#52cbb0"
+accent-active = "#a363d5"
+accent-success = "#7cc844"
+accent-warning = "#e66b2b"
+accent-danger = "#ef5253"
+
+# Common colors
+red = "#ef5253"
+orange = "#e66b2b"
+yellow = "#e4b51c"
+green = "#7cc844"
+teal = "#52cbb0"
+blue = "#33b5e1"
+purple = "#a363d5"
+pink = "#d73c9a"
+
+# Utilities
+overlay = "#e8e9ed"
+shadow = "#f5f7fa"
+
+[[theme]]
+name = "Solar Flare"
+author = "Chuck Harmston (https://chuck.harmston.ch)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/mnussbaum/base16-solarflare-scheme"
+
+# Surfaces
+surface-0 = "#18262f"
+surface-1 = "#222e38"
+surface-2 = "#586875"
+surface-border = "#667581"
+
+# Text hierarchy
+text-0 = "#f5f7fa"
+text-1 = "#e8e9ed"
+text-2 = "#a6afb8"
+text-3 = "#85939e"
+text-disabled = "#222e38"
+text-contrast = "#18262f"
+
+# Accents
+accent = "#33b5e1"
+accent-hover = "#52cbb0"
+accent-active = "#a363d5"
+accent-success = "#7cc844"
+accent-warning = "#e66b2b"
+accent-danger = "#ef5253"
+
+# Common colors
+red = "#ef5253"
+orange = "#e66b2b"
+yellow = "#e4b51c"
+green = "#7cc844"
+teal = "#52cbb0"
+blue = "#33b5e1"
+purple = "#a363d5"
+pink = "#d73c9a"
+
+# Utilities
+overlay = "#222e38"
+shadow = "#18262f"
+
+[[theme]]
+name = "Spacemacs"
+author = "Nasser Alshammari (https://github.com/nashamri/spacemacs-theme)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/chriskempson/base16-unclaimed-schemes"
+
+# Surfaces
+surface-0 = "#1f2022"
+surface-1 = "#282828"
+surface-2 = "#444155"
+surface-border = "#585858"
+
+# Text hierarchy
+text-0 = "#f8f8f8"
+text-1 = "#e8e8e8"
+text-2 = "#a3a3a3"
+text-3 = "#b8b8b8"
+text-disabled = "#282828"
+text-contrast = "#1f2022"
+
+# Accents
+accent = "#4f97d7"
+accent-hover = "#2d9574"
+accent-active = "#a31db1"
+accent-success = "#67b11d"
+accent-warning = "#ffa500"
+accent-danger = "#f2241f"
+
+# Common colors
+red = "#f2241f"
+orange = "#ffa500"
+yellow = "#b1951d"
+green = "#67b11d"
+teal = "#2d9574"
+blue = "#4f97d7"
+purple = "#a31db1"
+pink = "#b03060"
+
+# Utilities
+overlay = "#282828"
+shadow = "#1f2022"
+
+[[theme]]
+name = "summercamp"
+author = "zoe firi (zoefiri.github.io)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/zoefiri/base16-summercamp"
+
+# Surfaces
+surface-0 = "#1c1810"
+surface-1 = "#2a261c"
+surface-2 = "#3a3527"
+surface-border = "#504b38"
+
+# Text hierarchy
+text-0 = "#f8f5de"
+text-1 = "#bab696"
+text-2 = "#736e55"
+text-3 = "#5f5b45"
+text-disabled = "#2a261c"
+text-contrast = "#1c1810"
+
+# Accents
+accent = "#489bf0"
+accent-hover = "#5aebbc"
+accent-active = "#ff8080"
+accent-success = "#5ceb5a"
+accent-warning = "#fba11b"
+accent-danger = "#e35142"
+
+# Common colors
+red = "#e35142"
+orange = "#fba11b"
+yellow = "#f2ff27"
+green = "#5ceb5a"
+teal = "#5aebbc"
+blue = "#489bf0"
+purple = "#ff8080"
+pink = "#f69be7"
+
+# Utilities
+overlay = "#2a261c"
+shadow = "#1c1810"
+
+[[theme]]
+name = "Summerfruit Dark"
+author = "Christopher Corley (http://christop.club/)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/cscorley/base16-summerfruit-scheme"
+
+# Surfaces
+surface-0 = "#151515"
+surface-1 = "#202020"
+surface-2 = "#303030"
+surface-border = "#505050"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#e0e0e0"
+text-2 = "#d0d0d0"
+text-3 = "#b0b0b0"
+text-disabled = "#202020"
+text-contrast = "#151515"
+
+# Accents
+accent = "#3777e6"
+accent-hover = "#1faaaa"
+accent-active = "#ad00a1"
+accent-success = "#00c918"
+accent-warning = "#fd8900"
+accent-danger = "#ff0086"
+
+# Common colors
+red = "#ff0086"
+orange = "#fd8900"
+yellow = "#aba800"
+green = "#00c918"
+teal = "#1faaaa"
+blue = "#3777e6"
+purple = "#ad00a1"
+pink = "#cc6633"
+
+# Utilities
+overlay = "#202020"
+shadow = "#151515"
+
+[[theme]]
+name = "Summerfruit Light"
+author = "Christopher Corley (http://christop.club/)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/cscorley/base16-summerfruit-scheme"
+
+# Surfaces
+surface-0 = "#ffffff"
+surface-1 = "#e0e0e0"
+surface-2 = "#d0d0d0"
+surface-border = "#b0b0b0"
+
+# Text hierarchy
+text-0 = "#202020"
+text-1 = "#151515"
+text-2 = "#101010"
+text-3 = "#000000"
+text-disabled = "#e0e0e0"
+text-contrast = "#ffffff"
+
+# Accents
+accent = "#3777e6"
+accent-hover = "#1faaaa"
+accent-active = "#ad00a1"
+accent-success = "#00c918"
+accent-warning = "#fd8900"
+accent-danger = "#ff0086"
+
+# Common colors
+red = "#ff0086"
+orange = "#fd8900"
+yellow = "#aba800"
+green = "#00c918"
+teal = "#1faaaa"
+blue = "#3777e6"
+purple = "#ad00a1"
+pink = "#cc6633"
+
+# Utilities
+overlay = "#e0e0e0"
+shadow = "#ffffff"
+
+[[theme]]
+name = "Synth Midnight Terminal Dark"
+author = "Michaël Ball (http://github.com/michael-ball/)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/michael-ball/base16-synth-midnight-scheme"
+
+# Surfaces
+surface-0 = "#050608"
+surface-1 = "#1a1b1c"
+surface-2 = "#28292a"
+surface-border = "#474849"
+
+# Text hierarchy
+text-0 = "#dddfe0"
+text-1 = "#cfd1d2"
+text-2 = "#c1c3c4"
+text-3 = "#a3a5a6"
+text-disabled = "#1a1b1c"
+text-contrast = "#050608"
+
+# Accents
+accent = "#03aeff"
+accent-hover = "#42fff9"
+accent-active = "#ea5ce2"
+accent-success = "#06ea61"
+accent-warning = "#ea770d"
+accent-danger = "#b53b50"
+
+# Common colors
+red = "#b53b50"
+orange = "#ea770d"
+yellow = "#c9d364"
+green = "#06ea61"
+teal = "#42fff9"
+blue = "#03aeff"
+purple = "#ea5ce2"
+pink = "#cd6320"
+
+# Utilities
+overlay = "#1a1b1c"
+shadow = "#050608"
+
+[[theme]]
+name = "Synth Midnight Terminal Light"
+author = "Michaël Ball (http://github.com/michael-ball/)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/michael-ball/base16-synth-midnight-scheme"
+
+# Surfaces
+surface-0 = "#dddfe0"
+surface-1 = "#cfd1d2"
+surface-2 = "#c1c3c4"
+surface-border = "#a3a5a6"
+
+# Text hierarchy
+text-0 = "#050608"
+text-1 = "#1a1b1c"
+text-2 = "#28292a"
+text-3 = "#474849"
+text-disabled = "#cfd1d2"
+text-contrast = "#dddfe0"
+
+# Accents
+accent = "#03aeff"
+accent-hover = "#42fff9"
+accent-active = "#ea5ce2"
+accent-success = "#06ea61"
+accent-warning = "#ea770d"
+accent-danger = "#b53b50"
+
+# Common colors
+red = "#b53b50"
+orange = "#ea770d"
+yellow = "#c9d364"
+green = "#06ea61"
+teal = "#42fff9"
+blue = "#03aeff"
+purple = "#ea5ce2"
+pink = "#cd6320"
+
+# Utilities
+overlay = "#cfd1d2"
+shadow = "#dddfe0"
+
+[[theme]]
+name = "tender"
+author = "Jacobo Tabernero (https://github/com/jacoborus/tender.vim)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/DanManN/base16-tender-scheme"
+
+# Surfaces
+surface-0 = "#282828"
+surface-1 = "#383838"
+surface-2 = "#484848"
+surface-border = "#4c4c4c"
+
+# Text hierarchy
+text-0 = "#feffff"
+text-1 = "#e8e8e8"
+text-2 = "#eeeeee"
+text-3 = "#b8b8b8"
+text-disabled = "#383838"
+text-contrast = "#282828"
+
+# Accents
+accent = "#b3deef"
+accent-hover = "#73cef4"
+accent-active = "#d3b987"
+accent-success = "#c9d05c"
+accent-warning = "#dc9656"
+accent-danger = "#f43753"
+
+# Common colors
+red = "#f43753"
+orange = "#dc9656"
+yellow = "#ffc24b"
+green = "#c9d05c"
+teal = "#73cef4"
+blue = "#b3deef"
+purple = "#d3b987"
+pink = "#a16946"
+
+# Utilities
+overlay = "#383838"
+shadow = "#282828"
+
+[[theme]]
+name = "Twilight"
+author = "David Hart (https://github.com/hartbit)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/hartbit/base16-twilight-scheme"
+
+# Surfaces
+surface-0 = "#1e1e1e"
+surface-1 = "#323537"
+surface-2 = "#464b50"
+surface-border = "#5f5a60"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#c3c3c3"
+text-2 = "#a7a7a7"
+text-3 = "#838184"
+text-disabled = "#323537"
+text-contrast = "#1e1e1e"
+
+# Accents
+accent = "#7587a6"
+accent-hover = "#afc4db"
+accent-active = "#9b859d"
+accent-success = "#8f9d6a"
+accent-warning = "#cda869"
+accent-danger = "#cf6a4c"
+
+# Common colors
+red = "#cf6a4c"
+orange = "#cda869"
+yellow = "#f9ee98"
+green = "#8f9d6a"
+teal = "#afc4db"
+blue = "#7587a6"
+purple = "#9b859d"
+pink = "#9b703f"
+
+# Utilities
+overlay = "#323537"
+shadow = "#1e1e1e"
+
+[[theme]]
+name = "Vice Alt"
+author = "Thomas Leon Highbaugh"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Thomashighbaugh/base16-vice-scheme"
+
+# Surfaces
+surface-0 = "#303030"
+surface-1 = "#444444"
+surface-2 = "#878787"
+surface-border = "#875faf"
+
+# Text hierarchy
+text-0 = "#afffd7"
+text-1 = "#ffffff"
+text-2 = "#d7afff"
+text-3 = "#afafd7"
+text-disabled = "#444444"
+text-contrast = "#303030"
+
+# Accents
+accent = "#afffff"
+accent-hover = "#00ffaf"
+accent-active = "#d7afff"
+accent-success = "#87ffff"
+accent-warning = "#ff00ff"
+accent-danger = "#ff005f"
+
+# Common colors
+red = "#ff005f"
+orange = "#ff00ff"
+yellow = "#ffffaf"
+green = "#87ffff"
+teal = "#00ffaf"
+blue = "#afffff"
+purple = "#d7afff"
+pink = "#ff87d7"
+
+# Utilities
+overlay = "#444444"
+shadow = "#303030"
+
+[[theme]]
+name = "Vice Dark"
+author = "Thomas Leon Highbaugh"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/Thomashighbaugh/base16-vice-scheme"
+
+# Surfaces
+surface-0 = "#181818"
+surface-1 = "#222222"
+surface-2 = "#323232"
+surface-border = "#3f3f3f"
+
+# Text hierarchy
+text-0 = "#e9e9e9"
+text-1 = "#c6c6c6"
+text-2 = "#818181"
+text-3 = "#666666"
+text-disabled = "#222222"
+text-contrast = "#181818"
+
+# Accents
+accent = "#00eaff"
+accent-hover = "#8265ff"
+accent-active = "#00f6d9"
+accent-success = "#0badff"
+accent-warning = "#85ffe0"
+accent-danger = "#ff29a8"
+
+# Common colors
+red = "#ff29a8"
+orange = "#85ffe0"
+yellow = "#f0ffaa"
+green = "#0badff"
+teal = "#8265ff"
+blue = "#00eaff"
+purple = "#00f6d9"
+pink = "#ff3d81"
+
+# Utilities
+overlay = "#222222"
+shadow = "#181818"
+
+[[theme]]
+name = "Windows 10 Light"
+author = "Fergus Collins (https://github.com/C-Fergus)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/C-Fergus/base16-windows-scheme"
+
+# Surfaces
+surface-0 = "#f2f2f2"
+surface-1 = "#e5e5e5"
+surface-2 = "#d9d9d9"
+surface-border = "#cccccc"
+
+# Text hierarchy
+text-0 = "#0c0c0c"
+text-1 = "#414141"
+text-2 = "#767676"
+text-3 = "#ababab"
+text-disabled = "#e5e5e5"
+text-contrast = "#f2f2f2"
+
+# Accents
+accent = "#0037da"
+accent-hover = "#3a96dd"
+accent-active = "#881798"
+accent-success = "#13a10e"
+accent-warning = "#f9f1a5"
+accent-danger = "#c50f1f"
+
+# Common colors
+red = "#c50f1f"
+orange = "#f9f1a5"
+yellow = "#c19c00"
+green = "#13a10e"
+teal = "#3a96dd"
+blue = "#0037da"
+purple = "#881798"
+pink = "#16c60c"
+
+# Utilities
+overlay = "#e5e5e5"
+shadow = "#f2f2f2"
+
+[[theme]]
+name = "Windows 10"
+author = "Fergus Collins (https://github.com/C-Fergus)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/C-Fergus/base16-windows-scheme"
+
+# Surfaces
+surface-0 = "#0c0c0c"
+surface-1 = "#2f2f2f"
+surface-2 = "#535353"
+surface-border = "#767676"
+
+# Text hierarchy
+text-0 = "#f2f2f2"
+text-1 = "#dfdfdf"
+text-2 = "#cccccc"
+text-3 = "#b9b9b9"
+text-disabled = "#2f2f2f"
+text-contrast = "#0c0c0c"
+
+# Accents
+accent = "#3b78ff"
+accent-hover = "#61d6d6"
+accent-active = "#b4009e"
+accent-success = "#16c60c"
+accent-warning = "#c19c00"
+accent-danger = "#e74856"
+
+# Common colors
+red = "#e74856"
+orange = "#c19c00"
+yellow = "#f9f1a5"
+green = "#16c60c"
+teal = "#61d6d6"
+blue = "#3b78ff"
+purple = "#b4009e"
+pink = "#13a10e"
+
+# Utilities
+overlay = "#2f2f2f"
+shadow = "#0c0c0c"
+
+[[theme]]
+name = "Windows 95 Light"
+author = "Fergus Collins (https://github.com/C-Fergus)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/C-Fergus/base16-windows-scheme"
+
+# Surfaces
+surface-0 = "#fcfcfc"
+surface-1 = "#e0e0e0"
+surface-2 = "#c4c4c4"
+surface-border = "#a8a8a8"
+
+# Text hierarchy
+text-0 = "#000000"
+text-1 = "#2a2a2a"
+text-2 = "#545454"
+text-3 = "#7e7e7e"
+text-disabled = "#e0e0e0"
+text-contrast = "#fcfcfc"
+
+# Accents
+accent = "#0000a8"
+accent-hover = "#00a8a8"
+accent-active = "#a800a8"
+accent-success = "#00a800"
+accent-warning = "#fcfc54"
+accent-danger = "#a80000"
+
+# Common colors
+red = "#a80000"
+orange = "#fcfc54"
+yellow = "#a85400"
+green = "#00a800"
+teal = "#00a8a8"
+blue = "#0000a8"
+purple = "#a800a8"
+pink = "#54fc54"
+
+# Utilities
+overlay = "#e0e0e0"
+shadow = "#fcfcfc"
+#border-rad = 0
+
+[[theme]]
+name = "Windows 95"
+author = "Fergus Collins (https://github.com/C-Fergus)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/C-Fergus/base16-windows-scheme"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#1c1c1c"
+surface-2 = "#383838"
+surface-border = "#545454"
+
+# Text hierarchy
+text-0 = "#fcfcfc"
+text-1 = "#d2d2d2"
+text-2 = "#a8a8a8"
+text-3 = "#7e7e7e"
+text-disabled = "#1c1c1c"
+text-contrast = "#000000"
+
+# Accents
+accent = "#5454fc"
+accent-hover = "#54fcfc"
+accent-active = "#fc54fc"
+accent-success = "#54fc54"
+accent-warning = "#a85400"
+accent-danger = "#fc5454"
+
+# Common colors
+red = "#fc5454"
+orange = "#a85400"
+yellow = "#fcfc54"
+green = "#54fc54"
+teal = "#54fcfc"
+blue = "#5454fc"
+purple = "#fc54fc"
+pink = "#00a800"
+
+# Utilities
+overlay = "#1c1c1c"
+shadow = "#000000"
+
+[[theme]]
+name = "Windows High Contrast Light"
+author = "Fergus Collins (https://github.com/C-Fergus)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/C-Fergus/base16-windows-scheme"
+
+# Surfaces
+surface-0 = "#fcfcfc"
+surface-1 = "#e8e8e8"
+surface-2 = "#d4d4d4"
+surface-border = "#c0c0c0"
+
+# Text hierarchy
+text-0 = "#000000"
+text-1 = "#2a2a2a"
+text-2 = "#545454"
+text-3 = "#7e7e7e"
+text-disabled = "#e8e8e8"
+text-contrast = "#fcfcfc"
+
+# Accents
+accent = "#000080"
+accent-hover = "#008080"
+accent-active = "#800080"
+accent-success = "#008000"
+accent-warning = "#fcfc54"
+accent-danger = "#800000"
+
+# Common colors
+red = "#800000"
+orange = "#fcfc54"
+yellow = "#808000"
+green = "#008000"
+teal = "#008080"
+blue = "#000080"
+purple = "#800080"
+pink = "#54fc54"
+
+# Utilities
+overlay = "#e8e8e8"
+shadow = "#fcfcfc"
+
+[[theme]]
+name = "Windows High Contrast"
+author = "Fergus Collins (https://github.com/C-Fergus)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/C-Fergus/base16-windows-scheme"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#1c1c1c"
+surface-2 = "#383838"
+surface-border = "#545454"
+
+# Text hierarchy
+text-0 = "#fcfcfc"
+text-1 = "#dedede"
+text-2 = "#c0c0c0"
+text-3 = "#a2a2a2"
+text-disabled = "#1c1c1c"
+text-contrast = "#000000"
+
+# Accents
+accent = "#5454fc"
+accent-hover = "#54fcfc"
+accent-active = "#fc54fc"
+accent-success = "#54fc54"
+accent-warning = "#808000"
+accent-danger = "#fc5454"
+
+# Common colors
+red = "#fc5454"
+orange = "#808000"
+yellow = "#fcfc54"
+green = "#54fc54"
+teal = "#54fcfc"
+blue = "#5454fc"
+purple = "#fc54fc"
+pink = "#008000"
+
+# Utilities
+overlay = "#1c1c1c"
+shadow = "#000000"
+
+[[theme]]
+name = "Windows NT Light"
+author = "Fergus Collins (https://github.com/C-Fergus)"
+variant = "Light"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/C-Fergus/base16-windows-scheme"
+
+# Surfaces
+surface-0 = "#ffffff"
+surface-1 = "#eaeaea"
+surface-2 = "#d5d5d5"
+surface-border = "#c0c0c0"
+
+# Text hierarchy
+text-0 = "#000000"
+text-1 = "#404040"
+text-2 = "#808080"
+text-3 = "#a0a0a0"
+text-disabled = "#eaeaea"
+text-contrast = "#ffffff"
+
+# Accents
+accent = "#000080"
+accent-hover = "#008080"
+accent-active = "#800080"
+accent-success = "#008000"
+accent-warning = "#ffff00"
+accent-danger = "#800000"
+
+# Common colors
+red = "#800000"
+orange = "#ffff00"
+yellow = "#808000"
+green = "#008000"
+teal = "#008080"
+blue = "#000080"
+purple = "#800080"
+pink = "#00ff00"
+
+# Utilities
+overlay = "#eaeaea"
+shadow = "#ffffff"
+
+[[theme]]
+name = "Windows NT"
+author = "Fergus Collins (https://github.com/C-Fergus)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/C-Fergus/base16-windows-scheme"
+
+# Surfaces
+surface-0 = "#000000"
+surface-1 = "#2a2a2a"
+surface-2 = "#555555"
+surface-border = "#808080"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#e0e0e0"
+text-2 = "#c0c0c0"
+text-3 = "#a1a1a1"
+text-disabled = "#2a2a2a"
+text-contrast = "#000000"
+
+# Accents
+accent = "#0000ff"
+accent-hover = "#00ffff"
+accent-active = "#ff00ff"
+accent-success = "#00ff00"
+accent-warning = "#808000"
+accent-danger = "#ff0000"
+
+# Common colors
+red = "#ff0000"
+orange = "#808000"
+yellow = "#ffff00"
+green = "#00ff00"
+teal = "#00ffff"
+blue = "#0000ff"
+purple = "#ff00ff"
+pink = "#008000"
+
+# Utilities
+overlay = "#2a2a2a"
+shadow = "#000000"
+
+[[theme]]
+name = "Woodland"
+author = "Jay Cornwall (https://jcornwall.com)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/jcornwall/base16-woodland-scheme"
+
+# Surfaces
+surface-0 = "#231e18"
+surface-1 = "#302b25"
+surface-2 = "#48413a"
+surface-border = "#9d8b70"
+
+# Text hierarchy
+text-0 = "#e4d4c8"
+text-1 = "#d7c8bc"
+text-2 = "#cabcb1"
+text-3 = "#b4a490"
+text-disabled = "#302b25"
+text-contrast = "#231e18"
+
+# Accents
+accent = "#88a4d3"
+accent-hover = "#6eb958"
+accent-active = "#bb90e2"
+accent-success = "#b7ba53"
+accent-warning = "#ca7f32"
+accent-danger = "#d35c5c"
+
+# Common colors
+red = "#d35c5c"
+orange = "#ca7f32"
+yellow = "#e0ac16"
+green = "#b7ba53"
+teal = "#6eb958"
+blue = "#88a4d3"
+purple = "#bb90e2"
+pink = "#b49368"
+
+# Utilities
+overlay = "#302b25"
+shadow = "#231e18"
+
+[[theme]]
+name = "XCode Dusk"
+author = "Elsa Gonsiorowski (https://github.com/gonsie)"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/gonsie/base16-xcode-dusk-scheme"
+
+# Surfaces
+surface-0 = "#282b35"
+surface-1 = "#3d4048"
+surface-2 = "#53555d"
+surface-border = "#686a71"
+
+# Text hierarchy
+text-0 = "#bebfc2"
+text-1 = "#a9aaae"
+text-2 = "#939599"
+text-3 = "#7e8086"
+text-disabled = "#3d4048"
+text-contrast = "#282b35"
+
+# Accents
+accent = "#bf35d4"
+accent-hover = "#00a0be"
+accent-active = "#b21889"
+accent-success = "#df0002"
+accent-warning = "#786dc5"
+accent-danger = "#b21889"
+
+# Common colors
+red = "#b21889"
+orange = "#786dc5"
+yellow = "#438288"
+green = "#df0002"
+teal = "#00a0be"
+blue = "#790ead"
+purple = "#b21889"
+pink = "#c77c48"
+
+# Utilities
+overlay = "#3d4048"
+shadow = "#282b35"
+
+[[theme]]
+name = "Zenburn"
+author = "elnawe"
+variant = "Dark"
+description = "Sourced from Base16 scheme"
+link = "https://github.com/elnawe/base16-zenburn-scheme"
+
+# Surfaces
+surface-0 = "#383838"
+surface-1 = "#404040"
+surface-2 = "#606060"
+surface-border = "#6f6f6f"
+
+# Text hierarchy
+text-0 = "#ffffff"
+text-1 = "#c0c0c0"
+text-2 = "#dcdccc"
+text-3 = "#808080"
+text-disabled = "#404040"
+text-contrast = "#383838"
+
+# Accents
+accent = "#7cb8bb"
+accent-hover = "#93e0e3"
+accent-active = "#dc8cc3"
+accent-success = "#5f7f5f"
+accent-warning = "#dfaf8f"
+accent-danger = "#dca3a3"
+
+# Common colors
+red = "#dca3a3"
+orange = "#dfaf8f"
+yellow = "#e0cf9f"
+green = "#5f7f5f"
+teal = "#93e0e3"
+blue = "#7cb8bb"
+purple = "#dc8cc3"
+pink = "#000000"
+
+# Utilities
+overlay = "#404040"
+shadow = "#383838"

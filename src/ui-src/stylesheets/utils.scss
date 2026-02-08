@@ -45,6 +45,29 @@ span {
 	color: var(--accent-warning) !important;
 }
 
+.checkbox {
+	height: 100%;
+	aspect-ratio: 1/1;
+	border-radius: var(--border-rad);
+	margin-right: 1rem;
+	position: relative;
+	color: var(--accent);
+	&::before {
+		content: '';
+		position: absolute;
+		font-size: 3rem;
+		left: 60%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	&[data-checked='true'] {
+		&::before {
+			content: '󰸞';
+		}
+	}
+}
+
 /* Blockquotes */
 blockquote,
 .blockquote {

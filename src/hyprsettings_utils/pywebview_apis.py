@@ -156,7 +156,7 @@ class Api:
 				return self.window_config
 
 	def get_builtin_themes(self):
-		file_path = thisfile_path_parent / 'ui' / 'themes_builtin'
+		file_path = thisfile_path_parent / 'themes_builtin'
 		themes = []
 		for file in os.listdir(file_path):
 			theme_file = Path(file_path / file)
@@ -166,7 +166,6 @@ class Api:
 				continue
 			with open(theme_file, 'r', encoding='utf-8') as theme:
 				file_content = theme.read()
-
 				theme_content = toml.parse(file_content)
 				# print(f'Theme content: {theme_content}')
 				for theme_definition in theme_content.get('theme', []):

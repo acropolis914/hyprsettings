@@ -33,6 +33,11 @@ html {
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 	}
+	.themeAnimation {
+		transition:
+			background-color 0.1s ease-in-out,
+			color 0.05s ease !important;
+	}
 }
 
 *,
@@ -47,7 +52,10 @@ html.no-anim *,
 html.no-anim *::before,
 html.no-anim *::after {
 	animation: none !important;
-	transition: none !important;
+	transition:
+		color 0s,
+		background-color 0s,
+		none !important;
 
 	.editor-item {
 		transition: margin 0 ease !important;
@@ -458,6 +466,7 @@ footer {
 /* --- Content Area Components ---*/
 
 .config-set {
+	contain: layout style paint;
 	overflow-x: hidden;
 	display: flex;
 	height: 100%;
