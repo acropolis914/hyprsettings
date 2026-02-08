@@ -13,17 +13,11 @@ export class ConfigGroup {
 		this.group_el.dataset.type = json['type']
 		this.group_el.disable = this.disable.bind(this)
 		this.saveDebounced = debounce(() => this.save(), 500)
-		this.group_el.setAttribute(
-			'title',
-			json['position'].replace('root:', ''),
-		)
+		this.group_el.setAttribute('title', json['position'].replace('root:', ''))
 		if (json['comment']) {
 			this.group_el.dataset.comment = json['comment']
 		}
-		if (
-			this.group_el.dataset.name === 'windowrule' ||
-			this.group_el.dataset.name === 'layerrule'
-		) {
+		if (this.group_el.dataset.name === 'windowrule' || this.group_el.dataset.name === 'layerrule') {
 			this.group_el.classList.add('rule')
 		}
 		this.group_el.addEventListener('keydown', (e) => {
@@ -35,11 +29,7 @@ export class ConfigGroup {
 			// 	console.log(firstChild)
 			// 	console.log("Group is entered");
 			// }
-			if (
-				e.key === 'd' &&
-				e.target.tagName !== 'TEXTAREA' &&
-				e.target.tagName !== 'INPUT'
-			) {
+			if (e.key === 'd' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'INPUT') {
 				e.stopPropagation()
 				e.stopImmediatePropagation()
 				this.disable()
@@ -104,10 +94,7 @@ export class ConfigGroup {
 			let parent = el.parentElement
 			console.log(parent)
 			while (parent) {
-				if (
-					parent.dataset.type === 'GROUP' &&
-					parent.dataset.disabled === 'true'
-				) {
+				if (parent.dataset.type === 'GROUP' && parent.dataset.disabled === 'true') {
 					return true
 				}
 				parent = parent.parentElement
@@ -123,13 +110,10 @@ export class ConfigGroup {
 		} else {
 			let isParentDisabled = hasDisabledParent(this.group_el)
 			if (isParentDisabled) {
-				console.warn(
-					'Parent is disabled, cannot enable/disable child',
-				)
+				console.warn('Parent is disabled, cannot enable/disable child')
 				return
 			}
-			this.group_el.dataset.disabled =
-				this.group_el.dataset.disabled !== 'true'
+			this.group_el.dataset.disabled = this.group_el.dataset.disabled !== 'true'
 			disabled = this.group_el.dataset.disabled === 'true'
 		}
 		// console.log(disabled)

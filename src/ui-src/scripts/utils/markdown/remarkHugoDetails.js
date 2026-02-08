@@ -17,10 +17,7 @@ export function remarkHugoDetailsToHTML() {
 
 				for (let j = i + 1; j < children.length; j++) {
 					const nextText = getRawText(children[j])
-					if (
-						nextText &&
-						nextText.includes('{{% /details %}}')
-					) {
+					if (nextText && nextText.includes('{{% /details %}}')) {
 						endIdx = j
 						foundClosing = true
 						break
@@ -38,10 +35,7 @@ export function remarkHugoDetailsToHTML() {
 							hName: 'button',
 							hProperties: {
 								type: 'button',
-								className: [
-									'details-header',
-									isClosed ? '' : 'is-open',
-								],
+								className: ['details-header', isClosed ? '' : 'is-open'],
 								onclick: `(function(btn){
                   const body = btn.nextElementSibling;
                   btn.classList.toggle('is-open');
@@ -63,9 +57,7 @@ export function remarkHugoDetailsToHTML() {
 							hName: 'div',
 							hProperties: {
 								className: ['details-body'],
-								style: isClosed
-									? 'display: none;'
-									: 'display: block;',
+								style: isClosed ? 'display: none;' : 'display: block;',
 							},
 						},
 					}

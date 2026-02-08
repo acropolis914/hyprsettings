@@ -133,7 +133,6 @@ pre[class*='language-'] {
 	color: var(--red);
 }
 
-
 button.copy-to-clipboard-button {
 	padding: 0.5rem 1rem;
 	background: var(--surface-2);

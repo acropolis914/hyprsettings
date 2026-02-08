@@ -59,8 +59,7 @@
 			input: 'Color value field',
 			format: 'Color format',
 			swatch: 'Color swatch',
-			instruction:
-				'Saturation and brightness selector. Use up, down, left and right arrow keys to select.',
+			instruction: 'Saturation and brightness selector. Use up, down, left and right arrow keys to select.',
 		},
 	}
 
@@ -88,10 +87,7 @@
 					}
 					break
 				case 'parent':
-					container =
-						options.parent instanceof HTMLElement
-							? options.parent
-							: document.querySelector(options.parent)
+					container = options.parent instanceof HTMLElement ? options.parent : document.querySelector(options.parent)
 					if (container) {
 						container.appendChild(picker)
 						settings.parent = options.parent
@@ -107,8 +103,7 @@
 					if (
 						options.themeMode === 'auto' &&
 						window.matchMedia &&
-						window.matchMedia('(prefers-color-scheme: dark)')
-							.matches
+						window.matchMedia('(prefers-color-scheme: dark)').matches
 					) {
 						settings.themeMode = 'dark'
 					}
@@ -128,17 +123,13 @@
 					break
 				case 'rtl':
 					settings.rtl = !!options.rtl
-					Array.from(
-						document.getElementsByClassName('clr-field'),
-					).forEach((field) =>
+					Array.from(document.getElementsByClassName('clr-field')).forEach((field) =>
 						field.classList.toggle('clr-rtl', settings.rtl),
 					)
 					break
 				case 'margin':
 					options.margin *= 1
-					settings.margin = !isNaN(options.margin)
-						? options.margin
-						: settings.margin
+					settings.margin = !isNaN(options.margin) ? options.margin : settings.margin
 					break
 				case 'wrap':
 					if (options.el && options.wrap) {
@@ -147,8 +138,7 @@
 					break
 				case 'formatToggle':
 					settings.formatToggle = !!options.formatToggle
-					getEl('clr-format').style.display =
-						settings.formatToggle ? 'block' : 'none'
+					getEl('clr-format').style.display = settings.formatToggle ? 'block' : 'none'
 					if (settings.formatToggle) {
 						settings.format = 'auto'
 					}
@@ -163,15 +153,11 @@
 
 						// Build new swatches
 						options.swatches.forEach((swatch, i) => {
-							const button =
-								document.createElement('button')
+							const button = document.createElement('button')
 
 							button.setAttribute('type', `button`)
 							button.setAttribute('id', `clr-swatch-${i}`)
-							button.setAttribute(
-								'aria-labelledby',
-								`clr-swatch-label clr-swatch-${i}`,
-							)
+							button.setAttribute('aria-labelledby', `clr-swatch-label clr-swatch-${i}`)
 							button.style.color = swatch
 							button.textContent = swatch
 
@@ -188,10 +174,7 @@
 					break
 				case 'swatchesOnly':
 					settings.swatchesOnly = !!options.swatchesOnly
-					picker.setAttribute(
-						'data-minimal',
-						settings.swatchesOnly,
-					)
+					picker.setAttribute('data-minimal', settings.swatchesOnly)
 					break
 				case 'alpha':
 					settings.alpha = !!options.alpha
@@ -202,11 +185,9 @@
 					picker.setAttribute('data-inline', settings.inline)
 
 					if (settings.inline) {
-						const defaultColor =
-							options.defaultColor || settings.defaultColor
+						const defaultColor = options.defaultColor || settings.defaultColor
 
-						currentFormat =
-							getColorFormatFromStr(defaultColor)
+						currentFormat = getColorFormatFromStr(defaultColor)
 						updatePickerPosition()
 						setColorFromStr(defaultColor)
 					}
@@ -215,8 +196,7 @@
 					// Backward compatibility
 					if (typeof options.clearButton === 'object') {
 						if (options.clearButton.label) {
-							settings.clearLabel =
-								options.clearButton.label
+							settings.clearLabel = options.clearButton.label
 							clearButton.innerHTML = settings.clearLabel
 						}
 
@@ -224,9 +204,7 @@
 					}
 
 					settings.clearButton = !!options.clearButton
-					clearButton.style.display = settings.clearButton
-						? 'block'
-						: 'none'
+					clearButton.style.display = settings.clearButton ? 'block' : 'none'
 					break
 				case 'clearLabel':
 					settings.clearLabel = options.clearLabel
@@ -265,30 +243,12 @@
 
 						openLabel.innerHTML = settings.a11y.open
 						swatchLabel.innerHTML = settings.a11y.swatch
-						closeButton.setAttribute(
-							'aria-label',
-							settings.a11y.close,
-						)
-						clearButton.setAttribute(
-							'aria-label',
-							settings.a11y.clear,
-						)
-						hueSlider.setAttribute(
-							'aria-label',
-							settings.a11y.hueSlider,
-						)
-						alphaSlider.setAttribute(
-							'aria-label',
-							settings.a11y.alphaSlider,
-						)
-						colorValue.setAttribute(
-							'aria-label',
-							settings.a11y.input,
-						)
-						colorArea.setAttribute(
-							'aria-label',
-							settings.a11y.instruction,
-						)
+						closeButton.setAttribute('aria-label', settings.a11y.close)
+						clearButton.setAttribute('aria-label', settings.a11y.clear)
+						hueSlider.setAttribute('aria-label', settings.a11y.hueSlider)
+						alphaSlider.setAttribute('aria-label', settings.a11y.alphaSlider)
+						colorValue.setAttribute('aria-label', settings.a11y.input)
+						colorArea.setAttribute('aria-label', settings.a11y.instruction)
 					}
 					break
 				default:
@@ -332,14 +292,7 @@
 	function attachVirtualInstance(element) {
 		if (hasInstance) {
 			// These options can only be set globally, not per instance
-			const unsupportedOptions = [
-				'el',
-				'wrap',
-				'rtl',
-				'inline',
-				'defaultColor',
-				'a11y',
-			]
+			const unsupportedOptions = ['el', 'wrap', 'rtl', 'inline', 'defaultColor', 'a11y']
 
 			for (let selector in instances) {
 				const options = instances[selector]
@@ -350,17 +303,11 @@
 					defaultInstance = {}
 
 					// Delete unsupported options
-					unsupportedOptions.forEach(
-						(option) => delete options[option],
-					)
+					unsupportedOptions.forEach((option) => delete options[option])
 
 					// Back up the default options so we can restore them later
 					for (let option in options) {
-						defaultInstance[option] = Array.isArray(
-							settings[option],
-						)
-							? settings[option].slice()
-							: settings[option]
+						defaultInstance[option] = Array.isArray(settings[option]) ? settings[option].slice() : settings[option]
 					}
 
 					// Set the instance's options
@@ -425,10 +372,7 @@
 
 		if (settings.focusInput || settings.selectInput) {
 			colorValue.focus({ preventScroll: true })
-			colorValue.setSelectionRange(
-				currentEl.selectionStart,
-				currentEl.selectionEnd,
-			)
+			colorValue.setSelectionRange(currentEl.selectionStart, currentEl.selectionEnd)
 		}
 
 		if (settings.selectInput) {
@@ -481,18 +425,9 @@
 					reposition.left = true
 				}
 
-				if (
-					top + pickerHeight >
-					parent.clientHeight - parentMarginTop
-				) {
-					if (
-						pickerHeight + settings.margin <=
-						coords.top - (offset.y - scrollY)
-					) {
-						top -=
-							coords.height +
-							pickerHeight +
-							settings.margin * 2
+				if (top + pickerHeight > parent.clientHeight - parentMarginTop) {
+					if (pickerHeight + settings.margin <= coords.top - (offset.y - scrollY)) {
+						top -= coords.height + pickerHeight + settings.margin * 2
 						reposition.top = true
 					}
 				}
@@ -501,24 +436,14 @@
 
 				// Otherwise set the position relative to the whole document
 			} else {
-				if (
-					left + pickerWidth >
-					document.documentElement.clientWidth
-				) {
+				if (left + pickerWidth > document.documentElement.clientWidth) {
 					left += coords.width - pickerWidth
 					reposition.left = true
 				}
 
-				if (
-					top + pickerHeight - scrollY >
-					document.documentElement.clientHeight
-				) {
+				if (top + pickerHeight - scrollY > document.documentElement.clientHeight) {
 					if (pickerHeight + settings.margin <= coords.top) {
-						top =
-							scrollY +
-							coords.y -
-							pickerHeight -
-							settings.margin
+						top = scrollY + coords.y - pickerHeight - settings.margin
 						reposition.top = true
 					}
 				}
@@ -569,8 +494,7 @@
 				classes += ' clr-rtl'
 			}
 
-			wrapper.innerHTML =
-				'<button type="button" aria-labelledby="clr-open-label"></button>'
+			wrapper.innerHTML = '<button type="button" aria-labelledby="clr-open-label"></button>'
 			parentNode.insertBefore(wrapper, field)
 			wrapper.className = classes
 			wrapper.style.color = field.value
@@ -608,9 +532,7 @@
 					prevEl.value = oldColor
 
 					// Trigger an "input" event to force update the thumbnail next to the input field
-					prevEl.dispatchEvent(
-						new Event('input', { bubbles: true }),
-					)
+					prevEl.dispatchEvent(new Event('input', { bubbles: true }))
 				}
 			}
 
@@ -618,9 +540,7 @@
 			setTimeout(() => {
 				// Add this to the end of the event loop
 				if (oldColor !== prevEl.value) {
-					prevEl.dispatchEvent(
-						new Event('change', { bubbles: true }),
-					)
+					prevEl.dispatchEvent(new Event('change', { bubbles: true }))
 				}
 			})
 
@@ -747,12 +667,8 @@
 	 */
 	function getPointerPosition(event) {
 		return {
-			pageX: event.changedTouches
-				? event.changedTouches[0].pageX
-				: event.pageX,
-			pageY: event.changedTouches
-				? event.changedTouches[0].pageY
-				: event.pageY,
+			pageX: event.changedTouches ? event.changedTouches[0].pageX : event.pageX,
+			pageY: event.changedTouches ? event.changedTouches[0].pageY : event.pageY,
 		}
 	}
 
@@ -860,8 +776,7 @@
 		}
 
 		// Select the current format in the format switcher
-		document.querySelector(`.clr-format [value="${format}"]`).checked =
-			true
+		document.querySelector(`.clr-format [value="${format}"]`).checked = true
 	}
 
 	/**
@@ -929,10 +844,7 @@
 		let saturation
 
 		if (lightness > 0 && lightness < 1) {
-			saturation = Math.round(
-				((value - lightness) / Math.min(lightness, 1 - lightness)) *
-					100,
-			)
+			saturation = Math.round(((value - lightness) / Math.min(lightness, 1 - lightness)) * 100)
 		}
 
 		return {
@@ -990,8 +902,7 @@
 	 * @return {object} Red, green, blue and alpha values.
 	 */
 	function strToRGBA(str) {
-		const regex =
-			/^((rgba)|rgb)[\D]+([\d.]+)[\D]+([\d.]+)[\D]+([\d.]+)[\D]*?([\d.]+|$)/i
+		const regex = /^((rgba)|rgb)[\D]+([\d.]+)[\D]+([\d.]+)[\D]+([\d.]+)[\D]*?([\d.]+|$)/i
 		let match, rgba
 
 		// Default to black for invalid color strings
@@ -1195,16 +1106,11 @@
 			closePicker()
 		})
 
-		addListener(
-			getEl('clr-format'),
-			'click',
-			'.clr-format input',
-			(event) => {
-				currentFormat = event.target.value
-				updateColor()
-				pickColor()
-			},
-		)
+		addListener(getEl('clr-format'), 'click', '.clr-format input', (event) => {
+			currentFormat = event.target.value
+			updateColor()
+			pickColor()
+		})
 
 		addListener(picker, 'click', '.clr-swatches button', (event) => {
 			setColorFromStr(event.target.textContent)
@@ -1233,13 +1139,7 @@
 			const key = event.key
 			const target = event.target
 			const shiftKey = event.shiftKey
-			const navKeys = [
-				'Tab',
-				'ArrowUp',
-				'ArrowDown',
-				'ArrowLeft',
-				'ArrowRight',
-			]
+			const navKeys = ['Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
 
 			if (key === 'Escape') {
 				closePicker(true)
@@ -1279,9 +1179,7 @@
 			}
 
 			// Open the color picker
-			event.target.nextElementSibling.dispatchEvent(
-				new Event('click', { bubbles: true }),
-			)
+			event.target.nextElementSibling.dispatchEvent(new Event('click', { bubbles: true }))
 		})
 
 		addListener(colorMarker, 'keydown', (event) => {
@@ -1331,8 +1229,7 @@
 	 * @param {function} [fn] Event handler if delegation is used.
 	 */
 	function addListener(context, type, selector, fn) {
-		const matches =
-			Element.prototype.matches || Element.prototype.msMatchesSelector
+		const matches = Element.prototype.matches || Element.prototype.msMatchesSelector
 
 		// Delegate event to the target of the selector
 		if (typeof selector === 'string') {
@@ -1368,11 +1265,7 @@
 	}
 
 	// Polyfill for Nodelist.forEach
-	if (
-		NodeList !== undefined &&
-		NodeList.prototype &&
-		!NodeList.prototype.forEach
-	) {
+	if (NodeList !== undefined && NodeList.prototype && !NodeList.prototype.forEach) {
 		NodeList.prototype.forEach = Array.prototype.forEach
 	}
 

@@ -32,9 +32,7 @@
 	height: 100px;
 	margin-bottom: 15px;
 	border-radius: 3px 3px 0 0;
-	background-image:
-		linear-gradient(rgba(0, 0, 0, 0), #000),
-		linear-gradient(90deg, #fff, currentColor);
+	background-image: linear-gradient(rgba(0, 0, 0, 0), #000), linear-gradient(90deg, #fff, currentColor);
 	cursor: pointer;
 }
 
@@ -410,22 +408,8 @@ input.clr-color:focus {
 .clr-preview:before,
 .clr-field button {
 	background-image:
-		repeating-linear-gradient(
-			45deg,
-			#aaa 25%,
-			transparent 25%,
-			transparent 75%,
-			#aaa 75%,
-			#aaa
-		),
-		repeating-linear-gradient(
-			45deg,
-			#aaa 25%,
-			#fff 25%,
-			#fff 75%,
-			#aaa 75%,
-			#aaa
-		);
+		repeating-linear-gradient(45deg, #aaa 25%, transparent 25%, transparent 75%, #aaa 75%, #aaa),
+		repeating-linear-gradient(45deg, #aaa 25%, #fff 25%, #fff 75%, #aaa 75%, #aaa);
 	background-position:
 		0 0,
 		4px 4px;
@@ -495,22 +479,8 @@ input.clr-color:focus {
 .clr-dark .clr-swatches button,
 .clr-dark .clr-preview:before {
 	background-image:
-		repeating-linear-gradient(
-			45deg,
-			#666 25%,
-			transparent 25%,
-			transparent 75%,
-			#888 75%,
-			#888
-		),
-		repeating-linear-gradient(
-			45deg,
-			#888 25%,
-			#444 25%,
-			#444 75%,
-			#888 75%,
-			#888
-		);
+		repeating-linear-gradient(45deg, #666 25%, transparent 25%, transparent 75%, #888 75%, #888),
+		repeating-linear-gradient(45deg, #888 25%, #444 25%, #444 75%, #888 75%, #888);
 }
 
 /** Polaroid theme **/

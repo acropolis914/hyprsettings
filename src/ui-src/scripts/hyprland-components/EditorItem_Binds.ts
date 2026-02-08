@@ -1,8 +1,4 @@
-import {
-	bindFlags,
-	modkeys,
-	dispatchers,
-} from '../hyprland-specific/hyprlandBindDefinitions.js'
+import { bindFlags, modkeys, dispatchers } from '../hyprland-specific/hyprlandBindDefinitions.js'
 import { ContextMenu } from './contextMenu.js'
 import { addItem, deleteKey, saveKey, splitWithRemainder } from '../utils.js'
 import { debounce } from '../helpers.js'
@@ -26,11 +22,7 @@ const templateString = html`
 		</div>
 		<div class="comment-area">
 			<span class="comment-hashtag">#</span>
-			<textarea
-				class="comment"
-				contenteditable="true"
-				placeholder="No Comment"
-			></textarea>
+			<textarea class="comment" contenteditable="true" placeholder="No Comment"></textarea>
 		</div>
 	</div>
 `
@@ -65,9 +57,7 @@ export class EditorItem_Binds {
 		if (disabled) {
 			this.el.classList.add('disabled')
 		}
-		let position_title = json['position']
-			.replace('root:', '')
-			.replaceAll(':', ' 󰄾 ')
+		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
 		this.el.title = `  Location: ${position_title}`
 		// this.el.title = position.replace('root:', '')
 		this.el.dataset.name = name
@@ -89,40 +79,23 @@ export class EditorItem_Binds {
 	}
 
 	addElements() {
-		let bindflag_additems = this.el.dataset.name
-			.trim()
-			.substring(4)
-			.split('')
-		let values = splitWithRemainder(this.el.dataset.value, ',', 3).map(
-			(i: string) => i.trim(),
-		)
+		let bindflag_additems = this.el.dataset.name.trim().substring(4).split('')
+		let values = splitWithRemainder(this.el.dataset.value, ',', 3).map((i: string) => i.trim())
 		this.hasDescription = bindflag_additems.includes('d')
 		if (this.hasDescription) {
 			if (!values.at(-1).includes(',')) {
 				values.splice(2, 0, '')
 			} else {
-				values = splitWithRemainder(
-					this.el.dataset.value,
-					',',
-					4,
-				).map((i: string) => i.trim())
+				values = splitWithRemainder(this.el.dataset.value, ',', 4).map((i: string) => i.trim())
 			}
 		}
 
 		const renderflags = {
 			option: function (data, escape) {
-				return (
-					`<div title="${data.description}">` +
-					escape(data.text) +
-					`</div>`
-				)
+				return `<div title="${data.description}">` + escape(data.text) + `</div>`
 			},
 			item: function (data, escape) {
-				return (
-					`<div title="${data.description}">` +
-					escape(data.text) +
-					`</div>`
-				)
+				return `<div title="${data.description}">` + escape(data.text) + `</div>`
 			},
 		}
 		//bindflags
@@ -220,9 +193,7 @@ export class EditorItem_Binds {
 			render: renderflags,
 		})
 
-		let dispatcher_additem = this.hasDescription
-			? values[3].trim()
-			: values[2].trim()
+		let dispatcher_additem = this.hasDescription ? values[3].trim() : values[2].trim()
 
 		if (this.hasDispatch(dispatcher_additem)) {
 			this.dispatcherTS.addItem(dispatcher_additem)
@@ -283,10 +254,7 @@ export class EditorItem_Binds {
 				}
 			}
 			if (e.key === 'd') {
-				if (
-					e.target.tagName === 'TEXTAREA' ||
-					e.target.tagName === 'INPUT'
-				) {
+				if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
 					return
 				}
 				this.disable()
@@ -302,13 +270,9 @@ export class EditorItem_Binds {
 
 	update() {
 		let bindFlags = this.bindflagTS.getValue()
-		let bindflagString = Array.isArray(bindFlags)
-			? `bind${bindFlags.join('')}`
-			: bindFlags
+		let bindflagString = Array.isArray(bindFlags) ? `bind${bindFlags.join('')}` : bindFlags
 		let modKeys = this.modkeyTS.getValue()
-		let modKeyString = Array.isArray(modKeys)
-			? modKeys.join(' ')
-			: modKeys
+		let modKeyString = Array.isArray(modKeys) ? modKeys.join(' ') : modKeys
 		let keyPress = this.el.querySelector('.keypress').value
 		let description_el = this.el.querySelector('.description')
 		if (bindFlags.includes('d')) {
@@ -323,9 +287,7 @@ export class EditorItem_Binds {
 		let disPatcherString = this.dispatcherTS.getValue()
 		let paramString = this.el.querySelector('.params').value.trim()
 		let preview_el = this.el.querySelector('.editor-item-preview')
-		let comment = this.comment_el.value
-			? `# ${this.comment_el.value}`
-			: ''
+		let comment = this.comment_el.value ? `# ${this.comment_el.value}` : ''
 		this.el.dataset.name = bindflagString
 		if (this.hasDescription) {
 			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress},${description || 'has description'}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
@@ -451,10 +413,7 @@ export class EditorItem_Binds {
 		let uuid = this.el.dataset.uuid
 		let position = this.el.dataset.position
 		let value = this.el.dataset.value
-		const commentToSave =
-			this.comment_el.value.trim() === ''
-				? null
-				: this.comment_el.value
+		const commentToSave = this.comment_el.value.trim() === '' ? null : this.comment_el.value
 		let type = this.el.dataset.type
 		let disabled = this.el.dataset.disabled === 'true'
 		saveKey(type, name, uuid, position, value, commentToSave, disabled)

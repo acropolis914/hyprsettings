@@ -1486,22 +1486,14 @@ SOFTWARE.
 		},
 		O = (a) => {
 			if (typeof a == 'number' && a >= 0) return a
-			if (
-				(typeof a == 'string' && (a = parseFloat(a)),
-				isNaN(a) || a < 0)
-			)
-				throw new Error('should be a positive number!')
+			if ((typeof a == 'string' && (a = parseFloat(a)), isNaN(a) || a < 0)) throw new Error('should be a positive number!')
 			return a
 		},
 		B = (a) => {
 			if (typeof a == 'boolean' || typeof a == 'number') return a
 			if (a === 'true') return !0
 			if (a === 'false') return !1
-			if (
-				typeof a == 'string' &&
-				((a = parseFloat(a)), !isNaN(a) && a >= 0)
-			)
-				return a
+			if (typeof a == 'string' && ((a = parseFloat(a)), !isNaN(a) && a >= 0)) return a
 			throw new Error('should be a boolean or a positive number!')
 		},
 		z = (a) => {
@@ -1514,15 +1506,7 @@ SOFTWARE.
 				}
 			throw new Error('should be a string or JSON!')
 		}
-	var P = function ({
-			key: a,
-			value: e,
-			expanded: d,
-			indent: r,
-			onToggleExpand: o,
-			level: t = 0,
-			parentRow: v,
-		}) {
+	var P = function ({ key: a, value: e, expanded: d, indent: r, onToggleExpand: o, level: t = 0, parentRow: v }) {
 			let n = document.createElement('div')
 			this.maxLevel = t
 			let i = W(e),
@@ -1539,11 +1523,7 @@ SOFTWARE.
 			let f = document.createElement('span')
 			;((f.className = 'key-value-wrapper'), n.appendChild(f))
 			let w = () => {
-				;(n.classList.toggle('expanded'),
-					o &&
-						(n.classList.contains('expanded')
-							? o(t + 1)
-							: o(t)))
+				;(n.classList.toggle('expanded'), o && (n.classList.contains('expanded') ? o(t + 1) : o(t)))
 			}
 			if (m) {
 				let c = document.createElement('span')
@@ -1558,41 +1538,30 @@ SOFTWARE.
 			if (a !== null && a !== '') {
 				let c = typeof a
 				;((b = document.createElement('span')),
-					(b.className = `key clickable ${
-						c === 'number' ? 'number' : ''
-					}`),
+					(b.className = `key clickable ${c === 'number' ? 'number' : ''}`),
 					(b.textContent = c === 'number' ? a : `${a}`),
 					b.addEventListener('click', () => w()),
 					f.appendChild(b))
 				let s = document.createElement('span')
-				;(s.classList.add('colon'),
-					(s.textContent = ':'),
-					f.appendChild(s))
+				;(s.classList.add('colon'), (s.textContent = ':'), f.appendChild(s))
 			}
 			if (m) {
 				let c = document.createElement('span')
-				;((c.className = 'opening-parenthesis'),
-					(c.textContent = i === 'array' ? '[' : '{'),
-					f.appendChild(c))
+				;((c.className = 'opening-parenthesis'), (c.textContent = i === 'array' ? '[' : '{'), f.appendChild(c))
 				let s = document.createElement('span')
 				;((s.className = 'ellipsis clickable'),
 					(s.textContent = '...'),
 					s.addEventListener('click', () => w()),
 					f.appendChild(s))
 				let l = document.createElement('span')
-				;((l.className = 'closing-parenthesis'),
-					(l.textContent = i === 'array' ? ']' : '}'),
-					f.appendChild(l))
+				;((l.className = 'closing-parenthesis'), (l.textContent = i === 'array' ? ']' : '}'), f.appendChild(l))
 				let E = document.createElement('span'),
 					D = i === 'array' ? e.length : Object.keys(e).length
 				;((E.className = 'items-size'),
 					(E.textContent = `${D} item${D === 1 ? '' : 's'}`),
 					f.appendChild(E),
 					(g = []),
-					(i === 'array'
-						? e.map((C, k) => k)
-						: Object.keys(e)
-					).forEach((C) => {
+					(i === 'array' ? e.map((C, k) => k) : Object.keys(e)).forEach((C) => {
 						let k = new P({
 							key: C,
 							value: e[C],
@@ -1602,23 +1571,14 @@ SOFTWARE.
 							level: t + 1,
 							parentRow: n,
 						})
-						;(g.push(k),
-							n.appendChild(k.element),
-							(this.maxLevel = Math.max(
-								this.maxLevel,
-								k.maxLevel,
-							)))
+						;(g.push(k), n.appendChild(k.element), (this.maxLevel = Math.max(this.maxLevel, k.maxLevel)))
 					}))
 				let S = document.createElement('span')
-				;((S.className = 'closing-parenthesis'),
-					(S.textContent = i === 'array' ? ']' : '}'),
-					n.appendChild(S))
+				;((S.className = 'closing-parenthesis'), (S.textContent = i === 'array' ? ']' : '}'), n.appendChild(S))
 			} else {
 				let c = null
 				;['nan', 'NaN', 'undefined', 'null'].includes(i) ||
-					((c = document.createElement('span')),
-					(c.className = 'type'),
-					(c.textContent = i.toLowerCase()))
+					((c = document.createElement('span')), (c.className = 'type'), (c.textContent = i.toLowerCase()))
 				let s = document.createElement('span')
 				;((s.className = `value ${i.toLowerCase()}`),
 					(h = document.createElement('span')),
@@ -1629,14 +1589,11 @@ SOFTWARE.
 					f.appendChild(s))
 			}
 			let u = document.createElement('span')
-			;((u.className = 'copy icon'),
-				u.setAttribute('title', 'Copy to clipboard'))
+			;((u.className = 'copy icon'), u.setAttribute('title', 'Copy to clipboard'))
 			let y = document.createElement('span')
 			;((y.className = 'icon-wrapper'),
 				y.addEventListener('click', () => {
-					navigator.clipboard.writeText(
-						JSON.stringify(e, null, r),
-					)
+					navigator.clipboard.writeText(JSON.stringify(e, null, r))
 				}),
 				y.appendChild(u),
 				f.appendChild(y))
@@ -1652,26 +1609,17 @@ SOFTWARE.
 						C = [],
 						k = 0
 					;(S.forEach((I) => {
-						;((E = !0),
-							C.push(L.slice(k, I)),
-							C.push(`<span class="match">${c}</span>`),
-							(k = I + c.length))
+						;((E = !0), C.push(L.slice(k, I)), C.push(`<span class="match">${c}</span>`), (k = I + c.length))
 					}),
 						C.push(L.slice(k)),
 						(D.innerHTML = C.join('')))
 				}),
-					E &&
-						!n.classList.contains('expanded') &&
-						(w(), v && v.classList.add('expanded')))
+					E && !n.classList.contains('expanded') && (w(), v && v.classList.add('expanded')))
 			}
 			;((this.update = ({ expanded: c, indent: s, searchTerm: l }) => {
-				;(s !== void 0 &&
-					t > 0 &&
-					(n.style.paddingLeft = `${s * 5}px`),
+				;(s !== void 0 && t > 0 && (n.style.paddingLeft = `${s * 5}px`),
 					c !== void 0 &&
-						((x = c === !0 || c > t),
-						n.classList.toggle('expanded', x),
-						p && (p.title = x ? 'Collapse' : 'Expand')),
+						((x = c === !0 || c > t), n.classList.toggle('expanded', x), p && (p.title = x ? 'Collapse' : 'Expand')),
 					l != null && N(l),
 					g &&
 						g.forEach((E) =>
@@ -1685,13 +1633,7 @@ SOFTWARE.
 				(this.element = n))
 		},
 		U = P
-	var G = function ({
-			expanded: a,
-			indent: e,
-			onChange: d,
-			onSearch: r,
-			showDetails: o,
-		}) {
+	var G = function ({ expanded: a, indent: e, onChange: d, onSearch: r, showDetails: o }) {
 			;((this.indent = e || 2),
 				(this.expanded = typeof a == 'number' ? a : 2),
 				(this.showDetails = o !== !1),
@@ -1706,18 +1648,14 @@ SOFTWARE.
 			let m = document.createElement('div')
 			;((m.className = 'icon-wrapper clickable'), n.appendChild(m))
 			let x = document.createElement('span')
-			;((x.className = 'icon refresh'),
-				(m.onclick = () => this.refresh()),
-				m.appendChild(x))
+			;((x.className = 'icon refresh'), (m.onclick = () => this.refresh()), m.appendChild(x))
 			let p = document.createElement('div')
 			;((p.className = 'icon-wrapper clickable'), n.appendChild(p))
 			let g = document.createElement('span')
 			;((g.className = 'icon plus'),
 				p.appendChild(g),
 				(p.onclick = () => {
-					;(this.expanded < this.maxExpandLevel &&
-						(this.expanded += 1),
-						d({ expanded: this.expanded }))
+					;(this.expanded < this.maxExpandLevel && (this.expanded += 1), d({ expanded: this.expanded }))
 				}))
 			let b = document.createElement('div')
 			;((b.className = 'icon-wrapper clickable'), n.appendChild(b))
@@ -1725,8 +1663,7 @@ SOFTWARE.
 			;((h.className = 'icon minus'),
 				b.appendChild(h),
 				(b.onclick = () => {
-					;(this.expanded > this.maxExpandLevel &&
-						(this.expanded = this.maxExpandLevel),
+					;(this.expanded > this.maxExpandLevel && (this.expanded = this.maxExpandLevel),
 						this.expanded > 0 && (this.expanded -= 1),
 						d({ expanded: this.expanded }))
 				}))
@@ -1749,13 +1686,9 @@ SOFTWARE.
 			let N = document.createElement('div')
 			;((N.className = 'icon-wrapper clickable'), n.appendChild(N))
 			let c = document.createElement('span')
-			;((c.className = `icon info ${
-				this.showDetails ? 'active' : ''
-			}`),
+			;((c.className = `icon info ${this.showDetails ? 'active' : ''}`),
 				(N.onclick = () => {
-					;(c.classList.toggle('active'),
-						(this.showDetails = !this.showDetails),
-						d({ showDetails: this.showDetails }))
+					;(c.classList.toggle('active'), (this.showDetails = !this.showDetails), d({ showDetails: this.showDetails }))
 				}),
 				N.appendChild(c))
 			let s = document.createElement('span')
@@ -1769,17 +1702,10 @@ SOFTWARE.
 				}),
 				i.appendChild(t),
 				(this.refresh = () => {
-					;((this.expanded = 1),
-						(this.indent = 2),
-						t && (t.value = ''),
-						d({ indent: 2, expanded: 1 }),
-						r(''))
+					;((this.expanded = 1), (this.indent = 2), t && (t.value = ''), d({ indent: 2, expanded: 1 }), r(''))
 				}),
 				(this.updateShowDetails = (l) => {
-					;((this.showDetails = l),
-						this.showDetails
-							? c.classList.add('active')
-							: c.classList.remove('active'))
+					;((this.showDetails = l), this.showDetails ? c.classList.add('active') : c.classList.remove('active'))
 				}),
 				(this.element = v))
 		},
@@ -1814,11 +1740,7 @@ SOFTWARE.
 						},
 					})),
 					d.replaceChildren(r.element),
-					t.showToolbar &&
-						o &&
-						(d.prepend(o.element),
-						(o.maxExpandLevel = r.maxLevel),
-						o.refresh()))
+					t.showToolbar && o && (d.prepend(o.element), (o.maxExpandLevel = r.maxLevel), o.refresh()))
 			}
 			if (p !== void 0 && t.showToolbar !== p)
 				if (((t.showToolbar = p), p))
@@ -1826,20 +1748,12 @@ SOFTWARE.
 						(o = new M({
 							expanded: t.expanded,
 							indent: t.indent,
-							onChange: ({
-								expanded: f,
-								indent: w,
-								showDetails: u,
-							}) => {
+							onChange: ({ expanded: f, indent: w, showDetails: u }) => {
 								let y = {
 									expanded: f,
 									indent: w,
 								}
-								;(u !== void 0 &&
-									((y.showCopy = u),
-									(y.showSize = u),
-									(y.showDataTypes = u)),
-									this.update(y))
+								;(u !== void 0 && ((y.showCopy = u), (y.showSize = u), (y.showDataTypes = u)), this.update(y))
 							},
 							onSearch: (f) => {
 								r && r.update({ searchTerm: f })
@@ -1852,32 +1766,18 @@ SOFTWARE.
 					f && f.remove()
 				}
 			let h = {}
-			;(n !== void 0 &&
-				t.expanded !== n &&
-				((t.expanded = n), (h.expanded = n)),
-				i !== void 0 &&
-					t.indent !== i &&
-					((t.indent = i), (h.indent = i)),
+			;(n !== void 0 && t.expanded !== n && ((t.expanded = n), (h.expanded = n)),
+				i !== void 0 && t.indent !== i && ((t.indent = i), (h.indent = i)),
 				Object.keys(h).length > 0 && r && r.update(h),
-				b !== void 0 &&
-					t.showCopy !== b &&
-					((t.showCopy = b), d.classList.toggle('show-copy', b)),
+				b !== void 0 && t.showCopy !== b && ((t.showCopy = b), d.classList.toggle('show-copy', b)),
 				g !== void 0 &&
 					t.showSize !== g &&
-					((t.showSize = g),
-					d.classList.toggle('show-size', g),
-					o &&
-						o.updateShowDetails(
-							t.showSize || t.showDataTypes,
-						)),
+					((t.showSize = g), d.classList.toggle('show-size', g), o && o.updateShowDetails(t.showSize || t.showDataTypes)),
 				x !== void 0 &&
 					t.showDataTypes !== x &&
 					((t.showDataTypes = x),
 					d.classList.toggle('show-data-types', x),
-					o &&
-						o.updateShowDetails(
-							t.showSize || t.showDataTypes,
-						)),
+					o && o.updateShowDetails(t.showSize || t.showDataTypes)),
 				m !== void 0 &&
 					t.expandIconType !== m &&
 					(d.classList.add(`expand-icon-${m}`),
@@ -1904,9 +1804,7 @@ SOFTWARE.
 			#c
 			#n
 			constructor() {
-				;(super(),
-					(this.#e = { ...H }),
-					(this.#t = document.createElement('style')))
+				;(super(), (this.#e = { ...H }), (this.#t = document.createElement('style')))
 				let e = this.attachShadow({ mode: 'open' }),
 					d = document.createElement('style')
 				;((d.textContent = `${q}`),
@@ -1916,23 +1814,15 @@ SOFTWARE.
 					(this.#n = new F(e, this.#e)))
 			}
 			static get observedAttributes() {
-				return Object.keys(H).map((e) =>
-					e.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase(),
-				)
+				return Object.keys(H).map((e) => e.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase())
 			}
 			static allowedAttributes = ['id'].concat(a.observedAttributes)
 			#d = (...e) => {
-				console.warn(
-					`JsonViewer${this.id ? ` (${this.id})` : ''}:`,
-					...e,
-				)
+				console.warn(`JsonViewer${this.id ? ` (${this.id})` : ''}:`, ...e)
 			}
 			#a = (e, d, r, o) => {
 				try {
-					if (((d = r(d)), o && !o.includes(d)))
-						throw new Error(
-							`should be one of ${o.join(', ')}`,
-						)
+					if (((d = r(d)), o && !o.includes(d))) throw new Error(`should be one of ${o.join(', ')}`)
 					if (this.#e[e] === d) return
 					;((this.#e[e] = d), this.#o())
 				} catch (t) {
@@ -1949,11 +1839,7 @@ SOFTWARE.
 				this.#a('indent', e, O)
 			}
 			set expandIconType(e) {
-				this.#a('expandIconType', e, J, [
-					'arrow',
-					'square',
-					'circle',
-				])
+				this.#a('expandIconType', e, J, ['arrow', 'square', 'circle'])
 			}
 			set expanded(e) {
 				this.#a('expanded', e, B)
@@ -1966,11 +1852,7 @@ SOFTWARE.
 			}
 			set theme(e) {
 				try {
-					if (
-						((e = z(e)),
-						this.#e.theme === e && this.#t.textContent !== '')
-					)
-						return
+					if (((e = z(e)), this.#e.theme === e && this.#t.textContent !== '')) return
 					;((this.#t.textContent = R(e)), (this.#e.theme = e))
 				} catch (d) {
 					this.#d(`Attribute theme: ${d.message}`)
@@ -2004,15 +1886,9 @@ SOFTWARE.
 			}
 			attributeChangedCallback(e, d, r) {
 				if (a.allowedAttributes.indexOf(e) > -1) {
-					let o = e.replace(/-([a-z])/g, (t) =>
-						t[1].toUpperCase(),
-					)
+					let o = e.replace(/-([a-z])/g, (t) => t[1].toUpperCase())
 					this[o] = r
-				} else
-					(this.#d(
-						`Attribute ${e} is not supported and will be ignored!`,
-					),
-						this.removeAttribute(e))
+				} else (this.#d(`Attribute ${e} is not supported and will be ignored!`), this.removeAttribute(e))
 			}
 			#o = () => {
 				this.#n.update({
@@ -2027,6 +1903,5 @@ SOFTWARE.
 				})
 			}
 		}
-	customElements.get('andypf-json-viewer') ||
-		customElements.define('andypf-json-viewer', T)
+	customElements.get('andypf-json-viewer') || customElements.define('andypf-json-viewer', T)
 })()

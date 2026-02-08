@@ -32,10 +32,7 @@ export class SliderModal {
 		this.el.appendChild(this.textEditor)
 
 		const debouncedUpdateSlider = debounce(() => this.updateSlider(), 300)
-		const debouncedUpdateTextValue = debounce(
-			() => this.updateSlider(),
-			50,
-		)
+		const debouncedUpdateTextValue = debounce(() => this.updateSlider(), 50)
 
 		let updating = false
 		this.textEditor.addEventListener('input', () => {
@@ -59,9 +56,7 @@ export class SliderModal {
 		this.sliderEl.noUiSlider.on('update', () => {
 			if (updating) return
 			if (!float) {
-				this.textEditor.value = Math.round(
-					this.sliderEl.noUiSlider.get(),
-				)
+				this.textEditor.value = Math.round(this.sliderEl.noUiSlider.get())
 			} else {
 				this.textEditor.value = this.sliderEl.noUiSlider.get()
 			}
@@ -92,9 +87,7 @@ export class SliderModal {
 	}
 
 	get value() {
-		let value = this.float
-			? this.sliderEl.noUiSlider.get()
-			: Math.round(this.sliderEl.noUiSlider.get())
+		let value = this.float ? this.sliderEl.noUiSlider.get() : Math.round(this.sliderEl.noUiSlider.get())
 		return value
 	}
 

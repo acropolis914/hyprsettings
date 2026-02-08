@@ -6,14 +6,7 @@ import { createOverlay, destroyOverlay } from './darken_overlay.js'
  * Generic DMenu (reusable, app-agnostic)
  * ============================================================ */
 class DMenu {
-	constructor({
-		items = [],
-		onSelect = () => {},
-		onCancel = () => {},
-		promptText = '',
-		searchbar = true,
-		footer = '↑ ↓ Enter',
-	} = {}) {
+	constructor({ items = [], onSelect = () => {}, onCancel = () => {}, promptText = '', searchbar = true, footer = '↑ ↓ Enter' } = {}) {
 		this.items = items
 		this.filteredItems = items
 		this.onSelect = onSelect
@@ -91,9 +84,7 @@ class DMenu {
 
 	_filter(query) {
 		const q = query.toLowerCase()
-		this.filteredItems = this.items.filter((item) =>
-			(item.label ?? String(item)).toLowerCase().includes(q),
-		)
+		this.filteredItems = this.items.filter((item) => (item.label ?? String(item)).toLowerCase().includes(q))
 
 		this._renderItems(this.filteredItems)
 		this.focusFirst()
@@ -259,7 +250,6 @@ export function dmenuConfirm() {
 				menu.destroy()
 				resolve(item.value)
 				cleanup()
-
 			},
 			onCancel: () => {
 				menu.destroy()
@@ -282,19 +272,17 @@ export function dmenuConfirm() {
 	})
 }
 
-
-
 /* ============================================================
  * General DMenu wrapper: returns a promise with item.value
  * ============================================================ */
 export function dmenuWrapper({
-						    items = [],          // array of { label, value, description?, type? }
-						    promptText = '',     // optional placeholder / prompt
-						    searchbar = true,    // whether to show search input
-						    footerText = '↑ ↓ Enter Esc cancel',
-						    addCustom = false,   // optional "custom value..." item
-						    cancelValue = null,  // what to resolve if cancelled / Esc / outside click
-					    } = {}) {
+	items = [], // array of { label, value, description?, type? }
+	promptText = '', // optional placeholder / prompt
+	searchbar = true, // whether to show search input
+	footerText = '↑ ↓ Enter Esc cancel',
+	addCustom = false, // optional "custom value..." item
+	cancelValue = null, // what to resolve if cancelled / Esc / outside click
+} = {}) {
 	return new Promise((resolve) => {
 		GLOBAL.previousView = GLOBAL.currentView
 		GLOBAL.currentView = 'dmenu'

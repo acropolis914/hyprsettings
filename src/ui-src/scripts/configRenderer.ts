@@ -45,7 +45,7 @@ export class ConfigRenderer {
 		this.json = json
 		this.current_container = []
 		this.containerCache = new Map()
-		
+
 		if (renderTo) {
 			this.temporaryElement = document.createElement('div')
 			this.temporaryElement.style.display = 'none'
@@ -65,7 +65,7 @@ export class ConfigRenderer {
 		}
 		this.invokeParser()
 	}
-	
+
 	private setupEventDelegation() {
 		// Single event listener on parent containers instead of thousands on individual items
 		document.querySelectorAll('.config-set').forEach((container) => {
@@ -76,16 +76,20 @@ export class ConfigRenderer {
 					GLOBAL['mainFocus'][GLOBAL['activeTab']] = editorItem.dataset.uuid
 				}
 			})
-			container.addEventListener('focus', (e) => {
-				const editorItem = e.target as HTMLElement
-				if (editorItem && editorItem.classList.contains('editor-item') && editorItem.dataset.uuid) {
-					GLOBAL['mainFocus'][GLOBAL['activeTab']] = editorItem.dataset.uuid
-					GLOBAL.setKey('currentView', 'main')
-				}
-			}, true)
+			container.addEventListener(
+				'focus',
+				(e) => {
+					const editorItem = e.target as HTMLElement
+					if (editorItem && editorItem.classList.contains('editor-item') && editorItem.dataset.uuid) {
+						GLOBAL['mainFocus'][GLOBAL['activeTab']] = editorItem.dataset.uuid
+						GLOBAL.setKey('currentView', 'main')
+					}
+				},
+				true,
+			)
 		})
 	}
-	
+
 	private getContainer(id: string): HTMLElement | null {
 		if (!this.containerCache.has(id)) {
 			const container = document.querySelector(`.config-set#${id}`)

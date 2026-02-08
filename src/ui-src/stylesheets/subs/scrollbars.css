@@ -24,7 +24,6 @@
 	background: transparent !important;
 }
 
-
 .scrollable::-webkit-scrollbar {
 	display: none; /* WebKitGTK */
 }
