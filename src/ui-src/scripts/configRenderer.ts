@@ -11,7 +11,7 @@ import { waitFor } from './helpers'
 
 export default async function getAndRenderConfig() {
 	GLOBAL.onChange('data', (value) => {
-		if (value !== '') {
+		if (typeof value === 'object') {
 			new ConfigRenderer(GLOBAL.data)
 		}
 	})
