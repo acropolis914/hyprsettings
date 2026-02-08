@@ -35,7 +35,7 @@ class Api:
 		return config
 
 	@staticmethod
-	def get_hyprland_config_texts(json_string):
+	def get_hyprland_config_texts(json_string: str):
 		node = Node.from_json(json_string)
 		files = node.to_hyprland(indent_level=0, save=False)
 		return files
