@@ -38,11 +38,14 @@ export class ConfigRenderer {
 	temporaryElement: HTMLDivElement
 	renderTo: HTMLElement
 	renderAfter: boolean
+	private containerCache: Map<string, HTMLElement>
 	constructor(json: Record<string, any>, renderTo: HTMLElement = null, renderAfter: boolean = true) {
 		this.renderTo = renderTo
 		this.renderAfter = renderAfter
 		this.json = json
 		this.current_container = []
+		this.containerCache = new Map()
+		
 		if (renderTo) {
 			this.temporaryElement = document.createElement('div')
 			this.temporaryElement.style.display = 'none'
@@ -57,20 +60,45 @@ export class ConfigRenderer {
 		this.group_stack = []
 		if (!renderTo) {
 			clearConfigItems()
+			// Use event delegation instead of attaching listeners to every element
+			this.setupEventDelegation()
 		}
 		this.invokeParser()
-		document.querySelectorAll<HTMLElement>('.editor-item').forEach((element) => {
-			element.addEventListener('click', (e) => {
-				// let target = e.target
-				GLOBAL.setKey('currentView', 'main')
-				// @ts-ignore
-				GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
+	}
+	
+	private setupEventDelegation() {
+		// Single event listener on parent containers instead of thousands on individual items
+		document.querySelectorAll('.config-set').forEach((container) => {
+			container.addEventListener('click', (e) => {
+				const editorItem = (e.target as HTMLElement).closest('.editor-item') as HTMLElement
+				if (editorItem && editorItem.dataset.uuid) {
+					GLOBAL.setKey('currentView', 'main')
+					GLOBAL['mainFocus'][GLOBAL['activeTab']] = editorItem.dataset.uuid
+				}
 			})
+			container.addEventListener('focus', (e) => {
+				const editorItem = e.target as HTMLElement
+				if (editorItem && editorItem.classList.contains('editor-item') && editorItem.dataset.uuid) {
+					GLOBAL['mainFocus'][GLOBAL['activeTab']] = editorItem.dataset.uuid
+					GLOBAL.setKey('currentView', 'main')
+				}
+			}, true)
 		})
+	}
+	
+	private getContainer(id: string): HTMLElement | null {
+		if (!this.containerCache.has(id)) {
+			const container = document.querySelector(`.config-set#${id}`)
+			if (container) {
+				this.containerCache.set(id, container as HTMLElement)
+			}
+		}
+		return this.containerCache.get(id) || null
 	}
 	async invokeParser() {
 		await this.parse(this.json)
 		// console.log(this.comment_stack, this.comment_queue)
+		const elementsToFocus = []
 		while (this.renderTo && this.temporaryElement.firstChild) {
 			let el = this.temporaryElement.firstElementChild
 			if (this.renderAfter) {
@@ -79,8 +107,15 @@ export class ConfigRenderer {
 				this.renderTo.before(el)
 			}
 			el.tabIndex = 0
-			el.focus()
-			el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+			elementsToFocus.push(el)
+		}
+		// Batch focus and scroll operations to avoid layout thrashing
+		if (elementsToFocus.length > 0) {
+			requestAnimationFrame(() => {
+				const lastEl = elementsToFocus[elementsToFocus.length - 1]
+				lastEl.focus()
+				lastEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+			})
 		}
 	}
 
@@ -136,7 +171,7 @@ export class ConfigRenderer {
 			for (const [key, value] of tabids) {
 				if (comment.toLowerCase().includes(key)) {
 					// console.info(`Comment ${comment} includes [${key}]`)
-					let container = document.querySelector(`.config-set#${value}`)
+					let container = this.getContainer(value)
 					if (container) {
 						this.current_container.pop()
 						this.current_container.push(container)
@@ -186,9 +221,12 @@ export class ConfigRenderer {
 				if (!this.renderTo) {
 					for (const [key, value] of configGroups) {
 						if (json.name.trim().startsWith(key)) {
-							document.querySelector(`.config-set#${value}`).appendChild(group_el)
-							matched = true
-							break
+							const container = this.getContainer(value)
+							if (container) {
+								container.appendChild(group_el)
+								matched = true
+								break
+							}
 						}
 					}
 				}
@@ -225,7 +263,7 @@ export class ConfigRenderer {
 					}
 					let excluded = exclude ? exclude : []
 					if (json.name.trim().startsWith(key) && !excluded.includes(json.name.trim())) {
-						tabToAddTo = document.querySelector(`.config-set#${value}`)
+						tabToAddTo = this.getContainer(value)
 						break
 					}
 				}
@@ -238,14 +276,6 @@ export class ConfigRenderer {
 				if (this.comment_queue.length > 0) {
 					renderCommentQueue()
 				}
-				genericItem.el.addEventListener('focus', () => {
-					GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
-					GLOBAL.setKey('currentView', 'main')
-				})
-				genericItem.el.addEventListener('click', () => {
-					GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
-					GLOBAL.setKey('currentView', 'main')
-				})
 				genericItem.addToParent(tabToAddTo)
 			} catch (e) {
 				console.log(e, json)
