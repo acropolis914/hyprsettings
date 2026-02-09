@@ -69,6 +69,7 @@ export class ConfigRenderer {
 		console.time('parseJSON')
 		await this.parse(this.json)
 		console.timeEnd('parseJSON')
+		destroyOverlay()
 
 		// console.log(this.comment_stack, this.comment_queue)
 		while (this.renderTo && this.temporaryElement.firstChild) {
@@ -87,7 +88,7 @@ export class ConfigRenderer {
 			// let target = e.target
 			GLOBAL.setKey('currentView', 'main')
 			// @ts-ignore
-			GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
+			// GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
 		})
 	}
 
@@ -293,6 +294,5 @@ export class ConfigRenderer {
 				renderCommentStack()
 			}
 		}
-		setTimeout(() => destroyOverlay(), 1)
 	}
 }

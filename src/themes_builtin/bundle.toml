@@ -3231,32 +3231,32 @@ description = "Sourced from Base16 scheme"
 link = "https://github.com/tealeg/base16-heetch-scheme"
 
 # Surfaces
-surface-0 = "#feffff"
-surface-1 = "#392551"
-surface-2 = "#7b6d8b"
-surface-border = "#9c92a8"
+surface-0 = "#feffff"  # lightest
+surface-1 = "#bdb6c9"  # interpolated
+surface-2 = "#7a6a8f"  # interpolated
+surface-border = "#392551"
 
 # Text hierarchy
-text-0 = "#190134"
-text-1 = "#470546"
-text-2 = "#5a496e"
-text-3 = "#ddd6e5"
-text-disabled = "#392551"
+text-0 = "#190134"  # primary / highest contrast
+text-1 = "#470546"  # emphasis
+text-2 = "#5a496e"  # secondary
+text-3 = "#8f85a3"  # tertiary / disabled / hint
+text-disabled = "#ddd6e5"
 text-contrast = "#feffff"
 
 # Accents
-accent = "#47f9f5"
+accent = "#f80059"
 accent-hover = "#c33678"
 accent-active = "#bd0152"
-accent-success = "#f80059"
-accent-warning = "#bdb6c5"
+accent-success = "#47f9f5"
+accent-warning = "#bd0152"
 accent-danger = "#27d9d5"
 
 # Common colors
-red = "#27d9d5"
+red = "#f80059"
 orange = "#bdb6c5"
 yellow = "#5ba2b6"
-green = "#f80059"
+green = "#27d9d5"
 teal = "#c33678"
 blue = "#47f9f5"
 purple = "#bd0152"
@@ -3264,7 +3264,7 @@ pink = "#dedae2"
 
 # Utilities
 overlay = "#392551"
-shadow = "#feffff"
+shadow = "#392551"
 
 [[theme]]
 name = "Heetch Dark"
@@ -4004,19 +4004,20 @@ variant = "Light"
 description = "Sourced from Base16 scheme"
 link = "https://github.com/ntpeters/base16-materialtheme-scheme"
 
-# Surfaces
+# Surfaces (unchanged)
 surface-0 = "#fafafa"
 surface-1 = "#e7eaec"
 surface-2 = "#cceae7"
 surface-border = "#ccd7da"
 
-# Text hierarchy
-text-0 = "#ffffff"
-text-1 = "#80cbc4"
-text-2 = "#80cbc4"
-text-3 = "#8796b0"
-text-disabled = "#e7eaec"
-text-contrast = "#fafafa"
+# Text hierarchy (fixed)
+text-0 = "#263238"   # primary text (Material blue-gray 900)
+text-1 = "#37474f"   # secondary
+text-2 = "#546e7a"   # muted
+text-3 = "#78909c"   # hint / placeholder
+text-disabled = "#b0bec5"
+text-contrast = "#009688"  # teal accent (links, emphasis)
+
 
 # Accents
 accent = "#6182b8"
@@ -4687,46 +4688,47 @@ shadow = "#00002a"
 
 [[theme]]
 name = "PaperColor Dark"
-author = "Jon Leopard (http://github.com/jonleopard) based on PaperColor Theme (https://github.com/NLKNguyen/papercolor-theme)"
+author = "Jon Leopard"
 variant = "Dark"
-description = "Sourced from Base16 scheme"
+description = "Funky Base16 scheme with improved contrast"
 link = "https://github.com/jonleopard/base16-papercolor-scheme"
 
 # Surfaces
 surface-0 = "#1c1c1c"
-surface-1 = "#af005f"
+surface-1 = "#860044"
 surface-2 = "#5faf00"
-surface-border = "#d7af5f"
+surface-border = "#d7af87"   # slightly lighter for definition
 
 # Text hierarchy
-text-0 = "#d0d0d0"
-text-1 = "#d7875f"
-text-2 = "#808080"
-text-3 = "#5fafd7"
-text-disabled = "#af005f"
+text-0 = "#e0e0e0"           # brighter main text
+text-1 = "#ff87af"           # brighter secondary text
+text-2 = "#858585"           # muted text
+text-3 = "#87d7ff"           # cool accent text
+text-disabled = "#d78787"    # readable disabled
 text-contrast = "#1c1c1c"
 
 # Accents
 accent = "#ff5faf"
-accent-hover = "#ffaf00"
-accent-active = "#00afaf"
-accent-success = "#af87d7"
-accent-warning = "#5faf5f"
-accent-danger = "#585858"
+accent-hover = "#ffd700"     # more visible hover
+accent-active = "#00d7d7"    # brighter active
+accent-success = "#af87ff"   # readable success
+accent-warning = "#87ff87"   # brighter warning
+accent-danger = "#ff8787"    # readable danger
 
 # Common colors
-red = "#585858"
-orange = "#5faf5f"
-yellow = "#afd700"
-green = "#af87d7"
-teal = "#ffaf00"
-blue = "#ff5faf"
-purple = "#00afaf"
-pink = "#5f8787"
+red = "#ff5f5f"
+orange = "#ffaf5f"
+yellow = "#ffd700"
+green = "#87d787"
+teal = "#5fd7ff"
+blue = "#ff87ff"
+purple = "#00d7af"
+pink = "#ffaf87"
 
 # Utilities
-overlay = "#af005f"
+overlay = "#af87d7"          # slightly softer overlay
 shadow = "#1c1c1c"
+
 
 [[theme]]
 name = "PaperColor Light"

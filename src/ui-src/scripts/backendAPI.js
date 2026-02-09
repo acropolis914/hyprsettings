@@ -24,7 +24,12 @@ export const Backend = {
 		GLOBAL.setKey('data', stringifiedHyprlandConfig)
 		return hyprlandConfig
 	},
-
+	async debounceGetHyprlandConfig() {
+		debounce(this.getHyprlandConfig(), 2000)
+	},
+	async debounceGetHyprlandConfigTexts() {
+		debounce(this.getHyprlandConfigTexts(), 2000)
+	},
 	async getHyprlandConfigTexts(path = null) {
 		let json_string = JSON.stringify(GLOBAL['data']) || {}
 		// console.log(json_string)

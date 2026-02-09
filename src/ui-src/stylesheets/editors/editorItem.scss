@@ -11,11 +11,13 @@
 	border-radius: var(--border-rad);
 	background-color: var(--surface-0);
 	font-size: 1.6rem;
-	opacity: 0.8;
+	//opacity: 0.8;
+	//opacity: 0;
 	transition:
 		margin 0.2s ease,
 		border 100ms ease-in-out,
-		scale 0.2s ease;
+		scale 0.2s ease,
+		opacity 0.5s ease;
 
 	@media (max-width: 768px) and (pointer: coarse) {
 		padding: 1.3rem;

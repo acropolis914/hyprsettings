@@ -9,6 +9,7 @@ export class GLOBAL {
 	static currentView
 	static version
 	static githubVersion
+	previousView
 
 	static onChange(key, callback) {
 		if (!this._listeners.has(key)) {

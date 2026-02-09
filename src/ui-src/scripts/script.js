@@ -61,12 +61,11 @@ async function load_config() {
 }
 
 export async function reinitialize() {
+	console.log('Reinitializing...')
 	createLoadingOverlay('Reloading your hyprland config..')
-	await Backend.getHyprlandConfig()
 	setTimeout(async () => {
-		await Backend.getHyprlandConfigTexts()
-	}, 2000)
-	// }
+		await Backend.debounceGetHyprlandConfig()
+	}, 1)
 }
 
 export async function initialize() {

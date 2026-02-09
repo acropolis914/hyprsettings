@@ -333,7 +333,7 @@ footer {
 			font: v.$font-nerd;
 			content: '';
 			position: absolute;
-			left: 2px;
+			left: 1rem;
 			color: var(--text-contrast);
 			font-weight: bold;
 		}
@@ -412,7 +412,8 @@ footer {
 		padding-left: 1rem;
 		transition:
 			height 0.2s ease-in-out,
-			all 1s ease;
+			width 0.1s ease;
+		box-shadow: var(--surface-2) 0px 0px 5px;
 		//box-shadow: var(--surface);
 		@media (max-width: 768px) {
 			right: 0;
@@ -631,31 +632,6 @@ h1#config-set-title {
 			}
 		}
 	}
-}
-
-.dmenu-overlay,
-#dmenu-overlay {
-	position: absolute; /* covers the container */
-	inset: 0; /* top:0; right:0; bottom:0; left:0 */
-	background-color: rgba(0, 0, 0, 0.3); /* semi-transparent dim */
-	z-index: 8; /* below dmenu */
-	//backdrop-filter: blur(1px);
-	transition: all 1s ease;
-}
-
-#loading-overlay {
-	position: absolute; /* covers the container */
-	inset: 0; /* top:0; right:0; bottom:0; left:0 */
-	background-color: rgba(0, 0, 0, 0); /* semi-transparent dim */
-	z-index: 9; /* above dmenu */
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	color: var(--text-0);
-	font-size: 2rem;
-	//backdrop-filter: blur(1px);
-	transition: all 1s ease;
 }
 
 %about-section {

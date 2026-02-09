@@ -8,7 +8,36 @@
 	width: 100vw;
 	transform: translateX(-50%) translateY(-50%);
 	//transition: all 0.4s ease;
-	//transition: opacity 0.5s ease;
+	transition: opacity 0.5s ease;
+}
+
+.dmenu-overlay,
+#dmenu-overlay {
+	position: absolute; /* covers the container */
+	inset: 0; /* top:0; right:0; bottom:0; left:0 */
+	background-color: var(--surface-0); /* semi-transparent dim */
+	opacity: 0.3;
+	backdrop-filter: blur(1px);
+	z-index: 8; /* below dmenu */
+	//backdrop-filter: blur(1px);
+	transition: all 1s ease;
+}
+
+#loading-overlay {
+	position: absolute; /* covers the container */
+	inset: 0; /* top:0; right:0; bottom:0; left:0 */
+	background-color: var(--surface-0); /* semi-transparent dim */
+	backdrop-filter: blur(10px);
+	//opacity: 0;
+	z-index: 9; /* above dmenu */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-0);
+	font-size: 2rem;
+	//backdrop-filter: blur(1px);
+	transition: all 1s ease;
 }
 
 #onboarding {
@@ -121,26 +150,34 @@
 	box-shadow: var(--surface-2) 0px 0px 5px;
 	border-radius: var(--border-rad);
 	//height: 100vh;
+	footer {
+		margin-top: auto;
+		box-shadow: none;
+	}
 
 	#main-part {
 		//flex: 1;
 		padding: 1rem;
 		display: block;
-		flex-direction: row;
+		//flex-direction: row;
 		max-height: 100%;
+		height: calc(100% - 4rem);
 		width: 100%;
 	}
 
 	#config-preview {
-		height: clamp(10rem, 80%, 80%);
+		//height: clamp(10rem, 95%, 95%);
 		overflow: hidden;
 		min-height: 90%;
+		height: 100%;
 		width: 100%;
+		display: flex;
+		flex-direction: column;
 		padding: var(--spacing-unit);
 
 		#config-preview-tabs {
 			//flex: 1;
-			height: 10%;
+			//height: 5%;
 			display: flex;
 			flex-direction: row;
 			justify-content: left;
@@ -170,24 +207,32 @@
 			}
 		}
 		.code-toolbar {
-			display: block;
-			height: 40rem;
+			flex: 1 1 auto;
+			//display: block;
+			height: 90%;
 			//overflow: scroll;
-			border-radius: var(--border-rad);
+			//border-radius: var(--border-rad);
 			button {
 				min-height: 10%;
 			}
 		}
 		pre {
-			max-height: 90%;
+			//max-height: 100%;
+			height: 100%;
 			background-color: var(--surface-1);
+			border-radius: var(--border-rad);
+			overflow: scroll;
 			outline: none;
 			* {
 				background-color: transparent !important;
 			}
+			code {
+				max-height: 100%;
+				height: 100%;
+			}
 		}
 		#config-preview-code {
-			overflow: hidden;
+			overflow: scroll;
 			height: 10px;
 			box-sizing: border-box;
 		}

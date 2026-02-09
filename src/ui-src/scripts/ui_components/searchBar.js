@@ -35,11 +35,8 @@ export default async function initializeSearchBar() {
 				return
 			}
 			resultsPool.push(itemProps)
-			// if (item.dataset.type === 'GROUP') {
-			// 	console.log(itemProps)
-			// }
 		})
-		// console.log(resultsPool)
+
 		const fuse = new Fuse(resultsPool, {
 			keys: ['name', 'value', 'comment', 'position', 'type', 'cleanName'],
 			ignoreLocation: true,
@@ -171,18 +168,22 @@ export default async function initializeSearchBar() {
 		search()
 	})
 
-	searchBar.addEventListener('click', (e) => {
-		e.stopPropagation()
-		GLOBAL['previousView'] = GLOBAL['currentView']
-		GLOBAL['currentView'] = 'search'
-		searchResultEl.style.display = 'flex'
-		createOverlay()
-		search()
-	})
+	// searchBar.addEventListener('click', (e) => {
+	// 	e.stopPropagation()
+	// 	console.log('clicked search bar. previous:', GLOBAL.previousView)
+	// 	if (!GLOBAL.previousView === 'search') {
+	// 		GLOBAL['previousView'] = GLOBAL['currentView']
+	// 	}
+	// 	GLOBAL['currentView'] = 'search'
+	// 	searchResultEl.style.display = 'flex'
+	// 	createOverlay()
+	// 	search()
+	// })
 	searchBar.addEventListener('focus', (e) => {
 		e.stopPropagation()
+		console.log('focused search bar. previous:', GLOBAL.currentView)
 		GLOBAL['previousView'] = GLOBAL['currentView']
-		GLOBAL['currentView'] = 'search'
+		GLOBAL.setKey('currentView', 'search')
 		searchResultEl.style.display = 'flex'
 		createOverlay()
 		search()
@@ -201,9 +202,10 @@ export default async function initializeSearchBar() {
 		}
 	})
 	searchResultEl.addEventListener('focus', (e) => {
-		GLOBAL['currentView'] = 'search'
+		// GLOBAL.setKey('currentView', 'search')
 		searchResultEl.style.display = 'flex'
 	})
+
 	searchResultEl.addEventListener('keydown', (e) => {
 		if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
 			e.preventDefault()
@@ -229,25 +231,27 @@ export default async function initializeSearchBar() {
 
 	function cleanUp(resultClicked = false) {
 		console.log('Cleaning up result')
-		const stack = new Error().stack
-		console.log(stack)
+		// const stack = new Error().stack
+		// console.log(stack)
 		searchResultEl.style.display = 'none'
 		searchBar.value = ''
 		searchBar.blur()
 		destroyOverlay()
-
 		document.querySelectorAll('.search-result').forEach((el) => {
 			el.remove()
 		})
-		console.log('current:', GLOBAL.currentView, 'prev:', GLOBAL.previousView)
-		if (GLOBAL['currentView'] === 'search') {
-			if (!resultClicked) {
-				GLOBAL.setKey('currentView', GLOBAL.previousView)
-			} else {
-				GLOBAL.setKey('currentView', 'main')
-			}
+
+		if (!resultClicked) {
+			console.log('No result is clicked')
+			console.log('Previous view:', GLOBAL.previousView)
+			GLOBAL.setKey('currentView', GLOBAL.previousView)
+			GLOBAL.setKey('previousView', 'search')
+		} else {
+			console.log('A result is clicked')
+			GLOBAL.setKey('currentView', 'main')
 			GLOBAL.setKey('previousView', 'search')
 		}
+
 		console.log('current:', GLOBAL.currentView, 'prev:', GLOBAL.previousView)
 	}
 }
@@ -270,7 +274,7 @@ const searchAndScroll = (container, query) => {
 
 	if (bestMatch) {
 		bestMatch.scrollIntoView({ behavior: 'smooth', block: 'center' })
-		bestMatch.style.backgroundColor = 'yellow' // Quick highlight
+		// bestMatch.style.backgroundColor = 'yellow' // Quick highlight
 		setTimeout(() => (bestMatch.style.backgroundColor = ''), 2000)
 	}
 }

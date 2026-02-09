@@ -77,6 +77,9 @@ function applyThemeVars(theme) {
 export function changeTheme(theme) {
 	// 1. Skip animation logic if disabled
 	if (!GLOBAL['config']['ui_animations']) {
+		document.body.querySelectorAll('*').forEach((e) => {
+			e.classList.add('themeAnimation')
+		})
 		const settingsSelect = document.querySelector('#theme-selector-setting select')
 		if (settingsSelect) settingsSelect.value = theme.name
 
@@ -84,6 +87,12 @@ export function changeTheme(theme) {
 		saveWindowConfig()
 		updateJsonViewerTheme(theme.variant.toLowerCase())
 		updateColoris()
+
+		setTimeout(() => {
+			document.body.querySelectorAll('*').forEach((e) => {
+				e.classList.remove('themeAnimation')
+			})
+		}, 1000)
 		return // Exit early
 	}
 
@@ -106,21 +115,21 @@ export function changeTheme(theme) {
 
 	// Position & Setup
 	Object.assign(clone.style, {
-		position: 'fixed',
+		position: 'absolute',
 		top: `-${window.scrollY}px`,
 		left: '0',
 		width: '100vw',
 		height: '100vh',
 		zIndex: '99999',
-		pointerEvents: 'none',
-		overflow: 'hidden',
+		// pointerEvents: 'none',
+		// overflow: 'hidden',
 		transition: 'clip-path 1s ease-in-out',
 		clipPath: 'inset(0 0 0 0)',
 	})
 
 	clone.querySelectorAll('script, input, textarea, select').forEach((e) => {
 		if (e.tagName === 'SCRIPT') e.remove()
-		else e.setAttribute('readonly', 'true')
+		// else e.setAttribute('readonly', 'true')
 	})
 
 	clone.querySelectorAll('select').forEach((e) => {
