@@ -111,6 +111,8 @@ class Api:
 
 		hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 		template = Path(thisfile_path_parent / 'default_config.toml')
+		if not template:
+			log('Template not found in the directory')
 
 		if not hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file() or hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
 			temporary_font = None
