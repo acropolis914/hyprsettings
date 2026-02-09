@@ -153,6 +153,8 @@ class Api:
 				add_missing_keys()
 				if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 					self.window_config['persistence']['first_run'] = True
+					self.window_config['persistence']['onboarding_version'] = hs_globals.ONBOARDING_VERSION
+
 				version_migration()
 				if self.window_config['config']['daemon']:
 					state.daemon = True
