@@ -130,8 +130,9 @@ class Api:
 			self.window_config = toml.parse(default_config_text)
 			self.window_config['config']['font'] = temporary_font if temporary_font else 'Monospace'
 			add_missing_keys()
-			if self.window_config['file_info']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
+			if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 				self.window_config['persistence']['fist_run'] = True
+				self.window_config['persistence']['onboarding_version'] = hs_globals.ONBOARDING_VERSION
 			version_migration()
 			if self.window_config['config']['daemon']:
 				state.daemon = True
