@@ -110,10 +110,7 @@ class Api:
 			if persistence_defaults is None:
 				log('default_config.toml missing [persistence]; using minimal defaults')
 				persistence_defaults = {'onboarding_version': 0.8}
-			config_lines = self.window_config.get('config')
-			if config_lines is None:
-				config_lines = toml.table()
-				self.window_config['config'] = config_lines
+			config_lines = self.window_config.setdefault('config', toml.table())
 
 			for key, val in config_defaults.items():
 				if key not in config_lines:
