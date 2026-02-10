@@ -57,6 +57,14 @@ class Api:
 		return hs_globals.CURRENT_VERSION
 
 	def read_window_config(self):
+		hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
+		template = Path(thisfile_path_parent / 'default_config.toml')
+		if not template.is_file():
+			log('Template not found in the directory')
+			return {'configuration-error': 'Template not found'}
+		default_config_text = template.read_text(encoding='utf-8')
+		default_config = toml.parse(default_config_text)
+
 		def version_migration():
 			file_info = self.window_config['file_info']
 			persistence = self.window_config.setdefault('persistence', toml.table())
@@ -122,11 +130,6 @@ class Api:
 				if key not in persistence:
 					persistence[key] = val
 
-		hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
-		template = Path(thisfile_path_parent / 'default_config.toml')
-		default_config_text = template.read_text(encoding='utf-8')
-		default_config = toml.parse(default_config_text)
-
 		if not hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file() or hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
 			temporary_font = None
 			try:
@@ -136,12 +139,6 @@ class Api:
 			temporary_font = None
 
 			log(f'Config file not found in {hs_globals.HYPRSETTINGS_CONFIG_PATH}')
-			with open(
-				template,
-				'r',
-			) as default_config:
-				default_config_text = default_config.read()
-
 			self.window_config = toml.parse(default_config_text)
 			self.window_config['config']['font'] = temporary_font if temporary_font else 'Monospace'
 			add_missing_keys()
