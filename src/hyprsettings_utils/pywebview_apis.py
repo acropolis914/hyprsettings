@@ -104,8 +104,8 @@ class Api:
 		def add_missing_keys():
 			defaults = {'daemon': False}
 			persistence_keys = {'onboarding_version': 0.8}
-			config_defaults = default_config.get('config', {}) if default_config else {}
-			persistence_defaults = default_config.get('persistence', {}) if default_config else {}
+			config_defaults = default_config.get('config', {})
+			persistence_defaults = default_config.get('persistence', {})
 			config_lines = self.window_config.get('config')
 			if config_lines is None:
 				config_lines = toml.table()
@@ -119,10 +119,7 @@ class Api:
 				if key not in config_lines:
 					config_lines[key] = val
 
-			persistence = self.window_config.get('persistence')
-			if persistence is None:
-				persistence = toml.table()
-				self.window_config['persistence'] = persistence
+			persistence = self.window_config.setdefault('persistence', toml.table())
 			for key, val in persistence_defaults.items():
 				if key not in persistence:
 					persistence[key] = val
