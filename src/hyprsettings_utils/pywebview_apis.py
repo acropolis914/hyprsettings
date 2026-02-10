@@ -96,7 +96,16 @@ class Api:
 		def add_missing_keys():
 			defaults = {'daemon': False}
 			persistence_keys = {'onboarding_version': 0.8}
-			config_lines = self.window_config['config']
+			config_defaults = default_config.get('config', {}) if default_config else {}
+			persistence_defaults = default_config.get('persistence', {}) if default_config else {}
+			config_lines = self.window_config.get('config')
+			if config_lines is None:
+				config_lines = toml.table()
+				self.window_config['config'] = config_lines
+
+			for key, val in config_defaults.items():
+				if key not in config_lines:
+					config_lines[key] = val
 
 			for key, val in defaults.items():
 				if key not in config_lines:
@@ -104,15 +113,19 @@ class Api:
 
 			persistence = self.window_config.get('persistence')
 			if persistence is None:
-				self.window_config['persistence'] = toml.table()
+				persistence = toml.table()
+				self.window_config['persistence'] = persistence
+			for key, val in persistence_defaults.items():
+				if key not in persistence:
+					persistence[key] = val
 			for key, val in persistence_keys.items():
 				if key not in persistence:
 					persistence[key] = val
 
 		hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 		template = Path(thisfile_path_parent / 'default_config.toml')
-		if not template:
-			log('Template not found in the directory')
+		default_config_text = template.read_text(encoding='utf-8')
+		default_config = toml.parse(default_config_text)
 
 		if not hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file() or hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
 			temporary_font = None
