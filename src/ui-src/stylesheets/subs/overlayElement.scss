@@ -1,57 +1,165 @@
+@use '../_variables' as v;
 %overlay {
-	left: 50%;
+	display: flex;
 	position: fixed;
 	top: 50%;
-	z-index: 22;
-	display: flex;
-	height: 100vh;
-	width: 100vw;
+	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
+	z-index: 22;
 	//transition: all 0.4s ease;
 	transition: opacity 0.5s ease;
+	width: 100vw;
+	height: 100vh;
 }
 
 .dmenu-overlay,
 #dmenu-overlay {
 	position: absolute; /* covers the container */
-	inset: 0; /* top:0; right:0; bottom:0; left:0 */
-	background-color: var(--surface-0); /* semi-transparent dim */
 	opacity: 0.3;
-	backdrop-filter: blur(1px);
 	z-index: 8; /* below dmenu */
+	backdrop-filter: blur(1px);
 	//backdrop-filter: blur(1px);
 	transition: all 1s ease;
+	inset: 0; /* top:0; right:0; bottom:0; left:0 */
+	background-color: var(--surface-0); /* semi-transparent dim */
+}
+
+#dmenu {
+	display: flex;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	flex-direction: column;
+	transform: translate(-50%, -50%);
+	z-index: 9;
+	backdrop-filter: blur(10px);
+	transition: height 0.2s ease-in-out;
+	box-shadow: var(--shadow);
+
+	border: 1px solid var(--accent);
+	border-radius: var(--border-rad);
+	background-color: var(--surface-0);
+	padding: var(--spacing-unit);
+	width: 30rem;
+	min-width: 30rem;
+
+	// prevent it from exceeding viewport
+	max-height: calc(100vh - 4rem);
+
+	.dmenu-footer {
+		align-items: flex-end;
+		font-size: 1rem;
+	}
+
+	input {
+		margin-bottom: var(--spacing-unit);
+		outline: none;
+		border: none;
+		background: none;
+		color: var(--accent);
+	}
+
+	ul {
+		display: flex;
+		flex-direction: column;
+
+		// subtle "more below" hint
+
+		margin: 0;
+		padding-left: calc(var(--spacing-unit) * 1.5);
+		min-height: 0;
+
+		// shrink to content until cap
+		max-height: 20rem;
+		overflow-x: hidden;
+
+		overflow-y: auto;
+		list-style: none;
+		&:not(:has(:last-child:in-view)) {
+			mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
+		}
+
+		li {
+			display: flex;
+			//padding-top: calc(var(--spacing-unit) * 0.25);
+			position: relative;
+			flex-direction: column;
+			background-color: transparent;
+			padding-right: var(--spacing-unit);
+			padding-bottom: calc(var(--spacing-unit) * 0.25);
+			padding-left: var(--spacing-unit);
+			max-width: 100%;
+
+			&.mousehover:not(.selected) {
+				.dmenu-item-description {
+					color: var(--accent);
+				}
+			}
+
+			&:focus {
+				outline: none;
+				background-color: var(--accent);
+				color: var(--text-contrast);
+				&::after {
+					position: absolute;
+					top: 50%;
+					left: -1.5rem;
+					transform: translateY(-50%);
+					content: '';
+					color: var(--green);
+					font: v.$font-nerd;
+					font-weight: bold;
+				}
+			}
+
+			&.selected {
+			}
+			.dmenu-item-label {
+				font-weight: bold;
+			}
+
+			.dmenu-item-description {
+				max-width: 100%;
+				color: var(--text-contrast);
+				font-size: 1.2rem;
+				word-wrap: break-word;
+				opacity: 0.9;
+				line-height: 1rem;
+				overflow-wrap: break-word;
+			}
+		}
+	}
 }
 
 #loading-overlay {
+	display: flex;
 	position: absolute; /* covers the container */
-	inset: 0; /* top:0; right:0; bottom:0; left:0 */
-	background-color: var(--surface-0); /* semi-transparent dim */
-	backdrop-filter: blur(10px);
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	//opacity: 0;
 	z-index: 9; /* above dmenu */
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	color: var(--text-0);
-	font-size: 2rem;
+	backdrop-filter: blur(10px);
 	//backdrop-filter: blur(1px);
 	transition: all 1s ease;
+	inset: 0; /* top:0; right:0; bottom:0; left:0 */
+	background-color: var(--surface-0); /* semi-transparent dim */
+	color: var(--text-0);
+	font-size: 2rem;
 }
 
 #onboarding {
 	@extend %overlay;
-	background-color: var(--surface-1);
 	flex-direction: row;
+	background-color: var(--surface-1);
 
 	.new::before {
 		position: absolute;
 		left: -7ch;
-		content: 'New!';
 		background-color: var(--yellow);
-		color: var(--text-contrast);
 		padding: 0.1rem;
+		content: 'New!';
+		color: var(--text-contrast);
 	}
 
 	#message {
@@ -76,11 +184,11 @@
 
 		* {
 			margin-bottom: 0;
+			font-size: 1.5rem;
+			line-height: 1.85rem;
 			text-shadow:
 				0 5px 20px 10px rgba(0, 0, 0, 1),
 				0 1px 5px rgba(0, 0, 0, 1);
-			line-height: 1.85rem;
-			font-size: 1.5rem;
 		}
 
 		h1,
@@ -94,8 +202,8 @@
 			font-size: 2rem !important;
 
 			> * {
-				font-size: 2rem !important;
 				color: var(--accent-danger);
+				font-size: 2rem !important;
 			}
 		}
 
@@ -106,10 +214,10 @@
 		}
 
 		button {
-			font-weight: bold;
-			cursor: pointer;
-			transition: transform 0.1s ease;
 			transform: scale(1);
+			transition: transform 0.1s ease;
+			cursor: pointer;
+			font-weight: bold;
 
 			&:active {
 				transform: scale(0.9) !important;
@@ -137,18 +245,18 @@
 
 .testing-screen {
 	@extend %overlay;
-	height: 90vh;
-	width: 90vw;
-	background-color: var(--surface-0);
 	//background-color: var(--surface-0);
 	//display: flex;
 	display: block;
 	justify-items: center;
-	//backdrop-filter: blur(10px) brightness(0.4);
-	color: var(--text-1);
 	//border-bottom: 1px solid var(--text-0);
 	box-shadow: var(--surface-2) 0px 0px 5px;
 	border-radius: var(--border-rad);
+	background-color: var(--surface-0);
+	width: 90vw;
+	height: 90vh;
+	//backdrop-filter: blur(10px) brightness(0.4);
+	color: var(--text-1);
 	//height: 100vh;
 	footer {
 		margin-top: auto;
@@ -156,30 +264,31 @@
 	}
 
 	#main-part {
+		display: block;
 		//flex: 1;
 		padding: 1rem;
-		display: block;
+		width: 100%;
+		height: calc(100% - 4rem);
 		//flex-direction: row;
 		max-height: 100%;
-		height: calc(100% - 4rem);
-		width: 100%;
 	}
 
 	#config-preview {
-		//height: clamp(10rem, 95%, 95%);
-		overflow: hidden;
-		min-height: 90%;
-		height: 100%;
-		width: 100%;
 		display: flex;
 		flex-direction: column;
 		padding: var(--spacing-unit);
+		width: 100%;
+		height: 100%;
+		min-height: 90%;
+		//height: clamp(10rem, 95%, 95%);
+		overflow: hidden;
 
 		#config-preview-tabs {
 			//flex: 1;
 			//height: 5%;
 			display: flex;
 			flex-direction: row;
+			flex-wrap: wrap;
 			justify-content: left;
 			align-items: center;
 			gap: 1rem;
@@ -188,22 +297,21 @@
 			//flex-shrink: 1;
 			z-index: 10;
 			cursor: pointer;
-			flex-wrap: wrap;
 		}
 
 		.config-preview-tab-item {
 			flex: 0 0 auto;
-			box-sizing: border-box;
-			padding-left: 0.5rem;
-			padding-right: 0.5rem;
 			z-index: 10;
-			border-radius: var(--border-rad);
+			box-sizing: border-box;
 			border: 1px solid var(--surface-border);
+			border-radius: var(--border-rad);
+			padding-right: 0.5rem;
+			padding-left: 0.5rem;
 
 			&.active {
-				color: var(--text-contrast);
-				background-color: var(--accent);
 				border: 1px solid var(--accent);
+				background-color: var(--accent);
+				color: var(--text-contrast);
 			}
 		}
 		.code-toolbar {
@@ -217,24 +325,24 @@
 			}
 		}
 		pre {
+			outline: none;
+			border-radius: var(--border-rad);
+			background-color: var(--surface-1);
 			//max-height: 100%;
 			height: 100%;
-			background-color: var(--surface-1);
-			border-radius: var(--border-rad);
 			overflow: scroll;
-			outline: none;
 			* {
 				background-color: transparent !important;
 			}
 			code {
-				max-height: 100%;
 				height: 100%;
+				max-height: 100%;
 			}
 		}
 		#config-preview-code {
-			overflow: scroll;
-			height: 10px;
 			box-sizing: border-box;
+			height: 10px;
+			overflow: scroll;
 		}
 
 		iframe {

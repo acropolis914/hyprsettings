@@ -12,16 +12,14 @@ export const config_descriptions = [
 		path: 'general',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: '"5"',
-		description:
-			'gaps between windowssupports css style gaps (top, right, bottom, left -> 5 10 15 20)',
+		description: 'gaps between windowssupports css style gaps (top, right, bottom, left -> 5 10 15 20)',
 	},
 	{
 		name: 'gaps_out',
 		path: 'general',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: '"20"',
-		description:
-			'gaps between windows and monitor edgessupports css style gaps (top, right, bottom, left -> 5 10 15 20)',
+		description: 'gaps between windows and monitor edgessupports css style gaps (top, right, bottom, left -> 5 10 15 20)',
 	},
 	{
 		name: 'float_gaps',
@@ -57,16 +55,14 @@ export const config_descriptions = [
 		path: 'general',
 		type: 'CONFIG_OPTION_GRADIENT',
 		data: '"0xffffaaff"',
-		description:
-			'inactive border color for window that cannot be added to a group (see denywindowfromgroup dispatcher)',
+		description: 'inactive border color for window that cannot be added to a group (see denywindowfromgroup dispatcher)',
 	},
 	{
 		name: 'col.nogroup_border_active',
 		path: 'general',
 		type: 'CONFIG_OPTION_GRADIENT',
 		data: '"0xffff00ff"',
-		description:
-			'active border color for window that cannot be added to a group',
+		description: 'active border color for window that cannot be added to a group',
 	},
 	{
 		name: 'layout',
@@ -88,32 +84,28 @@ export const config_descriptions = [
 		path: 'general',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'enables resizing windows by clicking and dragging on borders and gaps',
+		description: 'enables resizing windows by clicking and dragging on borders and gaps',
 	},
 	{
 		name: 'extend_border_grab_area',
 		path: 'general',
 		type: 'CONFIG_OPTION_INT',
 		data: '15, 0, 100',
-		description:
-			'extends the area around the border where you can click and drag on, only used when general:resize_on_border is on.',
+		description: 'extends the area around the border where you can click and drag on, only used when general:resize_on_border is on.',
 	},
 	{
 		name: 'hover_icon_on_border',
 		path: 'general',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'show a cursor icon when hovering over borders, only used when general:resize_on_border is on.',
+		description: 'show a cursor icon when hovering over borders, only used when general:resize_on_border is on.',
 	},
 	{
 		name: 'allow_tearing',
 		path: 'general',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'master switch for allowing tearing to occur. See the Tearing page.',
+		description: 'master switch for allowing tearing to occur. See the Tearing page.',
 	},
 	{
 		name: 'resize_corner',
@@ -142,16 +134,14 @@ export const config_descriptions = [
 		path: 'general:snap',
 		type: 'CONFIG_OPTION_INT',
 		data: '10, 0, 100',
-		description:
-			'minimum gap in pixels between window and monitor edges before snapping',
+		description: 'minimum gap in pixels between window and monitor edges before snapping',
 	},
 	{
 		name: 'border_overlap',
 		path: 'general:snap',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			"if true, windows snap such that only one border's worth of space is between them",
+		description: "if true, windows snap such that only one border's worth of space is between them",
 	},
 	{
 		name: 'respect_gaps',
@@ -165,8 +155,7 @@ export const config_descriptions = [
 		path: 'general',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'if true, parent windows of modals will not be interactive.',
+		description: 'if true, parent windows of modals will not be interactive.',
 	},
 	{
 		name: 'locale',
@@ -229,24 +218,21 @@ export const config_descriptions = [
 		path: 'decoration:shadow',
 		type: 'CONFIG_OPTION_INT',
 		data: '3, 1, 4',
-		description:
-			'in what power to render the falloff (more power, the faster the falloff) [1 - 4]',
+		description: 'in what power to render the falloff (more power, the faster the falloff) [1 - 4]',
 	},
 	{
 		name: 'sharp',
 		path: 'decoration:shadow',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether the shadow should be sharp or not. Akin to an infinitely high render power.',
+		description: 'whether the shadow should be sharp or not. Akin to an infinitely high render power.',
 	},
 	{
 		name: 'ignore_window',
 		path: 'decoration:shadow',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'if true, the shadow will not be rendered behind the window itself, only around it.',
+		description: 'if true, the shadow will not be rendered behind the window itself, only around it.',
 	},
 	{
 		name: 'color',
@@ -260,8 +246,7 @@ export const config_descriptions = [
 		path: 'decoration:shadow',
 		type: 'CONFIG_OPTION_COLOR',
 		data: null,
-		description:
-			'inactive shadow color. (if not set, will fall back to col.shadow)',
+		description: 'inactive shadow color. (if not set, will fall back to col.shadow)',
 	},
 	{
 		name: 'offset',
@@ -303,16 +288,14 @@ export const config_descriptions = [
 		path: 'decoration',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '0.2, 0, 1',
-		description:
-			'how much to dim the rest of the screen by when a special workspace is open. [0.0 - 1.0]',
+		description: 'how much to dim the rest of the screen by when a special workspace is open. [0.0 - 1.0]',
 	},
 	{
 		name: 'dim_around',
 		path: 'decoration',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '0.4, 0, 1',
-		description:
-			'how much the dimaround window rule should dim by. [0.0 - 1.0]',
+		description: 'how much the dimaround window rule should dim by. [0.0 - 1.0]',
 	},
 	{
 		name: 'screen_shader',
@@ -327,8 +310,7 @@ export const config_descriptions = [
 		path: 'decoration',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether the border should be treated as a part of the window.',
+		description: 'whether the border should be treated as a part of the window.',
 	},
 	{
 		name: 'enabled',
@@ -407,16 +389,14 @@ export const config_descriptions = [
 		path: 'decoration:blur',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '0, 0, 1',
-		description:
-			'How strong the effect of vibrancy is on dark areas . [0.0 - 1.0]',
+		description: 'How strong the effect of vibrancy is on dark areas . [0.0 - 1.0]',
 	},
 	{
 		name: 'special',
 		path: 'decoration:blur',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether to blur behind the special workspace (note: expensive)',
+		description: 'whether to blur behind the special workspace (note: expensive)',
 	},
 	{
 		name: 'popups',
@@ -430,8 +410,7 @@ export const config_descriptions = [
 		path: 'decoration:blur',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '0.2, 0, 1',
-		description:
-			'works like ignorealpha in layer rules. If pixel opacity is below set value, will not blur. [0.0 - 1.0]',
+		description: 'works like ignorealpha in layer rules. If pixel opacity is below set value, will not blur. [0.0 - 1.0]',
 	},
 	{
 		name: 'input_methods',
@@ -445,8 +424,7 @@ export const config_descriptions = [
 		path: 'decoration:blur',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '0.2, 0, 1',
-		description:
-			'works like ignorealpha in layer rules. If pixel opacity is below set value, will not blur. [0.0 - 1.0]',
+		description: 'works like ignorealpha in layer rules. If pixel opacity is below set value, will not blur. [0.0 - 1.0]',
 	},
 	{
 		name: 'enabled',
@@ -460,8 +438,7 @@ export const config_descriptions = [
 		path: 'animations',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'changes the direction of slide animations between the first and last workspaces',
+		description: 'changes the direction of slide animations between the first and last workspaces',
 	},
 	{
 		name: 'kb_model',
@@ -525,24 +502,21 @@ export const config_descriptions = [
 		path: 'input',
 		type: 'CONFIG_OPTION_INT',
 		data: '25, 0, 200',
-		description:
-			'The repeat rate for held-down keys, in repeats per second.',
+		description: 'The repeat rate for held-down keys, in repeats per second.',
 	},
 	{
 		name: 'repeat_delay',
 		path: 'input',
 		type: 'CONFIG_OPTION_INT',
 		data: '600, 0, 2000',
-		description:
-			'Delay before a held-down key is repeated, in milliseconds.',
+		description: 'Delay before a held-down key is repeated, in milliseconds.',
 	},
 	{
 		name: 'sensitivity',
 		path: 'input',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '0, -1, 1',
-		description:
-			'Sets the mouse input sensitivity. Value is clamped to the range -1.0 to 1.0.',
+		description: 'Sets the mouse input sensitivity. Value is clamped to the range -1.0 to 1.0.',
 	},
 	{
 		name: 'accel_profile',
@@ -620,16 +594,14 @@ export const config_descriptions = [
 		path: 'input',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'Inverts scrolling direction. When enabled, scrolling moves content directly, rather than manipulating a scrollbar.',
+		description: 'Inverts scrolling direction. When enabled, scrolling moves content directly, rather than manipulating a scrollbar.',
 	},
 	{
 		name: 'follow_mouse',
 		path: 'input',
 		type: 'CONFIG_OPTION_INT',
 		data: '1, 0, 3',
-		description:
-			'Specify if and how cursor movement should affect window focus. See the note below. [0/1/2/3]',
+		description: 'Specify if and how cursor movement should affect window focus. See the note below. [0/1/2/3]',
 	},
 	{
 		name: 'follow_mouse_threshold',
@@ -699,8 +671,7 @@ export const config_descriptions = [
 		path: 'input:touchpad',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'Inverts scrolling direction. When enabled, scrolling moves content directly, rather than manipulating a scrollbar.',
+		description: 'Inverts scrolling direction. When enabled, scrolling moves content directly, rather than manipulating a scrollbar.',
 	},
 	{
 		name: 'scroll_factor',
@@ -738,8 +709,7 @@ export const config_descriptions = [
 		path: 'input:touchpad',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'Tapping on the touchpad with 1, 2, or 3 fingers will send LMB, RMB, and MMB respectively.',
+		description: 'Tapping on the touchpad with 1, 2, or 3 fingers will send LMB, RMB, and MMB respectively.',
 	},
 	{
 		name: 'drag_lock',
@@ -775,16 +745,14 @@ export const config_descriptions = [
 		path: 'input:touchpad',
 		type: 'CONFIG_OPTION_INT',
 		data: '0, 0, 2',
-		description:
-			'Three Finger Drag 0 -> disabled, 1 -> 3 finger, 2 -> 4 finger',
+		description: 'Three Finger Drag 0 -> disabled, 1 -> 3 finger, 2 -> 4 finger',
 	},
 	{
 		name: 'transform',
 		path: 'input:touchdevice',
 		type: 'CONFIG_OPTION_INT',
 		data: '0, 0, 6',
-		description:
-			'Transform the input from touchdevices. The possible transformations are the same as those of the monitors',
+		description: 'Transform the input from touchdevices. The possible transformations are the same as those of the monitors',
 	},
 	{
 		name: 'output',
@@ -806,8 +774,7 @@ export const config_descriptions = [
 		path: 'input:virtualkeyboard',
 		type: 'CONFIG_OPTION_INT',
 		data: '2, 0, 2',
-		description:
-			'Unify key down states and modifier states with other keyboards. 0 -> no, 1 -> yes, 2 -> yes unless IME client',
+		description: 'Unify key down states and modifier states with other keyboards. 0 -> no, 1 -> yes, 2 -> yes unless IME client',
 	},
 	{
 		name: 'release_pressed_on_close',
@@ -821,16 +788,14 @@ export const config_descriptions = [
 		path: 'input:tablet',
 		type: 'CONFIG_OPTION_INT',
 		data: '0, 0, 6',
-		description:
-			'transform the input from tablets. The possible transformations are the same as those of the monitors',
+		description: 'transform the input from tablets. The possible transformations are the same as those of the monitors',
 	},
 	{
 		name: 'output',
 		path: 'input:tablet',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: '""',
-		description:
-			'the monitor to bind tablets. Can be current or a monitor name. Leave empty to map across all monitors.',
+		description: 'the monitor to bind tablets. Can be current or a monitor name. Leave empty to map across all monitors.',
 	},
 	{
 		name: 'region_position',
@@ -845,8 +810,7 @@ export const config_descriptions = [
 		path: 'input:tablet',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether to treat the region_position as an absolute position in monitor layout. Only applies when output is empty.',
+		description: 'whether to treat the region_position as an absolute position in monitor layout. Only applies when output is empty.',
 	},
 	{
 		name: 'region_size',
@@ -896,8 +860,7 @@ export const config_descriptions = [
 		path: 'gestures',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'enable workspace swiping from the edge of a touchscreen',
+		description: 'enable workspace swiping from the edge of a touchscreen',
 	},
 	{
 		name: 'workspace_swipe_invert',
@@ -934,64 +897,56 @@ export const config_descriptions = [
 		path: 'gestures',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether a swipe right on the last workspace should create a new one.',
+		description: 'whether a swipe right on the last workspace should create a new one.',
 	},
 	{
 		name: 'workspace_swipe_direction_lock',
 		path: 'gestures',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'if enabled, switching direction will be locked when you swipe past the direction_lock_threshold (touchpad only).',
+		description: 'if enabled, switching direction will be locked when you swipe past the direction_lock_threshold (touchpad only).',
 	},
 	{
 		name: 'workspace_swipe_direction_lock_threshold',
 		path: 'gestures',
 		type: 'CONFIG_OPTION_INT',
 		data: '10, 0, 200',
-		description:
-			'in px, the distance to swipe before direction lock activates (touchpad only).',
+		description: 'in px, the distance to swipe before direction lock activates (touchpad only).',
 	},
 	{
 		name: 'workspace_swipe_forever',
 		path: 'gestures',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'if enabled, swiping will not clamp at the neighboring workspaces but continue to the further ones.',
+		description: 'if enabled, swiping will not clamp at the neighboring workspaces but continue to the further ones.',
 	},
 	{
 		name: 'workspace_swipe_use_r',
 		path: 'gestures',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'if enabled, swiping will use the r prefix instead of the m prefix for finding workspaces.',
+		description: 'if enabled, swiping will use the r prefix instead of the m prefix for finding workspaces.',
 	},
 	{
 		name: 'close_max_timeout',
 		path: 'gestures',
 		type: 'CONFIG_OPTION_INT',
 		data: '1000, 10, 2000',
-		description:
-			'Timeout for closing windows with the close gesture, in ms.',
+		description: 'Timeout for closing windows with the close gesture, in ms.',
 	},
 	{
 		name: 'insert_after_current',
 		path: 'group',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether new windows in a group spawn after current or at group tail',
+		description: 'whether new windows in a group spawn after current or at group tail',
 	},
 	{
 		name: 'focus_removed_window',
 		path: 'group',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether Hyprland should focus on the window that has just been moved out of the group',
+		description: 'whether Hyprland should focus on the window that has just been moved out of the group',
 	},
 	{
 		name: 'merge_groups_on_drag',
@@ -1005,8 +960,7 @@ export const config_descriptions = [
 		path: 'group',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether one group will be merged with another when dragged into its groupbar',
+		description: 'whether one group will be merged with another when dragged into its groupbar',
 	},
 	{
 		name: 'col.border_active',
@@ -1027,16 +981,14 @@ export const config_descriptions = [
 		path: 'group',
 		type: 'CONFIG_OPTION_GRADIENT',
 		data: '"0x66ff5500"',
-		description:
-			'inactive border color for window that cannot be added to a group (see denywindowfromgroup dispatcher)',
+		description: 'inactive border color for window that cannot be added to a group (see denywindowfromgroup dispatcher)',
 	},
 	{
 		name: 'col.border_locked_active',
 		path: 'group',
 		type: 'CONFIG_OPTION_GRADIENT',
 		data: '"0x66775500"',
-		description:
-			'active border color for window that cannot be added to a group',
+		description: 'active border color for window that cannot be added to a group',
 	},
 	{
 		name: 'auto_group',
@@ -1058,16 +1010,14 @@ export const config_descriptions = [
 		path: 'group',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether dragging a floating window into a tiled window groupbar will merge them',
+		description: 'whether dragging a floating window into a tiled window groupbar will merge them',
 	},
 	{
 		name: 'group_on_movetoworkspace',
 		path: 'group',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			"whether using movetoworkspace[silent] will merge the window into the workspace's solitary unlocked group",
+		description: "whether using movetoworkspace[silent] will merge the window into the workspace's solitary unlocked group",
 	},
 	{
 		name: 'enabled',
@@ -1081,24 +1031,21 @@ export const config_descriptions = [
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: 'STRVAL_EMPTY',
-		description:
-			'font used to display groupbar titles, use misc:font_family if not specified',
+		description: 'font used to display groupbar titles, use misc:font_family if not specified',
 	},
 	{
 		name: 'font_weight_active',
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: '"normal"',
-		description:
-			'weight of the font used to display active groupbar titles',
+		description: 'weight of the font used to display active groupbar titles',
 	},
 	{
 		name: 'font_weight_inactive',
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: '"normal"',
-		description:
-			'weight of the font used to display inactive groupbar titles',
+		description: 'weight of the font used to display inactive groupbar titles',
 	},
 	{
 		name: 'font_size',
@@ -1126,8 +1073,7 @@ export const config_descriptions = [
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_INT',
 		data: '0, 0, 64',
-		description:
-			'height of the gap between the groupbar indicator and title',
+		description: 'height of the gap between the groupbar indicator and title',
 	},
 	{
 		name: 'indicator_height',
@@ -1162,8 +1108,7 @@ export const config_descriptions = [
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether scrolling in the groupbar changes group active window',
+		description: 'whether scrolling in the groupbar changes group active window',
 	},
 	{
 		name: 'rounding',
@@ -1191,8 +1136,7 @@ export const config_descriptions = [
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '2, 2, 10',
-		description:
-			'rounding power of groupbar gradient corners (2 is a circle)',
+		description: 'rounding power of groupbar gradient corners (2 is a circle)',
 	},
 	{
 		name: 'round_only_edges',
@@ -1220,24 +1164,21 @@ export const config_descriptions = [
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_COLOR',
 		data: null,
-		description:
-			"color for inactive windows' titles in the groupbar (if unset, defaults to text_color)",
+		description: "color for inactive windows' titles in the groupbar (if unset, defaults to text_color)",
 	},
 	{
 		name: 'text_color_locked_active',
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_COLOR',
 		data: null,
-		description:
-			"color for the active window's title in a locked group (if unset, defaults to text_color)",
+		description: "color for the active window's title in a locked group (if unset, defaults to text_color)",
 	},
 	{
 		name: 'text_color_locked_inactive',
 		path: 'group:groupbar',
 		type: 'CONFIG_OPTION_COLOR',
 		data: null,
-		description:
-			"color for inactive windows' titles in locked groups (if unset, defaults to text_color_inactive)",
+		description: "color for inactive windows' titles in locked groups (if unset, defaults to text_color_inactive)",
 	},
 	{
 		name: 'col.active',
@@ -1314,24 +1255,21 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'disables the random Hyprland logo / anime girl background. :(',
+		description: 'disables the random Hyprland logo / anime girl background. :(',
 	},
 	{
 		name: 'disable_splash_rendering',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'disables the Hyprland splash rendering. (requires a monitor reload to take effect)',
+		description: 'disables the Hyprland splash rendering. (requires a monitor reload to take effect)',
 	},
 	{
 		name: 'col.splash',
 		path: 'misc',
 		type: 'CONFIG_OPTION_COLOR',
 		data: '0xffffffff',
-		description:
-			'Changes the color of the splash text (requires a monitor reload to take effect).',
+		description: 'Changes the color of the splash text (requires a monitor reload to take effect).',
 	},
 	{
 		name: 'font_family',
@@ -1362,8 +1300,7 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'controls the VFR status of Hyprland. Heavily recommended to leave enabled to conserve resources.',
+		description: 'controls the VFR status of Hyprland. Heavily recommended to leave enabled to conserve resources.',
 	},
 	{
 		name: 'vrr',
@@ -1378,16 +1315,14 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'If DPMS is set to off, wake up the monitors if the mouse move',
+		description: 'If DPMS is set to off, wake up the monitors if the mouse move',
 	},
 	{
 		name: 'key_press_enables_dpms',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'If DPMS is set to off, wake up the monitors if a key is pressed.',
+		description: 'If DPMS is set to off, wake up the monitors if a key is pressed.',
 	},
 	{
 		name: 'name_vk_after_proc',
@@ -1410,8 +1345,7 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'If true, will make keyboard-interactive layers keep their focus on mouse move (e.g. wofi, bemenu)',
+		description: 'If true, will make keyboard-interactive layers keep their focus on mouse move (e.g. wofi, bemenu)',
 	},
 	{
 		name: 'animate_manual_resizes',
@@ -1425,8 +1359,7 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'If true, will animate windows being dragged by mouse, note that this can cause weird behavior on some curves',
+		description: 'If true, will animate windows being dragged by mouse, note that this can cause weird behavior on some curves',
 	},
 	{
 		name: 'disable_autoreload',
@@ -1464,24 +1397,21 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'Whether Hyprland should focus an app that requests to be focused (an activate request)',
+		description: 'Whether Hyprland should focus an app that requests to be focused (an activate request)',
 	},
 	{
 		name: 'mouse_move_focuses_monitor',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'Whether mouse moving into a different monitor should focus it',
+		description: 'Whether mouse moving into a different monitor should focus it',
 	},
 	{
 		name: 'allow_session_lock_restore',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'if true, will allow you to restart a lockscreen app in case it crashes (red screen of death)',
+		description: 'if true, will allow you to restart a lockscreen app in case it crashes (red screen of death)',
 	},
 	{
 		name: 'session_lock_xray',
@@ -1495,16 +1425,14 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_COLOR',
 		data: '0x111111',
-		description:
-			'change the background color. (requires enabled disable_hyprland_logo)',
+		description: 'change the background color. (requires enabled disable_hyprland_logo)',
 	},
 	{
 		name: 'close_special_on_empty',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'close the special workspace if the last window is removed',
+		description: 'close the special workspace if the last window is removed',
 	},
 	{
 		name: 'on_focus_under_fullscreen',
@@ -1519,8 +1447,7 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'if true, closing a fullscreen window makes the next focused window fullscreen',
+		description: 'if true, closing a fullscreen window makes the next focused window fullscreen',
 	},
 	{
 		name: 'initial_workspace_tracking',
@@ -1535,24 +1462,21 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether to enable middle-click-paste (aka primary selection)',
+		description: 'whether to enable middle-click-paste (aka primary selection)',
 	},
 	{
 		name: 'render_unfocused_fps',
 		path: 'misc',
 		type: 'CONFIG_OPTION_INT',
 		data: '15, 1, 120',
-		description:
-			"the maximum limit for renderunfocused windows' fps in the background",
+		description: "the maximum limit for renderunfocused windows' fps in the background",
 	},
 	{
 		name: 'disable_xdg_env_checks',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'disable the warning if XDG environment is externally managed',
+		description: 'disable the warning if XDG environment is externally managed',
 	},
 	{
 		name: 'disable_hyprland_guiutils_check',
@@ -1566,24 +1490,21 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether to disable the warning about not using start-hyprland.',
+		description: 'whether to disable the warning about not using start-hyprland.',
 	},
 	{
 		name: 'lockdead_screen_delay',
 		path: 'misc',
 		type: 'CONFIG_OPTION_INT',
 		data: '1000, 0, 5000',
-		description:
-			'the delay in ms after the lockdead screen appears if the lock screen did not appear after a lock event occurred.',
+		description: 'the delay in ms after the lockdead screen appears if the lock screen did not appear after a lock event occurred.',
 	},
 	{
 		name: 'enable_anr_dialog',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether to enable the ANR (app not responding) dialog when your apps hang',
+		description: 'whether to enable the ANR (app not responding) dialog when your apps hang',
 	},
 	{
 		name: 'anr_missed_pings',
@@ -1597,40 +1518,35 @@ export const config_descriptions = [
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			"forces 8 bit screencopy (fixes apps that don't understand 10bit)",
+		description: "forces 8 bit screencopy (fixes apps that don't understand 10bit)",
 	},
 	{
 		name: 'disable_scale_notification',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'disables notification popup when a monitor fails to set a suitable scale and falls back to suggested',
+		description: 'disables notification popup when a monitor fails to set a suitable scale and falls back to suggested',
 	},
 	{
 		name: 'size_limits_tiled',
 		path: 'misc',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether to apply minsize and maxsize rules to tiled windows',
+		description: 'whether to apply minsize and maxsize rules to tiled windows',
 	},
 	{
 		name: 'pass_mouse_when_bound',
 		path: 'binds',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'if disabled, will not pass the mouse events to apps / dragging windows around if a keybind has been triggered.',
+		description: 'if disabled, will not pass the mouse events to apps / dragging windows around if a keybind has been triggered.',
 	},
 	{
 		name: 'scroll_event_delay',
 		path: 'binds',
 		type: 'CONFIG_OPTION_INT',
 		data: '300, 0, 2000',
-		description:
-			'in ms, how many ms to wait after a scroll event to allow passing another one for the binds.',
+		description: 'in ms, how many ms to wait after a scroll event to allow passing another one for the binds.',
 	},
 	{
 		name: 'workspace_back_and_forth',
@@ -1677,8 +1593,7 @@ export const config_descriptions = [
 		path: 'binds',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'If enabled, dispatchers like moveintogroup, moveoutofgroup and movewindoworgroup will ignore lock per group.',
+		description: 'If enabled, dispatchers like moveintogroup, moveoutofgroup and movewindoworgroup will ignore lock per group.',
 	},
 	{
 		name: 'movefocus_cycles_fullscreen',
@@ -1701,8 +1616,7 @@ export const config_descriptions = [
 		path: 'binds',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'If enabled, apps that request keybinds to be disabled (e.g. VMs) will not be able to do so.',
+		description: 'If enabled, apps that request keybinds to be disabled (e.g. VMs) will not be able to do so.',
 	},
 	{
 		name: 'window_direction_monitor_fallback',
@@ -1717,16 +1631,14 @@ export const config_descriptions = [
 		path: 'binds',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'Allows fullscreen to pinned windows, and restore their pinned status afterwards',
+		description: 'Allows fullscreen to pinned windows, and restore their pinned status afterwards',
 	},
 	{
 		name: 'drag_threshold',
 		path: 'binds',
 		type: 'CONFIG_OPTION_INT',
 		data: '0, 0, INT_MAX',
-		description:
-			'Movement threshold in pixels for window dragging and c/g bind flags. 0 to disable and grab on mousedown.',
+		description: 'Movement threshold in pixels for window dragging and c/g bind flags. 0 to disable and grab on mousedown.',
 	},
 	{
 		name: 'enabled',
@@ -1740,16 +1652,14 @@ export const config_descriptions = [
 		path: 'xwayland',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'uses the nearest neighbor filtering for xwayland apps, making them pixelated rather than blurry',
+		description: 'uses the nearest neighbor filtering for xwayland apps, making them pixelated rather than blurry',
 	},
 	{
 		name: 'force_zero_scaling',
 		path: 'xwayland',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'forces a scale of 1 on xwayland windows on scaled displays.',
+		description: 'forces a scale of 1 on xwayland windows on scaled displays.',
 	},
 	{
 		name: 'create_abstract_socket',
@@ -1779,8 +1689,7 @@ export const config_descriptions = [
 		path: 'render',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'Whether to expand textures that have not yet resized to be larger, or to just stretch them instead.',
+		description: 'Whether to expand textures that have not yet resized to be larger, or to just stretch them instead.',
 	},
 	{
 		name: 'xp_mode',
@@ -1794,32 +1703,28 @@ export const config_descriptions = [
 		path: 'render',
 		type: 'CONFIG_OPTION_INT',
 		data: '2, 0, 2',
-		description:
-			"Whether to enable a fade animation for CTM changes (hyprsunset). 2 means 'auto' (Yes on everything but Nvidia).",
+		description: "Whether to enable a fade animation for CTM changes (hyprsunset). 2 means 'auto' (Yes on everything but Nvidia).",
 	},
 	{
 		name: 'cm_fs_passthrough',
 		path: 'render',
 		type: 'CONFIG_OPTION_INT',
 		data: '2, 0, 2',
-		description:
-			'Passthrough color settings for fullscreen apps when possible',
+		description: 'Passthrough color settings for fullscreen apps when possible',
 	},
 	{
 		name: 'cm_enabled',
 		path: 'render',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'Enable Color Management pipelines (requires restart to fully take effect)',
+		description: 'Enable Color Management pipelines (requires restart to fully take effect)',
 	},
 	{
 		name: 'send_content_type',
 		path: 'render',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'Report content type to allow monitor profile autoswitch (may result in a black screen during the switch)',
+		description: 'Report content type to allow monitor profile autoswitch (may result in a black screen during the switch)',
 	},
 	{
 		name: 'cm_auto_hdr',
@@ -1865,8 +1770,7 @@ export const config_descriptions = [
 		path: 'cursor',
 		type: 'CONFIG_OPTION_CHOICE',
 		data: '0, "Disabled,Enabled,Auto"',
-		description:
-			'disables hardware cursors. Auto = disable when multi-gpu on nvidia',
+		description: 'disables hardware cursors. Auto = disable when multi-gpu on nvidia',
 	},
 	{
 		name: 'no_break_fs_vrr',
@@ -1889,24 +1793,21 @@ export const config_descriptions = [
 		path: 'cursor',
 		type: 'CONFIG_OPTION_INT',
 		data: '1, 0, 20',
-		description:
-			'the padding, in logical px, between screen edges and the cursor',
+		description: 'the padding, in logical px, between screen edges and the cursor',
 	},
 	{
 		name: 'inactive_timeout',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_INT',
 		data: '0, 0, 20',
-		description:
-			'in seconds, after how many seconds of cursor’s inactivity to hide it. Set to 0 for never.',
+		description: 'in seconds, after how many seconds of cursor’s inactivity to hide it. Set to 0 for never.',
 	},
 	{
 		name: 'no_warps',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'if true, will not warp the cursor in many cases (focusing, keybinds, etc)',
+		description: 'if true, will not warp the cursor in many cases (focusing, keybinds, etc)',
 	},
 	{
 		name: 'persistent_warps',
@@ -1937,40 +1838,35 @@ export const config_descriptions = [
 		path: 'cursor',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: '""',
-		description:
-			'the name of a default monitor for the cursor to be set to on startup (see hyprctl monitors for names)',
+		description: 'the name of a default monitor for the cursor to be set to on startup (see hyprctl monitors for names)',
 	},
 	{
 		name: 'zoom_factor',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '1, 1, 10',
-		description:
-			'the factor to zoom by around the cursor. Like a magnifying glass. Minimum 1.0 (meaning no zoom)',
+		description: 'the factor to zoom by around the cursor. Like a magnifying glass. Minimum 1.0 (meaning no zoom)',
 	},
 	{
 		name: 'zoom_rigid',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether the zoom should follow the cursor rigidly (cursor is always centered if it can be) or loosely',
+		description: 'whether the zoom should follow the cursor rigidly (cursor is always centered if it can be) or loosely',
 	},
 	{
 		name: 'zoom_disable_aa',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'If enabled, when zooming, no antialiasing will be used (zoom will be pixelated)',
+		description: 'If enabled, when zooming, no antialiasing will be used (zoom will be pixelated)',
 	},
 	{
 		name: 'zoom_detached_camera',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'Detaches the camera from the mouse when zoomed in, only ever moving to keep the mouse in view',
+		description: 'Detaches the camera from the mouse when zoomed in, only ever moving to keep the mouse in view',
 	},
 	{
 		name: 'enable_hyprcursor',
@@ -1984,32 +1880,28 @@ export const config_descriptions = [
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'Hides the cursor when you press any key until the mouse is moved.',
+		description: 'Hides the cursor when you press any key until the mouse is moved.',
 	},
 	{
 		name: 'hide_on_touch',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'Hides the cursor when the last input was a touch input until a mouse input is done.',
+		description: 'Hides the cursor when the last input was a touch input until a mouse input is done.',
 	},
 	{
 		name: 'hide_on_tablet',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'Hides the cursor when the last input was a tablet input until a mouse input is done.',
+		description: 'Hides the cursor when the last input was a tablet input until a mouse input is done.',
 	},
 	{
 		name: 'use_cpu_buffer',
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'Makes HW cursors use a CPU buffer. Required on Nvidia to have HW cursors. Experimental',
+		description: 'Makes HW cursors use a CPU buffer. Required on Nvidia to have HW cursors. Experimental',
 	},
 	{
 		name: 'sync_gsettings_theme',
@@ -2024,40 +1916,35 @@ export const config_descriptions = [
 		path: 'cursor',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'warp the cursor back to where it was after using a non-mouse input to move it, and then returning back to mouse.',
+		description: 'warp the cursor back to where it was after using a non-mouse input to move it, and then returning back to mouse.',
 	},
 	{
 		name: 'no_update_news',
 		path: 'ecosystem',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'disable the popup that shows up when you update hyprland to a new version.',
+		description: 'disable the popup that shows up when you update hyprland to a new version.',
 	},
 	{
 		name: 'no_donation_nag',
 		path: 'ecosystem',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'disable the popup that shows up twice a year encouraging to donate.',
+		description: 'disable the popup that shows up twice a year encouraging to donate.',
 	},
 	{
 		name: 'enforce_permissions',
 		path: 'ecosystem',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether to enable permission control (see https://wiki.hypr.land/Configuring/Permissions/).',
+		description: 'whether to enable permission control (see https://wiki.hypr.land/Configuring/Permissions/).',
 	},
 	{
 		name: 'overlay',
 		path: 'debug',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'print the debug performance overlay. Disable VFR for accurate results.',
+		description: 'print the debug performance overlay. Disable VFR for accurate results.',
 	},
 	{
 		name: 'damage_blink',
@@ -2085,8 +1972,7 @@ export const config_descriptions = [
 		path: 'debug',
 		type: 'CONFIG_OPTION_INT',
 		data: '2, 0, 2',
-		description:
-			'redraw only the needed bits of the display. Do not change. (default: full - 2) monitor - 1, none - 0',
+		description: 'redraw only the needed bits of the display. Do not change. (default: full - 2) monitor - 1, none - 0',
 	},
 	{
 		name: 'enable_stdout_logs',
@@ -2114,24 +2000,21 @@ export const config_descriptions = [
 		path: 'debug',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'disables verification of the scale factors. Will result in pixel alignment and rounding errors.',
+		description: 'disables verification of the scale factors. Will result in pixel alignment and rounding errors.',
 	},
 	{
 		name: 'error_limit',
 		path: 'debug',
 		type: 'CONFIG_OPTION_INT',
 		data: '5, 0, 20',
-		description:
-			'limits the number of displayed config file parsing errors.',
+		description: 'limits the number of displayed config file parsing errors.',
 	},
 	{
 		name: 'error_position',
 		path: 'debug',
 		type: 'CONFIG_OPTION_INT',
 		data: '0, 0, 1',
-		description:
-			'sets the position of the error bar. top - 0, bottom - 1',
+		description: 'sets the position of the error bar. top - 0, bottom - 1',
 	},
 	{
 		name: 'colored_stdout_logs',
@@ -2159,16 +2042,14 @@ export const config_descriptions = [
 		path: 'debug',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'claims support for all cm proto features (requires restart)',
+		description: 'claims support for all cm proto features (requires restart)',
 	},
 	{
 		name: 'pseudotile',
 		path: 'dwindle',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'enable pseudotiling. Pseudotiled windows retain their floating size when tiled.',
+		description: 'enable pseudotiling. Pseudotiled windows retain their floating size when tiled.',
 	},
 	{
 		name: 'force_split',
@@ -2183,8 +2064,7 @@ export const config_descriptions = [
 		path: 'dwindle',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'if enabled, the split (side/top) will not change regardless of what happens to the container.',
+		description: 'if enabled, the split (side/top) will not change regardless of what happens to the container.',
 	},
 	{
 		name: 'smart_split',
@@ -2215,8 +2095,7 @@ export const config_descriptions = [
 		path: 'dwindle',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '1, 0, 1',
-		description:
-			'specifies the scale factor of windows on the special workspace [0 - 1]',
+		description: 'specifies the scale factor of windows on the special workspace [0 - 1]',
 	},
 	{
 		name: 'split_width_multiplier',
@@ -2230,16 +2109,14 @@ export const config_descriptions = [
 		path: 'dwindle',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'true',
-		description:
-			'whether to prefer the active window or the mouse position for splits',
+		description: 'whether to prefer the active window or the mouse position for splits',
 	},
 	{
 		name: 'default_split_ratio',
 		path: 'dwindle',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '1, 0.1, 1.9',
-		description:
-			'the default split ratio on window open. 1 means even 50/50 split. [0.1 - 1.9]',
+		description: 'the default split ratio on window open. 1 means even 50/50 split. [0.1 - 1.9]',
 	},
 	{
 		name: 'split_bias',
@@ -2254,8 +2131,7 @@ export const config_descriptions = [
 		path: 'dwindle',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'if enabled, bindm movewindow will drop the window more precisely depending on where your mouse is.',
+		description: 'if enabled, bindm movewindow will drop the window more precisely depending on where your mouse is.',
 	},
 	{
 		name: 'single_window_aspect_ratio',
@@ -2270,24 +2146,21 @@ export const config_descriptions = [
 		path: 'dwindle',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '0.1f, 0.f, 1.f',
-		description:
-			"Minimum distance for single_window_aspect_ratio to take effect, in fractions of the monitor's size.",
+		description: "Minimum distance for single_window_aspect_ratio to take effect, in fractions of the monitor's size.",
 	},
 	{
 		name: 'allow_small_split',
 		path: 'master',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'enable adding additional master windows in a horizontal split style',
+		description: 'enable adding additional master windows in a horizontal split style',
 	},
 	{
 		name: 'special_scale_factor',
 		path: 'master',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '1, 0, 1',
-		description:
-			'the scale of the special workspace windows. [0.0 - 1.0]',
+		description: 'the scale of the special workspace windows. [0.0 - 1.0]',
 	},
 	{
 		name: 'mfact',
@@ -2310,8 +2183,7 @@ export const config_descriptions = [
 		path: 'master',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether a newly open window should be on the top of the stack',
+		description: 'whether a newly open window should be on the top of the stack',
 	},
 	{
 		name: 'new_on_active',
@@ -2326,8 +2198,7 @@ export const config_descriptions = [
 		path: 'master',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: '"left"',
-		description:
-			'default placement of the master area, can be left, right, top, bottom or center',
+		description: 'default placement of the master area, can be left, right, top, bottom or center',
 	},
 	{
 		name: 'slave_count_for_center_master',
@@ -2342,8 +2213,7 @@ export const config_descriptions = [
 		path: 'master',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'centers the master window on monitor ignoring reserved areas',
+		description: 'centers the master window on monitor ignoring reserved areas',
 	},
 	{
 		name: 'smart_resizing',
@@ -2366,16 +2236,14 @@ export const config_descriptions = [
 		path: 'master',
 		type: 'CONFIG_OPTION_BOOL',
 		data: 'false',
-		description:
-			'whether to keep the master window in its configured position when there are no slave windows',
+		description: 'whether to keep the master window in its configured position when there are no slave windows',
 	},
 	{
 		name: 'prefer_hdr',
 		path: 'quirks',
 		type: 'CONFIG_OPTION_INT',
 		data: '0, 0, 2',
-		description:
-			'Prefer HDR mode. 0 - off, 1 - always, 2 - gamescope only',
+		description: 'Prefer HDR mode. 0 - off, 1 - always, 2 - gamescope only',
 	},
 
 	// -------------------------
@@ -2470,16 +2338,14 @@ export const config_descriptions = [
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_INT',
 		data: '0,0,3',
-		description:
-			'Windows with matching fullscreenstate sent to the client (0:none,1:maximize,2:fullscreen,3:both).',
+		description: 'Windows with matching fullscreenstate sent to the client (0:none,1:maximize,2:fullscreen,3:both).',
 	},
 	{
 		name: 'match:fullscreen_state_internal',
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_INT',
 		data: '0,0,3',
-		description:
-			'Windows with matching internal fullscreenstate (0:none,1:maximize,2:fullscreen,3:both).',
+		description: 'Windows with matching internal fullscreenstate (0:none,1:maximize,2:fullscreen,3:both).',
 	},
 	{
 		name: 'match:workspace',
@@ -2493,8 +2359,7 @@ export const config_descriptions = [
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_INT',
 		data: '0,0,3',
-		description:
-			'Windows with specified content type (none=0, photo=1, video=2, game=3).',
+		description: 'Windows with specified content type (none=0, photo=1, video=2, game=3).',
 	},
 	{
 		name: 'match:xdg_tag',
@@ -2631,8 +2496,7 @@ export const config_descriptions = [
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '1.0,0.0,1.0',
-		description:
-			'Overall window opacity (can include active/inactive/fullscreen).',
+		description: 'Overall window opacity (can include active/inactive/fullscreen).',
 	},
 	{
 		name: 'rounding',
@@ -2865,18 +2729,12 @@ export const config_descriptions = [
 ]
 
 export function findConfigDescription(path, name) {
-	let config_json = config_descriptions.find(
-		(item) => item.path === path && item.name === name,
-	)
+	let config_json = config_descriptions.find((item) => item.path === path && item.name === name)
 	return config_json
 }
 
 export function findAdjacentConfigKeys(path, exclude = []) {
-	let configKeys = config_descriptions
-		.filter((item) => item.path === path)
-		.filter((item) => !exclude.includes(item.name))
+	let configKeys = config_descriptions.filter((item) => item.path === path).filter((item) => !exclude.includes(item.name))
 	// console.table(configKeys)
 	return configKeys
 }
-
-const windowruleSchema = []

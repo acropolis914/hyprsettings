@@ -95,7 +95,8 @@ export class EditorItem_Generic {
 		this.keyEditor = document.createElement('textarea')
 		this.keyEditor.rows = 1
 		this.keyEditor.id = 'generic-key'
-		// this.config_position = position.split(':').slice(2).join(':')
+		this.keyEditor.classList.add('hidden')
+		this.keyEditor.setAttribute('placeholder', 'Input key here...')
 		this.config_position = position
 			.split(':')
 			.slice(1) // Remove 'root'
@@ -104,6 +105,7 @@ export class EditorItem_Generic {
 			.join(':')
 		// console.log(this.config_position)
 		this.info = findConfigDescription(this.config_position, name)
+
 		if (this.info) {
 			this.el.dataset.infoType = this.info['type']
 			switch (this.info['type']) {
@@ -168,7 +170,7 @@ export class EditorItem_Generic {
 			this.valueEditor.rows = 1
 			// this.valueEditor.rows = 1
 			if (this.info) {
-				this.valueEditor.dataset.defaultData = this.info['data']
+				this.valueEditor.dataset.defaultData = this.info['data'].trim('"')
 			}
 			this.valueEditor.value = value
 		}
@@ -192,7 +194,6 @@ export class EditorItem_Generic {
 				let defaultValue = this.info['data']
 				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
 			}
-			// this.valueEditor.title = title
 		}
 		this.el.setAttribute('data-tippy-content', this.tippyTitle)
 		// console.log(this.tippyTitle.replace(/\n/g, '<br>'))
@@ -211,12 +212,18 @@ export class EditorItem_Generic {
 			},
 		})
 		this.valueEditor.id = 'generic-value'
-		if (name.startsWith('$') || name === 'generic') {
-			this.genericEditor_el.appendChild(this.keyEditor)
+		this.genericEditor_el.appendChild(this.keyEditor)
+		this.genericEditor_el.appendChild(this.valueEditor)
+		if (name.startsWith('$') || name === 'generic' || name.startsWith('Custom') || !name) {
+			this.keyEditor.classList.remove('hidden')
+			this.keyEditor.value = ''
+		} else {
+			this.keyEditor.value = name
 		}
 
-		this.genericEditor_el.appendChild(this.valueEditor)
-		this.keyEditor.value = name
+		if (value === 'undefined' || value === '' || !value) {
+			value = ''
+		}
 		this.commentArea = this.el.querySelector('.comment')
 		this.commentArea.value = this.el.dataset.comment
 		this.createContextMenu()
@@ -265,7 +272,6 @@ export class EditorItem_Generic {
 			action: () => this.valueReset(),
 		}
 		if (this.info) {
-			//cause if there is an info, there is also a default value
 			contextMenuItems.splice(4, 0, contextMenuItem_reset)
 		}
 		this.contextMenu = new ContextMenu(contextMenuItems)
@@ -274,13 +280,13 @@ export class EditorItem_Generic {
 
 	update() {
 		let name = this.keyEditor.value
-		let formatted = name.replace(/_/g, ' ')
+		let formatted = name.replace(/_/g, ' ') || 'Please input a key'
 		if (formatted.trim().toLowerCase() === 'animation') {
 			formatted = `<a onclick='window.gotoWiki("wiki:animations")' title="Go to Wiki">${formatted}</a>`
 			// formatted.title =
 		}
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
-		let value = this.valueEditor.value
+		let value = this.valueEditor.value || 'Please input a value'
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
 		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
 		if (!this.initial_load) {
@@ -377,6 +383,13 @@ export class EditorItem_Generic {
 			this.el.dataset.comment = this.commentArea.value
 			this.update()
 		})
+
+		this.el.addEventListener('mouseover', () => {
+			this.contextMenu.show()
+		})
+		this.el.addEventListener('mouseleave', () => {
+			this.contextMenu.hide()
+		})
 	}
 
 	addToParent(parent) {
@@ -386,12 +399,6 @@ export class EditorItem_Generic {
 	async add(type, below = true) {
 		switch (type) {
 			case 'KEY': {
-				console.group('ADD KEY')
-
-				console.debug('Current element:', this.el)
-				console.debug('dataset:', { ...this.el.dataset })
-				console.debug('parent classes:', this.el.parentElement?.classList?.value)
-
 				const existingSiblingKeys = Array.from(this.el.parentNode.children)
 					.filter((el) => el.classList.contains('editor-item-generic'))
 					.map((el) => el.dataset.name)
@@ -416,12 +423,6 @@ export class EditorItem_Generic {
 				let value
 
 				if (randomKey) {
-					// console.debug('randomKey fields:', {
-					// 	name: randomKey.name,
-					// 	type: randomKey.type,
-					// 	data: randomKey.data
-					// });
-
 					name = randomKey.name
 
 					try {
@@ -460,7 +461,7 @@ export class EditorItem_Generic {
 				})
 
 				if ((!name || name.toLowerCase().startsWith('custom')) && (isAllowedDupe || !isInConfigGroup)) {
-					console.warn('Using dataset name due to dupe rules')
+					console.log('hello', thisName)
 					name = thisName
 				} else if (!name) {
 					console.warn('Falling back to GENERIC')
@@ -493,8 +494,6 @@ export class EditorItem_Generic {
 
 				newGenericElement.save()
 				newGenericElement.el.click()
-
-				console.groupEnd()
 				break
 			}
 			case 'COMMENT':

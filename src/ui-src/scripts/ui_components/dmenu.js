@@ -127,6 +127,16 @@ class DMenu {
 			listDescription.classList.remove('hidden')
 		})
 
+		li.addEventListener('mouseover', () => {
+			li.classList.add('mousehover')
+			listDescription.classList.remove('hidden')
+		})
+		li.addEventListener('pointerleave', () => {
+			if (li.classList.contains('selected')) {return}
+			li.classList.remove('mousehover')
+			listDescription.classList.add('hidden')
+		})
+
 		li.addEventListener('blur', () => {
 			li.classList.remove('selected')
 			listDescription.classList.add('hidden')
