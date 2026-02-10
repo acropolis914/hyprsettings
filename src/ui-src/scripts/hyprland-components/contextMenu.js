@@ -33,7 +33,8 @@ export class ContextMenu {
 			iconEl.textContent = icon
 			const labelEl = document.createElement('div')
 			labelEl.classList.add('ctx-button-label')
-			if (!GLOBAL['config']['show_contextmenu_label'] || true) {
+			if (GLOBAL.config.show_contextmenu_label === false) {
+				console.log(GLOBAL['config']['show_contextmenu_label'])
 				labelEl.classList.add('hidden')
 			}
 			labelEl.textContent = label
@@ -90,8 +91,30 @@ export class ContextMenu {
 
 	show() {
 		hideAllContextMenus()
-		this.el.style.opacity = 1
+		this.el.style.visibility = 'hidden'
 		this.el.classList.remove('hidden')
+		setTimeout(() => {
+			let currentSet = document.querySelector(`.config-set#${GLOBAL['activeTab']}`)
+			let currentSetRect = currentSet.getBoundingClientRect()
+			let [setX1, setX2, setY1, setY2] = [
+				currentSetRect.left, // x1 (left)
+				currentSetRect.right, // x2 (right)
+				currentSetRect.top, // y1 (top)
+				currentSetRect.bottom, // y2 (bottom)
+			]
+			this.el.offsetHeight
+			let thisElRect = this.el.getBoundingClientRect()
+			let ctxRect = this.el.getBoundingClientRect()
+			let [x1, x2, y1, y2] = [ctxRect.left, ctxRect.right, ctxRect.top, ctxRect.bottom]
+
+			if (setY2 < y2) {
+				this.el.style.top = `calc(-${ctxRect.height}px - 1rem)`
+			} else {
+				this.el.style.top = 'calc(100% + 1rem)'
+			}
+			this.el.style.visibility = 'visible'
+			this.el.style.opacity = 1
+		}, 1)
 	}
 	hide() {
 		this.el.style.opacity = 0

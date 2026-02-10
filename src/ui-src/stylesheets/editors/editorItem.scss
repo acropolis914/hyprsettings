@@ -2,15 +2,9 @@
 @use '../_variables' as v;
 
 .editor-item {
-	position: relative;
 	display: flex;
+	position: relative;
 	flex-direction: column;
-	padding: 0.5rem;
-	margin-bottom: var(--spacing-unit);
-	border: 1px solid transparent;
-	border-radius: var(--border-rad);
-	background-color: var(--surface-0);
-	font-size: 1.6rem;
 	//opacity: 0.8;
 	//opacity: 0;
 	transition:
@@ -18,6 +12,25 @@
 		border 100ms ease-in-out,
 		scale 0.2s ease,
 		opacity 0.5s ease;
+	margin-bottom: var(--spacing-unit);
+	border: 1px solid transparent;
+	border-radius: var(--border-rad);
+	background-color: var(--surface-0);
+	padding: 0.5rem;
+	font-size: 1.6rem;
+	&.invalid {
+		animation: slow-flash 1s forwards;
+		animation-iteration-count: infinite;
+		border: 1px solid var(--accent-warning);
+	}
+	@keyframes slow-flash {
+		0% {
+			background-color: red;
+		}
+		100% {
+			background-color: green;
+		}
+	}
 
 	@media (max-width: 768px) and (pointer: coarse) {
 		padding: 1.3rem;
@@ -93,20 +106,20 @@
 			//border: orange 1px solid;
 		}
 		> textarea {
-			height: 3rem;
 			width: 100%;
+			height: 3rem;
 		}
 	}
 
 	.keybind-editor {
-		gap: 0.5rem;
 		position: relative;
+		gap: 0.5rem;
 		color: var(--text-0);
 
 		> textarea,
 		> input {
-			height: 3rem !important;
 			border-radius: var(--border-rad);
+			height: 3rem !important;
 			&:disabled {
 				opacity: 0.5;
 			}
@@ -120,10 +133,10 @@
 
 	.comment-area {
 		display: flex;
+		justify-content: center;
+		align-items: center;
 		margin-top: 0.2rem;
 		font-style: italic;
-		align-items: center;
-		justify-content: center;
 
 		&:has(> textarea:placeholder-shown) {
 			opacity: 0.6;
@@ -132,25 +145,25 @@
 		.comment {
 			@include text-ellipsis;
 			display: flex;
-			height: 2rem;
-			width: 100%;
-			background: transparent;
 			border: 0;
-			color: var(--text-1);
+			background: transparent;
+			width: 100%;
+			height: 2rem;
 			resize: none;
+			color: var(--text-1);
 			&:hover,
 			&:focus {
-				color: var(--text-1);
 				cursor: text;
+				color: var(--text-1);
 			}
 		}
 
 		> * {
 			height: 2rem;
 			&:focus {
+				outline: none;
 				border: none;
 				border-bottom: 1px solid var(--accent) !important;
-				outline: none;
 			}
 		}
 	}
@@ -168,10 +181,10 @@
 	&.disabled .editor-item-preview {
 		padding-left: 6rem;
 		&::before {
-			content: 'Disabled';
 			position: absolute;
 			transform: translateY(2px) translateX(-100%);
 			padding: 0 0.5ch;
+			content: 'Disabled';
 			color: var(--accent-warning);
 			font-size: 1.2rem;
 		}
@@ -198,10 +211,10 @@
 // --- Line Comment Item ---
 .editor-item:has(> .editor-item-comment) {
 	margin: 0;
-	padding: 0;
 	background: transparent;
-	font-family: v.$font;
+	padding: 0;
 	font-size: 1.4rem;
+	font-family: v.$font;
 
 	textarea,
 	input {
@@ -223,8 +236,8 @@
 	}
 
 	&:is(:focus-within, :focus-visible, :focus) {
-		border-bottom: 1px solid var(--accent-hover) !important;
 		opacity: 1 !important;
+		border-bottom: 1px solid var(--accent-hover) !important;
 		> * {
 			color: var(--text-1);
 		}

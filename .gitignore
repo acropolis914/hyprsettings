@@ -68,3 +68,5 @@ htmlcov/
 
 
 .hyprland-wiki/
+.unlighthouse
+stats.html

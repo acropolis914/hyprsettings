@@ -1,43 +1,57 @@
+@use '../_variables' as v;
+@use '../utils' as *;
+@use '../mixins' as *;
 .context-menu {
-	position: absolute;
-	right: 0%;
-	top: calc(100% + 1rem);
-	z-index: 300;
 	display: flex;
-	padding: calc(var(--spacing-unit) / 2);
+	position: absolute;
+	//top: calc(100% + 1rem);
+	top: 100%;
+	right: 0%;
+	flex-direction: column;
+	opacity: 0;
+	z-index: 300;
+	transition:
+		all 0.2s ease,
+		top 0s;
 	border: 1px solid var(--surface-border);
 	border-radius: var(--border-rad);
 	background-color: var(--surface-0);
-	opacity: 0;
-	transition: all 0.2s ease;
-	flex-direction: row;
+	width: 15rem;
+	overflow: hidden;
 
 	.ctx-button {
+		@include text-ellipsis;
 		display: flex;
-		width: 4rem;
-		color: var(--text-1);
-		cursor: pointer;
-		flex-direction: column;
+		flex-direction: row;
+		//justify-content: center;
 		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-		gap: 0.2rem;
+		gap: 0.5rem;
 		transition: all 0.2s ease;
+		cursor: pointer;
+		cursor: pointer;
+		padding: 0.2rem 1rem;
+		//width: 4rem;
+		overflow: hidden;
+		color: var(--text-1);
 
 		.ctx-button-icon {
-			font-size: 3rem;
+			font-size: 2rem;
 			line-height: 2rem;
+			font-family: v.$font-nerd;
 		}
 
 		.ctx-button-label {
-			font-size: 1rem;
+			font-size: 1.2rem;
 			line-height: 1rem;
-			text-align: center;
+			text-wrap: nowrap;
+			//text-align: center;
 		}
 
 		&:hover {
-			transform: scale(1.2);
-			filter: brightness(1.2);
+			//transform: scale(1.2);
+			//filter: brightness(1.2);
+			background-color: var(--accent);
+			color: var(--text-contrast);
 		}
 
 		&:active {

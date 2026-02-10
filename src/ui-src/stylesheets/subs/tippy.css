@@ -1,11 +1,18 @@
 .tippy-box {
 	/*box-shadow: 0 0 20px 4px rgba(154, 161, 177, .15), 0 4px 80px -8px rgba(36, 40, 47, .25), 0 4px 4px -2px rgba(91, 94, 105, .15);*/
-	background-color: rgba(var(--surface-0) \, 0.75);
-	backdrop-filter: blur(10px) brightness(0.8);
+	/*background-color: var(--surface-0);*/
+	/*backdrop-filter: blur(10px) brightness(0.8);*/
 	color: var(--text-0);
-	border-radius: var(--border-rad);
-	padding: var(--spacing-unit);
-	border: 1px solid var(--text-0);
+	border-radius: var(--border-rad) !important;
+	background-color: var(--surface-0) !important;
+	padding: calc(var(--spacing-unit) / 2);
+	border: 1px solid var(--surface-border);
+	z-index: 100;
+	font-size: 1.2rem !important;
+	line-height: 1.3rem !important;
+	max-width: 20rem !important;
+	color: var(--text-0) !important;
+	/*background-color: var(--red);*/
 	/*overflow: auto !important;*/
 }
 
@@ -16,13 +23,13 @@ html.light {
 }
 
 .tippy-box > .tippy-arrow:before {
-	border-top-color: rgba(var(--surface-0) \, 0.75);
+	border-top-color: var(--surface-border);
 	border: 1px solid var(--text-0);
 	fill: var(--surface-0);
 }
 
 .tippy-box > .tippy-backdrop {
-	background-color: var(--surface-2) !important;
+	background-color: var(--surface-0) !important;
 }
 
 .tippy-box > .tippy-svg-arrow {

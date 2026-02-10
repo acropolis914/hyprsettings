@@ -12,9 +12,9 @@ import { BezierModal } from './keyEditor_Bezier.js'
 import { html, render } from 'lit'
 import tippy, { followCursor, hideAll } from 'tippy.js'
 import { roundArrow } from 'tippy.js'
-import 'tippy.js/dist/tippy.css'
-import 'tippy.js/dist/svg-arrow.css'
-import '@stylesheets/subs/tippy.css'
+// import 'tippy.js/dist/tippy.css'
+// import 'tippy.js/dist/svg-arrow.css'
+// import '@stylesheets/subs/tippy.css'
 import { gotoWiki } from '../ui_components/wikiTab.ts' // optional for styling
 
 // class EditorItem_Template {
@@ -50,11 +50,16 @@ const templateString = html`
 		</div>
 	</div>
 `
+
 export class EditorItem_Generic {
 	tippyTitle: string
 	initial_load: boolean
-	el: Node
+	el: HTMLDivElement
 	preview_el: HTMLDivElement
+	private saveDebounced: ((...args) => void) | any
+	keyEditor: HTMLTextAreaElement
+	private genericEditor_el: Element
+
 	constructor(json: string, disabled = false) {
 		this.initial_load = true
 
@@ -68,7 +73,7 @@ export class EditorItem_Generic {
 
 		const template = document.createElement('div')
 		render(templateString, template)
-		this.el = template.firstElementChild.cloneNode(true)
+		this.el = template.firstElementChild!.cloneNode(true) as HTMLDivElement
 
 		this.el.classList.add('editor-item')
 		this.el.classList.add('editor-item-generic')
@@ -202,11 +207,10 @@ export class EditorItem_Generic {
 			allowHTML: true,
 			followCursor: false,
 			plugins: [followCursor],
-			delay: [200, 0],
+			delay: [500, 200],
+			// interactive: true,
 			animation: 'fade',
-			// theme: 'pol',
 			arrow: roundArrow,
-			// triggerTarget: this.el,
 			onShow(instance) {
 				hideAll({ exclude: this.el })
 			},
@@ -214,9 +218,11 @@ export class EditorItem_Generic {
 		this.valueEditor.id = 'generic-value'
 		this.genericEditor_el.appendChild(this.keyEditor)
 		this.genericEditor_el.appendChild(this.valueEditor)
-		if (name.startsWith('$') || name === 'generic' || name.startsWith('Custom') || !name) {
+		if (name === 'generic' || name.startsWith('Custom') || !name) {
 			this.keyEditor.classList.remove('hidden')
-			this.keyEditor.value = ''
+		} else if (name.startsWith('$')) {
+			this.keyEditor.classList.remove('hidden')
+			this.keyEditor.value = name
 		} else {
 			this.keyEditor.value = name
 		}
@@ -224,6 +230,7 @@ export class EditorItem_Generic {
 		if (value === 'undefined' || value === '' || !value) {
 			value = ''
 		}
+
 		this.commentArea = this.el.querySelector('.comment')
 		this.commentArea.value = this.el.dataset.comment
 		this.createContextMenu()
@@ -253,6 +260,11 @@ export class EditorItem_Generic {
 				label: 'Add Below',
 				icon: '󰅀',
 				action: () => this.add('KEY', true),
+			},
+			{
+				label: 'Edit name',
+				icon: '󰙂',
+				action: () => this.editName(),
 			},
 			{
 				label: 'Toggle Disable',
@@ -287,6 +299,12 @@ export class EditorItem_Generic {
 		}
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
 		let value = this.valueEditor.value || 'Please input a value'
+
+		if (!name || !value) {
+			this.el.classList.add('invalid')
+		} else {
+			this.el.classList.remove('invalid')
+		}
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
 		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
 		if (!this.initial_load) {
@@ -296,11 +314,11 @@ export class EditorItem_Generic {
 
 	addListeners() {
 		this.el.addEventListener('click', (e) => {
-			if (this.flipValueIfBool()) {
-				// this.contextMenu.hide()
+			if (this.flipValueIfBool(false)) {
 			} else {
 				this.el.classList.remove('compact')
 			}
+
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('contextmenu', (e) => {
@@ -311,7 +329,7 @@ export class EditorItem_Generic {
 			if (this.el.dataset.name === 'bezier' && this.valueEditor.contains(e.target)) {
 				// this.el.classList.toggle('compact')
 				// this.contextMenu.hide()
-			} else if (this.el.dataset.infoType === 'CONFIG_OPTION_BOOL') {
+			} else if (this.flipValueIfBool()) {
 				// this.contextMenu.hide()
 			} else {
 				this.el.classList.toggle('compact')
@@ -319,13 +337,16 @@ export class EditorItem_Generic {
 			}
 		})
 		this.el.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter') {
+			if (e.key === 'Enter' || e.key === 'Space') {
 				// console.log("Pressed enter")
+				e.preventDefault()
+				e.stopPropagation()
+				e.stopImmediatePropagation()
 				if (this.flipValueIfBool()) {
 					return
 				}
 				this.el.classList.toggle('compact')
-				this.contextMenu.el.classList.toggle('hidden')
+				this.contextMenu.show()
 			}
 			if (e.key === 'Delete') {
 				e.preventDefault()
@@ -384,16 +405,24 @@ export class EditorItem_Generic {
 			this.update()
 		})
 
-		this.el.addEventListener('mouseover', () => {
-			this.contextMenu.show()
-		})
-		this.el.addEventListener('mouseleave', () => {
-			this.contextMenu.hide()
-		})
+		// this.el.addEventListener('mouseenter', () => {
+		// 	// e.stopPropagation()
+		// 	setTimeout(() => {
+		// 		this.contextMenu.show()
+		// 	}, 500)
+		// })
+		// this.el.addEventListener('mouseleave', () => {
+		// 	this.contextMenu.hide()
+		// })
 	}
 
 	addToParent(parent) {
 		parent.appendChild(this.el)
+	}
+
+	editName() {
+		this.keyEditor.classList.remove('hidden')
+		this.el.classList.remove('compact')
 	}
 
 	async add(type, below = true) {
@@ -536,21 +565,39 @@ export class EditorItem_Generic {
 		this.update()
 	}
 
-	flipValueIfBool() {
-		if (this.el.dataset.infoType === 'CONFIG_OPTION_BOOL' || this.el.dataset.value === 'on' || this.el.dataset.value === 'off') {
-			if (this.valueEditor.value === 'true' || this.valueEditor.value === 'false') {
-				this.valueEditor.value = this.valueEditor.value === 'true' ? 'false' : 'true'
-			} else if (this.el.dataset.value === 'on' || this.el.dataset.value === 'off') {
-				this.valueEditor.value = this.valueEditor.value === 'on' ? 'off' : 'on'
-			}
+	flipValueIfBool(save = true) {
+		const val = this.valueEditor.value.toLowerCase().trim()
 
-			this.el.dataset.value = this.valueEditor.value
-			// console.log(this.initial_load)
-			this.update()
-			return true
-		} else {
-			return false
+		// Define toggle pairs
+		const pairs = {
+			true: 'false',
+			false: 'true',
+			on: 'off',
+			off: 'on',
+			yes: 'no',
+			no: 'yes',
 		}
+
+		// Find which toggle group this belongs to
+		const key = Object.keys(pairs).find((k) => val.startsWith(k))
+		const isConfigBool = this.el.dataset.infoType === 'CONFIG_OPTION_BOOL'
+
+		if (key || isConfigBool) {
+			if (save) {
+				// Determine the opposite value
+				let next = pairs[key] || (val === 'true' ? 'false' : 'true')
+
+				// Apply specific flavor
+				if (next === 'yes') next = 'yes, please :)'
+
+				// Commit to UI, DOM, and Backend
+				this.valueEditor.value = next
+				this.el.dataset.value = next
+				this.update()
+			}
+			return true
+		}
+		return false
 	}
 
 	delete() {
@@ -578,6 +625,7 @@ export class EditorItem_Generic {
 			console.log(`Saving key as a part of a group. Skipping self save.`)
 		}
 	}
+
 	return() {
 		return this.el
 	}

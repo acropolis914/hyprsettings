@@ -23,6 +23,7 @@ export class ConfigGroup {
 		this.group_el.disable = this.disable.bind(this)
 		this.saveDebounced = debounce(() => this.save(), 15)
 		this.group_el.setAttribute('title', json['position'].replace('root:', ''))
+		this.title = this.group_el.title
 		if (json['comment']) {
 			this.group_el.dataset.comment = json['comment']
 		}
@@ -67,7 +68,7 @@ export class ConfigGroup {
 				action: () => this.duplicateKey(true),
 			},
 			{
-				label: 'Toggle Disable(Bugs!)',
+				label: 'Toggle Disable',
 				icon: '󰈉',
 				action: () => this.disable(),
 			},
@@ -103,6 +104,13 @@ export class ConfigGroup {
 				if (confirm) {
 					this.delete()
 				}
+			}
+		})
+		this.group_el.addEventListener('mouseover', (e) => {
+			if (e.target !== this.group_el) {
+				this.group_el.removeAttribute('title')
+			} else {
+				this.group_el.title = this.title
 			}
 		})
 	}

@@ -81,7 +81,7 @@ export async function initialize() {
 	initializeSearchBar().then(() => console.log('Done initializing search bar'))
 	createWiki().then(() => console.log('Done initializing wikit tab'))
 	// createWiki()
-	tippy.setDefaultProps({ delay: 200, arrow: true })
+	tippy.setDefaultProps({ delay: 1000, arrow: true })
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

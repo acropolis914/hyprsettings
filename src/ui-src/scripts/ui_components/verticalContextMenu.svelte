@@ -19,6 +19,11 @@
 
 	if (typeof window !== 'undefined') {
 		window.addEventListener('click', handleClickOutside);
+		window.addEventListener('mousemove',()=>{
+			setTimeout(()=>{
+				handleClickOutside
+			}, 1000)
+		});
 	}
 
 	// New: adjust position to stay inside viewport
@@ -58,32 +63,35 @@
 	</ul>
 {/if}
 
-<style>
+<style lang="scss">
 	.context-menu-sv {
 		position: absolute;
-		background: var(--surface-1);
+		background: var(--surface-0);
 		/*color: #000;*/
 		/*border: 1px solid #ccc;*/
-		border: 1px solid var(--accent);
+		border: 1px solid var(--surface-border);
 		border-radius: var(--border-rad);
 		color: var(--text-0);
 		list-style: none;
 		margin: 0;
 		/*padding: 0.25rem 0;*/
-		width: clamp(160px, 180px, 200px);
+		width: 15rem;
 		/*font-family: sans-serif;*/
-		font-size: 1.4rem;
-		z-index: 1000;
+		font-size: 1.2rem;
+		z-index: 300;
 	}
 
 	.context-menu-sv li {
 		position: relative;
+		align-items: center;
 	}
 
 	.context-menu-sv li > div {
 		padding: 0.5rem 1rem;
 		cursor: pointer;
 		display: flex;
+		align-items: center;
+		gap: 0.2rem;
 	}
 
 	.context-menu-sv li:hover > div {
@@ -92,8 +100,9 @@
 	}
 
 	.icon{
-		color: var(--accent);
-		margin-right: 0.5rem;
+		font-size: 2rem;
+		line-height: 2rem;
+		font-family: v.$font-nerd;
 	}
 
 	.submenu-arrow{
