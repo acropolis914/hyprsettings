@@ -18,17 +18,23 @@
 	background-color: var(--surface-0);
 	padding: 0.5rem;
 	font-size: 1.6rem;
-	&.invalid {
-		animation: slow-flash 1s forwards;
+	&::after {
+		font-family: v.$font;
+	}
+	&.invalid:not(.disabled) {
+		animation: slow-flash 3s ease-in-out;
 		animation-iteration-count: infinite;
-		border: 1px solid var(--accent-warning);
+		//border: 1px solid var(--accent-warning);
 	}
 	@keyframes slow-flash {
 		0% {
-			background-color: red;
+			background-color: var(--surface-0);
 		}
-		100% {
-			background-color: green;
+		50% {
+			background-color: var(--accent-warning);
+		}
+		0% {
+			background-color: var(--surface-0);
 		}
 	}
 
@@ -44,18 +50,29 @@
 	&:is(:focus, :focus-visible) {
 		&.config-group {
 			@include config-group-focused('', var(--accent-success));
+			&::after {
+				content: '';
+			}
 		}
 		&:not(.config-group) {
 			@include editor-focused('', var(--accent-success));
+			&::after {
+				content: '';
+				font-family: v.$font-nerd;
+			}
 		}
 	}
 
 	&:focus-within:not(:focus):not(.config-group) {
 		@include editor-focused('', var(--accent-warning));
+		&::after {
+			content: '';
+		}
 	}
 
 	// --- Sub-Components ---
 	&-preview {
+		position: relative;
 		margin-bottom: 2px;
 		font-size: 1.4rem;
 		word-break: break-word;
@@ -87,6 +104,10 @@
 		input {
 			@include editor-input-reset;
 			@include text-ellipsis;
+			font-size: 1.4rem;
+			@media (max-width: 768px) and (pointer: coarse) {
+				font-size: 1.6rem;
+			}
 		}
 	}
 
@@ -96,6 +117,7 @@
 		gap: 1rem;
 		margin-top: 1rem;
 		width: 100%;
+		//overflow: hidden;
 
 		@media (max-width: 768px) {
 			flex-direction: column !important;
@@ -103,12 +125,45 @@
 
 		textarea,
 		input {
-			//border: orange 1px solid;
+			//border: var(--surface-border) 1px solid;
+			border-radius: var(--border-rad);
 		}
 		> textarea {
 			width: 100%;
 			height: 3rem;
 		}
+		input[data-coloris] {
+			outline: 10px solid var(--surface-0);
+			outline-offset: -10px;
+		}
+		[data-coloris] {
+			position: relative;
+			z-index: 5;
+			box-sizing: border-box;
+			//border: 1px solid var(--surface-0);
+			background: url('/assets/transparent.png') center;
+			background-size: cover;
+			background-repeat: no-repeat;
+			//border: 1px solid red;
+			overflow: visible;
+			//background-color: var(--red);
+		}
+		//&:has([data-coloris]) {
+		//	overflow: hidden;
+		//	&::after {
+		//		position: absolute;
+		//		//top: 0;
+		//		z-index: 1;
+		//		inset: 0;
+		//		top: ;
+		//		left: 0;
+		//		border-radius: inherit;
+
+		//		background-size: contain;
+		//		max-height: 10px;
+		//		content: '';
+		//	}
+		//}
 	}
 
 	.keybind-editor {
@@ -178,15 +233,42 @@
 		}
 	}
 
-	&.disabled .editor-item-preview {
-		padding-left: 6rem;
-		&::before {
-			position: absolute;
-			transform: translateY(2px) translateX(-100%);
-			padding: 0 0.5ch;
-			content: 'Disabled';
-			color: var(--accent-warning);
-			font-size: 1.2rem;
+	&.disabled > .editor-item-preview {
+		@media (min-width: 769px) {
+			padding-left: 6rem;
+			&::before {
+				position: absolute;
+				transform: translateY(3px) translateX(-100%);
+				padding: 0 0.5ch;
+				content: 'Disabled';
+				color: var(--accent-warning);
+				font-size: 1.2rem;
+			}
+			//&::before {
+			//	transform: translateX(-90%) translateY(-0.7rem);
+			//	//transform: rotate(-90deg) translateY(-4.5rem) translateX(-2ch);
+			//	content: '󰈉';
+			//	//top: 50%;
+			//	//content: 'Disabled';
+			//	color: var(--accent-warning);
+			//	font-weight: bold;
+			//	font-size: 3rem;
+			//}
+		}
+
+		@media (max-width: 768px) {
+			padding-left: 3rem;
+			&::before {
+				position: absolute;
+				top: 50%;
+				transform: translateX(-160%) translateY(-45%);
+				//transform: rotate(-90deg) translateY(-4.5rem) translateX(-2ch);
+				content: '󰈉';
+				//content: 'Disabled';
+				color: var(--accent-warning);
+				//font-weight: bold;
+				font-size: 2.5rem;
+			}
 		}
 	}
 
@@ -261,6 +343,7 @@
 	}
 
 	&#value {
+		border: 1px var(--surface-border) solid;
 		padding-left: 0.5rem;
 		color: var(--teal);
 		white-space: nowrap;

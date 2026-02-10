@@ -140,7 +140,7 @@ export class EditorItem_Generic {
 						this.valueEditor.style.backgroundColor = this.valueEditor.value
 						this.valueEditor.style.color = 'transparent'
 						this.valueEditor.addEventListener('input', () => {
-							this.valueEditor.style.backgroundColor = this.valueEditor.value
+							this.valueEditor.style.outline = `10px solid ${this.valueEditor.value}`
 						})
 					} catch (E) {
 						this.valueEditor = null
@@ -566,7 +566,13 @@ export class EditorItem_Generic {
 	}
 
 	flipValueIfBool(save = true) {
-		const val = this.valueEditor.value.toLowerCase().trim()
+		let val
+		try {
+			val = this.valueEditor.value.toLowerCase().trim()
+		} catch (e) {
+			// console.error(e)
+			return false
+		}
 
 		// Define toggle pairs
 		const pairs = {

@@ -14,9 +14,9 @@
  */
 
 .ts-wrapper > * {
-	background-color: var(--surface-0) !important;
+	background-color: var(--surface-1) !important;
 	color: var(--text-0) !important;
-	border: 1px solid var(--bg1) !important;
+	border: 1px solid var(--surface-) !important;
 	border-radius: var(--border-rad) !important;
 	/* z-index: 5 !important; */
 	align-items: center;
@@ -42,7 +42,7 @@
 }
 
 .ts-control {
-	border: 1px solid #d0d0d0;
+	border: 1px solid var(--surface-border);
 	padding: 2px 2px;
 	width: 100%;
 	overflow: hidden;
@@ -62,7 +62,7 @@
 }
 
 .full .ts-control {
-	background-color: #fff;
+	/*background-color: #fff;*/
 }
 
 .disabled .ts-control,
@@ -159,7 +159,7 @@
 }
 
 .disabled .ts-control {
-	opacity: 0.5;
+	/*opacity: 0.5;*/
 	background-color: #fafafa;
 }
 
@@ -199,7 +199,7 @@
 .ts-dropdown .optgroup-header,
 .ts-dropdown .no-results,
 .ts-dropdown .create {
-	padding: 5px 8px;
+	padding: 0.2rem 8px;
 }
 
 .ts-dropdown .option,
@@ -225,8 +225,8 @@
 }
 
 .ts-dropdown .active {
-	background-color: #f5fafd;
-	color: #495c68;
+	background-color: var(--accent) !important;
+	color: var(--text-contrast) !important;
 }
 
 .ts-dropdown .active.create {
@@ -373,14 +373,14 @@
 }
 
 .ts-wrapper.plugin-input_autogrow.has-items.focus
-	.ts-control
-	> input::-ms-input-placeholder {
+.ts-control
+> input::-ms-input-placeholder {
 	color: transparent;
 }
 
 .ts-wrapper.plugin-input_autogrow.has-items.focus
-	.ts-control
-	> input::placeholder {
+.ts-control
+> input::placeholder {
 	color: transparent;
 }
 
@@ -485,15 +485,15 @@
 
 .ts-control:not(.rtl) {
 	padding-right: max(
-		var(--ts-pr-min),
-		var(--ts-pr-clear-button) + var(--ts-pr-caret)
+		  var(--ts-pr-min),
+		  var(--ts-pr-clear-button) + var(--ts-pr-caret)
 	) !important;
 }
 
 .ts-control.rtl {
 	padding-left: max(
-		var(--ts-pr-min),
-		var(--ts-pr-clear-button) + var(--ts-pr-caret)
+		  var(--ts-pr-min),
+		  var(--ts-pr-clear-button) + var(--ts-pr-caret)
 	) !important;
 }
 
@@ -506,8 +506,12 @@
 .ts-control input {
 	color: #303030;
 	font-family: inherit;
+	font-size: 1.4rem;
+	@media (max-width: 768px) and (pointer: coarse) {
+		font-size: 1.6rem;
+	}
 	/* font-size: 13px; */
-	line-height: 18px;
+	/*line-height: 18px;*/
 }
 
 .ts-control,
@@ -526,4 +530,16 @@
 	position: absolute !important;
 	width: 1px !important;
 	white-space: nowrap !important;
+}
+
+
+.option {
+	.label {
+		font-size: 1.6rem;
+		font-weight: bold;
+	}
+
+	.description {
+		font-size: 1.2rem
+	}
 }
