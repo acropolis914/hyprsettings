@@ -151,6 +151,10 @@ header#main-header {
 	overflow-x: hidden;
 	transition: flex-basis 0.2s ease-out;
 	//scrollbar-gutter: stable;
+	@media (min-width: 1500px) {
+		width: 10%;
+		max-width: 10%;
+	}
 
 	ul {
 		display: flex;
@@ -468,6 +472,7 @@ footer {
 
 .config-set {
 	contain: layout style paint;
+	position: relative;
 	overflow-x: hidden;
 	display: flex;
 	height: 100%;
@@ -483,6 +488,7 @@ footer {
 	@media (max-width: 768px) {
 		padding: 1rem 1rem;
 	}
+
 	/* Specific styles for the #settings tab*/
 	&#settings {
 		.setting-container {

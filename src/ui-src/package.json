@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"killhs": "hyprsettings -k &",
-		"dev": "concurrently -n py,vt -c cyan,green \"cd ../../ && sh ./run.sh --bun-dev --debug --no-daemon || true\" \"vite --host\"",
+		"dev": "concurrently -n py,vt -c cyan,green \"cd ../../ && sh ./run.sh --bun-dev --debug --no-daemon --no-browser || true\" \"vite --host\"",
 		"old_dev": "bun run prestart && bun run dev:parallel",
 		"build": "vite build",
 		"bldprev": "vite build && cd ../../ && sh ./run.sh --debug --no-daemon",
@@ -27,6 +27,7 @@
 		"vite": "^7.3.1"
 	},
 	"dependencies": {
+		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"compress-json": "^3.4.0",
 		"hastscript": "^9.0.1",
 		"hotkeys-js": "^4.0.0",
@@ -38,6 +39,7 @@
 		"remark-gfm": "^4.0.1",
 		"remark-parse": "^11.0.0",
 		"remark-rehype": "^11.1.2",
+		"svelte": "^5.50.0",
 		"tippy.js": "^6.3.7",
 		"unified": "^11.0.5",
 		"vfile-matter": "^5.0.1"

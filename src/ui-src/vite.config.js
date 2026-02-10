@@ -1,10 +1,21 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
 export default defineConfig({
 	root: '.',
 	publicDir: 'public',
+	plugins: [
+		svelte({
+			preprocess: [],
+			extensions: ['.svelte'],
+			onwarn: (warning, handler) => {
+				if (warning.code.includes('a11y')) return
+				handler(warning)
+			},
+		}),
+	],
 	build: {
 		// output to ../ui (relative to src/ui-src)
 		minify: 'esbuild',
@@ -35,7 +46,7 @@ export default defineConfig({
 			'/api': 'http://localhost:6969',
 			'/wiki': 'http://localhost:6969',
 		},
-		allowedHosts: ['pen-macro-tenant-supports.trycloudflare.com'],
+		allowedHosts: ['192.168.1.1'],
 	},
 	resolve: {
 		alias: {

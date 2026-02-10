@@ -17,7 +17,7 @@ import setupTheme from './setupTheme.js'
 
 import initializeJSViewer from './ui_components/jsViewer.js'
 import initializeSearchBar from './ui_components/searchBar.js'
-import createDynamicTabs from './ui_components/createDynamicTabs.js'
+import createDynamicTabs from './ui_components/createDynamicTabs.ts'
 import createLoadingOverlay from './ui_components/darken_overlay.js'
 import createWiki from './ui_components/wikiTab.ts'
 

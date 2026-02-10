@@ -1,9 +1,15 @@
 import { saveWindowConfig } from '../utils.ts'
 import { tabs } from '../hyprland-specific/configMap.js'
 import { GLOBAL } from '../GLOBAL.js'
+import ContextMenu from './verticalContextMenu.svelte'
+import { mount, unmount } from 'svelte'
+import { counter, menuState } from './svelteStates.svelte.js'
+
 let initialLoad = true
 
 class ConfigTab {
+	private configview: any
+
 	constructor(tab) {
 		// console.log(tab)
 		if (tab.name === 'separator') {
@@ -84,6 +90,23 @@ class ConfigTab {
 				GLOBAL.setKey('currentView', 'main')
 			}
 		})
+		let contextMenu: any
+		let contextMenuState
+		item.addEventListener('contextmenu', (e) => {
+			e.preventDefault()
+			if (e.target != item) return
+			if (!contextMenu) {
+				let { menu: contextMenu, menuState: contextMenuState } = this.createContextMenu(item, e)
+				contextMenuState.visible = true
+			} else {
+				contextMenuState.visible = true
+			}
+		})
+
+		item.addEventListener('click', async (e) => {
+			if (contextMenu) await unmount(contextMenu)
+		})
+
 		if (this.shown) {
 			document.querySelectorAll('#content-area>.config-set').forEach((i) => i.classList.add('hidden'))
 			item.classList.remove('hidden')
@@ -95,12 +118,6 @@ class ConfigTab {
 	handleTabClick(id) {
 		document.querySelectorAll('.config-set').forEach((element) => {
 			element.id === id ? element.classList.remove('hidden') : element.classList.add('hidden')
-			// if (element.innerHTML === '') {
-			// 	let content = document.createElement('div')
-			// 	content.id = 'empty-config-set'
-			// 	content.innerHTML = 'No entires here'
-			// 	element.appendChild(content)
-			// }
 		})
 		document.querySelectorAll('.sidebar-item').forEach((element) => {
 			element.id === id ? element.classList.add('selected') : element.classList.remove('selected', 'keyboard-selected')
@@ -121,6 +138,18 @@ class ConfigTab {
 		if (!initialLoad) {
 			saveWindowConfig()
 		}
+	}
+
+	createContextMenu(el: HTMLDivElement, e: MouseEvent) {
+		console.log(counter.count)
+		const rect = el.getBoundingClientRect()
+		menuState.x = e.pageX
+		menuState.y = e.pageY
+		const menu = mount(ContextMenu, {
+			target: document.body,
+			props: menuState,
+		})
+		return { menu, menuState }
 	}
 }
 
