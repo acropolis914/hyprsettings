@@ -254,6 +254,11 @@ header#main-header {
 	@media (max-height: 30rem) {
 		//padding: 0;
 	}
+	@media (min-width: 1500px) {
+		flex: 0 0 90%;
+		width: 90%;
+		max-width: 90%;
+	}
 
 	position: relative;
 }

@@ -69,9 +69,10 @@
 		color: var(--text-0);
 		list-style: none;
 		margin: 0;
-		padding: 0.25rem 0;
+		/*padding: 0.25rem 0;*/
 		width: clamp(160px, 180px, 200px);
-		font-family: sans-serif;
+		/*font-family: sans-serif;*/
+		font-size: 1.4rem;
 		z-index: 1000;
 	}
 

@@ -15,7 +15,7 @@ export const menuState = $state({
 			},
 		},
 		{
-			label: 'Reload hyprland configs',
+			label: 'Reload configs',
 			icon: '',
 			action: () => {
 				window.reinitialize()
