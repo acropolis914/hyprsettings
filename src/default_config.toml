@@ -20,7 +20,7 @@ show_contextmenu_label = true
 show_sidebar_icons = true
 current_theme = "Catppuccin Mocha"
 font = "CommitMono Nerd Font Mono" # Please use a nerd font.
-transparency = 0.9                         #0-1, zero is transparent(stupid, ikr)
+transparency = 0.9                        #0-1, zero is transparent(stupid, ikr)
 
 [persistence]
 onboarding_version = 0.8

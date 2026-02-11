@@ -25,7 +25,7 @@ def warn(msg):
 def log(msg, prefix='', only_verbose=False):
 	global _last_log_message, _last_log_count
 
-	prefix_str = f'{prefix}' if prefix else ''
+	prefix_str = f'[green]{prefix}[/green]' if prefix else ''
 	full_message = f'{prefix_str} {msg}'
 
 	if not only_verbose or state.verbose:

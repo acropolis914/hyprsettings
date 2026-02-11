@@ -109,20 +109,28 @@ class Api:
 				if key not in persistence:
 					persistence[key] = val
 
-		hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
-		template = Path(thisfile_path_parent / 'default_config.toml')
-		if not template:
-			log('Template not found in the directory')
+		def create_new_config():
+			def list_fonts(mono=False, nerd=False):
+				cmd = "fc-list --format='%{family}\n'"
+				if mono:
+					cmd = "fc-list :spacing=100 --format='%{family}\n'"
+				if nerd:
+					cmd += " | grep -i 'Nerd'"
+				cmd += ' | sort -u'
+				result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+				return [f.strip() for f in result.stdout.splitlines() if f.strip()]
 
-		if not hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file() or hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
+			template = Path(thisfile_path_parent / 'default_config.toml')
+			if not template:
+				log('Template not found in the directory')
+				return {'configuration-error': 'Template not found in the directory'}
 			temporary_font = None
 			try:
-				temporary_font = self.list_fonts(mono=False, nerd=True)[1]
-			except IndexError:
-				log('No nerd font found. Using monospace.')
-			temporary_font = None
+				temporary_font = list_fonts(mono=False, nerd=True)[1]
+			except IndexError as e:
+				log(f'No nerd font found. Using monospace., {e}')
+				temporary_font = None
 
-			log(f'Config file not found in {hs_globals.HYPRSETTINGS_CONFIG_PATH}')
 			with open(
 				template,
 				'r',
@@ -130,7 +138,7 @@ class Api:
 				default_config_text = default_config.read()
 
 			self.window_config = toml.parse(default_config_text)
-			self.window_config['config']['font'] = temporary_font if temporary_font else 'Monospace'
+			self.window_config['config']['font'] = temporary_font if temporary_font else 'monospace'
 			add_missing_keys()
 			if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 				self.window_config['persistence']['fist_run'] = True
@@ -141,24 +149,44 @@ class Api:
 			with hs_globals.HYPRSETTINGS_CONFIG_PATH.open('w') as config_file:
 				config_file.write(default_config_text)
 			return self.window_config
-		else:
+
+		def read_old_config():
 			with hs_globals.HYPRSETTINGS_CONFIG_PATH.open('r', encoding='utf-8') as config_file:
 				config = None
 				try:
 					config = toml.parse(config_file.read())
 				except toml.exceptions.TOMLKitError as e:
-					log(e)
-					return {'configuration-error': str(e)}
+					log('')
+					raise Exception('Encountered an exception reading your old config:', e)
+				# log(config)
 				self.window_config = config
 				add_missing_keys()
 				if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 					self.window_config['persistence']['first_run'] = True
 					self.window_config['persistence']['onboarding_version'] = hs_globals.ONBOARDING_VERSION
-
 				version_migration()
 				if self.window_config['config']['daemon']:
 					state.daemon = True
 				return self.window_config
+
+		if not hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file() or hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
+			if hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
+				log('Config file exists but is empty. Creating a new one.')
+			else:
+				log(f'Configuration file not found in {hs_globals.HYPRSETTINGS_CONFIG_PATH}')
+			create_new_config()
+		else:
+			try:
+				log('Configuration found. Reading configuration file')
+				return read_old_config()
+			except Exception as e:
+				log(f'Encountered an exception reading your old config: {e}')
+				log('Backing up old config and creating a new one')
+				old_config = open(hs_globals.HYPRSETTINGS_CONFIG_PATH, 'r', encoding='utf-8').read()
+				old_config_parent = hs_globals.HYPRSETTINGS_CONFIG_PATH.parent
+				with open(old_config_parent / 'hyprsettings.toml.bak', 'w', encoding='utf-8') as backup_file:
+					backup_file.write(old_config)
+				return create_new_config()
 
 	def get_builtin_themes(self):
 		file_path = thisfile_path_parent / 'themes_builtin'
@@ -186,17 +214,6 @@ class Api:
 		with open(hs_globals.HYPRSETTINGS_CONFIG_PATH, 'w', encoding='utf-8') as config_file:
 			config_tosave = toml.dumps(self.window_config)
 			config_file.write(config_tosave)
-
-	@staticmethod
-	def list_fonts(mono=False, nerd=False):
-		cmd = "fc-list --format='%{family}\n'"
-		if mono:
-			cmd = "fc-list :spacing=100 --format='%{family}\n'"
-		if nerd:
-			cmd += " | grep -i 'Nerd'"
-		cmd += ' | sort -u'
-		result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-		return [f.strip() for f in result.stdout.splitlines() if f.strip()]
 
 	@staticmethod
 	def getDebugStatus():
