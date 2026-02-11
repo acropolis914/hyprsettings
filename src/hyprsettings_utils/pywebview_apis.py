@@ -155,8 +155,8 @@ class Api:
 				config = None
 				try:
 					config = toml.parse(config_file.read())
-				except toml.exceptions.TOMLKitError as e:
-					log('')
+				except Exception as e:
+					# log('')
 					raise Exception('Encountered an exception reading your old config:', e)
 				# log(config)
 				self.window_config = config
