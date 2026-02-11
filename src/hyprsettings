@@ -42,7 +42,6 @@ def start_flask_server():
 	state.app.run(host=hs_globals.HOST, port=state.flask_port, use_reloader=False)
 
 
-
 def ui_print(*args, **kwargs):
 	console.print('[blue][UIBackend][/blue]', *args, **kwargs)
 
@@ -210,7 +209,8 @@ def on_closing(window):
 			log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
 			log('Restoring from daemon will fail. Daemon setting is dishonored.')
 		log('Window closed. Terminating process.')
-		kill_hyprsettings()
+		os._exit(0)
+		# kill_hyprsettings()
 		return None
 	# print("______________________________________________\n")
 	# os._exit(0)
@@ -286,16 +286,15 @@ def handle_client(conn):
 				state.window_instance.restore()  # restore if minimized
 				state.window_instance.show()
 				state.window_visible = True
-				# log(f"Move stdout: '{move.stdout.strip()}'")
-				# log(f"Move stderr: '{move.stderr.strip()}'")
 
 			else:
 				log('Window not visible → restoring and showing')
 				state.window_instance.restore()  # restore if minimized
 				state.window_instance.show()
 				state.window_visible = True
+
 	except Exception as e:
-		ui_print(e)
+		log(e)
 
 	finally:
 		conn.close()
@@ -322,6 +321,8 @@ def main():
 		mimetypes.add_type('application/javascript', '.js')
 		if state.args.no_devtools:
 			webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
+		if state.args.no_dmabuf:
+			os.environ['WEBKIT_DISABLE_DMABUF_RENDERER'] = '1'
 		ui_link = f'http://localhost:{state.flask_port}/'
 		if state.args.bun_dev:
 			ui_link = 'http://localhost:3000/'
@@ -342,7 +343,7 @@ def main():
 				min_size=(400, 300),
 				hidden=state.args.hidden,
 			)
-			state.window_visible = not state.args.daemon
+			state.window_visible = not state.args.hidden
 			state.window_instance.events.loaded += on_loaded
 			state.window_instance.events.closing += on_closing
 			webview.start(
@@ -365,8 +366,8 @@ def main():
 				pass
 
 	except Exception as e:
-		log('I am ded')
 		log(e)
+		log('I am ded')
 		os._exit(1)
 
 
@@ -402,18 +403,12 @@ if __name__ == '__main__':
 		else:
 			warn(f'Given config file is not a ".conf file". Using default config path {state.hyprland_config_path}')
 	state.daemon = not state.args.no_daemon and state.args.daemon
-	log(state.args.no_daemon)
-	log(state.args.daemon)
-	log(state.daemon)
 	if state.args.debug:
 		log(
 			'[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!'
 		)
 	if state.args.verbose:
 		state.verbose = state.args.verbose
-
-	# if state.args.bun_dev:
-	# 	state.vite_process = subprocess.Popen(['bun', 'run', 'vite'], cwd=thisfile_path / 'ui-src')
 
 	def gotoMain():
 		with redirect_stderr(LogFilter()), redirect_stdout(LogFilter()):
@@ -422,7 +417,7 @@ if __name__ == '__main__':
 	if state.args.no_daemon and state.args.daemon:
 		log('Damn. Running "--no-daemon" and "--daemon" at the same time? Why?')
 
-	if not state.daemon:
+	if state.args.no_daemon:
 		while is_port_open(state.webview_port):
 			log(f'Port {state.webview_port} in use by existing daemon.')
 			log("Run with '-d' to use that exisitng daemon.")
@@ -430,7 +425,7 @@ if __name__ == '__main__':
 			state.webview_port += 1
 		log(f'Using port {state.webview_port} for the no daemon pywebview window.', only_verbose=True)
 
-	if state.args.daemon and is_port_open(state.webview_port):
+	if not state.args.no_daemon and is_port_open(state.webview_port):
 		if send_toggle():
 			exit(0)
 

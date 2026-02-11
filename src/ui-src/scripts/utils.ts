@@ -195,8 +195,6 @@ export function saveWindowConfig() {
 	try {
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
-		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['config']), 'config')
-		// await window.pywebview.api.save_window_config(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}

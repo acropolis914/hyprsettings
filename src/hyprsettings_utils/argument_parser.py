@@ -22,11 +22,18 @@ def createArgParse(parser):
 	# Dev / Debug Options
 	dev = parser.add_argument_group('Development / Debug Options')
 	dev.add_argument('--debug', action='store_true', help='Enable debug and devtools.')
-	dev.add_argument('--bun-dev', action='store_true', help='Use the Bun development server (localhost:3000). WARNING: FOR DEVELOPMENT ONLY.')
-	dev.add_argument('--no-devtools', action='store_true', help='Initially hide devtools in the webview window.')
 
+	dev.add_argument('--no-devtools', action='store_true', help='Initially hide devtools in the webview window.')
+	dev.add_argument(
+		'--no-dmabuf',
+		action='store_true',
+		help='Disable dmabuf to fix Error 71 (Protocol error) dispatching to Wayland display. Happens with some NVIDIA only setups. Causes minor visual side effects.',
+	)
+	dev.add_argument(
+		'--bun-dev', action='store_true', help='[Deprecated] Use the Bun development server (localhost:3000). WARNING: FOR DEVELOPMENT ONLY.'
+	)
 	# Configuration
 	config = parser.add_argument_group('Configuration')
-	config.add_argument('-c', '--config', metavar='FILE', type=str, help='Path to a configuration file.')
+	config.add_argument('-c', '--config', metavar='FILE', type=str, help='Path to your hyprland configuration file.')
 
 	return parser
