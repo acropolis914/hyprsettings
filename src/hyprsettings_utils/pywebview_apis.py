@@ -206,7 +206,7 @@ class Api:
 		return themes
 
 	def save_window_config(self, json_fromjs, part='config'):
-		log(f'Called save window {part}')
+		log('Saving window config')
 		config_from_json = json.loads(json_fromjs)
 		for key in config_from_json:
 			self.window_config[part][key] = config_from_json[key]
