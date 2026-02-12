@@ -14,9 +14,10 @@ export default async function getDebugStatus() {
 	}
 	GLOBAL.setKey('isDebugging', isDebug)
 	if (isDebug) {
-		console.log('Debug mode is turned on.')
+		console.info('Debug mode is turned on.')
 		debugIndicator.classList.remove('hidden')
 	} else {
 		debugIndicator.classList.add('hidden')
+		console.info('Debug mode is turned off.')
 	}
 }

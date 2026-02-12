@@ -358,8 +358,8 @@ def main():
 			log('[red][bold] Warning [/bold][/red] Using firefox-based browsers feel [red]slower[/red]')
 			log('If you experience loading times > 2 seconds, consider using a chromium-based browser.')
 			log("Even I, acropolis, who uses Zen Browser, can't deny that (ノToT)ノ ~┻┻")
-			log(f'Opening {ui_link} in default browser')
 			if not state.args.no_browser:
+				log(f'Opening {ui_link} in default browser')
 				subprocess.run(['xdg-open', ui_link])
 			while True:
 				pass

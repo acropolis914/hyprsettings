@@ -358,7 +358,7 @@ export async function getHyprsettingsGithubVersion(element) {
 	GLOBAL.setKey('githubVersion', full)
 
 	if (full !== (await Backend.getHyprSettingsVersion())) {
-		console.error('Version', GLOBAL.version, 'is older than github version', GLOBAL.githubVersion)
+		console.info('Version', GLOBAL.version, 'is older than github version', GLOBAL.githubVersion)
 		let versionEl = settingsEl.querySelector('.version-text')
 
 		let outdatedEl = settingsEl.querySelector('.outdated-text')

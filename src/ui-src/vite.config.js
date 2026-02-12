@@ -18,12 +18,18 @@ export default defineConfig({
 	],
 	build: {
 		// output to ../ui (relative to src/ui-src)
-		minify: 'esbuild',
+		minify: 'terser',
+		terserOptions: {
+			sourceMap: false,
+			keep_fnames: true,
+			keep_classnames: true,
+			// treeshake: true,
+		},
 		treeshake: true,
 		outDir: resolve(__dirname, '..', 'ui'),
 		// set false while you verify; switch to true later to allow Vite to clean target
 		emptyOutDir: true,
-		sourcemap: true,
+		sourcemap: false,
 		rollupOptions: {
 			plugins: [visualizer({ open: false })],
 			input: resolve(__dirname, 'index.html'),
@@ -41,7 +47,7 @@ export default defineConfig({
 	},
 	server: {
 		port: 3000,
-		open: true,
+		open: false,
 		proxy: {
 			'/api': 'http://localhost:6969',
 			'/wiki': 'http://localhost:6969',

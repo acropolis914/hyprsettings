@@ -3,8 +3,8 @@
 		// Environment setup & latest features
 		"lib": ["ESNext", "dom"],
 		"paths": {
-			"@scripts/*": ["scripts/*"],
-			"@stylesheets/*": ["stylesheets/*"]
+			"@scripts/*": ["./scripts/*"],
+			"@stylesheets/*": ["./stylesheets/*"]
 		},
 		"target": "ESNext",
 		"module": "Preserve",

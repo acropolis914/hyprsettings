@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"killhs": "hyprsettings -k &",
-		"dev": "concurrently -n py,vt -c cyan,green \"cd ../../ && sh ./run.sh --bun-dev --debug --no-daemon --no-browser || true\" \"vite --host\"",
+		"dev": "concurrently -k -s first -n py,vt -c cyan,green \"cd ../../ && sh ./run.sh --bun-dev --debug --no-daemon --no-browser\" \"vite --host\"",
 		"old_dev": "bun run prestart && bun run dev:parallel",
 		"build": "vite build",
 		"bldprev": "vite build && cd ../../ && sh ./run.sh --debug --no-daemon",
@@ -24,6 +24,7 @@
 		"prettier-plugin-css-order": "^2.2.0",
 		"rollup-plugin-visualizer": "^6.0.5",
 		"sass": "^1.97.3",
+		"terser": "^5.46.0",
 		"tom-select": "^2.4.5",
 		"vite": "^7.3.1"
 	},
