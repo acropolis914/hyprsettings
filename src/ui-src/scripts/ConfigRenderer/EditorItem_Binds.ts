@@ -16,7 +16,7 @@ const templateString = html`
 			<select class="bindflags" multiple></select>
 			<select class="modkey" multiple></select>
 			<textarea class="keypress"></textarea>
-			<textarea class="description hidden"></textarea>
+			<textarea class="description"></textarea>
 			<select class="dispatcher" multiple></select>
 			<textarea class="params"></textarea>
 		</div>
@@ -69,47 +69,61 @@ export class EditorItem_Binds {
 		this.hasDescription = false
 		this.el.dataset.type = 'KEY'
 		this.preview = ''
+		this.init()
 
+		setTimeout(() => {}, 0)
+
+		// this.initial_load = false
+	}
+	async init(): Promise<void> {
 		this.saveDebounced = debounce(() => this.save(), 100)
 		this.createContextMenu()
-		this.addElements()
+		await this.addElements()
 		this.addListeners()
 		this.update()
+		// void description_el.offsetHeight
 		this.initial_load = false
 	}
 
-	addElements() {
+	async addElements() {
+		let description_el = this.el.querySelector('.description')
 		let bindflag_additems = this.el.dataset.name.trim().substring(4).split('')
+		let bindflag_select_el = this.el.querySelector('.bindflags')
+
 		let values = splitWithRemainder(this.el.dataset.value, ',', 3).map((i: string) => i.trim())
 		this.hasDescription = bindflag_additems.includes('d')
 		if (this.hasDescription) {
+			description_el.classList.remove('hidden')
 			if (!values.at(-1).includes(',')) {
 				values.splice(2, 0, '')
 			} else {
 				values = splitWithRemainder(this.el.dataset.value, ',', 4).map((i: string) => i.trim())
 			}
+		} else {
+			description_el.classList.add('hidden')
 		}
 
 		const renderflags = {
 			option: function (data, escape) {
 				return `
-		<div id="tomselect-option">
-			<div class="label">${escape(data.text)}</div>
-			<div class="description">${escape(data.description ?? '')}</div>
-		</div>
-	`
+					<div id="tomselect-option">
+						<div class="label">${escape(data.text)}</div>
+						<div class="description">${escape(data.description ?? '')}</div>
+					</div>
+					`
 			},
 
 			item: function (data, escape) {
 				return `
-		<div>
-			<div class="label">${escape(data.text)}</div>
-		</div>
-	`
+					<div>
+						<div class="label">${escape(data.text)}</div>
+					</div>
+					`
 			},
 		}
 		//bindflags
-		let bindflag_select_el = this.el.querySelector('.bindflags')
+
+		bindflag_select_el.addEventListener('keydown', (e) => e.stopPropagation(), true)
 		this.bindflagTS = new TomSelect(bindflag_select_el, {
 			options: bindFlags,
 			valueField: 'value',
@@ -170,14 +184,19 @@ export class EditorItem_Binds {
 			}
 		})
 
-		let description_el = this.el.querySelector('.description')
 		if (this.hasDescription) {
 			description_el.classList.remove('hidden')
-			description_el.textContent = values[2].trim()
+			description_el.value = values[2].trim()
+			// console.log('description', description_el.value)
+		} else {
+			description_el.classList.add('hidden')
 		}
 		description_el.addEventListener('keydown', (e) => {
 			if (e.key === ',') {
 				e.preventDefault() // prevent the comma from being typed
+			}
+			if (!this.initial_load) {
+				this.update()
 			}
 		})
 		description_el.addEventListener('input', (e) => {
@@ -218,8 +237,6 @@ export class EditorItem_Binds {
 		// this.paramTS.createItem(params_additem)
 		paramSelect_el.value = params_additem
 		paramSelect_el.addEventListener('input', () => {
-			//
-
 			if (!this.initial_load) {
 				this.update()
 			}
@@ -237,6 +254,7 @@ export class EditorItem_Binds {
 
 	async addListeners() {
 		this.el.addEventListener('click', (e) => {
+			// console.log('clicked')
 			this.el.classList.remove('compact')
 			this.contextMenu.show()
 		})
@@ -286,13 +304,13 @@ export class EditorItem_Binds {
 		let keyPress = this.el.querySelector('.keypress').value
 		let description_el = this.el.querySelector('.description')
 		if (bindFlags.includes('d')) {
-			description_el.classList.remove('hidden')
 			this.hasDescription = true
+			description_el.classList.remove('hidden')
 		} else {
 			description_el.classList.add('hidden')
 			this.hasDescription = false
 		}
-		let description = this.el.querySelector('.description').value
+		let description = description_el.value
 		// console.log(description)
 		let disPatcherString = this.dispatcherTS.getValue()
 		let paramString = this.el.querySelector('.params').value.trim()
@@ -300,7 +318,7 @@ export class EditorItem_Binds {
 		let comment = this.comment_el.value ? `# ${this.comment_el.value}` : ''
 		this.el.dataset.name = bindflagString
 		if (this.hasDescription) {
-			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress},${description || 'has description'}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
+			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${description || 'has description'}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
 			this.el.dataset.value = `${modKeyString}, ${keyPress},${description || "I've forgotten to add a description"}, ${disPatcherString}, ${paramString}`
 		} else {
 			preview_el.innerHTML = `<span id="key">${bindflagString}</span> = <span id="value">${modKeyString}, ${keyPress}, ${disPatcherString}, ${paramString}</span>&nbsp<i class="preview-comment">${comment}</i>`
@@ -309,6 +327,7 @@ export class EditorItem_Binds {
 		// console.log(this.el.dataset.value)
 		let saved_comment = this.comment_el.value
 		this.el.dataset.comment = saved_comment
+		// description_el.classList.remove('hidden')
 		if (!this.initial_load) {
 			this.saveDebounced()
 		}

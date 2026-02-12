@@ -1,25 +1,33 @@
 .config-group {
-	background-color: var(--surface-1);
-	background-blend-mode: multiply;
+	//display: flex;
 	position: relative;
-	display: flex;
-	margin-bottom: var(--spacing-unit);
-	margin-top: var(--spacing-unit);
-	padding: 2rem;
-	padding-top: 2.5rem;
-	padding-bottom: 1rem;
-	border: 3px solid var(--surface-2);
-	border-radius: var(--border-rad);
 	flex-direction: column;
 	opacity: 1;
-	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
 	transition:
 		margin 0.3s ease,
 		scale 0.2s ease;
+	margin-top: var(--spacing-unit);
+	margin-bottom: var(--spacing-unit);
+	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
+	//box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
+	border: 3px solid var(--surface-2);
+	border-radius: var(--border-rad);
+	background-color: var(--surface-1);
+	background-blend-mode: multiply;
+	padding: 2rem;
+	padding-top: 2.5rem;
+	padding-bottom: 1rem;
+	max-width: 100%;
+	//overflow: clip;
+
+	&.rule > .editor-item {
+		//border: 1px red solid !important;
+		padding: 0.15rem;
+	}
 	@media (max-width: 768px) {
+		border: 0px;
 		padding: 0.5rem;
 		padding-top: 1.5rem;
-		border: 0px;
 	}
 
 	> .config-group {
@@ -40,18 +48,23 @@
 
 /* the floating label on the border */
 .config-group::before {
-	left: 1rem;
 	position: absolute;
 	top: 0;
-	padding: 0 0.5em;
-	background-color: var(--surface-1);
-	backdrop-filter: brightness(0.1);
-	color: var(--text-1);
-	font-size: 1.6rem;
-	font-weight: 800;
-	text-transform: capitalize;
+	left: 1rem;
 	transform: translateY(-50%);
+	//backdrop-filter: brightness(0.1);
+	//border: 0px solid;
+	outline: none;
+	//color: red;
+	//outline: red;
+	background-color: var(--surface-1);
+	padding: 0 0.5em;
 	content: attr(data-name);
+
+	color: var(--text-1);
+	font-weight: 800;
+	font-size: 1.6rem;
+	text-transform: capitalize;
 	@media (max-width: 768px) {
 		left: 50%;
 		transform: translateX(-50%) translateY(-50%);

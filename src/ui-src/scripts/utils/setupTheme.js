@@ -1,5 +1,5 @@
 import { saveWindowConfig } from './utils.ts'
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 
 GLOBAL['currentThemeIndex'] = 0
 let themeButton = document.getElementById('theme-toggle')

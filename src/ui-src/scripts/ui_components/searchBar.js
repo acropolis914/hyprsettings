@@ -1,5 +1,5 @@
 import Fuse from '../jslib/fuse.basic.min.mjs'
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 import { createOverlay, destroyOverlay } from './darken_overlay.js'
 import hotkeys from 'hotkeys-js'
 

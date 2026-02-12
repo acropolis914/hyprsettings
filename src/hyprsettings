@@ -326,7 +326,7 @@ def main():
 		if state.args.bun_dev:
 			ui_link = 'http://localhost:3000/'
 			log('Using bun dev server at localhost:3000 as per --bun-dev arg')
-
+		os.environ['GTK_OVERLAY_SCROLLING'] = '1'
 		if not state.args.no_window:
 			state.window_thread = threading.Thread(target=start_window_server, daemon=state.daemon)
 			state.window_thread.start()

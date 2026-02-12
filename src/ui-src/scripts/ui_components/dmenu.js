@@ -1,5 +1,5 @@
 // dmenu.js
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 import { createOverlay, destroyOverlay } from './darken_overlay.js'
 
 /* ============================================================

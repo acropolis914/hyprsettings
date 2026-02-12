@@ -1,6 +1,6 @@
 import { compress, decompress } from '../utils/settings_compressor.ts'
 import { render, html } from 'lit'
-import { GLOBAL } from '../GLOBAL'
+import { GLOBAL } from '../GLOBAL.ts'
 
 // --- DOM References ---
 const testingScreen = document.getElementById('compressor_screen')

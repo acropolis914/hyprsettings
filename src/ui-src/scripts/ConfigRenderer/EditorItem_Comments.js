@@ -1,7 +1,7 @@
 import { ContextMenu } from './contextMenu.js'
 import { addItem, deleteKey, saveKey } from '../utils/utils.ts'
 import { debounce } from '../utils/helpers.js'
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 import { EditorItem_Generic } from './EditorItem_Generic.ts'
 import { EditorItem_Binds } from './EditorItem_Binds.ts'
 

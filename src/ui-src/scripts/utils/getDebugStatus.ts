@@ -1,4 +1,4 @@
-import { GLOBAL } from '../GLOBAL'
+import { GLOBAL } from '../GLOBAL.ts'
 import { Backend } from './backendAPI'
 // Backend
 

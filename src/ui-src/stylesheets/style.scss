@@ -158,6 +158,7 @@ header#main-header {
 
 	ul {
 		display: flex;
+		position: relative;
 		flex-direction: column;
 		list-style: none;
 
@@ -169,6 +170,7 @@ header#main-header {
 		.sidebar-icon {
 			display: inline-flex;
 			padding: var(--spacing-unit);
+			font-weight: normal;
 			font-size: 3rem;
 			line-height: 1;
 			font-family: 'CommitMonoIconFont', monospace;
@@ -368,13 +370,14 @@ footer {
 .search-wrap {
 	//margin-top: 0.7rem;
 	position: relative;
+	box-sizing: border-box;
 	margin-left: auto;
 	border-radius: var(--border-rad);
 
 	&:is(:focus, :focus-visible, :focus-within) {
 		#search-bar {
-			border: 1px solid;
-			border-color: var(--accent);
+			border: 1px solid var(--accent);
+			//border-color: ;
 			//border-top-color: transparent;
 		}
 
@@ -395,6 +398,7 @@ footer {
 	}
 
 	#search-bar {
+		border: 1px solid transparent !important;
 		border-radius: var(--border-rad);
 		@include editor-input-reset;
 		padding-left: 0.5rem;

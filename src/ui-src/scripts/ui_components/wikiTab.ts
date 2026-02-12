@@ -1,4 +1,4 @@
-import { GLOBAL } from '../GLOBAL'
+import { GLOBAL } from '../GLOBAL.ts'
 import { Backend } from '../utils/backendAPI'
 // import * as util from 'node:util'
 import { makeUUID } from '../utils/utils.ts'

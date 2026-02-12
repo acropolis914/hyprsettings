@@ -2,7 +2,7 @@
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
+	box-sizing: border-box !important;
 }
 
 /* Prevent font size inflation */

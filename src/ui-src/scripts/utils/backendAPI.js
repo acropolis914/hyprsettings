@@ -1,4 +1,4 @@
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 import { debounce, waitFor } from './helpers.js'
 
 async function fetchFlask(path, options = {}) {

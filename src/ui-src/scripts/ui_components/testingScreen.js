@@ -1,4 +1,4 @@
-import { GLOBAL } from '@scripts/GLOBAL.js'
+import { GLOBAL } from '@scripts/GLOBAL.ts'
 const testingScreen = document.querySelector('.testing-screen')
 const testingScreenHeader = document.getElementById('testing-screen-header')
 let open = false

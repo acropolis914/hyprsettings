@@ -5,8 +5,6 @@
 	display: flex;
 	position: relative;
 	flex-direction: column;
-	//opacity: 0.8;
-	//opacity: 0;
 	transition:
 		margin 0.2s ease,
 		border 100ms ease-in-out,
@@ -17,7 +15,9 @@
 	border-radius: var(--border-rad);
 	background-color: var(--surface-0);
 	padding: 0.5rem;
+	//overflow: clip;
 	font-size: 1.6rem;
+
 	&::after {
 		font-family: v.$font;
 	}
@@ -167,6 +167,7 @@
 	}
 
 	.keybind-editor {
+		//display: block;
 		position: relative;
 		gap: 0.5rem;
 		color: var(--text-0);
@@ -272,7 +273,7 @@
 		}
 	}
 
-	&.focus-visible {
+	&:is(:focus-visible, :focus) {
 		outline: 2px solid var(--accent-color) !important;
 		outline-offset: 2px !important;
 	}

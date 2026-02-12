@@ -11,7 +11,7 @@ import './ui_components/searchBar.js'
 import './ConfigRenderer/keyEditor_Slider.js'
 import '@scripts/ui_components/shareConfig.ts'
 
-import { GLOBAL } from './GLOBAL.js'
+import { GLOBAL } from './GLOBAL.ts'
 import { Backend } from './utils/backendAPI.js'
 import setupTheme from './utils/setupTheme.js'
 

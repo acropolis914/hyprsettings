@@ -1,4 +1,4 @@
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 import { changeTheme, incrementCurrentTheme } from '../utils/setupTheme.js'
 import { makeUUID, saveWindowConfig } from '../utils/utils.ts'
 import { Backend } from '@scripts/utils/backendAPI.js'
@@ -351,10 +351,10 @@ function createThemeSelectorSetting() {
 export async function getHyprsettingsGithubVersion(element) {
 	const res = await fetch('https://raw.githubusercontent.com/acropolis914/hyprsettings/refs/heads/master/src/.version')
 	const full = (await res.text()).trim()
-	console.log({
-		full,
-		base: full.split('.').slice(0, 4).join('.'),
-	})
+	// console.log({
+	// 	full,
+	// 	base: full.split('.').slice(0, 4).join('.'),
+	// })
 	GLOBAL.setKey('githubVersion', full)
 
 	if (full !== (await Backend.getHyprSettingsVersion())) {

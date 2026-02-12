@@ -1,4 +1,4 @@
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 import { updateJsonViewerTheme } from '../utils/setupTheme.js'
 
 export default function initializeJSViewer() {

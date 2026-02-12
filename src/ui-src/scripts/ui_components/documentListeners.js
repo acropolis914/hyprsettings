@@ -1,4 +1,4 @@
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 import { hideAllContextMenus } from '@scripts/utils/utils.ts'
 import { createOverlay } from './darken_overlay.js'
 import hotkeys from 'hotkeys-js'
@@ -150,7 +150,7 @@ function attemptSwitchToMain() {
 }
 
 function returnToTabs() {
-	console.log('returning to tabs')
+	console.log('Returning to tabs')
 	GLOBAL.setKey('currentView', 'tabs')
 	const activeElem = document.activeElement
 	if (activeElem && activeElem.dataset.uuid != null) {
@@ -211,7 +211,9 @@ function navigateEditorItems(direction) {
 		}
 	}
 
-	if (!activeElement || activeElement.getAttribute('tabindex') == null) return
+	if (!activeElement || activeElement.getAttribute('tabindex') == null) {
+		activeElement = currentSet.querySelector('.editor-item:not(.settings-hidden)')
+	}
 
 	const children = Array.from(currentSet.querySelectorAll('.editor-item'))
 	const currentIndex = children.indexOf(activeElement)
@@ -287,6 +289,13 @@ function initializeGlobalListeners() {
 	document.addEventListener('mousedown', (e) => {
 		if (!e.target.closest('.context-menu, .editor-item')) {
 			hideAllContextMenus()
+		}
+	})
+
+	document.addEventListener('click', (e) => {
+		// console.log(e.target)
+		if (e.target.classList.contains('config-set') || e.target.classList.contains('editor-item')) {
+			handleMainView(e)
 		}
 	})
 

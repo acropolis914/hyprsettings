@@ -1,5 +1,5 @@
 import { saveWindowConfig } from '../utils/utils.ts'
-import { GLOBAL } from '../GLOBAL.js'
+import { GLOBAL } from '../GLOBAL.ts'
 
 const onboardingUI = document.getElementById('onboarding')
 const finishBtn = document.getElementById('onboarding-finish')

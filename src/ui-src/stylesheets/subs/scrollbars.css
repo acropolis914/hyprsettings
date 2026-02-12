@@ -1,4 +1,4 @@
-/* Firefox */
+/*!* Firefox *!*/
 * {
 	scrollbar-width: auto; /* or thin */
 	scrollbar-color: auto; /* don't force colors yet */
@@ -6,12 +6,16 @@
 
 /* Chromium / WebKit */
 *::-webkit-scrollbar {
-	width: 8px;
-	height: 8px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 1px;
+	/*height: 8px;*/
+	min-width: 1px !important;
 }
 
 *::-webkit-scrollbar-track {
-	background: var(--surface-1);
+	background: transparent !important;
 }
 
 *::-webkit-scrollbar-thumb {
@@ -25,6 +29,16 @@
 }
 
 
-.scrollable::-webkit-scrollbar {
-	display: none; /* WebKitGTK */
-}
+/*.scrollable::-webkit-scrollbar {*/
+/*	display: none; !* WebKitGTK *!*/
+/*}*/
+
+/*.scrollable {*/
+/*	scrollbar-width: none; !* hides scrollbar *!*/
+/*	-ms-overflow-style: none; !* for IE/Edge *!*/
+/*}*/
+
+/*!* Chromium / WebKit *!*/
+/*.scrollable::-webkit-scrollbar {*/
+/*	display: none; !* hides scrollbar *!*/
+/*}*/

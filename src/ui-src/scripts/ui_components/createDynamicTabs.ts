@@ -4,6 +4,7 @@ import { GLOBAL } from '../GLOBAL.js'
 import ContextMenu from './verticalContextMenu.svelte'
 import { mount, unmount } from 'svelte'
 import { counter, menuState } from './svelteStates.svelte.js'
+import { waitFor } from '@scripts/utils/helpers'
 
 let initialLoad = true
 
@@ -83,7 +84,7 @@ class ConfigTab {
 		let item = document.createElement('div')
 		item.classList.add('config-set')
 		item.id = this.id
-		item.classList.add('hidden')
+		item.classList.add('hidden', 'scrollable')
 		item.addEventListener('click', (e) => {
 			if (GLOBAL.currentView !== 'main') {
 				GLOBAL.setKey('previousView', GLOBAL.currentView)
@@ -154,8 +155,12 @@ class ConfigTab {
 }
 
 export default async function createDynamicTabs() {
-	return new Promise((resolve) => {
-		let sidebar = document.querySelector('aside#sidebar>ul')
+	return new Promise(async (resolve) => {
+		// const simpleBarInstance = new SimpleBar(document.querySelector('#scroll-wrapper'))
+		// const contentEl = simpleBarInstance.getContentElement()
+
+		let sidebar = document.querySelector('aside#sidebar>ul') //TODO Fix sidebar .simplebar-content > ul:nth-child(1)
+		// let sidebar = await waitFor(() => document.querySelector('.simplebar-content > ul'))
 		sidebar.innerHTML = ''
 		document.querySelectorAll('.config-set').forEach((element) => {
 			element.remove()
