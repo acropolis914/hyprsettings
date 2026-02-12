@@ -1,6 +1,6 @@
 import { ContextMenu } from './contextMenu.js'
-import { addItem, deleteKey, saveKey } from '../utils.ts'
-import { debounce } from '../helpers.js'
+import { addItem, deleteKey, saveKey } from '../utils/utils.ts'
+import { debounce } from '../utils/helpers.js'
 import { GLOBAL } from '../GLOBAL.js'
 import { EditorItem_Generic } from './EditorItem_Generic.ts'
 import { EditorItem_Binds } from './EditorItem_Binds.ts'
@@ -21,18 +21,14 @@ export class EditorItem_Comments {
 		// let [name, value] = this.el.dataset.comment.replace(/^[ #]+/, '').split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
 		// if (name && value){
 		// }
-		let position_title = json['position']
-			.replace('root:', '')
-			.replaceAll(':', ' 󰄾 ')
+		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
 		this.el.title = `  Location: ${position_title}`
 		this.el.classList.add('editor-item')
 		this.el.setAttribute('tabindex', 0)
 		if (hidden) {
 			this.el.classList.add('settings-hidden')
 		}
-		this.textarea = this.el.appendChild(
-			document.createElement('textarea'),
-		)
+		this.textarea = this.el.appendChild(document.createElement('textarea'))
 		// this.textarea.contentEditable = "true"
 		this.textarea.setAttribute('rows', '1')
 		this.textarea.classList.add('editor-item-comment')
@@ -130,9 +126,7 @@ export class EditorItem_Comments {
 	}
 
 	gotoNext(down = true) {
-		let nextSibling = down
-			? this.el.nextElementSibling
-			: this.el.previousElementSibling
+		let nextSibling = down ? this.el.nextElementSibling : this.el.previousElementSibling
 		if (!nextSibling) {
 			if (down) {
 				nextSibling = this.el.parentNode.firstElementChild
@@ -186,10 +180,7 @@ export class EditorItem_Comments {
 	}
 
 	save() {
-		if (
-			!this.el.dataset.comment.trim().startsWith('#') &&
-			this.el.dataset.comment.split('=').length > 1
-		) {
+		if (!this.el.dataset.comment.trim().startsWith('#') && this.el.dataset.comment.split('=').length > 1) {
 			console.log('detected comment to key transformation')
 			let [name, value] = this.el.dataset.comment
 				.split(/=(.*)/)
@@ -203,15 +194,7 @@ export class EditorItem_Comments {
 			let type = 'KEY'
 			let position = this.el.dataset.position
 			if (name && value) {
-				saveKey(
-					type,
-					name,
-					uuid,
-					position,
-					value,
-					(comment = comment),
-					false,
-				)
+				saveKey(type, name, uuid, position, value, (comment = comment), false)
 				let json = {
 					name: name,
 					uuid: uuid,
@@ -221,13 +204,9 @@ export class EditorItem_Comments {
 					type: type,
 				}
 				if (name.startsWith('bind')) {
-					this.el.replaceWith(
-						new EditorItem_Binds(json).return(),
-					)
+					this.el.replaceWith(new EditorItem_Binds(json).return())
 				} else {
-					this.el.replaceWith(
-						new EditorItem_Generic(json).return(),
-					)
+					this.el.replaceWith(new EditorItem_Generic(json).return())
 				}
 			}
 		} else {

@@ -1,4 +1,4 @@
-import { hideAllContextMenus } from '../utils.ts'
+import { hideAllContextMenus } from '../utils/utils.ts'
 import { GLOBAL } from '../GLOBAL.js'
 import tippy, { hideAll } from 'tippy.js'
 import { roundArrow } from 'tippy.js'

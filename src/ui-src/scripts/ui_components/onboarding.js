@@ -1,4 +1,4 @@
-import { saveWindowConfig } from '../utils.ts'
+import { saveWindowConfig } from '../utils/utils.ts'
 import { GLOBAL } from '../GLOBAL.js'
 
 const onboardingUI = document.getElementById('onboarding')

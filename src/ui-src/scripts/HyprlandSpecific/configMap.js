@@ -81,6 +81,7 @@ export const configGroups = [
 	['debug', 'miscellaneous'],
 	['misc', 'miscellaneous'],
 	['opengl', 'miscellaneous'],
+	['plugin', 'miscellaneous'],
 
 	// layer rules
 	['layerrule', 'layer-rules'],

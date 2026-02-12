@@ -1,5 +1,5 @@
 // import { debounce } from '../utils.js';
-import { debounce } from '../helpers.js'
+import { debounce } from '../utils/helpers.js'
 
 export class BezierModal {
 	constructor(initialValue) {
@@ -15,10 +15,7 @@ export class BezierModal {
 
 		// Debounced emit for performance
 		this._debouncedEmit = debounce(() => this._emit(), 5)
-		this._debouncedNotifyInputListeners = debounce(
-			() => this._notifyInputListeners(),
-			5,
-		)
+		this._debouncedNotifyInputListeners = debounce(() => this._notifyInputListeners(), 5)
 
 		// ---- Text editor ----
 		this.textEditor = document.createElement('input')
@@ -113,9 +110,7 @@ export class BezierModal {
 
 	get value() {
 		const name = this.textEditor.value
-		const points = this.curveEditor.points
-			.map((p) => Math.round(p * 100) / 100)
-			.join(',')
+		const points = this.curveEditor.points.map((p) => Math.round(p * 100) / 100).join(',')
 		return `${name}, ${points}`
 	}
 
@@ -185,20 +180,14 @@ export class BezierPreview {
 	constructor(parent) {
 		this.parent = parent
 
-		this.svg = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'svg',
-		)
+		this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 		this.svg.classList.add('curve-preview')
 
 		this.svg.style.width = '100%'
 		this.svg.style.height = '100%'
 		this.svg.style.display = 'block'
 
-		this.window = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'rect',
-		)
+		this.window = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		this.window.setAttribute('fill', 'var(--accent)')
 		this.window.setAttribute('rx', 2)
 		this.window.setAttribute('ry', 2)
@@ -231,8 +220,7 @@ export class BezierPreview {
 		this._intersectionObserver = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry) => {
-					const isVisible =
-						entry.isIntersecting && this._isParentVisible()
+					const isVisible = entry.isIntersecting && this._isParentVisible()
 
 					if (!isVisible && !this._wasHidden) {
 						this._wasHidden = true
@@ -309,10 +297,7 @@ export class BezierPreview {
 			const y1 = this._yVals[i + 1] ?? y0
 			const y = y0 + (y1 - y0) * f
 
-			const maxW = Math.min(
-				this.width * 0.75,
-				(this.height * 0.75 * 16) / 9,
-			)
+			const maxW = Math.min(this.width * 0.75, (this.height * 0.75 * 16) / 9)
 			this._draw(maxW * y)
 
 			if (t >= 1) {
@@ -328,10 +313,7 @@ export class BezierPreview {
 	_reset() {
 		this.stopAnimation()
 		if (this._yVals && this._yVals.length > 0) {
-			const maxW = Math.min(
-				this.width * 0.75,
-				(this.height * 0.75 * 16) / 9,
-			)
+			const maxW = Math.min(this.width * 0.75, (this.height * 0.75 * 16) / 9)
 			this._draw(maxW * this._yVals[0])
 		}
 	}
@@ -397,10 +379,7 @@ export class BezierEditor {
 		}
 
 		// Create SVG
-		this.svg = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'svg',
-		)
+		this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 		this.svg.classList.add('curve-editor')
 
 		// Make SVG fill the flex-allocated space
@@ -411,36 +390,24 @@ export class BezierEditor {
 		this.parent.appendChild(this.svg)
 
 		// Unit square
-		this.unitSquare = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'rect',
-		)
+		this.unitSquare = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		this.unitSquare.setAttribute('fill', this.colors.unitSquare)
 		this.svg.appendChild(this.unitSquare)
 
 		// Path
-		this.path = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'path',
-		)
+		this.path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 		this.path.setAttribute('stroke', this.colors.path)
 		this.path.setAttribute('fill', 'none')
 		this.path.setAttribute('stroke-width', '2')
 		this.svg.appendChild(this.path)
 
 		// Handles
-		this.handle1 = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'circle',
-		)
+		this.handle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
 		this.handle1.setAttribute('r', 8)
 		this.handle1.setAttribute('fill', this.colors.handle1)
 		this.svg.appendChild(this.handle1)
 
-		this.handle2 = document.createElementNS(
-			'http://www.w3.org/2000/svg',
-			'circle',
-		)
+		this.handle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
 		this.handle2.setAttribute('r', 8)
 		this.handle2.setAttribute('fill', this.colors.handle2)
 		this.svg.appendChild(this.handle2)
@@ -498,10 +465,7 @@ export class BezierEditor {
 		this.gridLines = []
 
 		const addLine = (x1, y1, x2, y2, color, width = 1, dash = null) => {
-			const l = document.createElementNS(
-				'http://www.w3.org/2000/svg',
-				'line',
-			)
+			const l = document.createElementNS('http://www.w3.org/2000/svg', 'line')
 			l.setAttribute('x1', x1)
 			l.setAttribute('y1', y1)
 			l.setAttribute('x2', x2)
@@ -514,45 +478,15 @@ export class BezierEditor {
 		}
 
 		// Draw vertical grid
-		for (
-			let gx =
-				Math.ceil(this.range.xMin / this.gridMinor) *
-				this.gridMinor;
-			gx <= this.range.xMax;
-			gx += this.gridMinor
-		) {
-			const color =
-				Math.abs(gx % this.gridMajor) < 1e-6
-					? this.colors.gridMajor
-					: this.colors.gridMinor
-			addLine(
-				(gx - this.range.xMin) * scaleX,
-				0,
-				(gx - this.range.xMin) * scaleX,
-				H,
-				color,
-			)
+		for (let gx = Math.ceil(this.range.xMin / this.gridMinor) * this.gridMinor; gx <= this.range.xMax; gx += this.gridMinor) {
+			const color = Math.abs(gx % this.gridMajor) < 1e-6 ? this.colors.gridMajor : this.colors.gridMinor
+			addLine((gx - this.range.xMin) * scaleX, 0, (gx - this.range.xMin) * scaleX, H, color)
 		}
 
 		// Draw horizontal grid
-		for (
-			let gy =
-				Math.ceil(this.range.yMin / this.gridMinor) *
-				this.gridMinor;
-			gy <= this.range.yMax;
-			gy += this.gridMinor
-		) {
-			const color =
-				Math.abs(gy % this.gridMajor) < 1e-6
-					? this.colors.gridMajor
-					: this.colors.gridMinor
-			addLine(
-				0,
-				H - (gy - this.range.yMin) * scaleY,
-				W,
-				H - (gy - this.range.yMin) * scaleY,
-				color,
-			)
+		for (let gy = Math.ceil(this.range.yMin / this.gridMinor) * this.gridMinor; gy <= this.range.yMax; gy += this.gridMinor) {
+			const color = Math.abs(gy % this.gridMajor) < 1e-6 ? this.colors.gridMajor : this.colors.gridMinor
+			addLine(0, H - (gy - this.range.yMin) * scaleY, W, H - (gy - this.range.yMin) * scaleY, color)
 		}
 
 		// Draw Bézier curve
@@ -565,22 +499,10 @@ export class BezierEditor {
 		)
 
 		// Draw handles
-		this.handle1.setAttribute(
-			'cx',
-			(this._cp1.x - this.range.xMin) * scaleX,
-		)
-		this.handle1.setAttribute(
-			'cy',
-			H - (this._cp1.y - this.range.yMin) * scaleY,
-		)
-		this.handle2.setAttribute(
-			'cx',
-			(this._cp2.x - this.range.xMin) * scaleX,
-		)
-		this.handle2.setAttribute(
-			'cy',
-			H - (this._cp2.y - this.range.yMin) * scaleY,
-		)
+		this.handle1.setAttribute('cx', (this._cp1.x - this.range.xMin) * scaleX)
+		this.handle1.setAttribute('cy', H - (this._cp1.y - this.range.yMin) * scaleY)
+		this.handle2.setAttribute('cx', (this._cp2.x - this.range.xMin) * scaleX)
+		this.handle2.setAttribute('cy', H - (this._cp2.y - this.range.yMin) * scaleY)
 	}
 
 	_setupEvents() {
@@ -588,12 +510,7 @@ export class BezierEditor {
 		const isNear = (mx, my, cp) => {
 			const scaleX = this.width / (this.range.xMax - this.range.xMin)
 			const scaleY = this.height / (this.range.yMax - this.range.yMin)
-			return (
-				Math.hypot(
-					mx - (cp.x - this.range.xMin) * scaleX,
-					my - (this.height - (cp.y - this.range.yMin) * scaleY),
-				) < 10
-			)
+			return Math.hypot(mx - (cp.x - this.range.xMin) * scaleX, my - (this.height - (cp.y - this.range.yMin) * scaleY)) < 10
 		}
 
 		svg.addEventListener('pointerdown', (e) => {
@@ -614,17 +531,8 @@ export class BezierEditor {
 			const scaleX = this.width / (this.range.xMax - this.range.xMin)
 			const scaleY = this.height / (this.range.yMax - this.range.yMin)
 
-			this.dragging.x = Math.max(
-				this.range.xMin,
-				Math.min(this.range.xMax, mx / scaleX + this.range.xMin),
-			)
-			this.dragging.y = Math.max(
-				this.range.yMin,
-				Math.min(
-					this.range.yMax,
-					(this.height - my) / scaleY + this.range.yMin,
-				),
-			)
+			this.dragging.x = Math.max(this.range.xMin, Math.min(this.range.xMax, mx / scaleX + this.range.xMin))
+			this.dragging.y = Math.max(this.range.yMin, Math.min(this.range.yMax, (this.height - my) / scaleY + this.range.yMin))
 
 			this._draw()
 			if (this.onchange) this.onchange(this.points)

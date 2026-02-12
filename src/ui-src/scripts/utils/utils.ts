@@ -1,6 +1,6 @@
 import { Backend, saveConfigDebounced } from './backendAPI.js'
-import { GLOBAL } from './GLOBAL.js'
-import { ConfigRenderer } from './configRenderer.ts'
+import { GLOBAL } from '../GLOBAL.js'
+import { _configRenderer } from '../ConfigRenderer/_configRenderer.ts'
 
 export function hideAllContextMenus() {
 	document.querySelectorAll('.context-menu').forEach((ctx) => {
@@ -138,7 +138,7 @@ export function duplicateKey(uuid, position, below = true, element: HTMLElement)
 	let newNode = JSON.parse(JSON.stringify(node))
 	newNode.uuid = newuuid
 	parent.children.splice(nodeIndex + (below ? 1 : 0), 0, newNode)
-	new ConfigRenderer(newNode, element, below)
+	new _configRenderer(newNode, element, below)
 
 	let file = path
 		.slice(1)

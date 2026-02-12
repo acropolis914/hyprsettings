@@ -1,5 +1,5 @@
 import { GLOBAL } from '../GLOBAL'
-import { Backend } from '../backendAPI'
+import { Backend } from './backendAPI'
 // Backend
 
 export default async function getDebugStatus() {

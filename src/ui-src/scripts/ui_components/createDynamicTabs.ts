@@ -1,5 +1,5 @@
-import { saveWindowConfig } from '../utils.ts'
-import { tabs } from '../hyprland-specific/configMap.js'
+import { saveWindowConfig } from '../utils/utils.ts'
+import { tabs } from '@scripts/HyprlandSpecific/configMap.js'
 import { GLOBAL } from '../GLOBAL.js'
 import ContextMenu from './verticalContextMenu.svelte'
 import { mount, unmount } from 'svelte'

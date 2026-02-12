@@ -1,5 +1,5 @@
 import { GLOBAL } from '../GLOBAL.js'
-import { hideAllContextMenus } from '@scripts/utils.ts'
+import { hideAllContextMenus } from '@scripts/utils/utils.ts'
 import { createOverlay } from './darken_overlay.js'
 import hotkeys from 'hotkeys-js'
 

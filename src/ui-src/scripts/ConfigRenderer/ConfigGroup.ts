@@ -1,6 +1,6 @@
 // @ts-check
-import { saveKey, deleteKey, duplicateKey } from '../utils.js'
-import { debounce } from '../helpers.js'
+import { saveKey, deleteKey, duplicateKey } from '../utils/utils.js'
+import { debounce } from '../utils/helpers.js'
 import { ContextMenu } from './contextMenu.js'
 import { dmenuConfirm } from '../ui_components/dmenu'
 

@@ -1,6 +1,6 @@
-import { parseHyprColor } from '../hyprland-specific/colorparser.js'
+import { parseHyprColor } from '@scripts/HyprlandSpecific/colorparser.js'
 import noUiSlider from '../jslib/nouislider.min.mjs'
-import { getSwatch } from '../setupTheme.js'
+import { getSwatch } from '../utils/setupTheme.js'
 import Sortable from '../jslib/sortable.core.esm.js'
 
 export class GradientModal {
@@ -110,9 +110,7 @@ export class GradientModal {
 	}
 
 	get value() {
-		const colors = Array.from(this.colorContainer.children).map(
-			(c) => c.value,
-		)
+		const colors = Array.from(this.colorContainer.children).map((c) => c.value)
 		const angle = parseInt(this.angleEl.noUiSlider.get())
 		return `${colors.join(' ')}${angle}deg`
 	}
@@ -247,12 +245,7 @@ export class GradientModal {
 			const y = e.clientY
 
 			// Check if click is inside remove button bounds
-			if (
-				x >= btnRect.left &&
-				x <= btnRect.right &&
-				y >= btnRect.top &&
-				y <= btnRect.bottom
-			) {
+			if (x >= btnRect.left && x <= btnRect.right && y >= btnRect.top && y <= btnRect.bottom) {
 				// Call the colordiv's right-click handler
 				const event = new MouseEvent('contextmenu', {
 					bubbles: false,

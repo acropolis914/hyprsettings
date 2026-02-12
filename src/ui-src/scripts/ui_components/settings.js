@@ -1,7 +1,7 @@
-import { GLOBAL } from './GLOBAL.js'
-import { changeTheme, incrementCurrentTheme } from './setupTheme.js'
-import { makeUUID, saveWindowConfig } from './utils.ts'
-import { Backend } from '@scripts/backendAPI.js'
+import { GLOBAL } from '../GLOBAL.js'
+import { changeTheme, incrementCurrentTheme } from '../utils/setupTheme.js'
+import { makeUUID, saveWindowConfig } from '../utils/utils.ts'
+import { Backend } from '@scripts/utils/backendAPI.js'
 
 let settingsEl = document.querySelector('.config-set#settings')
 let VERSION = '0.9.0'
@@ -17,7 +17,6 @@ export default async function renderSettings() {
 	createSidebarIconsVisibilitySetting()
 	createAnimationsToggleSetting()
 	createThemeSelectorSetting()
-	// createShareConfigSetting()
 }
 
 /**

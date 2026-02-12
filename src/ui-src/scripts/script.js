@@ -8,12 +8,12 @@ import './ui_components/documentListeners.js'
 import './ui_components/onboarding.js'
 import './ui_components/testingScreen.js'
 import './ui_components/searchBar.js'
-import './hyprland-components/keyEditor_Slider.js'
+import './ConfigRenderer/keyEditor_Slider.js'
 import '@scripts/ui_components/shareConfig.ts'
 
 import { GLOBAL } from './GLOBAL.js'
-import { Backend } from './backendAPI.js'
-import setupTheme from './setupTheme.js'
+import { Backend } from './utils/backendAPI.js'
+import setupTheme from './utils/setupTheme.js'
 
 import initializeJSViewer from './ui_components/jsViewer.js'
 import initializeSearchBar from './ui_components/searchBar.js'
@@ -21,8 +21,8 @@ import createDynamicTabs from './ui_components/createDynamicTabs.ts'
 import createLoadingOverlay from './ui_components/darken_overlay.js'
 import createWiki from './ui_components/wikiTab.ts'
 
-import getAndRenderConfig, { clearConfigItems } from './configRenderer.ts'
-import renderSettings from './settings.js'
+import getAndRenderConfig, { clearConfigItems } from './ConfigRenderer/_configRenderer.ts'
+import renderSettings from './ui_components/settings.js'
 
 import getDebugStatus from './utils/getDebugStatus.ts'
 

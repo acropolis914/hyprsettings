@@ -1,18 +1,18 @@
 // import { hideAllContextMenus, waitFor } from './utils.js'
-import { EditorItem_Generic } from './hyprland-components/EditorItem_Generic.ts'
-import { EditorItem_Comments } from './hyprland-components/EditorItem_Comments.js'
-import { EditorItem_Binds } from './hyprland-components/EditorItem_Binds.ts'
-import { tabids, keyNameStarts, configGroups } from './hyprland-specific/configMap.js'
-import { ConfigGroup } from './hyprland-components/ConfigGroup.ts'
-import { GLOBAL } from './GLOBAL.js'
-import { Backend } from '@scripts/backendAPI.js'
+import { EditorItem_Generic } from './EditorItem_Generic.ts'
+import { EditorItem_Comments } from './EditorItem_Comments.js'
+import { EditorItem_Binds } from './EditorItem_Binds.ts'
+import { tabids, keyNameStarts, configGroups } from '@scripts/HyprlandSpecific/configMap.js'
+import { ConfigGroup } from './ConfigGroup.ts'
+import { GLOBAL } from '../GLOBAL.js'
+import { Backend } from '@scripts/utils/backendAPI.js'
 import { destroyOverlay } from '@scripts/ui_components/darken_overlay.js'
-import { waitFor } from './helpers'
+import { waitFor } from '../utils/helpers'
 
 export default async function getAndRenderConfig() {
 	GLOBAL.onChange('data', (value) => {
 		if (typeof value === 'object') {
-			new ConfigRenderer(GLOBAL.data)
+			new _configRenderer(GLOBAL.data)
 		}
 	})
 	await Backend.getHyprlandConfig()
@@ -34,7 +34,7 @@ export function clearConfigItems() {
 	})
 }
 
-export class ConfigRenderer {
+export class _configRenderer {
 	private readonly json: Record<string, any>
 	current_container: any[]
 	comment_stack: any[]
@@ -73,7 +73,7 @@ export class ConfigRenderer {
 
 		// console.log(this.comment_stack, this.comment_queue)
 		while (this.renderTo && this.temporaryElement.firstChild) {
-			let el = this.temporaryElement.firstElementChild
+			let el = this.temporaryElement.firstElementChild as HTMLDivElement
 			if (this.renderAfter) {
 				this.renderTo.after(el)
 			} else {

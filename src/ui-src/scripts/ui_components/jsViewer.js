@@ -1,5 +1,5 @@
 import { GLOBAL } from '../GLOBAL.js'
-import { updateJsonViewerTheme } from '../setupTheme.js'
+import { updateJsonViewerTheme } from '../utils/setupTheme.js'
 
 export default function initializeJSViewer() {
 	GLOBAL.onChange('data', () => {
