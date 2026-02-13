@@ -56,6 +56,10 @@ function handleTabsView(event) {
 		event.preventDefault()
 		navigateSidebar(key === 'ArrowDown' ? 1 : -1)
 	}
+	if (key === 'Tab') {
+		event.preventDefault()
+		attemptSwitchToMain()
+	}
 }
 
 /**

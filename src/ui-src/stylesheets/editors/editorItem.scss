@@ -146,6 +146,9 @@
 			max-width: 100%;
 			//border: 1px solid red;
 			overflow: visible;
+			&:is(:focus, :focus-within) {
+				outline: none;
+			}
 		}
 		//&:has([data-coloris]) {
 		//	overflow: hidden;

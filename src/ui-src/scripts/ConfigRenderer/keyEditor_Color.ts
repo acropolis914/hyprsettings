@@ -6,16 +6,29 @@ export class ColorModal {
 		let initialized = false
 		this.el = document.createElement('input')
 		this.el.setAttribute('type', 'text')
+		// this.el.setAttribute('readonly', 'readonly')
+		// this.el.setAttribute('tabindex', '-1')
 		this.el.setAttribute('data-coloris', '')
 		const num = Number(value)
 		this.el.value = Number.isNaN(num) ? parseHyprColor(value) : parseHyprColor(num)
 		this.el.style.color = 'transparent'
 		this.el.style.outline = `10px solid ${this.el.value}`
 		this.el.addEventListener('input', () => {
-			this.el.style.outline = `10px solid ${this.el.value}`
+			this.el.style.outline = `11px solid ${this.el.value}`
 		})
 
 		initialized = true
 		return this.el
+	}
+
+	addListeners() {
+		this.el.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') {
+				e.preventDefault()
+				e.stopPropagation()
+				e.stopImmediatePropagation()
+				this.el.click()
+			}
+		})
 	}
 }

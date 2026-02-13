@@ -1,8 +1,8 @@
 @use '_variables' as v;
 @mixin text-ellipsis {
-	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 @mixin sidebar-item-active {
@@ -13,69 +13,69 @@
 
 // Mixin for standard editor input reset
 @mixin editor-input-reset {
-	padding: 2px;
-	border: 0;
 	margin: 0;
 	outline: none;
+	border: 0;
+	background-color: var(--surface-1);
+	padding: 2px;
 	resize: none;
 	color: var(--text-0);
-	background-color: var(--surface-1);
 }
 
 // Mixin for a standard focused editor item (non-group)
 @mixin editor-focused($content-code, $color-var) {
-	border: 1px solid var(--accent-hover);
 	opacity: 1;
+	border: 1px solid var(--accent-hover);
 
 	&::after {
-		content: $content-code;
-		font-family: v.$font-nerd;
 		position: absolute;
-		left: -1.5rem;
 		top: 50%;
+		left: -1.5rem;
 		transform: translateY(-50%);
+		content: $content-code;
 		color: $color-var;
 		font-weight: bold;
+		font-family: v.$font-nerd;
 	}
 }
 
 // Mixin for a focused config group
 @mixin config-group-focused($content-code, $color-var) {
-	border: 3px solid var(--accent-hover);
 	opacity: 1;
+	border: 3px solid var(--accent-hover);
 
 	&::after {
-		content: $content-code;
-		font-family: v.$font-nerd;
 		position: absolute;
-		left: 0.5rem;
 		top: 0rem;
+		left: 0.5rem;
+		align-content: center;
 		transform: translateY(-50%);
+		background-color: var(--surface-1);
+		padding-left: 0.2rem;
+		width: 1rem;
+		content: $content-code;
 		color: $color-var;
 		font-weight: bold;
-		width: 1rem;
-		background-color: var(--surface-1);
-		align-content: center;
-		padding-left: 0.2rem;
+		font-family: v.$font-nerd;
 	}
 }
 
 // Common input styling for text fields in modals (minimal reset)
 %input-clean {
+	outline: none !important;
+	box-shadow: none !important;
 	border: 0;
 	border-radius: var(--border-rad);
 	background-color: transparent;
-	color: var(--text-1);
-	font-family: v.$font;
-	font-weight: 400;
-	outline: none !important;
-	box-shadow: none !important;
-	resize: none;
 	overflow: hidden;
+	resize: none;
+	color: var(--text-1);
+	font-weight: 400;
+	font-family: v.$font;
 
 	&:hover {
-		color: var(--text-1);
 		cursor: text;
+		color: var(--text-1);
 	}
 
 	&:focus,
@@ -87,8 +87,8 @@
 // Common button interaction/scale effect
 %btn-interactive {
 	position: relative;
-	background-color: var(--surface-2);
 	transition: transform 0.1s ease;
+	background-color: var(--surface-2);
 
 	&:hover {
 		transform: scale(1.05);
@@ -101,22 +101,28 @@
 }
 
 %slider-base {
-	width: 90%;
-	background-color: var(--surface-2);
 	box-shadow: none;
 	border: 1px solid var(--surface-0);
+	background-color: var(--surface-2);
+	width: 90%;
 
 	&#slider-square {
 		border-radius: 0;
 
 		.noUi-handle {
-			border-radius: 0;
-			background-color: var(--accent);
-			height: 18px;
-			width: 1rem;
 			top: -1px;
 			right: -9px;
 			cursor: ew-resize;
+			border-radius: 0;
+			background-color: var(--accent);
+			width: 1rem;
+			height: 18px;
 		}
 	}
+}
+
+@mixin isActive {
+	//scale: 1.05 !important;
+	outline: none;
+	border: 2px solid var(--accent-active) !important;
 }

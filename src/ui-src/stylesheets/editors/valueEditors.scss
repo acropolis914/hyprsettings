@@ -5,6 +5,11 @@
 	&:has(.generic-editor-gradientmodal) {
 		background-color: transparent;
 	}
+	* {
+		&:is(:focus) {
+			@include isActive;
+		}
+	}
 }
 
 .generic-editor-slidermodal {
@@ -30,6 +35,12 @@
 	border-radius: 0;
 	background-color: transparent !important;
 	width: 100%;
+
+	* {
+		&:is(:focus) {
+			@include isActive;
+		}
+	}
 
 	button {
 		@extend %btn-interactive;
@@ -73,7 +84,7 @@
 		}
 
 		> * {
-			height: 2.3rem;
+			//height: 2.3rem;
 		}
 
 		button.addGradientButton {
@@ -81,22 +92,33 @@
 			margin: 0;
 			//height: 2.1rem;
 			border-radius: 0.2rem;
+			background-color: var(--surface-1);
 			padding: 0;
-			//background-color: var(--text-0);
 			width: 100%;
 			max-width: 3rem;
 			color: var(--accent);
 			font-family: v.$font;
+			&:is(:focus, :focus-visible, :focus-within) {
+				outline: none;
+				border: var(--accent) 1px solid !important;
+			}
 		}
 
-		.gradientColorInput {
+		.gradientColorInput.gradientColorInput {
 			position: relative;
 			flex: 1 1 auto;
 			transition: all 0.1s ease-in-out;
-			border-color: transparent;
+			box-sizing: border-box !important;
+			outline: 1px solid transparent;
+			border: 2px solid transparent;
+			//border-color: transparent;
 			background-color: transparent !important;
+			&:is(:focus-within, :focus, :focus-visible, :hover) {
+				scale: 1 !important;
+				outline: 1px solid var(--accent);
+			}
 
-			&:hover button {
+			&:is(:focus-within, :focus, :focus-visible, :hover) button {
 				opacity: 1;
 			}
 
@@ -116,18 +138,25 @@
 				&:hover {
 					transform: translateY(-50%);
 				}
-
-				&:active {
-					color: var(--accent);
-					font-weight: bold;
+				&:is(:focus-within, :focus, :focus-visible, :hover) {
+					scale: 1.2;
+					outline: 1px solid var(--accent);
+					background: var(--surface-2) !important;
 				}
+
+				//&:active {
+				//	color: var(--accent);
+				//	font-weight: bold;
+				//}
 
 				&.removeGradientButton {
 					right: 0.5rem;
+					background-color: var(--surface-1);
 				}
 
 				&.dragButton {
 					right: 2.5rem;
+					background-color: var(--surface-1);
 
 					&:active {
 						cursor: grabbing;
@@ -144,7 +173,7 @@
 				z-index: 2;
 				//box-shadow: var(--surface-2) 0 3px;
 				transition: all 0.2s ease-in-out;
-				border: 1px solid var(--surface-2) !important;
+				//border: 1px solid var(--surface-2) !important;
 				//border: 2px transparent solid;
 				background-clip: padding-box;
 				width: 100%;

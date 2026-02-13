@@ -3,6 +3,9 @@ import noUiSlider from '../jslib/nouislider.min.mjs'
 import { getSwatch } from '../utils/setupTheme.js'
 import Sortable from '../jslib/sortable.core.esm.js'
 import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
+import { rgbaStringToHex } from '@scripts/utils/rgbaToHex.ts'
+import { GLOBAL } from '@scripts/GLOBAL.ts'
+import { dmenuConfirm } from '@scripts/ui_components/dmenu.js'
 
 export class GradientModal {
 	constructor(initialValue = '') {
@@ -67,6 +70,16 @@ export class GradientModal {
 		this.el.addEventListener('click', (e) => {
 			if (e._stopBubblingUp) return // skip parent logic
 		})
+		this.el.addEventListener('focusin', (e) => {
+			e.stopPropagation()
+			e.stopImmediatePropagation()
+			GLOBAL.setKey('previousView', GLOBAL.currentView)
+			GLOBAL.setKey('currentView', 'editorItem')
+		})
+
+		this.el.addEventListener('focusout', (e) => {
+			GLOBAL.setKey('currentView', 'main')
+		})
 		this.el.addEventListener('dblclick', (e) => {
 			e.stopPropagation()
 		})
@@ -110,9 +123,12 @@ export class GradientModal {
 	}
 
 	get value() {
-		const colors = Array.from(this.colorContainer.children).map((c) => c.value)
+		const colors = Array.from(this.colorContainer.children)
+			.map((c) => c.value)
+			.filter(Boolean)
+			.map((c) => rgbaStringToHex(c))
 		const angle = parseInt(this.angleEl.noUiSlider.get())
-		return `${colors.join(' ')}${angle}deg`
+		return `${colors.join(' ')} ${angle}deg`
 	}
 
 	set value(val) {
@@ -133,16 +149,15 @@ export class GradientModal {
 			let colordiv = this.createColorPreview(item)
 			this.colorContainer.appendChild(colordiv)
 
-			const ro = new ResizeObserver((entries) => {
-				const childCount = this.colorContainer.children.length
-				const neededWidth = (childCount - 1) * 50 - 50 // expected total width
-				const actualWidth = this.colorContainer.clientWidth
+			const ro = new ResizeObserver(() => {
+				requestAnimationFrame(() => {
+					const childCount = this.colorContainer.children.length
+					const neededWidth = childCount * 50 - 50
+					const actualWidth = this.colorContainer.clientWidth
 
-				if (actualWidth < neededWidth) {
-					this.colorContainer.classList.add('narrow-child')
-				} else {
-					this.colorContainer.classList.remove('narrow-child')
-				}
+					const isNarrow = actualWidth < neededWidth
+					this.colorContainer.classList.toggle('narrow-child', isNarrow)
+				})
 			})
 
 			ro.observe(colordiv)
@@ -187,22 +202,24 @@ export class GradientModal {
 		// console.log(rgba)
 		const colordiv = new ColorModal(rgba)
 		colordiv.type = 'text'
+		colordiv.tabIndex = -1
 
-		colordiv.dataset.coloris = ''
+		// colordiv.dataset.coloris = ''
 		colordiv.value = rgba
 		colordiv.style.outline = `10px solid ${rgba}`
 		colordiv.size = 1
-
 		const removeButton = Object.assign(document.createElement('button'), {
 			type: 'button',
 			className: 'removeGradientButton',
 			textContent: '',
+			tabIndex: 0,
 		})
 
 		const dragButton = document.createElement('button')
 		dragButton.type = 'button'
 		dragButton.classList.add('dragButton')
 		dragButton.textContent = ''
+		dragButton.setAttribute('tabindex', '-1')
 		const parentEl = document.createElement('div')
 		parentEl.classList.add('gradientColorInput')
 		parentEl.setAttribute('tabindex', '0')
@@ -210,6 +227,42 @@ export class GradientModal {
 		parentEl.appendChild(dragButton)
 		parentEl.appendChild(removeButton)
 
+		parentEl.addEventListener('keydown', async (e) => {
+			if (e.key === 'Enter') {
+				colordiv.click()
+				GLOBAL.setKey('previousView', GLOBAL.currentView)
+				GLOBAL.setKey('currentView', 'colorSelect')
+			}
+			if (e.key === 'Escape') {
+				colordiv.blur()
+				GLOBAL.setKey('currentView', GLOBAL.previousView)
+			}
+			if (e.key === 'Delete') {
+				let confirm = await dmenuConfirm()
+				if (confirm) {
+					let nextFocus = parentEl.nextSibling
+					parentEl.remove()
+					this._emit()
+					this._notifyInputListeners()
+					nextFocus.focus()
+				}
+			}
+		})
+		parentEl.addEventListener('keydown', (e) => {
+			// let
+			if (e.key === 'ArrowLeft' && parentEl.previousSibling !== null) {
+				parentEl.previousSibling.before(parentEl)
+				dragButton.focus()
+				this._emit()
+				this._notifyInputListeners()
+			}
+			if (e.key === 'ArrowRight' && parentEl.nextSibling.classList.contains('gradientColorInput')) {
+				parentEl.nextSibling.after(parentEl)
+				dragButton.focus()
+				this._emit()
+				this._notifyInputListeners()
+			}
+		})
 		colordiv.addEventListener('change', () => {
 			colordiv.style.outline = `10px solid ${colordiv.value}`
 		})
@@ -236,6 +289,18 @@ export class GradientModal {
 				parentEl.remove()
 				this._emit()
 				this._notifyInputListeners()
+			}
+		})
+		removeButton.addEventListener('keydown', async (e) => {
+			if (e.key === 'Enter') {
+				let confirm = await dmenuConfirm()
+				if (confirm) {
+					let nextFocus = parentEl.nextSibling
+					parentEl.remove()
+					this._emit()
+					this._notifyInputListeners()
+					nextFocus.focus()
+				}
 			}
 		})
 		parentEl.addEventListener('click', (e) => {

@@ -26,6 +26,7 @@
 	height: 100%;
 	position: relative;
 	z-index: 1;
+	background-color: var(--surface-1);
 	/*overflow: hidden;*/
 }
 
@@ -76,6 +77,12 @@
 	backface-visibility: hidden;
 	position: absolute;
 	height: 100%;
+
+	&:is(:focus,:focus-within, :focus-visible) {
+		scale: 1.2;
+		border: 1px solid var(--accent-hover);
+		width: 50%;
+	}
 }
 
 .noUi-touch-area {

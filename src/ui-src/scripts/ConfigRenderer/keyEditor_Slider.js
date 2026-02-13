@@ -1,8 +1,5 @@
 import noUiSlider from '../jslib/nouislider.min.mjs'
-// import { debounce } from '../utils.js'
 import { debounce } from '../utils/helpers.js'
-// import wNumb from "../../jslib/wNumb.min.js"
-// import "../../jslib/nouislider.css"
 export class SliderModal {
 	constructor(min, max, float = true) {
 		this._listeners = []
@@ -67,6 +64,7 @@ export class SliderModal {
 			get: () => this.value,
 			set: (val) => (this.value = val),
 		})
+		return this.el
 	}
 
 	_notifyInputListeners() {

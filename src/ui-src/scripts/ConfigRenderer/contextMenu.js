@@ -17,9 +17,14 @@ export class ContextMenu {
 			}
 		})
 
+		this.el.addEventListener('focusin', (e) => {
+			this.el.firstChild.focus()
+		})
+
 		for (const { label, icon, action, title } of items) {
 			const btnEl = document.createElement('div')
 			btnEl.classList.add('ctx-button')
+			btnEl.tabIndex = 0
 			tippy(btnEl, {
 				content: `${icon} ${label}`,
 				triggerTarget: btnEl,

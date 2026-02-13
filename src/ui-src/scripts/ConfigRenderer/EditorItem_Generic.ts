@@ -64,6 +64,7 @@ export class EditorItem_Generic {
 	keyEditor: HTMLTextAreaElement
 	genericEditor_el: Element
 	valueEditor: any
+	info: string
 
 	constructor(json: string, disabled = false) {
 		this.initial_load = true
@@ -127,7 +128,7 @@ export class EditorItem_Generic {
 					let data = this.info['data']
 
 					let float = this.info['type'] !== 'CONFIG_OPTION_INT'
-					this.valueEditor = new SliderModal(min, max).el
+					this.valueEditor = new SliderModal(min, max, float)
 					this.valueEditor.value = value
 					break
 				}
@@ -280,6 +281,7 @@ export class EditorItem_Generic {
 			contextMenuItems.splice(4, 0, contextMenuItem_reset)
 		}
 		this.contextMenu = new ContextMenu(contextMenuItems)
+		this.contextMenu.el.tabIndex = 0
 		this.el.appendChild(this.contextMenu.el)
 	}
 
@@ -290,9 +292,10 @@ export class EditorItem_Generic {
 			formatted = `<a onclick='window.gotoWiki("wiki:animations")' title="Go to Wiki">${formatted}</a>`
 		}
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
-		let value = this.valueEditor?.value || this.value || 'Please input a value'
+		let value = this.valueEditor?.value ?? this.value ?? 'Please input a value'
 
-		if (!name || !value) {
+		if (name === null || value === null) {
+			this.keyEditor.classList.remove('hidden')
 			this.el.classList.add('invalid')
 		} else {
 			this.el.classList.remove('invalid')
@@ -306,6 +309,7 @@ export class EditorItem_Generic {
 
 	addListeners() {
 		this.el.addEventListener('click', (e) => {
+			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.el.dataset.uuid
 			if (this.flipValueIfBool(false)) {
 			} else {
 				this.el.classList.remove('compact')
@@ -378,7 +382,6 @@ export class EditorItem_Generic {
 
 		this.valueEditor?.addEventListener('input', () => {
 			this.el.dataset.value = this.valueEditor.value
-			// console.log(this.valueEditor)
 			this.update()
 		})
 
@@ -391,6 +394,13 @@ export class EditorItem_Generic {
 		this.valueEditor?.addEventListener('change', () => {
 			this.el.dataset.value = this.valueEditor.value
 			this.update()
+		})
+
+		this.valueEditor?.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') {
+				e.stopPropagation()
+				e.stopImmediatePropagation()
+			}
 		})
 
 		this.commentArea.addEventListener('input', () => {

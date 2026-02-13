@@ -1,4 +1,4 @@
-type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay'
+type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem'
 
 export class GLOBAL {
 	// Map of key → array of callbacks

@@ -75,7 +75,6 @@ export const Backend = {
 			throw new Error('Failed to save config: ' + response.message)
 		} else {
 			GLOBAL.setKey('configText', response.preview)
-			// console.log(response.preview)
 		}
 	},
 
