@@ -2,6 +2,7 @@ import { parseHyprColor } from '@scripts/HyprlandSpecific/colorparser.js'
 import noUiSlider from '../jslib/nouislider.min.mjs'
 import { getSwatch } from '../utils/setupTheme.js'
 import Sortable from '../jslib/sortable.core.esm.js'
+import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
 
 export class GradientModal {
 	constructor(initialValue = '') {
@@ -80,8 +81,8 @@ export class GradientModal {
 			},
 		})
 
-		// Initialize values if provided
 		if (initialValue) this.setValue(initialValue)
+		return this.el
 	}
 
 	_notifyInputListeners() {
@@ -97,7 +98,6 @@ export class GradientModal {
 		this._listeners.push(fn)
 	}
 
-	// Reusable parser for colors + angle
 	parseValue(value) {
 		const parts = value.trim().split(' ')
 		if (parts.length < 2) return { colors: parts, angle: 0 }
@@ -135,7 +135,7 @@ export class GradientModal {
 
 			const ro = new ResizeObserver((entries) => {
 				const childCount = this.colorContainer.children.length
-				const neededWidth = childCount * 60 // expected total width
+				const neededWidth = (childCount - 1) * 50 - 50 // expected total width
 				const actualWidth = this.colorContainer.clientWidth
 
 				if (actualWidth < neededWidth) {
@@ -185,18 +185,20 @@ export class GradientModal {
 		// console.log(colorText)
 		const rgba = parseHyprColor(colorText)
 		// console.log(rgba)
-		const colordiv = document.createElement('input')
+		const colordiv = new ColorModal(rgba)
 		colordiv.type = 'text'
 
 		colordiv.dataset.coloris = ''
 		colordiv.value = rgba
-		colordiv.style.backgroundColor = rgba
+		colordiv.style.outline = `10px solid ${rgba}`
 		colordiv.size = 1
 
-		const removeButton = document.createElement('button')
-		removeButton.type = 'button'
-		removeButton.classList.add('removeGradientButton')
-		removeButton.textContent = ''
+		const removeButton = Object.assign(document.createElement('button'), {
+			type: 'button',
+			className: 'removeGradientButton',
+			textContent: '',
+		})
+
 		const dragButton = document.createElement('button')
 		dragButton.type = 'button'
 		dragButton.classList.add('dragButton')
@@ -209,10 +211,10 @@ export class GradientModal {
 		parentEl.appendChild(removeButton)
 
 		colordiv.addEventListener('change', () => {
-			colordiv.style.backgroundColor = colordiv.value
+			colordiv.style.outline = `10px solid ${colordiv.value}`
 		})
 		colordiv.addEventListener('input', () => {
-			colordiv.style.backgroundColor = colordiv.value
+			colordiv.style.outline = `10px solid ${colordiv.value}`
 			this._emit()
 			this._notifyInputListeners()
 		})

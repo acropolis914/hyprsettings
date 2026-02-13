@@ -11,6 +11,7 @@ export class BezierModal {
 
 		// Main container
 		this.el = document.createElement('div')
+		this.el.id = 'generic-value'
 		this.el.classList.add('generic-editor-beziermodal')
 
 		// Debounced emit for performance
@@ -72,15 +73,14 @@ export class BezierModal {
 			this._updating = false
 		}
 
-		// ---- Initialize value ----
 		this.value = initialValue
-
 		// Expose value on the element
 		Object.defineProperty(this.el, 'value', {
 			get: () => this.value,
 			set: (val) => (this.value = val),
 		})
 		this.initialLoad = false
+		return this.el
 	}
 
 	parseValue(value) {

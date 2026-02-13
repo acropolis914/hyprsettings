@@ -133,20 +133,19 @@
 			height: 3rem;
 		}
 		input[data-coloris] {
-			outline: 10px solid var(--surface-0);
-			outline-offset: -10px;
-		}
-		[data-coloris] {
 			position: relative;
 			z-index: 5;
 			box-sizing: border-box;
+			outline-offset: -10px;
+			border-radius: 0;
 			//border: 1px solid var(--surface-0);
 			background: url('/assets/transparent.png') center;
 			background-size: cover;
 			background-repeat: no-repeat;
+			width: 100%;
+			max-width: 100%;
 			//border: 1px solid red;
 			overflow: visible;
-			//background-color: var(--red);
 		}
 		//&:has([data-coloris]) {
 		//	overflow: hidden;
@@ -193,6 +192,7 @@
 		align-items: center;
 		margin-top: 0.2rem;
 		font-style: italic;
+		font-size: 1.4rem;
 
 		&:has(> textarea:placeholder-shown) {
 			opacity: 0.6;
@@ -201,12 +201,14 @@
 		.comment {
 			@include text-ellipsis;
 			display: flex;
+			margin-left: 1ch;
 			border: 0;
 			background: transparent;
 			width: 100%;
 			height: 2rem;
 			resize: none;
 			color: var(--text-1);
+			font-size: 1.4rem;
 			&:hover,
 			&:focus {
 				cursor: text;

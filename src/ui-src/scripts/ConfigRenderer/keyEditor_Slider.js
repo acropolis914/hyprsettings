@@ -14,8 +14,6 @@ export class SliderModal {
 		this.sliderEl.id = 'slider-square'
 		this.el.appendChild(this.sliderEl)
 
-		// this.sliderEl = document.createElement("input")
-		// this.sliderEl.setAttribute("type", range)
 		let divisor = (max - min) * 2
 		let steps = float ? (max - min) / divisor : 1
 		this.slider = noUiSlider.create(this.sliderEl, {

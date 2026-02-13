@@ -1,22 +1,22 @@
 /* --- Utility Classes ---*/
 .blank-line {
-	color: transparent;
 	max-width: 100%;
+	color: transparent;
 }
 
 .hidden,
 .settings-hidden {
 	display: none !important;
-	visibility: hidden;
 	flex: 0;
+	visibility: hidden;
 }
 
 select {
 	appearance: none;
-	color: inherit;
-	background-color: transparent;
 	outline: none;
 	border: 0px;
+	background-color: transparent;
+	color: inherit;
 }
 
 code {
@@ -46,19 +46,19 @@ span {
 }
 
 .checkbox {
-	height: 100%;
-	aspect-ratio: 1/1;
-	border-radius: var(--border-rad);
-	margin-right: 1rem;
 	position: relative;
+	margin-right: 1rem;
+	border-radius: var(--border-rad);
+	aspect-ratio: 1/1;
+	height: 100%;
 	color: var(--accent);
 	&::before {
-		content: '';
 		position: absolute;
-		font-size: 3rem;
-		left: 60%;
 		top: 50%;
+		left: 60%;
 		transform: translate(-50%, -50%);
+		content: '';
+		font-size: 3rem;
 	}
 
 	&[data-checked='true'] {
@@ -68,13 +68,17 @@ span {
 	}
 }
 
+::-webkit-inner-spin-button {
+	background: red;
+}
+
 /* Blockquotes */
 blockquote,
 .blockquote {
-	background: var(--surface-1);
 	border-left: 3px solid var(--accent);
-	padding: 0.75rem 1rem;
 	border-radius: var(--border-rad);
+	background: var(--surface-1);
+	padding: 0.75rem 1rem;
 	color: var(--text-2);
 
 	&.note {

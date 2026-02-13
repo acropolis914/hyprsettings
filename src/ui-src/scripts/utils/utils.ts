@@ -60,15 +60,15 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 		console.log('Group save in progress, skipping key save for ', name)
 		return
 	}
-	console.log('Saving key:', {
-		type,
-		name,
-		value,
-		uuid,
-		position,
-		comment,
-		disabled,
-	})
+	// console.log('Saving key:', {
+	// 	type,
+	// 	name,
+	// 	value,
+	// 	uuid,
+	// 	position,
+	// 	comment,
+	// 	disabled,
+	// })
 	let root = GLOBAL['data']
 	let path = position.split(':')
 	let file = path

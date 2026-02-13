@@ -7,7 +7,7 @@ import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { SliderModal } from './keyEditor_Slider.js'
 import { GradientModal } from './keyEditor_Gradient.js'
 import { parseHyprColor } from '@scripts/HyprlandSpecific/colorparser.js'
-import { selectFrom } from '../ui_components/dmenu.js'
+import { dmenuConfirm, selectFrom } from '../ui_components/dmenu.js'
 import { BezierModal } from './keyEditor_Bezier.js'
 import { html, render } from 'lit'
 import tippy, { followCursor, hideAll } from 'tippy.js'
@@ -15,7 +15,11 @@ import { roundArrow } from 'tippy.js'
 // import 'tippy.js/dist/tippy.css'
 // import 'tippy.js/dist/svg-arrow.css'
 // import '@stylesheets/subs/tippy.css'
-import { gotoWiki } from '../ui_components/wikiTab.ts' // optional for styling
+import { gotoWiki } from '../ui_components/wikiTab.ts'
+import { mount } from 'svelte'
+import keyEditor_Animation from '@scripts/ConfigRenderer/keyEditor_Animation.svelte'
+import createToolTippy from '@scripts/ui_components/toolTippy.ts'
+import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts' // optional for styling
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -56,9 +60,10 @@ export class EditorItem_Generic {
 	initial_load: boolean
 	el: HTMLDivElement
 	preview_el: HTMLDivElement
-	private saveDebounced: ((...args) => void) | any
+	saveDebounced: () => void | any
 	keyEditor: HTMLTextAreaElement
-	private genericEditor_el: Element
+	genericEditor_el: Element
+	valueEditor: any
 
 	constructor(json: string, disabled = false) {
 		this.initial_load = true
@@ -70,7 +75,6 @@ export class EditorItem_Generic {
 		let position = json['position']
 
 		this.saveDebounced = debounce(() => this.save(), 15)
-
 		const template = document.createElement('div')
 		render(templateString, template)
 		this.el = template.firstElementChild!.cloneNode(true) as HTMLDivElement
@@ -102,47 +106,38 @@ export class EditorItem_Generic {
 		this.keyEditor.id = 'generic-key'
 		this.keyEditor.classList.add('hidden')
 		this.keyEditor.setAttribute('placeholder', 'Input key here...')
+		this.genericEditor_el.appendChild(this.keyEditor)
 		this.config_position = position
 			.split(':')
 			.slice(1) // Remove 'root'
 			.map((s) => s.trim())
 			.filter((s) => !s.endsWith('.conf'))
 			.join(':')
-		// console.log(this.config_position)
-		this.info = findConfigDescription(this.config_position, name)
 
+		this.info = findConfigDescription(this.config_position, name)
 		if (this.info) {
 			this.el.dataset.infoType = this.info['type']
 			switch (this.info['type']) {
 				case 'CONFIG_OPTION_INT':
 				case 'CONFIG_OPTION_FLOAT': {
-					// console.log(this.el.dataset.name, "is an int with range", this.info.data)
 					const [defaultValue, min, max] = this.info['data']
 						.split(',')
 						.map((item) => item.trim())
 						.map(Number)
 					let data = this.info['data']
-					// console.log({ min, max, data })
-					this.valueEditor = new SliderModal(min, max, this.info['type'] === 'CONFIG_OPTION_INT' ? false : true).el
+
+					let float = this.info['type'] !== 'CONFIG_OPTION_INT'
+					this.valueEditor = new SliderModal(min, max).el
 					this.valueEditor.value = value
 					break
 				}
 
 				case 'CONFIG_OPTION_COLOR': {
 					try {
-						this.valueEditor = document.createElement('input')
-						this.valueEditor.setAttribute('type', 'text')
-						this.valueEditor.setAttribute('data-coloris', '')
-						if (parseInt(value)) {
-							value = Number(value)
-						}
-						this.valueEditor.value = parseHyprColor(value)
-						this.valueEditor.style.backgroundColor = this.valueEditor.value
-						this.valueEditor.style.color = 'transparent'
-						this.valueEditor.addEventListener('input', () => {
-							this.valueEditor.style.outline = `10px solid ${this.valueEditor.value}`
-						})
-					} catch (E) {
+						this.valueEditor = new ColorModal(value)
+						// console.log('Kolor', this.valueEditor)
+					} catch (e) {
+						// console.info('Lubot', e)
 						this.valueEditor = null
 					}
 					break
@@ -150,7 +145,7 @@ export class EditorItem_Generic {
 
 				case 'CONFIG_OPTION_GRADIENT': {
 					try {
-						this.valueEditor = new GradientModal(value).el
+						this.valueEditor = new GradientModal(value)
 					} catch (E) {
 						this.valueEditor = null
 					}
@@ -163,28 +158,37 @@ export class EditorItem_Generic {
 		}
 		switch (this.el.dataset.name) {
 			case 'bezier':
-				// this.el.style.backgroundColor = "red"
-				// console.log({value})
-				// console.log({name, rest})
-				this.valueEditor = new BezierModal(value).el
+				this.valueEditor = new BezierModal(value)
+				break
+			case 'animation':
+				// this.value = value
+				mount(keyEditor_Animation, {
+					target: this.genericEditor_el,
+					props: {
+						inputValue: value,
+						onChange: (value) => {
+							this.value = value
+							// console.log('value', value)
+							this.el.dataset.value = value
+							this.update()
+						},
+					},
+				})
 		}
 
-		if (!this.valueEditor) {
+		if (!this.valueEditor && this.el.dataset.name != 'animation') {
 			this.valueEditor = document.createElement('textarea')
-			// this.valueEditor = document.createElement('textarea')
 			this.valueEditor.rows = 1
-			// this.valueEditor.rows = 1
 			if (this.info) {
 				this.valueEditor.dataset.defaultData = this.info['data'].trim('"')
 			}
 			this.valueEditor.value = value
+			this.valueEditor.id = 'generic-value'
 		}
 
 		if (this.info) {
-			// console.log(this.info['type'])
 			let description = JSON.stringify(this.info['description'])
 			let type = JSON.stringify(this.info['type'])
-
 			let description_title = `${JSON.parse(description)}\n\n<strong> Type:</strong> ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
 			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
 			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
@@ -200,24 +204,13 @@ export class EditorItem_Generic {
 				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
 			}
 		}
-		this.el.setAttribute('data-tippy-content', this.tippyTitle)
-		// console.log(this.tippyTitle.replace(/\n/g, '<br>'))
-		tippy(this.el, {
-			content: `<div>${this.tippyTitle.replace(/\n/g, '<br>')}</div>`,
-			allowHTML: true,
-			followCursor: false,
-			plugins: [followCursor],
-			delay: [500, 200],
-			// interactive: true,
-			animation: 'fade',
-			arrow: roundArrow,
-			onShow(instance) {
-				hideAll({ exclude: this.el })
-			},
-		})
-		this.valueEditor.id = 'generic-value'
-		this.genericEditor_el.appendChild(this.keyEditor)
-		this.genericEditor_el.appendChild(this.valueEditor)
+
+		createToolTippy({ target: this.el, content: this.tippyTitle })
+		if (name != 'animation') {
+			//todo add a svelte flag
+			this.genericEditor_el.appendChild(this.valueEditor)
+		}
+
 		if (name === 'generic' || name.startsWith('Custom') || !name) {
 			this.keyEditor.classList.remove('hidden')
 		} else if (name.startsWith('$')) {
@@ -295,10 +288,9 @@ export class EditorItem_Generic {
 		let formatted = name.replace(/_/g, ' ') || 'Please input a key'
 		if (formatted.trim().toLowerCase() === 'animation') {
 			formatted = `<a onclick='window.gotoWiki("wiki:animations")' title="Go to Wiki">${formatted}</a>`
-			// formatted.title =
 		}
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
-		let value = this.valueEditor.value || 'Please input a value'
+		let value = this.valueEditor?.value || this.value || 'Please input a value'
 
 		if (!name || !value) {
 			this.el.classList.add('invalid')
@@ -323,6 +315,7 @@ export class EditorItem_Generic {
 		})
 		this.el.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
+			e.stopPropagation()
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('dblclick', (e) => {
@@ -383,19 +376,19 @@ export class EditorItem_Generic {
 			this.update()
 		})
 
-		this.valueEditor.addEventListener('input', () => {
+		this.valueEditor?.addEventListener('input', () => {
 			this.el.dataset.value = this.valueEditor.value
 			// console.log(this.valueEditor)
 			this.update()
 		})
 
-		this.valueEditor.addEventListener('click', (e) => {
+		this.valueEditor?.addEventListener('click', (e) => {
 			if (this.flipValueIfBool()) {
 				e.preventDefault()
 			}
 		})
 
-		this.valueEditor.addEventListener('change', () => {
+		this.valueEditor?.addEventListener('change', () => {
 			this.el.dataset.value = this.valueEditor.value
 			this.update()
 		})
@@ -404,16 +397,6 @@ export class EditorItem_Generic {
 			this.el.dataset.comment = this.commentArea.value
 			this.update()
 		})
-
-		// this.el.addEventListener('mouseenter', () => {
-		// 	// e.stopPropagation()
-		// 	setTimeout(() => {
-		// 		this.contextMenu.show()
-		// 	}, 500)
-		// })
-		// this.el.addEventListener('mouseleave', () => {
-		// 	this.contextMenu.hide()
-		// })
 	}
 
 	addToParent(parent) {
@@ -555,14 +538,17 @@ export class EditorItem_Generic {
 		}
 	}
 
-	valueReset() {
-		if (this.info.type == 'CONFIG_OPTION_INT' || (this.info.data.includes(',') && this.info.data.split(',').length === 3)) {
-			this.valueEditor.value = this.info['data'].split(',')[0].trim()
-		} else {
-			this.valueEditor.value = this.info['data']
+	async valueReset() {
+		let confirm = await dmenuConfirm()
+		if (confirm) {
+			if (this.info.type == 'CONFIG_OPTION_INT' || (this.info.data.includes(',') && this.info.data.split(',').length === 3)) {
+				this.valueEditor.value = this.info['data'].split(',')[0].trim().trim('"')
+			} else {
+				this.valueEditor.value = this.info['data'].trim().trim('"')
+			}
+			this.el.dataset.value = this.valueEditor.value
+			this.update()
 		}
-		this.el.dataset.value = this.valueEditor.value
-		this.update()
 	}
 
 	flipValueIfBool(save = true) {
