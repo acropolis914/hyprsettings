@@ -65,8 +65,11 @@ export class EditorItem_Generic {
 	genericEditor_el: Element
 	valueEditor: any
 	info: string
+	private contextMenu: HTMLElement
+	private commentArea: HTMLElement
+	config_position: any
 
-	constructor(json: string, disabled = false) {
+	constructor(json: string | object, disabled = false) {
 		this.initial_load = true
 
 		let name = json['name']
@@ -101,7 +104,6 @@ export class EditorItem_Generic {
 		this.preview_el = this.el.querySelector('.editor-item-preview')
 
 		this.genericEditor_el = this.el.querySelector('.generic-editor')
-		// this.genericEditor_el.innerHTML = ''
 		this.keyEditor = document.createElement('textarea')
 		this.keyEditor.rows = 1
 		this.keyEditor.id = 'generic-key'
@@ -116,73 +118,13 @@ export class EditorItem_Generic {
 			.join(':')
 
 		this.info = findConfigDescription(this.config_position, name)
-		if (this.info) {
-			this.el.dataset.infoType = this.info['type']
-			switch (this.info['type']) {
-				case 'CONFIG_OPTION_INT':
-				case 'CONFIG_OPTION_FLOAT': {
-					const [defaultValue, min, max] = this.info['data']
-						.split(',')
-						.map((item) => item.trim())
-						.map(Number)
-					let data = this.info['data']
 
-					let float = this.info['type'] !== 'CONFIG_OPTION_INT'
-					this.valueEditor = new SliderModal(min, max, float)
-					this.valueEditor.value = value
-					break
-				}
-
-				case 'CONFIG_OPTION_COLOR': {
-					try {
-						this.valueEditor = new ColorModal(value)
-						// console.log('Kolor', this.valueEditor)
-					} catch (e) {
-						// console.info('Lubot', e)
-						this.valueEditor = null
-					}
-					break
-				}
-
-				case 'CONFIG_OPTION_GRADIENT': {
-					try {
-						this.valueEditor = new GradientModal(value)
-					} catch (E) {
-						this.valueEditor = null
-					}
-					break
-				}
-				case 'CONFIG_OPTION_BOOL': {
-					break
-				}
-			}
-		}
-		switch (this.el.dataset.name) {
-			case 'bezier':
-				this.valueEditor = new BezierModal(value)
-				break
-			case 'animation':
-				// this.value = value
-				mount(keyEditor_Animation, {
-					target: this.genericEditor_el,
-					props: {
-						inputValue: value,
-						onChange: (value) => {
-							this.value = value
-							// console.log('value', value)
-							this.el.dataset.value = value
-							this.update()
-						},
-					},
-				})
-		}
-
-		if (!this.valueEditor && this.el.dataset.name != 'animation') {
+		this.valueEditor = this.createValueEditor(value)
+		if (!this.valueEditor && this.el.dataset.name !== 'animation') {
+			// console.log(this.el.dataset, 'has no value editor')
 			this.valueEditor = document.createElement('textarea')
 			this.valueEditor.rows = 1
-			if (this.info) {
-				this.valueEditor.dataset.defaultData = this.info['data'].trim('"')
-			}
+			if (this.info) this.valueEditor.dataset.defaultData = this.info.data.trim('"')
 			this.valueEditor.value = value
 			this.valueEditor.id = 'generic-value'
 		}
@@ -201,15 +143,21 @@ export class EditorItem_Generic {
 				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue} • Min: ${min} • Max: ${max}`
 			} else {
 				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
-				let defaultValue = this.info['data']
+				let defaultValue = this.info['data']?.replace(/^\s*"(.*)"\s*$/, '$1')
 				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
 			}
 		}
 
 		createToolTippy({ target: this.el, content: this.tippyTitle })
-		if (name != 'animation') {
+		if (this.valueEditor && name != 'animation') {
 			//todo add a svelte flag
-			this.genericEditor_el.appendChild(this.valueEditor)
+			try {
+				this.genericEditor_el.appendChild(this.valueEditor)
+			} catch (e) {
+				// this.genericEditor_el.appendChild(this.valueEditor.el)
+				console.log(this.valueEditor, this.el.dataset)
+				console.error(e)
+			}
 		}
 
 		if (name === 'generic' || name.startsWith('Custom') || !name) {
@@ -230,7 +178,56 @@ export class EditorItem_Generic {
 		this.createContextMenu()
 		this.addListeners()
 		this.update()
-		this.initial_load = false
+		setTimeout(() => {
+			this.initial_load = false
+		}, 20)
+	}
+
+	createValueEditor(value) {
+		if (this.info?.type === 'CONFIG_OPTION_INT' || this.info?.type === 'CONFIG_OPTION_FLOAT') {
+			this.el.dataset.infoType = this.info.type
+			const [def, min, max] = this.info.data.split(',').map((s) => Number(s.trim()))
+			const isFloat = this.info.type !== 'CONFIG_OPTION_INT'
+			const editor = new SliderModal(min, max, isFloat)
+			editor.value = value
+			return editor
+		} else if (this.info?.type === 'CONFIG_OPTION_COLOR') {
+			this.el.dataset.infoType = this.info.type
+			try {
+				return new ColorModal(value)
+			} catch {
+				return null
+			}
+		} else if (this.info?.type === 'CONFIG_OPTION_GRADIENT') {
+			this.el.dataset.infoType = this.info.type
+			try {
+				return new GradientModal(value)
+			} catch {
+				return null
+			}
+		} else if (this.el.dataset.name === 'bezier') {
+			return new BezierModal(value)
+		} else if (this.el.dataset.name === 'animation') {
+			mount(keyEditor_Animation, {
+				target: this.genericEditor_el,
+				props: {
+					inputValue: value,
+					onChange: (v) => {
+						this.value = v
+						this.el.dataset.value = v
+						this.update()
+					},
+				},
+			})
+			return null
+		} else {
+			const ta = document.createElement('textarea')
+			ta.rows = 1
+			if (this.info) ta.dataset.defaultData = this.info.data.trim('"')
+			ta.value = value
+			ta.id = 'generic-value'
+			return ta
+		}
 	}
 
 	createContextMenu() {
@@ -314,7 +311,6 @@ export class EditorItem_Generic {
 			} else {
 				this.el.classList.remove('compact')
 			}
-
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('contextmenu', (e) => {
@@ -414,8 +410,12 @@ export class EditorItem_Generic {
 	}
 
 	editName() {
-		this.keyEditor.classList.remove('hidden')
-		this.el.classList.remove('compact')
+		if (this.keyEditor.classList.contains('hidden')) {
+			this.keyEditor.classList.remove('hidden')
+			this.el.classList.remove('compact')
+		} else {
+			this.keyEditor.classList.add('hidden')
+		}
 	}
 
 	async add(type, below = true) {
@@ -454,9 +454,9 @@ export class EditorItem_Generic {
 								randomKey.data.includes(',') &&
 								randomKey.data.split(',').length === 3)
 						) {
-							value = randomKey.data.split(',')[0].trim()
+							value = randomKey.data.split(',')[0].replace(/^\s*"(.*)"\s*$/, '$1')
 						} else {
-							value = randomKey.data
+							value = randomKey.data.replace(/^\s*"(.*)"\s*$/, '$1')
 						}
 					} catch (e) {
 						console.error('Value derivation failed:', e, randomKey)
@@ -492,6 +492,8 @@ export class EditorItem_Generic {
 
 				if (name === 'bezier') {
 					value = 'sample, 0.65, 0.05, 0.33, 0.91'
+				} else {
+					value = ''
 				}
 
 				console.debug('FINAL name/value:', { name, value })
@@ -552,9 +554,9 @@ export class EditorItem_Generic {
 		let confirm = await dmenuConfirm()
 		if (confirm) {
 			if (this.info.type == 'CONFIG_OPTION_INT' || (this.info.data.includes(',') && this.info.data.split(',').length === 3)) {
-				this.valueEditor.value = this.info['data'].split(',')[0].trim().trim('"')
+				this.valueEditor.value = this.info['data'].split(',')[0].replace(/^\s*"(.*)"\s*$/, '$1')
 			} else {
-				this.valueEditor.value = this.info['data'].trim().trim('"')
+				this.valueEditor.value = this.info['data'].replace(/^\s*"(.*)"\s*$/, '$1')
 			}
 			this.el.dataset.value = this.valueEditor.value
 			this.update()
@@ -602,17 +604,15 @@ export class EditorItem_Generic {
 		return false
 	}
 
-	delete() {
-		deleteKey(this.el.dataset.uuid, this.el.dataset.position)
-		this.el.remove()
+	async delete() {
+		let confirm = await dmenuConfirm()
+		if (confirm) {
+			deleteKey(this.el.dataset.uuid, this.el.dataset.position)
+			this.el.remove()
+		}
 	}
 
-	/**
-	 *
-	 * @param {boolean|null} disabled
-	 * @param groupSave
-	 */
-	disable(disabled: boolean | null = null, groupSave = false) {
+	disable(disabled: boolean | null = null, groupSave: boolean = false) {
 		if (disabled !== null) {
 			this.el.dataset.disabled = disabled.toString()
 			disabled === true ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
@@ -639,7 +639,7 @@ export class EditorItem_Generic {
 		let value = this.el.dataset.value
 		let comment = this.el.dataset.comment
 		let position = this.el.dataset.position
-		let disabled = this.el.dataset.disabled === 'true' ? true : false
+		let disabled = this.el.dataset.disabled === 'true'
 		saveKey(type, name, uuid, position, value, comment, disabled)
 	}
 }

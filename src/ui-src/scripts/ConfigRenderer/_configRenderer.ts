@@ -43,6 +43,7 @@ export class _configRenderer {
 	temporaryElement: HTMLDivElement
 	renderTo: HTMLElement
 	renderAfter: boolean
+
 	constructor(json: Record<string, any>, renderTo: HTMLElement = null, renderAfter: boolean = true) {
 		this.renderTo = renderTo
 		this.renderAfter = renderAfter
@@ -60,18 +61,22 @@ export class _configRenderer {
 		this.comment_stack = [] //for the block comments
 		this.comment_queue = []
 		this.group_stack = []
+
+		GLOBAL.configGlobals = []
 		if (!renderTo) {
 			clearConfigItems()
 		}
-		this.invokeParser()
+		this.invokeParser().then(() => {
+			console.log('Done rendering configs')
+		})
 	}
+
 	async invokeParser() {
 		console.time('parseJSON')
 		await this.parse(this.json)
 		console.timeEnd('parseJSON')
 		destroyOverlay()
 
-		// console.log(this.comment_stack, this.comment_queue)
 		while (this.renderTo && this.temporaryElement.firstChild) {
 			let el = this.temporaryElement.firstElementChild as HTMLDivElement
 			if (this.renderAfter) {
@@ -95,6 +100,7 @@ export class _configRenderer {
 	async parse(json: string | Record<string, any> | JSON) {
 		//Comment Stacking for three line label comments from default hyprland.conf
 		const self = this
+
 		function renderCommentStack() {
 			for (let i = 0; i < self.comment_stack.length; i++) {
 				let comment_element = new EditorItem_Comments(self.comment_stack[i])

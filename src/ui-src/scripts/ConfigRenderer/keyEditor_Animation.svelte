@@ -1,10 +1,6 @@
-<!--const menu = mount(ContextMenu, {-->
-<!--target: document.body,-->
-<!--props: menuState,-->
-<!--})-->
-
 <script lang="ts">
 	import { onMount } from "svelte"
+	import { animationsDefinitions } from "@scripts/HyprlandSpecific/animationDefinitions.ts"
 
 	type Props = {
 		inputValue: string,
@@ -19,34 +15,69 @@
 		curve: parts[3],
 		style: parts[4]
 	})
-	let initialized = false
-	onMount(() => {
-		initialized = true
-	})
 	let value = $derived(`${state.name}, ${state.enabled ? "1" : "0"}, ${state.speed}, ${state.curve}${state.style ? `, ${state.style}` : ""}`)
+
+
+	function toggleEnabled() {
+		state.enabled = !state.enabled
+	}
+
+	let hasStyles = $derived(animationsDefinitions[state.name] && animationsDefinitions[state.name].styles &&
+		animationsDefinitions[state.name].styles.length > 0)
+	let styles = $derived(animationsDefinitions[state.name].styles)
+
+
+
+	let root: HTMLElement
+	onMount(() => {
+			root.querySelector(".field[role=checkbox]").addEventListener("keydown", (e: Event) => {
+				if (e.key === "Enter" || e.key === "Space") {
+					e.stopPropagation()
+					e.stopImmediatePropagation()
+					e.preventDefault()
+					toggleEnabled()
+					console.log(e.key)
+				}
+
+			})
+		}
+	)
+
 	$effect(() => {
-		if (!initialized) {
-			return
+		if (hasStyles && state.style != undefined||null &&styles.includes(state.style.split(" ")[0])){
+			console.log(state.style)
+		} else{
+			console.log("Style", state.style , "is not in styles")
+			// return
+		}
+		if (!hasStyles) {
+			state.style = ""
 		}
 		onChange(value)
 	})
+
 </script>
 
-<div id="animation-modal" class="" data-value={value}>
-	<div class="field">
-		<label for="anim-enabled">Enabled</label>
+<div id="animation-modal" class="" data-value={value} bind:this={root}>
+	<div class="field" tabindex="0" role="checkbox" aria-checked="{state.enabled}" onclick={toggleEnabled}>
+		<label for="anim-enabled">On</label>
 		<input id="anim-enabled" class="checkbox" type="checkbox" bind:checked={state.enabled}
-			 data-checked={state.enabled} />
+			 data-checked={state.enabled} tabindex="-1" />
 	</div>
 	<div id="textarea-items">
 		<div class="field">
 			<label for="anim-name">Name</label>
-			<input id="anim-name" type="text" bind:value={state.name}>
+			<!--			<input id="anim-name" type="text" bind:value={state.name}>-->
+			<select id="anim-name" bind:value={state.name}>
+				{#each Object.keys(animationsDefinitions) as animName}
+					<option value={animName} id="anim-name-option">{animName}</option>
+				{/each}
+			</select>
 		</div>
 
 
 		<div class="field">
-			<label for="anim-speed">Speed</label>
+			<label for="anim-speed">Speed(ds)</label>
 			<input id="anim-speed" type="number" step="any" bind:value={state.speed}>
 		</div>
 
@@ -54,17 +85,23 @@
 			<label for="anim-curve">Curve</label>
 			<input id="anim-curve" type="text" bind:value={state.curve}>
 		</div>
-
-		<div class="field">
-			<label for="anim-style">Style</label>
-			<input id="anim-style" type="text" bind:value={state.style}>
-		</div>
+		{#if hasStyles}
+			<div class="field">
+				<label for="anim-style">Style</label>
+				<input id="anim-style" type="text" bind:value={state.style} list="anim-style-options">
+				<datalist id="anim-style-options">
+					{#each styles as style}
+						<option value={style}>{style}</option>
+					{/each}
+				</datalist>
+			</div>
+		{/if}
 	</div>
 
 </div>
 
 
-<style>
+<style lang="scss">
 	#animation-modal {
 		display: flex;
 		flex-direction: row;
@@ -73,10 +110,7 @@
 		margin-inline: auto;
 	}
 
-	label {
-		font-size: 1.4rem;
-		/*flex: 1*/
-	}
+
 
 	#textarea-items {
 		display: flex;
@@ -88,28 +122,65 @@
 	}
 
 	.field {
+		font-size: 1.4rem;
+		label {
+
+			font-weight: bold;
+		}
+
+		box-sizing:border-box;
 		flex: 0 1 auto;
 		display: flex;
 		gap: 0.5rem;
-		max-width: 25%;
+		max-width: 32%%;
 		break-inside: avoid;
 		align-items: center;
 		/*display: inline-block;*/
 		padding: calc(var(--spacing-unit) / 3);
 		/*overflow: auto;*/
 
-		> input {
+		> input, select {
 			min-width: 5ch;
 			max-width: 12ch;
+			font-size: 1.4rem;
+			text-align: center;
+
+			&:is(:focus, :focus-within) {
+				outline: none !important;
+			}
+		}
+
+		> select {
+			min-width: 5ch;
+			font-size: 1.4rem;
+			text-align: center;
 		}
 
 		&:has(#anim-enabled) {
-			width: 12ch;
+			padding-right: 1rem;
 		}
 
 		&:is(:focus, :focus-within) {
 			outline: none;
 			border: 1px solid var(--accent);
+		}
+
+		&:has(input[type="checkbox"]) {
+			position: relative;
+
+			&::after {
+				position: absolute;
+				content: "";
+				font-size: 3rem;
+				right: 0rem;
+			}
+		}
+
+		&:has(input:checked) {
+			&::after {
+				content: "󰸞";
+				color: var(--accent);
+			}
 		}
 	}
 
@@ -117,14 +188,21 @@
 		color: var(--accent);
 		max-height: 1.6rem;
 		font-size: 1.2rem;
-		/*opacity: 0;*/
+		opacity: 0;
+		min-width: 1ch !important;
+		width: 1ch;
+		margin: 0;
+		position: relative;
 
 		&::before {
-			content: "";
+			position: absolute;
+			top: 50%;
+			right: 0;
+			content: "";
 			border-radius: 0;
 			background-color: var(--surface-0) !important;
 			color: var(--accent);
-
+			transform: translateY(-50%);
 
 		}
 

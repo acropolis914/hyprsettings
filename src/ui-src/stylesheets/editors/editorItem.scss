@@ -325,11 +325,17 @@
 
 	&:is(:focus-within, :focus-visible, :focus) {
 		opacity: 1 !important;
-		border-bottom: 1px solid var(--accent-hover) !important;
+		border: 1px solid transparent !important;
+		//border-bottom: 1px solid var(--accent-hover) !important;
 		> * {
 			color: var(--text-1);
 		}
 	}
+}
+
+.block-comment:has(+ .block-comment + .block-comment),
+.block-comment + .block-comment:has(+ .block-comment),
+.block-comment + .block-comment + .block-comment {
 }
 
 // --- Generic Helpers ---

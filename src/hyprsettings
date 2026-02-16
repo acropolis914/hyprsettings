@@ -56,7 +56,7 @@ _last_log_count = 1
 def log(msg, prefix='', only_verbose=False):
 	global _last_log_message, _last_log_count
 
-	prefix_str = f'{prefix}' if prefix else ''
+	prefix_str = f' {prefix}' if prefix else ''
 	full_message = f'{prefix_str} {msg}'
 
 	if not only_verbose or state.verbose:
@@ -133,8 +133,8 @@ class LogFilter:
 
 		# Filter common noise
 		if '[pywebview]' in text:
-			# keep pywebview handling below if needed
-			pass
+			text = f'[green]{text}[/green]'
+			# pass
 		elif 'GET /' in text and 'HTTP' in text and not state.verbose:
 			return
 		elif 'Bottle v' in text and not state.verbose:
@@ -198,15 +198,15 @@ def on_loaded(window):
 
 def on_closing(window):
 	disabled_dmabuf = os.environ.get('WEBKIT_DISABLE_DMABUF_RENDERER')
-	if state.daemon and (disabled_dmabuf is None or disabled_dmabuf != '1'):
+	if state.daemon:  # and (disabled_dmabuf is None or disabled_dmabuf != '1')
 		state.window_instance.hide()
 		state.window_visible = False
 		log('[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]')
 		return False
 	else:
-		if disabled_dmabuf == '1':
-			log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
-			log('Restoring from daemon will fail. Daemon setting is dishonored.')
+		# if disabled_dmabuf == '1':
+		# 	log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
+		# 	log('Restoring from daemon will fail. Daemon setting is dishonored.')
 		log('Window closed. Terminating process.')
 		os._exit(0)
 		# kill_hyprsettings()
@@ -313,46 +313,55 @@ def main():
 	state.flask_thread = threading.Thread(target=start_flask_server, daemon=True)
 	state.flask_thread.start()
 
-	# state.hyprland_wiki_thread = threading.Thread(target=start_hyprland_wiki_server, daemon=True)
-	# state.hyprland_wiki_thread.start()
-
 	try:
-		# mimetypes.add_type('application/javascript', '.js')
 		if state.args.no_devtools:
 			webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
 		if state.args.no_dmabuf:
 			os.environ['WEBKIT_DISABLE_DMABUF_RENDERER'] = '1'
 		ui_link = f'http://localhost:{state.flask_port}/'
+		# log(state.args)
 		if state.args.bun_dev:
 			ui_link = 'http://localhost:3000/'
-			log('Using bun dev server at localhost:3000 as per --bun-dev arg')
+			log(f'Using bun dev server at {ui_link} as per --bun-dev arg')
 		os.environ['GTK_OVERLAY_SCROLLING'] = '1'
 		if not state.args.no_window:
 			state.window_thread = threading.Thread(target=start_window_server, daemon=state.daemon)
 			state.window_thread.start()
-			log('Starting webview window...')
-			state.window_instance = webview.create_window(
-				'HyprSettings',
-				ui_link,
-				# js_api=api,
-				transparent=True,
-				width=800,
-				height=600,
-				easy_drag=True,
-				min_size=(400, 300),
-				hidden=state.args.hidden,
-			)
-			state.window_visible = not state.args.hidden
-			state.window_instance.events.loaded += on_loaded
-			state.window_instance.events.closing += on_closing
-			webview.start(
-				gui=state.args.ui[0],
-				debug=state.args.debug,
-				private_mode=True,
-				storage_path=str(hs_globals.CACHE_PATH),
-				icon='icon-48.png',
-			)
-			sys.exit(0)
+
+			def start_window():
+				state.window_instance = webview.create_window(
+					'HyprSettings',
+					ui_link,
+					transparent=True,
+					width=800,
+					height=600,
+					easy_drag=True,
+					min_size=(400, 300),
+					hidden=state.args.hidden,
+				)
+				state.window_visible = not state.args.hidden
+				state.window_instance.events.loaded += on_loaded
+				state.window_instance.events.closing += on_closing
+
+				webview.start(
+					gui=state.args.ui[0],
+					debug=state.args.debug,
+					private_mode=True,
+					storage_path=hs_globals.CACHE_PATH,
+					icon='icon-48.png',
+				)
+
+			try:
+				log('', '[red][bold]NVIDIA ONLY USERS:[/red][/bold]: If this fails with error 71, please run with [code]--no-dmabuf[/code]')
+				start_window()
+			except (Exception, SystemError) as e:
+				log(f'Failed to start window:{e}', '[red]GTK ERROR[/red]')
+				log('[red]THIS IS A KNOWN BUG FOR NVIDIA ONLY SETUPS. PLEASE DO NOT CREATE A NEW GITHUB ISSUE FOR IT[/red]')
+				log('Trying to set enviroment fixes. It will cause some graphical issues but will make it open.')
+				os.environ['WEBKIT_DISABLE_DMABUF_RENDERER'] = '1'
+				start_window()
+			finally:
+				log('Done.')
 		else:
 			log('Opening in browser mode only as per --no-window arg')
 			log('[red][bold] Warning [/bold][/red] Using firefox-based browsers feel [red]slower[/red]')
@@ -386,8 +395,7 @@ if __name__ == '__main__':
 	if state.args.kill:
 		kill_hyprsettings()
 
-	if state.args.ui:
-		log(f'Using UI {state.args.ui}')
+	log(f'GUI: [green]{state.args.ui}[green]')
 	log(f'Debug mode: {state.args.debug}')
 	log(f'Verbose: {state.args.verbose}')
 	log(f'Daemon: {not state.args.no_daemon and state.args.daemon}')
@@ -404,7 +412,7 @@ if __name__ == '__main__':
 	state.daemon = not state.args.no_daemon and state.args.daemon
 	if state.args.debug:
 		log(
-			'[red]DEBUG MODE IS TURNED ON[/red]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!'
+			'[yellow]DEBUG MODE IS TURNED ON[/yellow]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!'
 		)
 	if state.args.verbose:
 		state.verbose = state.args.verbose

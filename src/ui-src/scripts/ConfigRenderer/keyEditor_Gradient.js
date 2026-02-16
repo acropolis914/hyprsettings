@@ -118,7 +118,6 @@ export class GradientModal {
 		const anglePart = parts[parts.length - 1]
 		const angle = parseInt(anglePart.replace('deg', ''))
 		const colors = parts.slice(0, parts.length - 1)
-
 		return { colors, angle: isNaN(angle) ? 0 : angle }
 	}
 
@@ -136,7 +135,6 @@ export class GradientModal {
 	}
 
 	setValue(val) {
-		// Clear previous colors
 		this.colorContainer.innerHTML = ''
 
 		const { colors, angle } = this.parseValue(val)

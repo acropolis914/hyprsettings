@@ -1,4 +1,10 @@
 type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem'
+type ConfigGlobal = {
+	file: string
+	name: string
+	value: string | number | any
+	uuid: string
+}
 
 export class GLOBAL {
 	// Map of key → array of callbacks
@@ -28,6 +34,7 @@ export class GLOBAL {
 
 	// Focus tracking: tab ID → element UUID
 	static mainFocus: Record<string, string> = {}
+	static configGlobals: ConfigGlobal[]
 
 	static onChange(
 		key: string,
