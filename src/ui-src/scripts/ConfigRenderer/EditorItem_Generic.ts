@@ -19,7 +19,8 @@ import { gotoWiki } from '../ui_components/wikiTab.ts'
 import { mount } from 'svelte'
 import keyEditor_Animation from '@scripts/ConfigRenderer/keyEditor_Animation.svelte'
 import createToolTippy from '@scripts/ui_components/toolTippy.ts'
-import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts' // optional for styling
+import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
+import { newEditorItemGeneric } from '@scripts/utils/editorItem_newKey.ts' // optional for styling
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -113,8 +114,8 @@ export class EditorItem_Generic {
 		this.config_position = position
 			.split(':')
 			.slice(1) // Remove 'root'
-			.map((s) => s.trim())
-			.filter((s) => !s.endsWith('.conf'))
+			.map((s: string) => s.trim())
+			.filter((s: string) => !s.endsWith('.conf'))
 			.join(':')
 
 		this.info = findConfigDescription(this.config_position, name)
@@ -307,6 +308,8 @@ export class EditorItem_Generic {
 	addListeners() {
 		this.el.addEventListener('click', (e) => {
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.el.dataset.uuid
+			// GLOBAL.setKey('previousView', GLOBAL.currentView)
+			// GLOBAL.setKey('currentView', 'editorItem')
 			if (this.flipValueIfBool(false)) {
 			} else {
 				this.el.classList.remove('compact')
@@ -331,6 +334,7 @@ export class EditorItem_Generic {
 		})
 		this.el.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter' || e.key === 'Space') {
+				// GLOBAL.setKey('currentView', 'editorItem')
 				// console.log("Pressed enter")
 				e.preventDefault()
 				e.stopPropagation()
@@ -364,7 +368,8 @@ export class EditorItem_Generic {
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('blur', () => {
-			// this.contextMenu.hide()
+			// GLOBAL.setKey('currentView', GLOBAL.previousView)
+			this.contextMenu.hide()
 			// this.el.classList.add("compact")
 		})
 		this.keyEditor.addEventListener('input', () => {
@@ -418,134 +423,13 @@ export class EditorItem_Generic {
 		}
 	}
 
-	async add(type, below = true) {
+	async add(type: string, below = true) {
 		switch (type) {
-			case 'KEY': {
-				const existingSiblingKeys = Array.from(this.el.parentNode.children)
-					.filter((el) => el.classList.contains('editor-item-generic'))
-					.map((el) => el.dataset.name)
-
-				let availableKeys
-				try {
-					availableKeys = findAdjacentConfigKeys(this.config_position, existingSiblingKeys)
-				} catch (e) {
-					console.error('findAdjacentConfigKeys threw:', e)
-				}
-
-				let randomKey
-				if (Array.isArray(availableKeys) && availableKeys.length > 0) {
-					randomKey = await selectFrom(availableKeys, true)
-				} else {
-					console.warn('availableKeys empty or invalid:', availableKeys)
-				}
-
-				console.debug('randomKey raw:', randomKey)
-
-				let name
-				let value
-
-				if (randomKey) {
-					name = randomKey.name
-
-					try {
-						if (
-							randomKey.type === 'CONFIG_OPTION_INT' ||
-							(typeof randomKey.data === 'string' &&
-								randomKey.data.includes(',') &&
-								randomKey.data.split(',').length === 3)
-						) {
-							value = randomKey.data.split(',')[0].replace(/^\s*"(.*)"\s*$/, '$1')
-						} else {
-							value = randomKey.data.replace(/^\s*"(.*)"\s*$/, '$1')
-						}
-					} catch (e) {
-						console.error('Value derivation failed:', e, randomKey)
-					}
-				} else {
-					console.debug('No randomKey selected.')
-				}
-
-				console.debug('Derived name/value BEFORE fallback:', {
-					name,
-					value,
-				})
-
-				const allowed_dupes = ['animation', 'bezier', 'gesture']
-				const thisName = this.el.dataset.name
-				const isAllowedDupe = allowed_dupes.includes(thisName)
-				const isInConfigGroup = this.el.parentElement?.classList?.contains('config-group')
-
-				console.debug('Fallback decision inputs:', {
-					nameIsFalsy: !name,
-					thisName,
-					isAllowedDupe,
-					isInConfigGroup,
-				})
-
-				if ((!name || name.toLowerCase().startsWith('custom')) && (isAllowedDupe || !isInConfigGroup)) {
-					console.log('hello', thisName)
-					name = thisName
-				} else if (!name) {
-					console.warn('Falling back to GENERIC')
-					name = 'generic'
-				}
-
-				if (name === 'bezier') {
-					value = 'sample, 0.65, 0.05, 0.33, 0.91'
-				} else {
-					value = ''
-				}
-
-				console.debug('FINAL name/value:', { name, value })
-
-				let newGenericItem = await addItem('KEY', name, value, '', this.el.dataset.position, this.el.dataset.uuid, below)
-
-				console.debug('addItem result:', newGenericItem)
-
-				let newGenericElement = new EditorItem_Generic({
-					name: newGenericItem.name,
-					uuid: newGenericItem.uuid,
-					value: newGenericItem.value,
-					comment: newGenericItem.comment,
-					position: this.el.dataset.position,
-				})
-
-				if (below) {
-					this.el.after(newGenericElement.el)
-				} else {
-					this.el.before(newGenericElement.el)
-				}
-
-				newGenericElement.save()
-				newGenericElement.el.click()
+			case 'KEY':
+				await newEditorItemGeneric({ relatedElement: this.el, position: this.config_position, below: below })
 				break
-			}
+
 			case 'COMMENT':
-				let newCommentItem = await addItem(
-					'COMMENT',
-					'comment',
-					'',
-					'# New comment',
-					this.el.dataset.position,
-					this.el.dataset.uuid,
-					below,
-				)
-				let newCommentElement = new EditorItem_Comments(
-					{
-						name: newCommentItem['comment'],
-						uuid: newCommentItem['uuid'],
-						value: newCommentItem['value'],
-						comment: newCommentItem['comment'],
-						position: this.el.dataset.position,
-					},
-					false,
-				)
-				if (below) {
-					this.el.after(newCommentElement.el)
-				} else {
-					this.el.before(newCommentElement.el)
-				}
-				newCommentElement.save()
 				break
 		}
 	}
@@ -605,9 +489,11 @@ export class EditorItem_Generic {
 	}
 
 	async delete() {
+		let nextSibling = this.el.nextElementSibling || this.el.previousElementSibling
 		let confirm = await dmenuConfirm()
 		if (confirm) {
 			deleteKey(this.el.dataset.uuid, this.el.dataset.position)
+			nextSibling.focus()
 			this.el.remove()
 		}
 	}

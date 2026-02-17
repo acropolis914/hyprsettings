@@ -2,7 +2,7 @@
 import { saveKey, deleteKey, duplicateKey } from '../utils/utils.js'
 import { debounce } from '../utils/helpers.js'
 import { ContextMenu } from './contextMenu.js'
-import { dmenuConfirm } from '../ui_components/dmenu'
+import { dmenuConfirm } from '../ui_components/dmenu.ts'
 
 export class ConfigGroup {
 	group_el: HTMLDivElement

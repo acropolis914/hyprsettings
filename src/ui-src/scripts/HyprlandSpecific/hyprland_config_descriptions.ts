@@ -2882,15 +2882,28 @@ export const config_descriptions = [
 		data: 'false',
 		description: 'Hide layer from screen sharing.',
 	},
+	{
+		name: 'bezier',
+		path: 'animations',
+		type: 'CONFIG_OPTION_STRING_SHORT',
+		data: 'my-bezier, 0, 0, 1, 1',
+		description: 'Bezier curve defined by its [name] and two control points for use in animation',
+	},
+	{
+		name: 'animation',
+		path: 'animations',
+		type: 'CONFIG_OPTION_STRING_SHORT',
+		data: 'global, 0, 10, 1, 1',
+		description: 'Animation rule following the syntax: [name], [on/off], [speed], [curve], [style].',
+	},
 ]
 
-export function findConfigDescription(path, name) {
+export function findConfigDescription(path: string, name: string) {
 	let config_json = config_descriptions.find((item) => item.path === path && item.name === name)
 	return config_json
 }
 
-export function findAdjacentConfigKeys(path, exclude = []) {
+export function findAdjacentConfigKeys(path: string, exclude: string[] = []): object {
 	let configKeys = config_descriptions.filter((item) => item.path === path).filter((item) => !exclude.includes(item.name))
-	// console.table(configKeys)
 	return configKeys
 }

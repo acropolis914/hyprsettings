@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { animationsDefinitions } from "@scripts/HyprlandSpecific/animationDefinitions.ts"
+	import { selectFrom } from "@scripts/ui_components/dmenu.ts" // optional scss import method
+
 
 	type Props = {
 		inputValue: string,
 		onChange: (value: string) => void,
 	}
 	let { inputValue, onChange }: Props = $props()
-	let parts = inputValue.split(",").map((i: string) => i.trim())
+	let derivedValue = $derived(inputValue)
+	let parts = derivedValue.split(",").map((i: string) => i.trim())
 	let state = $state({
 		name: parts[0] ?? "",
 		enabled: parts[1] === "1",
@@ -26,28 +29,59 @@
 		animationsDefinitions[state.name].styles.length > 0)
 	let styles = $derived(animationsDefinitions[state.name].styles)
 
-
+	async function selectAnimation(){
+		let animationOptions = Object.entries(animationsDefinitions).map(
+			([key, value]) => ({
+				name:key,
+				description: value.description,
+				value: key,
+				type: "animation"
+			})
+		)
+		let selected = await selectFrom(animationOptions,  false)
+		if (selected) {
+			state.name = selected.name
+		}
+	}
 
 	let root: HTMLElement
 	onMount(() => {
+
 			root.querySelector(".field[role=checkbox]").addEventListener("keydown", (e: Event) => {
 				if (e.key === "Enter" || e.key === "Space") {
 					e.stopPropagation()
 					e.stopImmediatePropagation()
 					e.preventDefault()
 					toggleEnabled()
-					console.log(e.key)
+					// console.log(e.key)
 				}
 
 			})
+
+			let animationNameSelector:HTMLDivElement = root.querySelector(".field:has(#anim-name)")
+			animationNameSelector.addEventListener("click", async (e: Event) => {
+				e.stopPropagation();
+				selectAnimation()
+			})
+			animationNameSelector.addEventListener("keydown", (e: Event) => {
+				if (e.key === "Enter" || e.key === "Space") {
+					e.stopPropagation()
+					e.stopImmediatePropagation()
+					selectAnimation()
+				}
+
+			})
+
 		}
 	)
 
 	$effect(() => {
-		if (hasStyles && state.style != undefined||null &&styles.includes(state.style.split(" ")[0])){
-			console.log(state.style)
+		hasStyles = (animationsDefinitions[state.name] && animationsDefinitions[state.name].styles &&
+			animationsDefinitions[state.name].styles.length > 0 && state.style)
+		if (hasStyles && state.style != undefined &&styles.includes(state.style.split(" ")[0])){
+			// console.log(state.style)
 		} else{
-			console.log("Style", state.style , "is not in styles")
+			// console.log("Style", state.style , "is not in styles for" , value)
 			// return
 		}
 		if (!hasStyles) {
@@ -65,14 +99,15 @@
 			 data-checked={state.enabled} tabindex="-1" />
 	</div>
 	<div id="textarea-items">
-		<div class="field">
+		<div class="field" tabindex="0"  >
 			<label for="anim-name">Name</label>
 			<!--			<input id="anim-name" type="text" bind:value={state.name}>-->
-			<select id="anim-name" bind:value={state.name}>
-				{#each Object.keys(animationsDefinitions) as animName}
-					<option value={animName} id="anim-name-option">{animName}</option>
-				{/each}
-			</select>
+<!--			<select id="anim-name" bind:value={state.name}>-->
+<!--				{#each Object.keys(animationsDefinitions) as animName}-->
+<!--					<option value={animName} id="anim-name-option">{animName}</option>-->
+<!--				{/each}-->
+<!--			</select>-->
+			<div id="anim-name">{state.name}</div>
 		</div>
 
 
@@ -116,6 +151,7 @@
 		display: flex;
 		flex: 1;
 		flex-direction: row;
+		gap: 2rem;
 		/*column-count: 2;*/
 		/*column-gap: 10px;*/
 		flex-wrap: wrap;
@@ -139,11 +175,12 @@
 		padding: calc(var(--spacing-unit) / 3);
 		/*overflow: auto;*/
 
-		> input, select {
+		> input, select , div{
 			min-width: 5ch;
 			max-width: 12ch;
 			font-size: 1.4rem;
 			text-align: center;
+			color: var(--accent);
 
 			&:is(:focus, :focus-within) {
 				outline: none !important;

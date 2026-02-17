@@ -53,3 +53,5 @@ export default function createLoadingOverlay(message = 'Loading your Hyprland co
 		destroyOverlay()
 	}
 }
+
+window.destroyOverlay = destroyOverlay

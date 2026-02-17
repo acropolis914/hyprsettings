@@ -6,11 +6,11 @@ import { tabids, keyNameStarts, configGroups } from '@scripts/HyprlandSpecific/c
 import { ConfigGroup } from './ConfigGroup.ts'
 import { GLOBAL } from '../GLOBAL.js'
 import { Backend } from '@scripts/utils/backendAPI.js'
-import { destroyOverlay } from '@scripts/ui_components/darken_overlay.js'
+import { destroyOverlay } from '@scripts/ui_components/darkenOverlay.js'
 import { waitFor } from '../utils/helpers'
 
 export default async function getAndRenderConfig() {
-	GLOBAL.onChange('data', (value) => {
+	GLOBAL.onChange('data', (value: any) => {
 		if (typeof value === 'object') {
 			new _configRenderer(GLOBAL.data)
 		}
@@ -113,7 +113,7 @@ export class _configRenderer {
 			self.comment_stack = []
 		}
 
-		function renderCommentQueue(all: boolean) {
+		function renderCommentQueue(all: boolean = false) {
 			let left = all ? 0 : 1
 			while (self.comment_queue.length > 1) {
 				let comment_item: JSON = self.comment_queue[0]
@@ -204,9 +204,15 @@ export class _configRenderer {
 				}
 				this.current_container.push(group_el)
 				try {
-					for (const child of json['children']) {
+					Array.from(json['children']).forEach((child, index, arr) => {
+						if (index === arr.length - 1) {
+							renderCommentQueue(true)
+						}
 						this.parse(child)
-					}
+					})
+					// for (const child of json['children']) {
+					// 	this.parse(child)
+					// }
 				} catch (e) {
 					console.error(e, json)
 				}
@@ -218,13 +224,13 @@ export class _configRenderer {
 			this.current_container.pop()
 		} else if (json['type'] === 'KEY') {
 			try {
-				let genericItem
+				let genericItem: EditorItem_Binds | EditorItem_Generic
 				if (json['name'].startsWith('bind')) {
 					genericItem = new EditorItem_Binds(json, json['disabled'])
 				} else {
 					genericItem = new EditorItem_Generic(json, json['disabled'])
 				}
-				let tabToAddTo
+				let tabToAddTo: any
 				for (const [key, value, exclude] of keyNameStarts) {
 					if (this.current_container.at(-1).classList.contains('config-group')) {
 						break

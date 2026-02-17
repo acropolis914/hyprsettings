@@ -8,7 +8,7 @@ type ConfigGlobal = {
 
 export class GLOBAL {
 	// Map of key → array of callbacks
-	static _listeners: Map<string, (() => void)[]> = new Map()
+	private static _listeners: Map<string, (() => void)[]> = new Map()
 
 	// Optional config string
 	static configText?: string
@@ -17,7 +17,7 @@ export class GLOBAL {
 	static wikiTree?: Record<string, any>
 
 	// Boolean for compact mode
-	compact: boolean = false
+	static compact: boolean = false
 
 	// Arbitrary data storage
 	static data?: any
@@ -30,13 +30,13 @@ export class GLOBAL {
 	// UI state
 	static activeTab?: string
 	static currentView?: ViewType
-	previousView?: ViewType
+	static previousView?: ViewType
 
 	// Focus tracking: tab ID → element UUID
 	static mainFocus: Record<string, string> = {}
 	static configGlobals: ConfigGlobal[]
 
-	static onChange(
+	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,
 		callback: {
 			(): Promise<void>
@@ -50,7 +50,12 @@ export class GLOBAL {
 		this._listeners.get(key).push(callback)
 	}
 
-	static setKey(key: string, value: string | number | boolean | any[]) {
+	static setKey<K extends keyof typeof GLOBAL>(key: string, value: string | number | boolean | any[]) {
+		// console.trace(`setkey was called for: ${key}`)
+		if (!value) {
+			console.trace('GLOBAL setKey()', key, value)
+			return
+		}
 		if (this[key] === value) return
 
 		this[key] = value

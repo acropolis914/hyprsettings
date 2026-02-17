@@ -6,7 +6,7 @@ import { GLOBAL } from '../GLOBAL.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { html, render } from 'lit'
 import TomSelect from 'tom-select'
-import { dmenuConfirm } from '../ui_components/dmenu'
+import { dmenuConfirm } from '../ui_components/dmenu.ts'
 
 // import TomSelect from "../../jslib/tom-select.complete.min"
 const templateString = html`

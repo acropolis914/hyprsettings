@@ -5,7 +5,7 @@ import Sortable from '../jslib/sortable.core.esm.js'
 import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
 import { rgbaStringToHex } from '@scripts/utils/rgbaToHex.ts'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
-import { dmenuConfirm } from '@scripts/ui_components/dmenu.js'
+import { dmenuConfirm } from '@scripts/ui_components/dmenu.ts'
 
 export class GradientModal {
 	constructor(initialValue = '') {

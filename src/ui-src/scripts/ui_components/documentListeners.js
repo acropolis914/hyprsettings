@@ -1,6 +1,6 @@
 import { GLOBAL } from '../GLOBAL.ts'
 import { hideAllContextMenus } from '@scripts/utils/utils.ts'
-import { createOverlay } from './darken_overlay.js'
+import { createOverlay } from './darkenOverlay.js'
 import hotkeys from 'hotkeys-js'
 
 /* -------------------------------------------------------------------------- */
@@ -36,6 +36,12 @@ function handleKeyInput(event) {
 		case 'dmenu':
 			// Add handlers here if needed
 			break
+		case 'editorItem':
+			if (event.key === 'Tab') {
+			} else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+				event.preventDefault()
+			}
+			break
 		default:
 			console.warn('No handler for view:', GLOBAL['currentView'])
 	}
@@ -66,7 +72,7 @@ function handleTabsView(event) {
  * Logic for when the main editor area is active
  */
 function handleMainView(event) {
-	console.log('mainView', GLOBAL['currentView'])
+	// console.log('mainView', GLOBAL['currentView'])
 	const key = event.key
 
 	if (key === 'ArrowLeft') {
