@@ -20,7 +20,7 @@ import { mount } from 'svelte'
 import keyEditor_Animation from '@scripts/ConfigRenderer/keyEditor_Animation.svelte'
 import createToolTippy from '@scripts/ui_components/toolTippy.ts'
 import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
-import { newEditorItemGeneric } from '@scripts/utils/editorItem_newKey.ts' // optional for styling
+import { newEditorItemGeneric } from '@scripts/HyprlandSpecific/editorItem_newKey.ts' // optional for styling
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {

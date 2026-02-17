@@ -46,14 +46,12 @@
 
 	let root: HTMLElement
 	onMount(() => {
-
 			root.querySelector(".field[role=checkbox]").addEventListener("keydown", (e: Event) => {
 				if (e.key === "Enter" || e.key === "Space") {
 					e.stopPropagation()
 					e.stopImmediatePropagation()
 					e.preventDefault()
 					toggleEnabled()
-					// console.log(e.key)
 				}
 
 			})
@@ -69,6 +67,21 @@
 					e.stopImmediatePropagation()
 					selectAnimation()
 				}
+				if(e.key === "ArrowDown" || e.key === "ArrowUp") {
+					e.preventDefault()
+					e.stopImmediatePropagation()
+					e.stopPropagation()
+					const animationKeys = Object.keys(animationsDefinitions)
+					let index = animationKeys.indexOf(state.name)
+					if (e.key === "ArrowDown") {
+						index = (index + 1) % animationKeys.length
+					} else if (e.key === "ArrowUp") {
+						index = (index - 1 + animationKeys.length) % animationKeys.length  // wrap negative
+					}
+					let next = animationKeys[index]
+					console.log(next)
+					state.name = next
+				}
 
 			})
 
@@ -76,9 +89,18 @@
 	)
 
 	$effect(() => {
-		hasStyles = (animationsDefinitions[state.name] && animationsDefinitions[state.name].styles &&
-			animationsDefinitions[state.name].styles.length > 0 && state.style)
-		if (hasStyles && state.style != undefined &&styles.includes(state.style.split(" ")[0])){
+		// console.log("hasStyles check:", {
+		// 	name: state.name,
+		// 	definitionExists: !!animationsDefinitions[state.name],
+		// 	hasStylesProp: !!animationsDefinitions[state.name]?.styles,
+		// 	stylesLength: animationsDefinitions[state.name]?.styles?.length ?? null,
+		// 	result:
+		// 		animationsDefinitions[state.name] &&
+		// 		animationsDefinitions[state.name].styles &&
+		// 		animationsDefinitions[state.name].styles.length > 0
+		// });
+
+		if (hasStyles && state.style != undefined && styles.includes(state.style.split(" ")[0])){
 			// console.log(state.style)
 		} else{
 			// console.log("Style", state.style , "is not in styles for" , value)

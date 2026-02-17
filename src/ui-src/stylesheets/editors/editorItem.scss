@@ -47,8 +47,8 @@
 	}
 
 	// --- State Handling ---
-	&:is(:focus, :focus-visible) {
-		&.config-group {
+	&:is(:focus, :focus-visible, :focus-within) {
+		&.config-group:not(:focus-within) {
 			@include config-group-focused('', var(--accent-success));
 			&::after {
 				content: '';

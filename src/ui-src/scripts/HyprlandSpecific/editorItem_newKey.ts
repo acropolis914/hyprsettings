@@ -4,12 +4,7 @@ import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.t
 import { addItem } from '@scripts/utils/utils.ts'
 import { EditorItem_Comments } from '@scripts/ConfigRenderer/EditorItem_Comments'
 
-export async function newEditorItemGeneric(options: {
-	siblingKeys?: string[]
-	relatedElement: Element | HTMLElement
-	position: string
-	below: boolean
-}) {
+export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
 	const allowed_dupes = ['animation', 'bezier', 'gesture']
 	const existingSiblingKeys = Array.from(options.relatedElement.parentNode.children)
 		.filter((el) => el.classList.contains('editor-item-generic'))

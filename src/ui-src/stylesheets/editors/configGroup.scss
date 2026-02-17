@@ -44,6 +44,12 @@
 			color: var(--accent-warning);
 		}
 	}
+
+	&:is(:focus-visible, :focus) {
+		//outline-color: var(--accent) !important;
+		//outline-offset: 2px !important;
+		border: 3px solid var(--accent) !important;
+	}
 }
 
 /* the floating label on the border */

@@ -2903,7 +2903,12 @@ export function findConfigDescription(path: string, name: string) {
 	return config_json
 }
 
-export function findAdjacentConfigKeys(path: string, exclude: string[] = []): object {
+export function findAdjacentConfigKeys(path: string, exclude: string[] = []): object[] {
 	let configKeys = config_descriptions.filter((item) => item.path === path).filter((item) => !exclude.includes(item.name))
+	return configKeys
+}
+
+export function findAllAdjacentKeys(path: string, exclude: string[]): object[] {
+	let configKeys = config_descriptions.filter((item) => item.path.startsWith(path)).filter((item) => !exclude.includes(item.name))
 	return configKeys
 }

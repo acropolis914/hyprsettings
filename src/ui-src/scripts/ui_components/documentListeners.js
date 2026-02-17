@@ -74,7 +74,6 @@ function handleTabsView(event) {
 function handleMainView(event) {
 	// console.log('mainView', GLOBAL['currentView'])
 	const key = event.key
-
 	if (key === 'ArrowLeft') {
 		returnToTabs()
 		return
@@ -150,8 +149,7 @@ function attemptSwitchToMain() {
 	if (targetElement) {
 		window.currentFocus = targetElement
 		targetElement.focus({ preventScroll: true })
-
-		// Update State
+		// targetElement.click()
 		if (!savedUuid && targetElement.dataset.uuid) {
 			GLOBAL['mainFocus'][currentTabId] = targetElement.dataset.uuid
 		}
@@ -289,6 +287,12 @@ function initializeState() {
 	GLOBAL.setKey('currentView', 'tabs')
 	GLOBAL['mainFocus'] = {}
 	window.currentFocus = null
+
+	// GLOBAL.onChange('currentView', (value) => {
+	// 	if (value === 'main') {
+	// 		handleMainView()
+	// 	}
+	// })
 }
 
 function initializeGlobalListeners() {

@@ -63,6 +63,11 @@ export class ConfigGroup {
 			// 	action: () => this.add('KEY', false),
 			// },
 			{
+				label: 'Add key',
+				icon: '',
+				action: () => {},
+			},
+			{
 				label: 'Duplicate Group',
 				icon: '󰅀',
 				action: () => this.duplicateKey(true),
