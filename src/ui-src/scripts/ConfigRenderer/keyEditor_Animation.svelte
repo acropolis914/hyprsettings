@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { animationsDefinitions } from "@scripts/HyprlandSpecific/animationDefinitions.ts"
-	import { selectFrom } from "@scripts/ui_components/dmenu.ts" // optional scss import method
+	import { selectFrom } from "@scripts/ui_components/dmenu.ts"
+	import { GLOBAL } from "@scripts/GLOBAL.ts" // optional scss import method
 
 
 	type Props = {
@@ -38,6 +39,7 @@
 				type: "animation"
 			})
 		)
+
 		let selected = await selectFrom(animationOptions,  false)
 		if (selected) {
 			state.name = selected.name
@@ -59,7 +61,8 @@
 			let animationNameSelector:HTMLDivElement = root.querySelector(".field:has(#anim-name)")
 			animationNameSelector.addEventListener("click", async (e: Event) => {
 				e.stopPropagation();
-				selectAnimation()
+				await selectAnimation()
+				animationNameSelector.focus()
 			})
 			animationNameSelector.addEventListener("keydown", (e: Event) => {
 				if (e.key === "Enter" || e.key === "Space") {

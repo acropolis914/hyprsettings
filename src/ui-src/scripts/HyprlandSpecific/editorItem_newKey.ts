@@ -110,8 +110,10 @@ export async function newEditorItemGeneric(options: { relatedElement: Element | 
 	}
 
 	if (newGenericElement.el.parentElement.dataset.disabled === 'true') {
-		newGenericElement.dataset.disabled = 'true'
+		newGenericElement.disable()
 	}
+	console.log(newGenericElement.el.parentElement.dataset.disabled)
+	newGenericElement.el.focus()
 	newGenericElement.el.click()
 }
 
