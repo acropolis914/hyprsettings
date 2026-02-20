@@ -6,7 +6,7 @@ export function createOverlay() {
 	document.getElementById('content-area').appendChild(overlay)
 }
 
-export function destroyOverlay(immediate = false) {
+export async function destroyOverlay(immediate = false) {
 	const overlays = document.querySelectorAll('.darken-overlay')
 	for (const overlay of overlays) {
 		if (immediate) {
@@ -19,39 +19,43 @@ export function destroyOverlay(immediate = false) {
 	}
 }
 
-export default function createLoadingOverlay(message = 'Loading your Hyprland config') {
-	destroyOverlay(true)
+const nextPaint = () => new Promise((res) => requestAnimationFrame(() => setTimeout(res, 0)))
+
+export default async function createLoadingOverlay(message = 'Loading your Hyprland config') {
+	await destroyOverlay(true)
+	let contentArea = document.getElementById('content-area')
 	const overlay = document.createElement('div')
 	overlay.id = 'loading-overlay'
 	overlay.className = 'darken-overlay'
-	overlay.style.opacity = '0'
-	overlay.style.transition = 'opacity 0.7s ease-in'
-
 	const spinner = document.createElement('div')
 	spinner.className = 'spinner'
 	overlay.appendChild(spinner)
-
 	const loadingText = document.createElement('div')
 	loadingText.className = 'loading-text'
 	loadingText.textContent = message
 	overlay.appendChild(loadingText)
+	contentArea.appendChild(overlay)
+	//	// overlay.style.opacity = '0'
+	// 	// overlay.style.transition = 'opacity 0.7s ease-in'
+	// requestAnimationFrame(() => {
+	// 	overlay.style.opacity = '1'
+	// })
 
-	document.getElementById('content-area').appendChild(overlay)
+	await nextPaint()
 
-	requestAnimationFrame(() => {
-		// overlay.style.opacity = '1'
-		overlay.style.opacity = '1'
-	})
-	let dots = 0
-	const intervalId = setInterval(() => {
-		dots = (dots + 1) % 4
-		loadingText.textContent = message + '.'.repeat(dots)
-	}, 200)
-
-	return () => {
-		clearInterval(intervalId)
-		destroyOverlay()
-	}
+	let braille_animation = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'.split('')
+	let idx = 0
+	let intervalId
+	intervalId = setInterval(() => {
+		const frame = braille_animation[idx]
+		loadingText.textContent = message + ' ' + frame
+		idx = (idx + 1) % braille_animation.length
+	}, 50)
+	//
+	// return () => {
+	// 	clearInterval(intervalId)
+	// 	destroyOverlay()
+	// }
 }
 
 window.destroyOverlay = destroyOverlay

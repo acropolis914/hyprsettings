@@ -18,7 +18,7 @@ import setupTheme from './utils/setupTheme.js'
 import initializeJSViewer from './ui_components/jsViewer.js'
 import initializeSearchBar from './ui_components/searchBar.js'
 import createDynamicTabs from './ui_components/createDynamicTabs.ts'
-import createLoadingOverlay from './ui_components/darkenOverlay.js'
+import createLoadingOverlay, { destroyOverlay } from './ui_components/darkenOverlay.js'
 import createWiki from './ui_components/wikiTab.ts'
 
 import getAndRenderConfig, { clearConfigItems } from './ConfigRenderer/_configRenderer.ts'
@@ -60,12 +60,34 @@ async function load_config() {
 	if (!isFirstRun) GLOBAL.persistence.first_run = false
 }
 
+function setupGTAG() {
+	var script = document.createElement('script')
+	script.async = true
+	script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1HDCZV8DTZ'
+
+	// 2. Append it to the head
+	document.head.appendChild(script)
+
+	// 3. Setup the gtag functions
+	window.dataLayer = window.dataLayer || []
+	function gtag() {
+		dataLayer.push(arguments)
+	}
+	gtag('js', new Date())
+	gtag('config', 'G-1HDCZV8DTZ', {
+		cookie_domain: 'none',
+	})
+
+	console.log('Gtag initialized after DOMContentLoaded.')
+}
+
 export async function reinitialize() {
 	console.log('Reinitializing...')
-	createLoadingOverlay('Reloading your hyprland config..')
+	createLoadingOverlay('Reloading your hyprland config')
 	setTimeout(async () => {
 		await Backend.debounceGetHyprlandConfig()
 	}, 1)
+	destroyOverlay(true)
 }
 
 export async function initialize() {
@@ -75,13 +97,17 @@ export async function initialize() {
 	await setupTheme()
 	await getDebugStatus()
 	await createDynamicTabs()
-	await getAndRenderConfig().then(() => console.log('Done rendering received config'))
+	await getAndRenderConfig().then(() => {
+		console.log('Done rendering received config')
+		destroyOverlay(true)
+	})
 	initializeJSViewer()
 	renderSettings().then(() => console.log('Done rendering received settings tab'))
 	initializeSearchBar().then(() => console.log('Done initializing search bar'))
 	createWiki().then(() => console.log('Done initializing wikit tab'))
 	// createWiki()
 	tippy.setDefaultProps({ delay: 1000, arrow: true })
+	setupGTAG()
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

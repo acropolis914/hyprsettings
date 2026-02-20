@@ -18,7 +18,7 @@ export default async function getAndRenderConfig() {
 	await Backend.getHyprlandConfig()
 	setTimeout(async () => {
 		await Backend.getHyprlandConfigTexts()
-	}, 2000)
+	}, 3000)
 	// }
 }
 
