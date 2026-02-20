@@ -83,11 +83,13 @@ function setupGTAG() {
 
 export async function reinitialize() {
 	console.log('Reinitializing...')
-	createLoadingOverlay('Reloading your hyprland config')
-	setTimeout(async () => {
+	await createLoadingOverlay('Reloading your hyprland config')
+	requestAnimationFrame(async () => {
 		await Backend.debounceGetHyprlandConfig()
-	}, 1)
-	destroyOverlay(true)
+	})
+	requestAnimationFrame(() => {
+		destroyOverlay(true)
+	})
 }
 
 export async function initialize() {

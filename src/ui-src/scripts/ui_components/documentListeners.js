@@ -1,3 +1,5 @@
+//disclaimer: I wrote this but I had gemini pro reorganize it a bit and
+//add some comments cause my rewrite was a bit of mess in order but this is my code, not AI's
 import { GLOBAL } from '../GLOBAL.ts'
 import { hideAllContextMenus } from '@scripts/utils/utils.ts'
 import { createOverlay } from './darkenOverlay.js'
