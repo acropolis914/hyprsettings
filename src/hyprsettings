@@ -434,6 +434,6 @@ if __name__ == '__main__':
 
 	if not state.args.no_daemon and is_port_open(state.webview_port):
 		if send_toggle():
-			exit(0)
+			os._exit(0)
 
 	gotoMain()
