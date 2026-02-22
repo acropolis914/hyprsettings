@@ -5,7 +5,7 @@
 	"scripts": {
 		"killhs": "hyprsettings -k &",
 		"dev": "concurrently -k -s first -n py,vt -c cyan,green \"cd ../../ && sh ./run.sh --bun-dev --debug --no-daemon --no-browser\" \"vite --host\"",
-		"build": "vite build",
+		"build_ui": "vite build",
 		"bldprev": "vite build && cd ../../ && sh ./run.sh --debug --no-daemon",
 		"kill-ports": "sh -c 'for p in 3000 6969; do echo \"\\n== Port $p ==\"; lsof -iTCP:$p -sTCP:LISTEN -Pn | awk \"NR>1 {print \\\"PID=\\\"$2, \\\"NAME=\\\"$1}\"; lsof -tiTCP:$p -sTCP:LISTEN | xargs -r kill -9; done'",
 		"hs": "cd ../../ && sh ./run.sh --debug --no-daemon",
@@ -13,7 +13,7 @@
 		"clean-font": "DEBUG=glyphhanger* glyphhanger --delay=20000 --whitelist=\"U+E000-U+F8FF,U+F0DA,U+F0000-U+FFFFD\" --formats=woff2,otf --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:3000/",
 		"format": "prettier --write \"**/*.{js,ts,jsx,tsx,css,scss}\"",
 		"update_version": "python ../../tooling/git_tag_version.py && git add .",
-		"run_pyinstaller": "vite build && cd .. && pyinstaller --clean --distpath output hyprsettings.spec"
+		"build_py": "vite build && cd .. && pyinstaller --clean --distpath output hyprsettings.spec"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
@@ -25,7 +25,6 @@
 		"rollup-plugin-visualizer": "^6.0.5",
 		"sass": "^1.97.3",
 		"terser": "^5.46.0",
-		"tom-select": "^2.4.5",
 		"vite": "^7.3.1"
 	},
 	"dependencies": {
@@ -33,6 +32,7 @@
 		"compress-json": "^3.4.0",
 		"hastscript": "^9.0.1",
 		"hotkeys-js": "^4.0.0",
+		"tom-select": "^2.4.5",
 		"lit": "^3.3.2",
 		"prismjs": "^1.30.0",
 		"rehype-stringify": "^10.0.1",

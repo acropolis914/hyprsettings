@@ -84,12 +84,7 @@ function setupGTAG() {
 export async function reinitialize() {
 	console.log('Reinitializing...')
 	await createLoadingOverlay('Reloading your hyprland config')
-	requestAnimationFrame(async () => {
-		await Backend.debounceGetHyprlandConfig()
-	})
-	requestAnimationFrame(() => {
-		destroyOverlay(true)
-	})
+	await Backend.debounceGetHyprlandConfig()
 }
 
 export async function initialize() {
@@ -101,8 +96,8 @@ export async function initialize() {
 	await createDynamicTabs()
 	await getAndRenderConfig().then(() => {
 		console.log('Done rendering received config')
-		destroyOverlay(true)
 	})
+	await destroyOverlay(true)
 	initializeJSViewer()
 	renderSettings().then(() => console.log('Done rendering received settings tab'))
 	initializeSearchBar().then(() => console.log('Done initializing search bar'))
