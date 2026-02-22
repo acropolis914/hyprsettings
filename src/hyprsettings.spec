@@ -72,6 +72,7 @@ if onefile:
         upx=False, 
         console=True,
         runtime_tmpdir=None,
+        icon= "hyprsettings.ico"
     )
 else:
     exe = EXE(
@@ -84,6 +85,7 @@ else:
         strip=True,
         upx=False,
         console=True,
+        icon= "hyprsettings.ico"
     )
     coll = COLLECT(
         exe,

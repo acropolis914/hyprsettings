@@ -34,12 +34,12 @@ package() {
     # 4. Compile Python bytecode
     python -m compileall -d "/usr/lib/$pkgname" -q "$pkgdir/usr/lib/$pkgname"
 
-    # 5. Internal run.sh
-    cat > "$pkgdir/usr/lib/$pkgname/run.sh" <<EOF
-#!/usr/bin/env bash
-cd "\$(dirname "\$0")"
-exec python3 src/hyprsettings "\$@"
-EOF
+#     # 5. Internal run.sh
+#     cat > "$pkgdir/usr/lib/$pkgname/run.sh" <<EOF
+# #!/usr/bin/env bash
+# cd "\$(dirname "\$0")"
+# exec python3 src/hyprsettings "\$@"
+# EOF
     chmod 755 "$pkgdir/usr/lib/$pkgname/run.sh"
 
     # 6. System wrapper

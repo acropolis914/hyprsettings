@@ -71,6 +71,5 @@ else:
 	version_file.write_text(git_version)
 	console.print(f'[green]Created {version_file}[/green]\n')
 
-# 4️⃣ Update default.nix
 nix_file = BASE_DIR / '../default.nix'
 update_file(nix_file.resolve(), r'version\s*=\s*["\'].*?["\']', f'version = "{git_version}"', 'version in default.nix')

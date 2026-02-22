@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
-cd "$(dirname "$0")" || exit
-source ".venv/bin/activate"
-python "src/hyprsettings" "$@"
+set -e
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+. ".venv/bin/activate"
+exec python "src/hyprsettings" "$@"

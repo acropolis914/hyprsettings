@@ -34,7 +34,7 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "hyprsettings";
-  version = "0.9.1.39";
+  version = "0.9.1.40";
 
   src = ./.;
 
@@ -60,7 +60,8 @@ stdenv.mkDerivation rec {
     # 2. Generate run.sh
     cat > $out/lib/hyprsettings/run.sh <<EOF
 #!${runtimeShell}
-cd "\$(dirname "\$0")"
+set -euo pipefail
+cd "\$(dirname "\$0")" || exit 1
 exec ${python}/bin/python3 src/hyprsettings "\$@"
 EOF
     chmod +x $out/lib/hyprsettings/run.sh

@@ -345,10 +345,14 @@ run_actions() {
                 $cmd_prefix "$venv_dir/bin/pip" install tomlkit rich pywebview packaging "pywebview[gtk]" flask flask-cors python-dotenv -q
                 info "Venv ready"
                 ;;
-
+            
             run_script)
                 local run_script="$INSTALL_DIR/run.sh"
-                local run_content='#!/usr/bin/env bash
+
+                if [[ ! -f "$run_script" ]]; then
+                    echo -e "  ${DIM}run.sh missing — generating default launcher...${NC}"
+
+                    local run_content='#!/usr/bin/env bash
 set -e
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
@@ -356,11 +360,19 @@ cd "$SCRIPT_DIR"
 exec python "src/hyprsettings" "$@"'
 
                 if [[ "$INSTALL_TYPE" == "system" ]]; then
-                    echo "$run_content" | sudo tee "$run_script" > /dev/null
-                    sudo chmod +x "$run_script"
+                        echo "$run_content" | sudo tee "$run_script" > /dev/null
+                        sudo chmod +x "$run_script"
+                    else
+                        echo "$run_content" > "$run_script"
+                        chmod +x "$run_script"
+                    fi
                 else
-                    echo "$run_content" > "$run_script"
-                    chmod +x "$run_script"
+                    echo -e "  ${DIM}run.sh exists — keeping upstream version${NC}"
+                    if [[ "$INSTALL_TYPE" == "system" ]]; then
+                        sudo chmod +x "$run_script"
+                    else
+                        chmod +x "$run_script"
+                    fi
                 fi
                 ;;
 
