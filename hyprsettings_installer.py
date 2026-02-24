@@ -1,14 +1,22 @@
 #!/bin/sh
 """:"
-# Polyglot shim for Python installer, robust for `sh -s -- --auto`
-SCRIPT="$0"
-if [ ! -f "$SCRIPT" ]; then
-    # script not on disk, must be piped in → read from stdin
-    exec python3 - "$@"
-else
-    # normal file execution
-    exec python3 "$SCRIPT" "$@"
-fi
+# Polyglot shim for Python installer
+# ----------------------------------
+# This allows the installer to be run via:
+#   curl ... | sh -s -- --auto
+# while keeping Python interactive stdin available.
+
+# create a temp file for the Python script
+tmpfile=$(mktemp /tmp/hyprsettings.XXXXXX.py) || exit 1
+
+# ensure temp file is removed when script exits
+trap 'rm -f "$tmpfile"' EXIT
+
+# write stdin (the Python script) into the temp file
+cat > "$tmpfile"
+
+# execute Python on the temp file with all arguments
+exec python3 "$tmpfile" "$@"
 ":"""
 
 import argparse
