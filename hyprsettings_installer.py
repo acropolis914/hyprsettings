@@ -1,6 +1,14 @@
 #!/bin/sh
 """:"
-exec python3 "$0" "$@"
+# Polyglot shim for Python installer
+# This handles the $0 problem when piped via `sh -s --`
+if [ "$0" = "sh" ]; then
+    # running via `sh -s -- ...`, stdin contains the script
+    exec python3 - "$@"
+else
+    # normal execution, file exists on disk
+    exec python3 "$0" "$@"
+fi
 ":"""
 
 import argparse
