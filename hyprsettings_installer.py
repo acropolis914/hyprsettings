@@ -1,13 +1,13 @@
 #!/bin/sh
 """:"
-# Polyglot shim for Python installer
-# This handles the $0 problem when piped via `sh -s --`
-if [ "$0" = "sh" ]; then
-    # running via `sh -s -- ...`, stdin contains the script
+# Polyglot shim for Python installer, robust for `sh -s -- --auto`
+SCRIPT="$0"
+if [ ! -f "$SCRIPT" ]; then
+    # script not on disk, must be piped in → read from stdin
     exec python3 - "$@"
 else
-    # normal execution, file exists on disk
-    exec python3 "$0" "$@"
+    # normal file execution
+    exec python3 "$SCRIPT" "$@"
 fi
 ":"""
 
