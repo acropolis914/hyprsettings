@@ -10,6 +10,7 @@
 </h1>
 
 Install now!
+
 ```
 curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh -s -- --auto
 ```
@@ -27,7 +28,7 @@ curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh
 
 <img width="1444" height="442" alt="image" src="https://github.com/user-attachments/assets/135d9cc6-9f9e-4ffc-bcd3-b3895f4da25a" />
 
-  
+
 HyprSettings: a configurator for `hyprland.conf` that very loyally reconstructs your configs exactly(almost*) as you
 wrote them, including comments. It presents everything in an organized UI that is also keyboard navigable. Themable,
 too!
@@ -41,24 +42,24 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 - [✨ Features](#-features)
 - [Table of Contents](#table-of-contents)
 - [📥 Installation](#-installation)
-  - [Quick Clone and Install (Recommended for local use)](#quick-clone-and-install-recommended-for-local-use)
+    - [Quick Clone and Install (Recommended for local use)](#quick-clone-and-install-recommended-for-local-use)
         - [To install without an interactive prompt (useful for automation):](#to-install-without-an-interactive-prompt-useful-for-automation)
-  - [NixOS Installation](#nixos-installation)
-    - [Try without installing](#try-without-installing)
-    - [Install to user profile](#install-to-user-profile)
-  - [Arch Linux (AUR Package)](#arch-linux-aur-package)
+    - [NixOS Installation](#nixos-installation)
+        - [Try without installing](#try-without-installing)
+        - [Install to user profile](#install-to-user-profile)
+    - [Arch Linux (AUR Package)](#arch-linux-aur-package)
 - [🎨 Configuration and Theming](#-configuration-and-theming)
 - [👻 Autostart and Daemon mode](#-autostart-and-daemon-mode)
 - [🗂️ Organizing Comments into Tabs](#️-organizing-comments-into-tabs)
 - [Contributing](#contributing)
 - [❄ Testing the UI (Development)](#-testing-the-ui-development)
 - [💬 A Personal Note](#-a-personal-note)
-  - [Notice on the use of AI](#notice-on-the-use-of-ai)
-
+    - [Notice on the use of AI](#notice-on-the-use-of-ai)
 
 ## 📥 Installation
 
 ### Quick Clone and Install (Recommended for local use)
+
 > For Arch and Nix users, please scroll a bit further. They are available as packages for those systems already.
 
 The included installer script (`hyprsettings.sh`) handles cloning the repo, setting up a contained Python virtual
@@ -113,6 +114,17 @@ nix profile add github:acropolis914/hyprsettings
 ```bash
 yay -S hyprsettings-git
 ```
+
+### Fedora
+
+For **Fedora**, you have first to install pyGObject dependencies before running the script:
+
+```
+sudo dnf install gcc gobject-introspection-devel cairo-gobject-devel pkg-config python3-devel gtk4
+curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh
+
+```
+
 After installation you can:
 
 - Launch it from your application launcher (rofi, wofi, walker, fuzzel, etc.) by searching for “HyprSettings”.
@@ -139,17 +151,25 @@ Theming works perfectly out of the box. The defaults should be fine, but if you 
 modify the file. Be careful, though I do not have extensive safeguards and fallbacks right now.
 
 ## 👻 Autostart and Daemon mode
+
 > This will not work when you are on an nvidia only setting for your gpu. You have to have Integrated GPU too as GTK3
 > doesn't work well with NVIDIA only setups. Can't test with AMD. I dont have AMD.
 
-You can start hyprsettings with the `-d` argument to make it persist in the background. On closing, it will not actually close but instead hide it, and on calling it again, it will show the window again on your current ui, making it launch faster. It being a webview tho, will consume around 320mb. Fine if you have unlimited memory but not recommended for people with 8gb or less ram.
+You can start hyprsettings with the `-d` argument to make it persist in the background. On closing, it will not actually
+close but instead hide it, and on calling it again, it will show the window again on your current ui, making it launch
+faster. It being a webview tho, will consume around 320mb. Fine if you have unlimited memory but not recommended for
+people with 8gb or less ram.
 
-You can also start it with `-H` (capital H)  or `--hidden` together with `-d` or `--daemon` on the hyprland.conf autostart section so it starts hidden and in daemon mode so the next time you need it, it's already started and will immediately show up.
+You can also start it with `-H` (capital H)  or `--hidden` together with `-d` or `--daemon` on the hyprland.conf
+autostart section so it starts hidden and in daemon mode so the next time you need it, it's already started and will
+immediately show up.
 
 For example in your `hyprland.conf` :
+
 ```hyprland.conf
 exec-once = hyprsettings -d -H
 ```
+
 > Please note the capital H.
 
 ## 🗂️ Organizing Comments into Tabs

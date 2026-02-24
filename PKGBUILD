@@ -27,6 +27,7 @@ package() {
     # 2. Copy only what's needed
     cp -r --no-preserve=ownership "$srcdir/$pkgname/src" "$pkgdir/usr/lib/$pkgname/"
     cp -r --no-preserve=ownership "$srcdir/$pkgname/assets/icon-48.png" "$pkgdir/usr/lib/$pkgname/"
+    # cp -r --no-preserve=ownership "$srcdir/$pkgname/src/default_config.toml" ""
     
     # 3. Remove unnecessary src/ui-src after copy
     rm -rf "$pkgdir/usr/lib/$pkgname/src/ui-src"
