@@ -11,7 +11,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from flask import Flask
 import logging
 
-import webview
+# import webview
 
 # traceback.install(show_locals=True)
 
@@ -313,9 +313,14 @@ def main():
 	state.flask_thread = threading.Thread(target=start_flask_server, daemon=True)
 	state.flask_thread.start()
 
+	has_webview = True
 	try:
-		if state.args.no_devtools:
-			webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
+		import webview
+	except Exception:
+		has_webview = False
+		log('Webview is not installed. Skipping window and going straight to browser only mode.')
+
+	try:
 		if state.args.no_dmabuf:
 			os.environ['WEBKIT_DISABLE_DMABUF_RENDERER'] = '1'
 		ui_link = f'http://localhost:{state.flask_port}/'
@@ -324,7 +329,10 @@ def main():
 			ui_link = 'http://localhost:3000/'
 			log(f'Using bun dev server at {ui_link} as per --bun-dev arg')
 		os.environ['GTK_OVERLAY_SCROLLING'] = '1'
-		if not state.args.no_window:
+
+		if not state.args.no_window and has_webview:
+			if state.args.no_devtools:
+				webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
 			state.window_thread = threading.Thread(target=start_window_server, daemon=state.daemon)
 			state.window_thread.start()
 
@@ -363,7 +371,7 @@ def main():
 			finally:
 				log('Done.')
 		else:
-			log('Opening in browser mode only as per --no-window arg')
+			log('Opening in browser mode only')
 			log('[red][bold] Warning [/bold][/red] Using firefox-based browsers feel [red]slower[/red]')
 			log('If you experience loading times > 2 seconds, consider using a chromium-based browser.')
 			log("Even I, acropolis, who uses Zen Browser, can't deny that (ノToT)ノ ~┻┻")

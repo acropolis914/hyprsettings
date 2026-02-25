@@ -20,8 +20,10 @@ exec python3 "$tmpfile" "$@"
 ":"""
 
 import argparse
+import datetime
 import os
 import subprocess
+from os import PathLike
 from typing import Literal, List
 from pathlib import Path
 import shutil
@@ -37,18 +39,17 @@ LOGTYPE = Literal['INFO', 'ERROR', 'WARNING', 'DEBUG', 'CRITICAL']
 
 
 class GLOBALS:
-	ICON_DIRECTORY: Path = None
-	INSTALLATION_PATH = None  # System or User
-	EXISTING_INSTALLATION: Path = None  # if this is not None, it will be a Path object pointing to the existing installation
+	INSTALLATION_PATH: Literal['System', 'User'] = None
+	EXISTING_INSTALLATION: Path | None = None  # if this is not None, it will be a Path object pointing to the existing installation
 	PACKAGE_MANAGER_INSTALLED: Path = None
 	IN_LOCAL_CLONE: bool = False
 	VERBOSE: bool = False
 	IS_HYPRLAND_INSTALLED: Path = None
 	OS_RELEASE: str = None
-	FORCE_SCRIPT_INSTALL = False
-	BIN_DIRECTORY = None
-	LIB_DIRECTORY = None
-	DESKTOP_DIRECTORY = None
+	BIN_DIRECTORY: PathLike | Path = None
+	LIB_DIRECTORY: PathLike | Path = None
+	ICON_DIRECTORY: PathLike | Path = None
+	DESKTOP_DIRECTORY: PathLike | Path = None
 	IS_DEPENDENCY_INSTALLED = False
 	IS_VENV_INSTALLED = False
 	CLONE_REPOSITORY: Path = None
@@ -58,7 +59,9 @@ class GLOBALS:
 	IS_ICON_INSTALLED = False
 	IS_DESKTOP_ICON_CACHE_DONE = False
 	IS_REPO_UPDATED: bool = False
-	MODE: str = 'NORMAL'
+	MODE: Literal['NORMAL', 'UPDATE', 'AUTO_INSTALL'] = 'NORMAL'
+	NO_GTK: bool = None
+	NO_WEBVIEW: bool = None
 
 
 GLOBAL = GLOBALS()
@@ -248,7 +251,7 @@ def confirm(
 
 
 def choose_from(
-	message,
+	message: str,
 	choices: List[str],
 	default: str = '1',
 	add_indent: int = 0,
@@ -317,7 +320,7 @@ def check_hyprland_installation():
 		return 1
 
 
-def check_os_release():
+def check_os_release(emulate: str = None):
 	release = (
 		run(
 			['grep', '^ID=', '/etc/os-release'],
@@ -326,10 +329,22 @@ def check_os_release():
 		.split('=')[1]
 		.strip()
 	)
+	if emulate is not None:
+		release = emulate
+	release = detect_family(release, '')
 	if release not in ['arch', 'fedora', 'nix', 'nixos']:
+		GLOBAL.OS_RELEASE = f'{release} (unsupported)'
+	else:
+		GLOBAL.OS_RELEASE = release
+
+
+def ask_os_release():
+	release = GLOBAL.OS_RELEASE
+	if 'unsupported' in release:
 		choice = choose_from(
-			'Unsupported Distro detected. Choose what is distro is it based on:',
-			['Debian/Ubuntu/APT', 'Fedora', 'Arch', 'NixOs', 'None of the above'],
+			'Unsupported Distro detected. Is it based on one of the following distros?:',
+			['Arch', 'Fedora', 'NixOs', 'None of the above'],
+			default='99',
 		)
 		if choice == 'Debian/Ubuntu/APT':
 			release = 'debian'
@@ -337,19 +352,92 @@ def check_os_release():
 			release = 'fedora'
 		elif choice == 'Arch':
 			release = 'arch'
-		elif choice == 'NixOS':
+		elif choice == 'NixOs':
 			release = 'nixos'
-		elif choice.startswith('None'):
-			release = 'unsupported'
+		else:
+			show_unsupported_linux_prompt()
+	else:
+		return
 
-	GLOBAL.OS_RELEASE = release
-	# GLOBAL.OS_RELEASE = 'nixos'
-	# log(f'[bold]Distro:[/bold] {release}')
+
+def detect_family(distro_id: str, id_like: str) -> str:
+	distro_id = (distro_id or '').lower()
+	id_like_list = (id_like or '').lower().split() if id_like else []
+
+	families = {
+		'arch': [
+			'arch',
+			'artix',
+			'endeavouros',
+			'manjaro',
+			'garuda',
+			'arcolinux',
+			'cachyos',
+			'rebornos',
+			'archcraft',
+			'blackarch',
+			'archbang',
+			'chakra',
+		],
+		'debian': [
+			'debian',
+			'ubuntu',
+			'linuxmint',
+			'pop',
+			'kali',
+			'raspbian',
+			'parrot',
+			'elementary',
+			'zorin',
+			'deepin',
+			'neon',
+			'mx',
+			'peppermint',
+			'bunsenlabs',
+		],
+		'fedora': [
+			'fedora',
+			'nobara',
+			'ultramarine',
+			'korora',
+			'rocky-fedora-spinoff',
+			'silverblue',
+			'cinammon-fedora',
+			'redhat-fedora-workstation',
+		],
+		'rhel': ['rhel', 'centos', 'rocky', 'almalinux', 'ol', 'oraclelinux', 'scientific', 'amazon', 'cloudlinux', 'virtuozzo'],
+		'suse': ['suse', 'opensuse', 'sled', 'sles', 'tumbleweed', 'leap', 'microos', 'gecko'],
+		'gentoo': ['gentoo', 'funtoo', 'calculate', 'redcore', 'pentoo'],
+		'slackware': ['slackware', 'salix', 'zenwalk', 'slax'],
+		'alpine': ['alpine', 'postmarketos'],
+		'void': ['void'],
+		'nixos': ['nixos'],
+		'solus': ['solus'],
+	}
+
+	def match(name: str):
+		for family, distros in families.items():
+			if name in distros:
+				return family
+		return None
+
+	# 1️⃣ Try exact ID first
+	family = match(distro_id)
+	if family:
+		return family
+
+	# 2️⃣ Then check ID_LIKE entries
+	for entry in id_like_list:
+		family = match(entry)
+		if family:
+			return family
+
+	return 'unsupported'
 
 
 def install_via_aur():
 	def install():
-		# clear_view('Installing hyprsettings via AUR')
+		clear_view('Installing hyprsettings via AUR')
 		aur_helpers = ['yay', 'paru', 'trizen', 'pikaur']
 		aur_helper = next((h for h in aur_helpers if shutil.which(h)), None)
 		if aur_helper is None:
@@ -374,7 +462,7 @@ def install_via_aur():
 			spinner.stop()
 		except Exception as e:
 			spinner.stop(1)
-			# reset_view()
+			reset_view()
 			log(
 				f'Failed to install hyprsettings via {aur_helper}. Error: {e}',
 				'CRITICAL',
@@ -526,7 +614,6 @@ def run_nixos_wizard():
 
 def install_dependencies():
 	release = GLOBAL.OS_RELEASE
-	# release = 'def'
 	match release:
 		case 'arch':
 			clear_view('Installing Arch dependencies')
@@ -575,37 +662,52 @@ def install_dependencies():
 		case 'nixos':
 			return 0
 		case default:
-			clear_view('[red]Unsupported distro detected.[/red]')
-			log(
-				'[bold]Installing on an untested distribution.[/bold]\n'
-				'[yellow]Hyprsettings may not function correctly on this system.[/yellow]\n\n'
-				'You must manually install the system dependencies required for [bold]PyGObject + GTK[/bold].\n'
-				'These are the build dependencies referenced in Step 2 of the official setup guide.\n\n'
-				'[bold]Common required components:[/bold]\n'
-				'[dim]'
-				'- Python development headers (python3-dev / python3-devel)\n'
-				'- C compiler toolchain (gcc / build-essential)\n'
-				'- GObject Introspection (gobject-introspection / libgirepository-2.0-dev)\n'
-				'- Cairo graphics library (cairo / libcairo2-dev / cairo-devel)\n'
-				'- pkg-config (pkg-config / pkgconf)\n'
-				'- GTK4 + introspection data (gtk4 / gir1.2-gtk-4.0 / typelib-1_0-Gtk-4_0)\n'
-				'[/dim]\n\n'
-				'[bold]Example commands:[/bold]\n'
-				'\nDebian / Ubuntu:\n'
-				'[dim]sudo apt install libgirepository-2.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-4.0[/dim]\n'
-				'\nopenSUSE:\n'
-				'[dim]sudo zypper install cairo-devel pkg-config python3-devel gcc gobject-introspection-devel[/dim]\n\n'
-				'Refer to the official guide for distro-specific instructions:\n'
-				'[link=https://pygobject.readthedocs.io/en/latest/getting_started.html]PyGObject Getting Started[/link]',
-				'WARNING',
-			)
-			if not confirm('Install the dependencies manually and answer yes.'):
-				cleanup(True)
-				return 1
-			else:
-				GLOBAL.IS_DEPENDENCY_INSTALLED = True
-				reset_view()
-				return 0
+			return 0
+
+
+def show_unsupported_linux_prompt(print_guide=True):
+	print_unsupported_os_guide()
+	choices = [
+		'I have installed the GTK dependencies',
+		'[red]Continue without GTK Dependencies[/red] \n [dim] Running hyprsettings will automatically open a browser window for you.[/dim][/red]',
+	]
+	decision = choose_from(
+		'----- [cyan]Have you installed the GTK Dependencies?[/cyan] -----\n[dim] They are needed to launch the dedicated hyprsettings window',
+		choices,
+		default='99',
+	)
+	if decision == choices[0]:
+		GLOBAL.IS_DEPENDENCY_INSTALLED = True
+		reset_view()
+	elif decision == choices[1]:
+		GLOBAL.NO_GTK = True
+
+
+def print_unsupported_os_guide():
+	clear_view('[red]Unsupported distro detected. Manual dependency installation is required.[/red]')
+	log(
+		'[yellow]Hyprsettings may fail to launch a window on this system if these are not installed.[/yellow]\n\n'
+		'You must manually install the system dependencies required for [bold]PyGObject + GTK4[/bold].\n'
+		'These are the build dependencies referenced in Step 2 of the official setup guide.\n\n'
+		'[bold][blue]Required components (and typical package names):[/blue][/bold]\n'
+		'[dim]'
+		'  - Python headers:        python3-dev / python3-devel\n'
+		'  - C Compiler:            gcc / build-essential\n'
+		'  - Build config tool:     pkg-config / pkgconf\n'
+		'  - Cairo graphics:        libcairo2-dev / cairo-devel\n'
+		'  - GObject Introspection: gobject-introspection / libgirepository-2.0-dev\n'
+		'  - GTK4 C Library:        gtk4 / libgtk-4-dev\n'
+		'  - GTK4 GI Data (Python): gir1.2-gtk-4.0 / typelib-1_0-Gtk-4_0\n'
+		'[/dim]\n\n'
+		'[bold]Example installation commands:[/bold]\n'
+		'  Debian / Ubuntu / Mint (APT):\n'
+		'  [dim]sudo apt install libgirepository-2.0-dev gcc libcairo2-dev pkg-config python3-dev libgtk-4-dev gir1.2-gtk-4.0[/dim]\n\n'
+		'  openSUSE(zypper):\n'
+		'  [dim]sudo zypper install cairo-devel pkg-config python3-devel gcc gobject-introspection-devel gtk4 typelib-1_0-Gtk-4_0[/dim]\n\n'
+		'Refer to the official guide for distro-specific instructions:\n'
+		'  [link=https://pygobject.readthedocs.io/en/latest/getting_started.html]PyGObject Getting Started[/link]',
+		'WARNING',
+	)
 
 
 def clone_repository():
@@ -676,7 +778,6 @@ def check_local_repo():
 		GLOBAL.IN_LOCAL_CLONE = False
 	with open(Path('~/.cache/hyprsettings/repo_dir').expanduser(), encoding='utf-8', mode='w') as f:
 		f.write(str(GLOBAL.CLONE_REPOSITORY))
-	reset_view()
 
 
 def check_existing_installation():
@@ -693,7 +794,6 @@ def check_existing_installation():
 
 	if package_manager_installed:
 		GLOBAL.PACKAGE_MANAGER_INSTALLED = Path(package_manager_install_path)
-		reset_view()
 
 	paths = [Path('/usr/local/bin/hyprsettings'), Path('~/.local/bin/hyprsettings').expanduser()]
 	for path in paths:
@@ -703,26 +803,15 @@ def check_existing_installation():
 				set_install_dirs('System')
 			elif str(path) == str(Path('~/.local/bin/hyprsettings').expanduser()):
 				set_install_dirs('User')
+			if Path(path / '.no_webview').exists():
+				GLOBAL.NO_WEBVIEW = True
 
 
 def select_installation_directory():
 	marker = ConsoleMarker()
 	install_base_dir = choose_from('Where to install?', choices=['System', 'User'])
 	marker.clear()
-	if install_base_dir == 'System':
-		sudo_marker = ConsoleMarker()
-		log('System installation requires sudo privileges.')
-		try:
-			run(['sudo', '-v'], check=True)
-			sudo_marker.clear()
-			set_install_dirs(install_base_dir)
-		except Exception as e:
-			sudo_marker.clear()
-			log(f'Failed elevating system installation via sudo. Exiting.{e}', level='CRITICAL')
-			cleanup(True)
-	else:
-		set_install_dirs(install_base_dir)
-	# log(f'[bold]Install location: [/bold]{install_base_dir}')
+	set_install_dirs(install_base_dir)
 
 
 def set_install_dirs(install_type):
@@ -731,8 +820,17 @@ def set_install_dirs(install_type):
 		GLOBAL.BIN_DIRECTORY = Path('/usr/local/bin/')
 		GLOBAL.DESKTOP_DIRECTORY = Path('/usr/share/applications/')
 		GLOBAL.LIB_DIRECTORY = Path('/usr/local/share/hyprsettings/')
-		run(['mkdir', '-p', str(GLOBAL.LIB_DIRECTORY)], check=True)
 		GLOBAL.ICON_DIRECTORY = Path('/usr/share/icons/hicolor/48x48/apps/')
+		reset_view()
+		try:
+			sudo_marker = ConsoleMarker()
+			log('\n\nInstallation is set to system. We need to use sudo for that.', 'WARNING')
+			run(['sudo', '-v', '-p', 'Root password:'], check=True)
+			sudo_marker.clear()
+			run(['mkdir', '-p', str(GLOBAL.LIB_DIRECTORY)], check=True)
+		except subprocess.CalledProcessError as e:
+			log(f'Error getting root access. {e.stderr}')
+			cleanup(True)
 	elif install_type == 'User':
 		GLOBAL.BIN_DIRECTORY = Path('~/.local/bin').expanduser()
 		GLOBAL.DESKTOP_DIRECTORY = Path('~/.local/share/applications/').expanduser()
@@ -745,36 +843,33 @@ def set_install_dirs(install_type):
 
 
 def setup_venv():
-	if GLOBAL.INSTALLATION_PATH == 'System':
-		sudo_marker = ConsoleMarker()
-		try:
-			log('System installation requires sudo privileges.')
-			run(['sudo', '-v', '-p', 'Password: '], check=True)
-		except Exception:
-			log('Failed elevating system installation via sudo. Exiting.', level='CRITICAL')
-			sudo_marker.clear()
-		sudo_marker.clear()
 	marker = ConsoleMarker()
+	# clear_view("Setting up virtual environment")
 	spinner = Spinner('Setting up virtual environment')
 	try:
 		venv_directory = Path(GLOBAL.LIB_DIRECTORY / '.venv')
 		packages = [
 			'tomlkit',
 			'rich',
-			'pywebview',
 			'packaging',
-			'pywebview[gtk]',
 			'flask',
 			'flask-cors',
 			'python-dotenv',
 		]
+
+		if GLOBAL.NO_GTK is None and GLOBAL.NO_WEBVIEW:
+			GLOBAL.NO_GTK = True
+
+		if GLOBAL.NO_GTK is not None and not GLOBAL.NO_GTK:
+			log('Adding pywebview')
+			packages.append('pywebview')
+			packages.append('pywebview[gtk]')
 
 		pip_base = [
 			str(venv_directory / 'bin/pip'),
 			'install',
 			'--upgrade-strategy',
 			'only-if-needed',
-			'-q',
 		]
 
 		if not venv_directory.exists():
@@ -782,8 +877,8 @@ def setup_venv():
 			run(['python', '-m', 'venv', str(venv_directory)])
 
 		# always install deps
-		run([*pip_base, 'setuptools', 'wheel'])
-		run([*pip_base, *packages])
+		run([*pip_base, 'setuptools', 'wheel'], capture_output=True)
+		run([*pip_base, *packages], capture_output=False)
 		GLOBAL.IS_VENV_INSTALLED = True
 		spinner.stop()
 		marker.clear()
@@ -791,8 +886,7 @@ def setup_venv():
 	except subprocess.CalledProcessError as e:
 		spinner.stop(1)
 		marker.clear()
-		log(f'Error installing virtual environment: {e.stderr}', level='CRITICAL')
-		cleanup(True)
+		cleanup(True, f'Error installing virtual environment: {e.stderr}')
 
 
 def setup_source():
@@ -802,6 +896,16 @@ def setup_source():
 		run(['cp', '-r', str(GLOBAL.CLONE_REPOSITORY / 'src'), str(GLOBAL.LIB_DIRECTORY)])
 		run(['cp', str(GLOBAL.CLONE_REPOSITORY / 'run.sh'), str(GLOBAL.LIB_DIRECTORY / 'run.sh')])
 		run(['rm', '-rf', str(GLOBAL.LIB_DIRECTORY / 'src' / 'ui-src')])
+		marker_file = '/tmp/.scriptv2_installed'
+		with open(marker_file, 'w+') as f:
+			f.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+		run(['mv', marker_file, str(GLOBAL.LIB_DIRECTORY)])
+		if GLOBAL.NO_GTK:
+			nogtk_marker_file = '/tmp/.no_webview'
+			with open(nogtk_marker_file, 'w+') as f:
+				f.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+			run(['mv', nogtk_marker_file, str(GLOBAL.LIB_DIRECTORY)])
+
 		spinner.stop()
 
 		icon_spinner = Spinner(f'Copying icons to {GLOBAL.LIB_DIRECTORY}')
@@ -852,7 +956,7 @@ def make_desktop_file():
 	try:
 		desktop_file_path = GLOBAL.DESKTOP_DIRECTORY / 'hyprsettings_script.desktop'
 		contents = f"""[Desktop Entry]
-Name=HyprSettings
+Name=HyprSettings 
 Comment=Your loyal hyprland config editor.
 Exec={GLOBAL.BIN_DIRECTORY / 'hyprsettings'}
 Icon=hyprsettings
@@ -887,75 +991,6 @@ def setup_default_config():
 	if not hyprsettings_config_path.exists():
 		hyprsettings_config_path.parent.mkdir(parents=True, exist_ok=True)
 		run(['cp', str(GLOBAL.CLONE_REPOSITORY / 'src' / 'default_config.toml'), str(hyprsettings_config_path)])
-
-
-def cleanup(error=False, message='Exited hyprsettings installation wizard'):
-	is_signal = False
-	if isinstance(error, int):
-		message = ''
-		is_signal = True
-
-	if message:
-		log(message, no_prefix=True)
-
-	# if not is_signal:
-	# 	input('Press any key to exit...')
-	sys.exit(1 if error else 0)
-
-
-def clear_view(message):
-	os.system('clear')
-	if message:
-		log(f'[bold][blue]{message}[/blue][/bold]', level='INFO', no_prefix=True)
-
-
-def reset_view():
-	os.system('clear')
-	print_title()
-
-	repo_updated_message = ' [green](up to date)[green]' if GLOBAL.IS_REPO_UPDATED else ''
-	log(f'[bold]Linux Distro:[/bold]\n  {GLOBAL.OS_RELEASE}-like')
-	log(f'[bold]Clone Directory:[/bold]\n  [dim]{GLOBAL.CLONE_REPOSITORY}[/dim]{repo_updated_message}')
-
-	if GLOBAL.PACKAGE_MANAGER_INSTALLED:
-		log(f'[bold]Package Manager Installed:[/bold]\n  [dim]{GLOBAL.PACKAGE_MANAGER_INSTALLED}[/dim]')
-
-	if GLOBAL.EXISTING_INSTALLATION:
-		log(f'[bold]Existing Installation by Script[/bold]\n  [dim]{GLOBAL.INSTALLATION_PATH} [blue]{GLOBAL.EXISTING_INSTALLATION}[/blue][/dim]')
-
-	if not GLOBAL.EXISTING_INSTALLATION and GLOBAL.INSTALLATION_PATH:
-		log(f'[bold]New installation to[/bold]\n  [dim]{GLOBAL.INSTALLATION_PATH}[/dim]')
-
-	if GLOBAL.IS_HYPRLAND_INSTALLED:
-		log(f'[bold]Hyprland Installed:[/bold]\n  [dim]{GLOBAL.IS_HYPRLAND_INSTALLED}[/dim]')
-
-	if GLOBAL.IS_DEPENDENCY_INSTALLED:
-		log(f'[bold]Dependencies Installed:[/bold]\n  [dim]{GLOBAL.IS_DEPENDENCY_INSTALLED}[/dim]')
-
-	if GLOBAL.IS_VENV_INSTALLED:
-		log(f'[bold]Virtual Environment Installed:[/bold]\n  [dim]{GLOBAL.IS_VENV_INSTALLED}[/dim]')
-
-	if GLOBAL.IS_SOURCEFILES_INSTALLED:
-		log(f'[bold]Resources Copied:[/bold]\n  [dim]{GLOBAL.IS_SOURCEFILES_INSTALLED}[/dim]')
-
-	if GLOBAL.IS_BINARY_INSTALLED:
-		log(f'[bold]Binary Installed:[/bold]\n  [dim]{GLOBAL.IS_BINARY_INSTALLED}[/dim]')
-
-	if GLOBAL.IS_DESKTOPFILE_INSTALLED:
-		log(f'[bold]Desktop File Created:[/bold]\n  [dim]{GLOBAL.IS_DESKTOPFILE_INSTALLED}[/dim]')
-
-
-def update_existing_installation():
-	check_existing_installation()
-	if GLOBAL.EXISTING_INSTALLATION:
-		check_local_repo()
-		clone_repository()
-		setup_venv()
-		setup_source()
-		make_executable_file()
-		make_desktop_file()
-	else:
-		run_script_install_sequence()
 
 
 def uninstall():
@@ -1001,7 +1036,184 @@ def uninstall():
 	cleanup(False, 'Done uninstalling.')
 
 
+def nuke_legacy_installations():
+	log('\n[bold][yellow]Sweeping for legacy bash installations...[/yellow][/bold]', level='INFO')
+	home = Path.home()
+	apps = ['hyprsettings', 'hyprsettings-test']
+
+	found_legacy = False
+	targets = []
+
+	for app in apps:
+		# 1. Hunt for legacy USER installation
+		legacy_user_dir = home / f'.local/share/{app}'
+		if (legacy_user_dir / '.script-installed').exists():
+			targets.extend(
+				[
+					legacy_user_dir,
+					home / f'.local/bin/{app}',
+					home / f'.local/share/applications/{app}.desktop',
+					home / f'.local/share/icons/hicolor/48x48/apps/{app}.png',
+				]
+			)
+
+		# 2. Hunt for legacy SYSTEM installation
+		# Note: The old bash script used /usr/share for the dir, but /usr/local/bin for the executable
+		legacy_system_dir = Path(f'/usr/share/{app}')
+		if (legacy_system_dir / '.script-installed').exists():
+			targets.extend(
+				[
+					legacy_system_dir,
+					Path(f'/usr/local/bin/{app}'),
+					Path(f'/usr/share/applications/{app}.desktop'),
+					Path(f'/usr/share/icons/hicolor/48x48/apps/{app}.png'),
+				]
+			)
+
+	# 3. Protect AUR system desktop/icon files (just in case they overlap)
+	if GLOBAL.PACKAGE_MANAGER_INSTALLED:
+		try:
+			targets.remove(Path('/usr/share/applications/hyprsettings.desktop'))
+			targets.remove(Path('/usr/share/icons/hicolor/48x48/apps/hyprsettings.png'))
+		except ValueError:
+			pass
+
+	# 4. Execute the purge ONLY on the confirmed legacy targets
+	for path in targets:
+		if path.exists():
+			found_legacy = True
+			cmd = ['rm', '-rf', str(path)]
+			if str(path).startswith('/usr'):
+				cmd.insert(0, 'sudo')
+
+			try:
+				run(cmd, capture_output=True, check=True)
+				log(f'Purged legacy path: [dim]{path}[/dim]', level='INFO')
+			except subprocess.CalledProcessError as e:
+				log(f'Failed to remove [yellow]{path}[/yellow]: {e.stderr}', level='ERROR')
+
+	if found_legacy:
+		spinner = Spinner('Refreshing desktop caches...')
+		try:
+			run(['sudo', 'update-desktop-database', '-q', '/usr/share/applications'], capture_output=True, check=False)
+			run(['sudo', 'gtk-update-icon-cache', '-q', '-t', '-f', '/usr/share/icons/hicolor'], capture_output=True, check=False)
+			run(['update-desktop-database', '-q', str(home / '.local/share/applications')], capture_output=True, check=False)
+			run(['gtk-update-icon-cache', '-q', '-t', '-f', str(home / '.local/share/icons/hicolor')], capture_output=True, check=False)
+			GLOBAL.EXISTING_INSTALLATION = None
+			spinner.stop()
+		except Exception:
+			spinner.stop(1)
+	else:
+		log('No legacy bash installations found. You are clean.', level='INFO')
+
+
+def cleanup(error=False, message='Exited hyprsettings installation wizard'):
+	is_signal = False
+	if isinstance(error, int):
+		# message = ''
+		is_signal = True
+
+	if message:
+		log(message, level='CRITICAL' if error else 'INFO')
+
+	# if not is_signal:
+	# 	input('Press any key to exit...')
+	sys.exit(1 if error else 0)
+
+
+def clear_view(message):
+	os.system('clear')
+	if message:
+		log(f'[bold][blue]{message}[/blue][/bold]', level='INFO', no_prefix=True)
+
+
+def reset_view():
+	os.system('clear')
+	print_title()
+
+	repo_updated_message = ' [green](up to date)[green]' if GLOBAL.IS_REPO_UPDATED else ''
+	if GLOBAL.OS_RELEASE:
+		distro = GLOBAL.OS_RELEASE
+		unsupported = 'unsupported' in distro.lower()
+
+		if unsupported:
+			display_distro = f'{distro}'
+		else:
+			display_distro = f'{distro}-like'
+
+		log(f'[bold]Linux Distro:[/bold]\n  [dim]{display_distro}[/dim]')
+		if unsupported:
+			log(
+				'[bold][yellow] Notice for installation on unsupported(yet) distros:[/bold][/yellow]\n'
+				'  [dim] If you managed to install Hyprsettings successfully,\n   please open a '
+				'GitHub discussion describing your distro,\n   the packages you installed, and '
+				'any extra steps required\n   so others can reproduce it and for the packages to be\n   added to this script. Thank you![/dim]',
+				no_prefix=True,
+			)
+
+	log(f'[bold]Clone Directory:[/bold]\n  [dim]{GLOBAL.CLONE_REPOSITORY}[/dim]{repo_updated_message}')
+
+	if GLOBAL.PACKAGE_MANAGER_INSTALLED:
+		log(f'[bold]Package Manager Installed:[/bold]\n  [dim]{GLOBAL.PACKAGE_MANAGER_INSTALLED}[/dim]')
+
+	if GLOBAL.EXISTING_INSTALLATION:
+		log(f'[bold]Existing Installation by Script[/bold]\n  [dim]{GLOBAL.INSTALLATION_PATH} [blue]{GLOBAL.EXISTING_INSTALLATION}[/blue][/dim]')
+
+	if not GLOBAL.EXISTING_INSTALLATION and GLOBAL.INSTALLATION_PATH:
+		log(f'[bold]New installation to[/bold]\n  [dim]{GLOBAL.INSTALLATION_PATH}[/dim]')
+
+	if GLOBAL.IS_HYPRLAND_INSTALLED:
+		log(f'[bold]Hyprland Installed:[/bold]\n  [dim]{GLOBAL.IS_HYPRLAND_INSTALLED}[/dim]')
+
+	if GLOBAL.IS_DEPENDENCY_INSTALLED:
+		log(f'[bold]Dependencies Installed:[/bold]\n  [dim]{GLOBAL.IS_DEPENDENCY_INSTALLED}[/dim]')
+
+	if GLOBAL.IS_VENV_INSTALLED:
+		log(f'[bold]Virtual Environment Installed:[/bold]\n  [dim]{GLOBAL.IS_VENV_INSTALLED}[/dim]')
+
+	if GLOBAL.IS_SOURCEFILES_INSTALLED:
+		log(f'[bold]Resources Copied:[/bold]\n  [dim]{GLOBAL.IS_SOURCEFILES_INSTALLED}[/dim]')
+
+	if GLOBAL.IS_BINARY_INSTALLED:
+		log(f'[bold]Binary Installed:[/bold]\n  [dim]{GLOBAL.IS_BINARY_INSTALLED}[/dim]')
+
+	if GLOBAL.IS_DESKTOPFILE_INSTALLED:
+		log(f'[bold]Desktop File Created:[/bold]\n  [dim]{GLOBAL.IS_DESKTOPFILE_INSTALLED}[/dim]')
+
+
+def update_existing_installation():
+	check_os_release()
+	check_existing_installation()
+	nuke_legacy_installations()
+	if GLOBAL.EXISTING_INSTALLATION:
+		check_local_repo()
+		clone_repository()
+		setup_venv()
+		setup_source()
+		make_executable_file()
+		make_desktop_file()
+	else:
+		run_script_install_sequence()
+
+
+def auto_install():
+	GLOBAL.MODE = 'AUTO_INSTALL'
+	check_os_release()
+	check_existing_installation()
+	nuke_legacy_installations()
+	if GLOBAL.EXISTING_INSTALLATION:
+		check_local_repo()
+		clone_repository()
+		setup_venv()
+		setup_source()
+		make_executable_file()
+		make_desktop_file()
+	else:
+		run_script_install_sequence()
+
+
 def run_script_install_sequence():
+	nuke_legacy_installations()
 	clone_repository()
 	if not GLOBAL.EXISTING_INSTALLATION:
 		select_installation_directory()
@@ -1013,28 +1225,33 @@ def run_script_install_sequence():
 	make_desktop_file()
 
 
-def main():
+def init_parser():
 	parser = argparse.ArgumentParser(description='Install Hyprsettings', epilog=print_title())
-	parser.add_argument('-u', '--update', action='store_true', help='Update existing installation')
-	parser.add_argument('--uninstall', action='store_true', help='Uninstall Hyprsettings')
+	action_group = parser.add_mutually_exclusive_group()
+	action_group.add_argument('-u', '--update', action='store_true', help='Update existing installation')
+	action_group.add_argument('-r', '--uninstall', action='store_true', help='Uninstall Hyprsettings')
 	parser.add_argument('-a', '--auto', action='store_true', help='Automatically install Hyprsettings system-wide')
-
+	parser.add_argument('-e', '--emulate-distro', required=False, metavar='DISTRO', help='Emulate a specific distro name')
 	args = parser.parse_args()
+	return args
 
+
+def main():
+	args = init_parser()
 	if args.update:
 		GLOBAL.MODE = 'UPDATE'
 		update_existing_installation()
 		cleanup(False, 'Hyprsettings Updated')
 	elif args.uninstall:
 		uninstall()
-
 	os.system('clear')
 	signal.signal(signal.SIGINT, cleanup)
-	print_title()
-	check_os_release()
-	check_local_repo()
+	check_os_release(args.emulate_distro)
 	check_existing_installation()
+	check_local_repo()
 	reset_view()
+	if not GLOBAL.EXISTING_INSTALLATION:
+		ask_os_release()
 
 	choices = []
 	if not GLOBAL.EXISTING_INSTALLATION:
@@ -1068,7 +1285,6 @@ def main():
 				run_script_install_sequence()
 
 	onboarding_choice()
-
 	cleanup()
 
 

@@ -3,7 +3,11 @@ from argparse import Namespace
 from pathlib import Path
 
 from flask import Flask
-from webview import Window
+
+try:
+	from webview import Window
+except ImportError:
+	pass
 
 # traceback.install(show_locals=True)
 
@@ -28,7 +32,7 @@ class State:
 
 	def __init__(self):
 		self._extra: dict[str, object] = {}
-		self.window_instance: Window | None = None
+		self.window_instance = None
 		self.window_visible: bool = True
 		self.window_thread: threading.Thread | None = None
 		self.flask_thread: threading.Thread | None = None
