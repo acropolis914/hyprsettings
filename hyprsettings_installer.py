@@ -774,8 +774,10 @@ def check_local_repo():
 		GLOBAL.CLONE_REPOSITORY = Path(__file__).parent
 	else:
 		destination = Path.home() / '.cache' / 'hyprsettings' / 'git-clone'
+		destination.mkdir(parents=True, exist_ok=True)
 		GLOBAL.CLONE_REPOSITORY = destination
 		GLOBAL.IN_LOCAL_CLONE = False
+
 	with open(Path('~/.cache/hyprsettings/repo_dir').expanduser(), encoding='utf-8', mode='w') as f:
 		f.write(str(GLOBAL.CLONE_REPOSITORY))
 
