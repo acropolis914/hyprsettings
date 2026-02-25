@@ -296,7 +296,7 @@ def check_hyprland_installation():
 	spinner = Spinner('Checking hyprland installation')
 	try:
 		s = subprocess.run(
-			'command -v hyprland',
+			['command', '-v', 'hyprland'],
 			shell=True,
 			check=True,
 			capture_output=True,
@@ -1058,8 +1058,10 @@ def main():
 					time.sleep(2)
 					spinner.stop()
 					run_script_install_sequence()
-			elif GLOBAL.OS_RELEASE == 'nixos' or subprocess.run(['command -v nix']):
+			elif GLOBAL.OS_RELEASE == 'nixos':
 				run_nixos_wizard()
+			else:
+				run_script_install_sequence()
 
 	onboarding_choice()
 
