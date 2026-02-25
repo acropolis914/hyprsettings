@@ -94,10 +94,11 @@ export async function initialize() {
 	await setupTheme()
 	await getDebugStatus()
 	await createDynamicTabs()
-	await getAndRenderConfig().then(() => {
+	await getAndRenderConfig().then(async () => {
 		console.log('Done rendering received config')
+		await destroyOverlay(true)
 	})
-	await destroyOverlay(true)
+
 	initializeJSViewer()
 	renderSettings().then(() => console.log('Done rendering received settings tab'))
 	initializeSearchBar().then(() => console.log('Done initializing search bar'))
