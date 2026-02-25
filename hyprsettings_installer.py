@@ -555,7 +555,11 @@ def install_dependencies():
 				'Installing Fedora dependencies',
 			)
 			try:
-				run('sudo dnf install gcc gobject-introspection-devel cairo-gobject-devel pkg-config python3-devel gtk4', shell=True)
+				run(
+					'sudo dnf install gcc gobject-introspection-devel cairo-gobject-devel pkg-config python3-devel gtk4',
+					capture_output=False,
+					shell=True,
+				)
 				log('[bold]Dependency Install:[/bold] Success')
 				GLOBAL.IS_DEPENDENCY_INSTALLED = True
 				reset_view()
