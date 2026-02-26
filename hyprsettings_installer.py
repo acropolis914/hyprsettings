@@ -20,6 +20,8 @@ exec python3 "$tmpfile" "$@"
 ":"""
 
 import argparse
+import ctypes
+import ctypes.util
 import datetime
 import os
 import subprocess
@@ -132,7 +134,7 @@ def log(message: str = '', level: LOGTYPE = 'INFO', no_prefix: bool = False, onl
 		print(bbcode(text))
 
 
-def run(cmd: List[str] | str, check=True, capture_output=True, text=True, shell=False):
+def run(cmd: List[str] | str, check=True, capture_output=True, text=True, shell=False, stdout=None, stderr=None, bufsize=-1):
 	if isinstance(cmd, str) and not shell:
 		cmd = cmd.split()
 
@@ -151,37 +153,45 @@ def run(cmd: List[str] | str, check=True, capture_output=True, text=True, shell=
 
 
 class Spinner:
-	def __init__(self, message='Loading...', success_message: str = 'Success', fail_message: str = 'Failed'):
-		self.message = message
+	def __init__(self, message='Loading...'):
+		self.message = self.original_message = message
 		self._stop_event = threading.Event()
-		self._thread = threading.Thread(target=self._spin)
-		self._status = 0  # default success
+		self._thread = threading.Thread(target=self._spin, daemon=True)
+		self._status = 0
 		self.start()
 
 	def _spin(self):
 		chars = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
 		i = 0
 		while not self._stop_event.is_set():
-			sys.stdout.write(f'\r {self.message} {chars[i % len(chars)]}')
+			sys.stdout.write(f'\r\033[K {self.message} {chars[i % len(chars)]}')
 			sys.stdout.flush()
 			i += 1
 			time.sleep(0.02)
-
-		# choose symbol based on status
-		icon = '✔' if self._status == 0 else '✖'
-		sys.stdout.write('\r')  # go to start of line
-		sys.stdout.write('\033[K')  # clear the line
-		# sys.stdout.write(f'\r{icon} {self.message}  \n')
+		sys.stdout.write('\r\033[K')
 		sys.stdout.flush()
 
+	def update(self, new_message: str):
+		self.message = new_message
+
+	def reset(self):
+		self.message = self.original_message
+
+	def temporary_message(self, message: str, delay_ms: int):
+		self.update(message)
+		# Use a Timer to avoid blocking the main execution
+		threading.Timer(delay_ms / 1000, self.reset).start()
+
 	def start(self):
-		self._thread.start()
+		if not self._thread.is_alive():
+			self._thread.start()
 		return self
 
 	def stop(self, status=0):
 		self._status = status
 		self._stop_event.set()
-		self._thread.join()
+		if self._thread.is_alive():
+			self._thread.join()
 
 
 class ConsoleMarker:
@@ -613,13 +623,15 @@ def run_nixos_wizard():
 
 
 def install_dependencies():
+	if gtk_ready():
+		return 0
 	release = GLOBAL.OS_RELEASE
 	match release:
 		case 'arch':
 			clear_view('Installing Arch dependencies')
 			try:
 				run(
-					['sudo', 'pacman', '-Sy', '--noconfirm', '--needed', 'python', 'python-gobject', 'gtk3', 'webkit2gtk'],
+					['sudo', 'pacman', '-Sy', '--noconfirm', '--needed', 'python-gobject', 'webkit2gtk'],
 					capture_output=False,
 					check=True,
 				)
@@ -665,6 +677,16 @@ def install_dependencies():
 			return 0
 
 
+def gtk_ready() -> bool:
+	"""Checks for Gtk-4, WebKit2-4.1, and GObject-2.0 binaries and typelibs."""
+	libs = ('gtk-4', 'webkit2gtk-4.1', 'gobject-2.0')
+	typelibs = ('Gtk-4.0', 'WebKit2-4.1', 'GObject-2.0')
+	if not all(ctypes.util.find_library(l) for l in libs):
+		return False
+	gi_dirs = [d for p in ('/usr/lib*', '/usr/local/lib*') for d in Path('/').glob(p.lstrip('/') + '/girepository-1.0') if d.is_dir()]
+	return all(any((d / f'{t}.typelib').exists() for d in gi_dirs) for t in typelibs)
+
+
 def show_unsupported_linux_prompt(print_guide=True):
 	print_unsupported_os_guide()
 	choices = [
@@ -698,11 +720,11 @@ def print_unsupported_os_guide():
 		'  - Cairo graphics:        libcairo2-dev / cairo-devel\n'
 		'  - GObject Introspection: gobject-introspection / libgirepository-2.0-dev\n'
 		'  - GTK4 C Library:        gtk4 / libgtk-4-dev\n'
-		'  - GTK4 GI Data (Python): gir1.2-gtk-4.0 / typelib-1_0-Gtk-4_0\n'
+		'  - GTK4 GI Data (Python): gir1.2-gtk-4.1 / typelib-1_0-Gtk-4_1\n'
 		'[/dim]\n\n'
 		'[bold]Example installation commands:[/bold]\n'
 		'  Debian / Ubuntu / Mint (APT):\n'
-		'  [dim]sudo apt install libgirepository-2.0-dev gcc libcairo2-dev pkg-config python3-dev libgtk-4-dev gir1.2-gtk-4.0[/dim]\n\n'
+		'  [dim]sudo apt install libgirepository-2.0-dev gcc libcairo2-dev pkg-config python3-dev libgtk-4-dev libwebkit2gtk-4.1-0 gir1.2-gtk-4.1[/dim]\n\n'
 		'  openSUSE(zypper):\n'
 		'  [dim]sudo zypper install cairo-devel pkg-config python3-devel gcc gobject-introspection-devel gtk4 typelib-1_0-Gtk-4_0[/dim]\n\n'
 		'Refer to the official guide for distro-specific instructions:\n'
@@ -815,6 +837,7 @@ def select_installation_directory():
 	install_base_dir = choose_from('Where to install?', choices=['System', 'User'])
 	marker.clear()
 	set_install_dirs(install_base_dir)
+	return install_base_dir
 
 
 def set_install_dirs(install_type):
@@ -860,13 +883,17 @@ def setup_venv():
 			'python-dotenv',
 		]
 
-		if GLOBAL.NO_GTK is None and GLOBAL.NO_WEBVIEW:
+		log(f'{GLOBAL.NO_GTK, GLOBAL.NO_WEBVIEW}')
+		if GLOBAL.NO_GTK is None and GLOBAL.NO_WEBVIEW is not None:
 			GLOBAL.NO_GTK = True
+			log(GLOBAL.NO_GTK)
+		log(f'{GLOBAL.NO_GTK, GLOBAL.NO_WEBVIEW}')
 
-		if GLOBAL.NO_GTK is not None and not GLOBAL.NO_GTK:
-			log('Adding pywebview')
+		if not GLOBAL.NO_GTK:
+			spinner.temporary_message('Webview Dependencies were installed. Adding pywebview to venv..', 1000)
 			packages.append('pywebview')
 			packages.append('pywebview[gtk]')
+			time.sleep(1)
 
 		pip_base = [
 			str(venv_directory / 'bin/pip'),
@@ -876,12 +903,16 @@ def setup_venv():
 		]
 
 		if not venv_directory.exists():
+			spinner.update('Fresh directory. Creating virtual environment...')
 			run(['mkdir', '-p', str(venv_directory)])
 			run(['python', '-m', 'venv', str(venv_directory)])
 
 		# always install deps
+		spinner.update('Installing python environment dependencies...')
 		run([*pip_base, 'setuptools', 'wheel'], capture_output=True)
-		run([*pip_base, *packages], capture_output=False)
+		spinner.update('Installing python environment requirements...')
+		process = run([*pip_base, *packages], capture_output=True)
+		spinner.update('Successfully installed initialized python environment.')
 		GLOBAL.IS_VENV_INSTALLED = True
 		spinner.stop()
 		marker.clear()
@@ -997,6 +1028,8 @@ def setup_default_config():
 
 
 def uninstall():
+	check_os_release()
+	check_local_repo()
 	check_existing_installation()
 	if not GLOBAL.EXISTING_INSTALLATION:
 		log('No existing installation found.')
@@ -1040,7 +1073,6 @@ def uninstall():
 
 
 def nuke_legacy_installations():
-	log('\n[bold][yellow]Sweeping for legacy bash installations...[/yellow][/bold]', level='INFO')
 	home = Path.home()
 	apps = ['hyprsettings', 'hyprsettings-test']
 
@@ -1082,6 +1114,7 @@ def nuke_legacy_installations():
 			pass
 
 	# 4. Execute the purge ONLY on the confirmed legacy targets
+	nuke_spinner = Spinner('Nuking old hyprsettings installer installations...')
 	for path in targets:
 		if path.exists():
 			found_legacy = True
@@ -1091,9 +1124,10 @@ def nuke_legacy_installations():
 
 			try:
 				run(cmd, capture_output=True, check=True)
-				log(f'Purged legacy path: [dim]{path}[/dim]', level='INFO')
+				nuke_spinner.stop()
 			except subprocess.CalledProcessError as e:
 				log(f'Failed to remove [yellow]{path}[/yellow]: {e.stderr}', level='ERROR')
+	nuke_spinner.stop()
 
 	if found_legacy:
 		spinner = Spinner('Refreshing desktop caches...')
@@ -1107,7 +1141,8 @@ def nuke_legacy_installations():
 		except Exception:
 			spinner.stop(1)
 	else:
-		log('No legacy bash installations found. You are clean.', level='INFO')
+		pass
+		# log('No legacy bash installations found. You are clean.', level='INFO')
 
 
 def cleanup(error=False, message='Exited hyprsettings installation wizard'):
@@ -1195,6 +1230,7 @@ def update_existing_installation():
 		setup_source()
 		make_executable_file()
 		make_desktop_file()
+		cleanup(False, 'Hyprsettings Updated')
 	else:
 		run_script_install_sequence()
 
@@ -1216,16 +1252,21 @@ def auto_install():
 
 
 def run_script_install_sequence():
+	# if gtk_ready():
+	# 	GLOBAL.IS_DEPENDENCY_INSTALLED = True
 	nuke_legacy_installations()
-	clone_repository()
 	if not GLOBAL.EXISTING_INSTALLATION:
 		select_installation_directory()
+	check_local_repo()
+	clone_repository()
 	check_hyprland_installation()
-	install_dependencies()
+	if not GLOBAL.IS_DEPENDENCY_INSTALLED:
+		install_dependencies()
 	setup_venv()
 	setup_source()
 	make_executable_file()
 	make_desktop_file()
+	cleanup(False, 'Hyprsettings successfully installed')
 
 
 def init_parser():
@@ -1241,19 +1282,23 @@ def init_parser():
 
 def main():
 	args = init_parser()
+	signal.signal(signal.SIGINT, cleanup)
 	if args.update:
 		GLOBAL.MODE = 'UPDATE'
 		update_existing_installation()
-		cleanup(False, 'Hyprsettings Updated')
+
 	elif args.uninstall:
 		uninstall()
 	os.system('clear')
-	signal.signal(signal.SIGINT, cleanup)
 	check_os_release(args.emulate_distro)
 	check_existing_installation()
 	check_local_repo()
+	# if gtk_ready():
+	# 	GLOBAL.IS_DEPENDENCY_INSTALLED = True
+	# 	GLOBAL.NO_GTK = False
+	# 	GLOBAL.NO_WEBVIEW = False
 	reset_view()
-	if not GLOBAL.EXISTING_INSTALLATION:
+	if not GLOBAL.EXISTING_INSTALLATION and not GLOBAL.IS_DEPENDENCY_INSTALLED:
 		ask_os_release()
 
 	choices = []
@@ -1288,7 +1333,6 @@ def main():
 				run_script_install_sequence()
 
 	onboarding_choice()
-	cleanup()
 
 
 if __name__ == '__main__':

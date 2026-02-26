@@ -146,6 +146,8 @@ class Api:
 			version_migration()
 			if self.window_config['config']['daemon']:
 				state.daemon = True
+			hyprsettings_config_path_parent = hs_globals.HYPRSETTINGS_CONFIG_PATH.parent
+			hyprsettings_config_path_parent.mkdir(parents=True, exist_ok=True)
 			with hs_globals.HYPRSETTINGS_CONFIG_PATH.open('w') as config_file:
 				config_file.write(default_config_text)
 			return self.window_config
@@ -225,9 +227,7 @@ class Api:
 	def open_file(file_path: str):
 		ui_print(f'Opening {file_path}')
 		try:
-			subprocess.Popen(
-				['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL, close_fds=True
-			)
+			subprocess.Popen(['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL, close_fds=True)
 			return True
 		except Exception as e:
 			ui_print(f'Failed to open {file_path}: {e}')

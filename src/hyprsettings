@@ -5,6 +5,7 @@ import signal
 import threading
 import argparse
 import subprocess
+import time
 from pathlib import Path
 from rich.console import Console
 from contextlib import redirect_stderr, redirect_stdout
@@ -312,6 +313,7 @@ def start_window_server():
 def main():
 	state.flask_thread = threading.Thread(target=start_flask_server, daemon=True)
 	state.flask_thread.start()
+	time.sleep(0.1)
 
 	has_webview = True
 	try:
