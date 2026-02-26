@@ -677,6 +677,7 @@ def show_unsupported_linux_prompt(print_guide=True):
 		default='99',
 	)
 	if decision == choices[0]:
+		GLOBAL.NO_GTK = False
 		GLOBAL.IS_DEPENDENCY_INSTALLED = True
 		reset_view()
 	elif decision == choices[1]:
