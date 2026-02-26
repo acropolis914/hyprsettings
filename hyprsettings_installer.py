@@ -769,12 +769,12 @@ def clone_repository():
 
 
 def check_local_repo():
+	destination = Path.home() / '.cache' / 'hyprsettings' / 'git-clone'
+	destination.mkdir(parents=True, exist_ok=True)
 	if Path('.git').exists() and Path('src').exists() and Path('src/hyprsettings').is_file():
 		GLOBAL.IN_LOCAL_CLONE = True
 		GLOBAL.CLONE_REPOSITORY = Path(__file__).parent
 	else:
-		destination = Path.home() / '.cache' / 'hyprsettings' / 'git-clone'
-		destination.mkdir(parents=True, exist_ok=True)
 		GLOBAL.CLONE_REPOSITORY = destination
 		GLOBAL.IN_LOCAL_CLONE = False
 
