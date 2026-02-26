@@ -496,13 +496,11 @@ def install_via_aur():
 		return 1
 
 
-def run_nixos_wizard():
+def run_nixos_wizard(log_message: bool = True):
 	"""
 	Interactive wizard to install or update HyprSettings on NixOS using choose_from().
 	Uses `log(message, level)` for output (supports basic BBCode).
 	"""
-	repo_url = 'https://github.com/acropolis914/hyprsettings'
-	cache_dir = GLOBAL.CLONE_REPOSITORY
 
 	nix_message = """[bold][underline]Detected NixOS[/underline][/bold]
   I know, many of you want control over your installation.
@@ -532,95 +530,173 @@ def run_nixos_wizard():
   Read the guide here:
     [link=https://github.com/acropolis914/hyprsettings/blob/master/NIX_INSTALLATION.md][cyan]HyprSettings Nix Installation Guide[/cyan][/link]
 """
-	log(nix_message)
+	if log_message:
+		log(nix_message)
+	# 	repo_url = 'https://github.com/acropolis914/hyprsettings'
+	# 	cache_dir = GLOBAL.CLONE_REPOSITORY
+	#
+	# 	choices = []
+	# 	method = None
+	# 	try:
+	# 		result = subprocess.run(['nix', 'profile', 'list'], text=True, capture_output=True)
+	# 		if 'github:acropolis914/hyprsettings' in result.stdout:
+	# 			method = 'flakes'
+	# 	except Exception:
+	# 		pass
+	#
+	# 	if not method:
+	# 		try:
+	# 			result = subprocess.run(['nix-env', '-q'], text=True, capture_output=True)
+	# 			if 'hyprsettings' in result.stdout.lower():
+	# 				method = 'traditional'
+	# 		except Exception:
+	# 			pass
+	#
+	# 	# Step 2: Determine options
+	# 	if method:
+	# 		message = f'[bold]Existing HyprSettings installation detected via {method}[/bold]'
+	# 		choices = [f'Upgrade current installation ({method})']
+	# 	else:
+	# 		message = '[bold]Select installation method[/bold]'
+	# 		choices = [
+	# 			'Flakes: install to profile',
+	# 			'Flakes: try without installing',
+	# 			'Traditional Nix: build',
+	# 			'Traditional Nix: install',
+	# 			'Home Manager',
+	# 		]
+	#
+	# 	# Step 3: Get user choice
+	# 	choice = choose_from(message, choices, default='1')
+	#
+	# 	# Step 4: Run corresponding subprocess commands
+	# 	try:
+	# 		if method and choice.startswith('Upgrade'):
+	# 			log(f'[cyan]Running upgrade for {method} installation...[/cyan]', level='INFO')
+	# 			if method == 'flakes':
+	# 				subprocess.run(['nix', 'profile', 'upgrade', 'hyprsettings'], check=True)
+	# 			elif method == 'traditional':
+	# 				cache_dir.mkdir(parents=True, exist_ok=True)
+	# 				if not (cache_dir / 'default.nix').exists():
+	# 					log(f'[yellow]Cloning HyprSettings repo into {cache_dir}[/yellow]', level='INFO')
+	# 					subprocess.run(['git', 'clone', repo_url, str(cache_dir)], check=True)
+	# 				subprocess.run(['nix-build'], cwd=str(cache_dir), check=True)
+	# 				subprocess.run(['nix-env', '-f', str(cache_dir / 'default.nix'), '-i'], check=True)
+	# 			elif method == 'home-manager':
+	# 				log('[yellow]Re-applying Home Manager config...[/yellow]', level='INFO')
+	# 				subprocess.run(['home-manager', 'switch'], check=True)
+	# 			cleanup(False, f'HyprSettings updated successfully ({method})')
+	# 			return
+	#
+	# 		# No previous installation → normal install
+	# 		log(f'[cyan]Installing HyprSettings using choice: {choice}[/cyan]', level='INFO')
+	# 		if choice.startswith('Flakes: try'):
+	# 			subprocess.run(['nix', 'run', 'github:acropolis914/hyprsettings'], check=True)
+	#
+	# 		elif choice.startswith('Flakes: install'):
+	# 			subprocess.run(['nix', 'profile', 'add', 'github:acropolis914/hyprsettings'], check=True)
+	#
+	# 		elif choice.startswith('Traditional Nix: build'):
+	# 			cache_dir.mkdir(parents=True, exist_ok=True)
+	# 			if not (cache_dir / 'default.nix').exists():
+	# 				log(f'[yellow]Cloning HyprSettings repo into {cache_dir}[/yellow]', level='INFO')
+	# 				subprocess.run(['git', 'clone', repo_url, str(cache_dir)], check=True)
+	# 			subprocess.run(['nix-build'], cwd=str(cache_dir), check=True)
+	#
+	# 		elif choice.startswith('Traditional Nix: install'):
+	# 			cache_dir.mkdir(parents=True, exist_ok=True)
+	# 			if not (cache_dir / 'default.nix').exists():
+	# 				log(f'[yellow]Cloning HyprSettings repo into {cache_dir}[/yellow]', level='INFO')
+	# 				subprocess.run(['git', 'clone', repo_url, str(cache_dir)], check=True)
+	# 			subprocess.run(['nix-env', '-f', str(cache_dir / 'default.nix'), '-i'], check=True)
+	#
+	# 		elif choice.startswith('Home Manager'):
+	# 			home_manager_snippet = f"""home.packages = [
+	#   (pkgs.callPackage {str(cache_dir / 'default.nix')} {{}})
+	# ];"""
+	# 			log('[bold]Add the following snippet to your home.nix and run `home-manager switch`:[/bold]', level='INFO')
+	# 			print(home_manager_snippet)
+	#
+	# 		return
+	# 	except subprocess.CalledProcessError as e:
+	# 		cleanup(True, e.stderr)
 
-	choices = []
+	# def run_nixos_wizard():
+	# 	"""Interactive wizard to install, update, or remove HyprSettings on NixOS."""
+	repo_url = 'https://github.com/acropolis914/hyprsettings'
+	cache_dir = GLOBAL.CLONE_REPOSITORY
 	method = None
+
+	# 1. Detection Logic
 	try:
-		result = subprocess.run(['nix', 'profile', 'list'], text=True, capture_output=True)
-		if 'github:acropolis914/hyprsettings' in result.stdout:
+		# Check Flakes Profile
+		profile_list = subprocess.getoutput('nix profile list')
+		if 'hyprsettings' in profile_list:
 			method = 'flakes'
+		# Check Traditional nix-env
+		elif 'hyprsettings' in subprocess.getoutput('nix-env -q').lower():
+			method = 'traditional'
+		# Check if Home Manager is installed/active
+		elif subprocess.run(['command', '-v', 'home-manager'], capture_output=True).returncode == 0:
+			method = 'home-manager'
 	except Exception:
 		pass
 
-	if not method:
-		try:
-			result = subprocess.run(['nix-env', '-q'], text=True, capture_output=True)
-			if 'hyprsettings' in result.stdout.lower():
-				method = 'traditional'
-		except Exception:
-			pass
-
-	# Step 2: Determine options
-	if method:
-		message = f'[bold]󱜸 Existing HyprSettings installation detected via {method}[/bold]'
-		log(message, level='info')
-		choices = [f'Upgrade current installation ({method})']
+	# 2. Build Choices
+	if method == 'flakes' or method == 'traditional':
+		message = f'[bold]Existing {method} installation detected[/bold]'
+		choices = [f'Update ({method})', f'Remove ({method})', 'Back']
+	elif method == 'home-manager':
+		message = '[bold]Home Manager detected[/bold]'
+		choices = ['Update (home-manager switch)', 'Show Install Snippet', 'Back']
 	else:
-		message = '[bold]󱜸 Select installation method[/bold]'
-		log(message, level='info')
-		choices = [
-			'Flakes: try without installing',
-			'Flakes: install to profile',
-			'Traditional Nix: build',
-			'Traditional Nix: install',
-			'Home Manager',
-		]
+		message = '[bold]Select installation method[/bold]'
+		choices = ['Flakes: Install', 'Traditional: Install', 'Home Manager: Instructions']
 
-	# Step 3: Get user choice
 	choice = choose_from(message, choices, default='1')
+	if 'Back' in choice:
+		run_nixos_wizard(False)
 
-	# Step 4: Run corresponding subprocess commands
+	# 3. Execution with Error Handling
 	try:
-		if method and choice.startswith('Upgrade'):
-			log(f'[cyan]Running upgrade for {method} installation...[/cyan]', level='INFO')
+		# --- UPDATE PATHS ---
+		if 'Update' in choice:
 			if method == 'flakes':
-				subprocess.run(['nix', 'profile', 'upgrade', 'github:acropolis914/hyprsettings'], check=True)
+				subprocess.run(['nix', 'profile', 'upgrade', 'hyprsettings'], check=True)
 			elif method == 'traditional':
-				cache_dir.mkdir(parents=True, exist_ok=True)
-				if not (cache_dir / 'default.nix').exists():
-					log(f'[yellow]Cloning HyprSettings repo into {cache_dir}[/yellow]', level='INFO')
-					subprocess.run(['git', 'clone', repo_url, str(cache_dir)], check=True)
-				subprocess.run(['nix-build'], cwd=str(cache_dir), check=True)
+				if (cache_dir / '.git').exists():
+					subprocess.run(['git', '-C', str(cache_dir), 'pull'], check=True)
 				subprocess.run(['nix-env', '-f', str(cache_dir / 'default.nix'), '-i'], check=True)
 			elif method == 'home-manager':
-				log('[yellow]Re-applying Home Manager config...[/yellow]', level='INFO')
 				subprocess.run(['home-manager', 'switch'], check=True)
-			cleanup(False, f'HyprSettings updated successfully ({method})')
-			return
+			cleanup(False, f'Successfully updated HyprSettings via {method}')
 
-		# No previous installation → normal install
-		log(f'[cyan]Installing HyprSettings using choice: {choice}[/cyan]', level='INFO')
-		if choice.startswith('Flakes: try'):
-			subprocess.run(['nix', 'run', 'github:acropolis914/hyprsettings'], check=True)
+		# --- REMOVE PATHS ---
+		elif 'Remove' in choice:
+			cmd = ['nix', 'profile', 'remove', 'hyprsettings'] if method == 'flakes' else ['nix-env', '-e', 'hyprsettings']
+			subprocess.run(cmd, check=True)
+			cleanup(False, 'HyprSettings removed successfully.')
 
-		elif choice.startswith('Flakes: install'):
-			subprocess.run(['nix', 'profile', 'add', 'github:acropolis914/hyprsettings'], check=True)
+		# --- INSTALL PATHS ---
+		elif 'Flakes: Install' in choice:
+			subprocess.run(['nix', 'profile', 'add', f'git+{repo_url}'], check=True)
+			cleanup(False, 'Installed via Nix Flakes.')
 
-		elif choice.startswith('Traditional Nix: build'):
+		elif 'Traditional: Install' in choice:
 			cache_dir.mkdir(parents=True, exist_ok=True)
-			if not (cache_dir / 'default.nix').exists():
-				log(f'[yellow]Cloning HyprSettings repo into {cache_dir}[/yellow]', level='INFO')
-				subprocess.run(['git', 'clone', repo_url, str(cache_dir)], check=True)
-			subprocess.run(['nix-build'], cwd=str(cache_dir), check=True)
-
-		elif choice.startswith('Traditional Nix: install'):
-			cache_dir.mkdir(parents=True, exist_ok=True)
-			if not (cache_dir / 'default.nix').exists():
-				log(f'[yellow]Cloning HyprSettings repo into {cache_dir}[/yellow]', level='INFO')
+			if not (cache_dir / '.git').exists():
 				subprocess.run(['git', 'clone', repo_url, str(cache_dir)], check=True)
 			subprocess.run(['nix-env', '-f', str(cache_dir / 'default.nix'), '-i'], check=True)
+			cleanup(False, 'Installed via nix-env.')
 
-		elif choice.startswith('Home Manager'):
-			home_manager_snippet = f"""home.packages = [
-  (pkgs.callPackage {str(cache_dir / 'default.nix')} {{}})
-];"""
-			log('[bold]Add the following snippet to your home.nix and run `home-manager switch`:[/bold]', level='INFO')
-			print(home_manager_snippet)
+		elif 'Home Manager' in choice or 'Snippet' in choice:
+			log(f'[bold][cyan]Add to home.packages:[/cyan][/bold]\n  (pkgs.callPackage (fetchTarball "{repo_url}/archive/master.tar.gz") {{}})')
+			cleanup(False, 'Snippet displayed.')
 
-		return
 	except subprocess.CalledProcessError as e:
-		cleanup(True, e.stderr)
+		cleanup(True, f'Nix command failed: {e.stderr if e.stderr else e}')
+	except Exception as e:
+		cleanup(True, f'An unexpected error occurred: {str(e)}')
 
 
 def install_dependencies():
@@ -1299,9 +1375,13 @@ def run_installation_wizard():
 		choices = []
 		if not GLOBAL.EXISTING_INSTALLATION:
 			choices.append('Install Hyprsettings')
-		elif GLOBAL.EXISTING_INSTALLATION:
+		elif GLOBAL.EXISTING_INSTALLATION and not GLOBAL.OS_RELEASE.startswith('nix'):
 			choices.append('Update Hyprsettings')
 			choices.append('Uninstall Hyprsettings')
+		elif GLOBAL.OS_RELEASE.startswith('nix'):
+			run_nixos_wizard()
+			cleanup(False, 'Hyprsettings successfully installed for nix')
+
 		response = choose_from('What would you like to do?', choices)
 		if response.startswith('Update'):
 			GLOBAL.MODE = 'UPDATE'
