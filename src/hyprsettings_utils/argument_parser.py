@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 def createArgParse(parser):
 	# General Options
 	general = parser.add_argument_group('General Options')
@@ -7,9 +10,16 @@ def createArgParse(parser):
 		action='store_true',
 		help='If not running, run as a daemon in the background. If already running, connect to the existing daemon.',
 	)
+	general.add_argument('-v', '--version', action='version', version='%(prog)s {print_title()}')
 	general.add_argument('-k', '--kill', action='store_true', help='Use this arg to kill any running hyprsettings process.')
 	general.add_argument('-N', '--no-daemon', action='store_true', help='Starts a new session without using existing daemon if it exists.')
 	general.add_argument('-vv', '--verbose', action='store_true', help='Get more descriptive logs.')
+	# print(
+	# 	Path(Path(__file__).resolve().parent.parent.parent / '.scriptv2_installed').is_file(),
+	# 	Path(Path(__file__).resolve().parent.parent.parent / '.scriptv2_installed'),
+	# )
+	if Path(Path(__file__).resolve().parent.parent.parent / '.scriptv2_installed').is_file():
+		general.add_argument('-up', '--update', action='store_true', help='Update hyprsettings automatically.')
 	# general.add_argument('--version', action='version', version=f'%(prog)s {hs_globals.CURRENT_VERSION}')
 
 	# UI / Browser Options

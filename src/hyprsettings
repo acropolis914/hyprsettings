@@ -395,13 +395,18 @@ if __name__ == '__main__':
 		description='A loyal hyprland parser and gui editor for hyprland.conf',
 		epilog=print_title(),
 	)
-	parser.add_argument('-v', '--version', action='version', version='%(prog)s {print_title()}')
 	parser = createArgParse(parser)
 
 	state.args = parser.parse_args()
 
 	signal.signal(signal.SIGINT, handle_interrupt)
-
+	if state.args.update:
+		installer = str(thisfile_path.parent / 'hyprsettings_installer.py')
+		# Replace current process with: python3 [installer]
+		temporary_installer = '/tmp/hyprsettings_installer.py'
+		subprocess.run(['cp', installer, temporary_installer])
+		os.execv(sys.executable, [sys.executable, temporary_installer, '-a'])
+		sys.exit(0)
 	if state.args.kill:
 		kill_hyprsettings()
 

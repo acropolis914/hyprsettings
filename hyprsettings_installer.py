@@ -41,6 +41,7 @@ LOGTYPE = Literal['INFO', 'ERROR', 'WARNING', 'DEBUG', 'CRITICAL']
 
 
 class GLOBALS:
+	NO_GIT_PULL: bool = False
 	INSTALLATION_PATH: Literal['System', 'User'] = None
 	EXISTING_INSTALLATION: Path | None = None  # if this is not None, it will be a Path object pointing to the existing installation
 	PACKAGE_MANAGER_INSTALLED: Path = None
@@ -146,7 +147,7 @@ def run(cmd: List[str] | str, check=True, capture_output=True, text=True, shell=
 			if not cmd.strip().startswith('sudo'):
 				cmd = f'sudo {cmd}'
 	marker = ConsoleMarker()
-	log(f'[dim][bold]Executing command:[/bold] {" ".join(cmd)}[/dim]')
+	# log(f'[dim][bold]Executing command:[/bold] {" ".join(cmd)}[/dim]')
 	marker.clear()
 
 	return subprocess.run(cmd, check=check, capture_output=capture_output, text=text, shell=shell)
@@ -164,7 +165,7 @@ class Spinner:
 		chars = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
 		i = 0
 		while not self._stop_event.is_set():
-			sys.stdout.write(f'\r\033[K {self.message} {chars[i % len(chars)]}')
+			sys.stdout.write(f'\r\033[K {bbcode(self.message)} {chars[i % len(chars)]}')
 			sys.stdout.flush()
 			i += 1
 			time.sleep(0.02)
@@ -737,10 +738,13 @@ def clone_repository():
 	if GLOBAL.IN_LOCAL_CLONE:
 		# log(f'[bold]Clone Directory:[/bold] {Path(__file__).parent} (here)')
 		to_update = False
-		if GLOBAL.MODE == 'UPDATE':
+		if GLOBAL.NO_GIT_PULL:
+			to_update = False
+		elif GLOBAL.MODE == 'UPDATE':
 			to_update = True
 		else:
 			to_update = confirm('Do you want to pull updates from github?')
+
 		if to_update:
 			spinner = Spinner('Updating local repository...')
 			try:
@@ -760,6 +764,8 @@ def clone_repository():
 		marker = ConsoleMarker()
 
 		if destination.is_dir() and Path(destination / '.git').exists():
+			if GLOBAL.NO_GIT_PULL:
+				return
 			to_update = confirm('Do you want to pull updates from github?')
 			if to_update:
 				spinner = Spinner(f'Updating hyprsettings repository in {destination}')
@@ -883,14 +889,14 @@ def setup_venv():
 			'python-dotenv',
 		]
 
-		log(f'{GLOBAL.NO_GTK, GLOBAL.NO_WEBVIEW}')
+		# log(f'{GLOBAL.NO_GTK, GLOBAL.NO_WEBVIEW}')
 		if GLOBAL.NO_GTK is None and GLOBAL.NO_WEBVIEW is not None:
 			GLOBAL.NO_GTK = True
-			log(GLOBAL.NO_GTK)
-		log(f'{GLOBAL.NO_GTK, GLOBAL.NO_WEBVIEW}')
+			# log(GLOBAL.NO_GTK)
+		# log(f'{GLOBAL.NO_GTK, GLOBAL.NO_WEBVIEW}')
 
 		if not GLOBAL.NO_GTK:
-			spinner.temporary_message('Webview Dependencies were installed. Adding pywebview to venv..', 1000)
+			spinner.temporary_message('Dedicated interface dependencies were installed. Adding pywebview to the environment', 1000)
 			packages.append('pywebview')
 			packages.append('pywebview[gtk]')
 			time.sleep(1)
@@ -929,6 +935,8 @@ def setup_source():
 		# Use cp for recursion copy to handle sudo if needed
 		run(['cp', '-r', str(GLOBAL.CLONE_REPOSITORY / 'src'), str(GLOBAL.LIB_DIRECTORY)])
 		run(['cp', str(GLOBAL.CLONE_REPOSITORY / 'run.sh'), str(GLOBAL.LIB_DIRECTORY / 'run.sh')])
+		run(['rm', '-f', str(GLOBAL.LIB_DIRECTORY / 'hyprsettings_installer.py')])
+		subprocess.run(['cp', '-f', str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings_installer.py'), str(GLOBAL.LIB_DIRECTORY)])
 		run(['rm', '-rf', str(GLOBAL.LIB_DIRECTORY / 'src' / 'ui-src')])
 		marker_file = '/tmp/.scriptv2_installed'
 		with open(marker_file, 'w+') as f:
@@ -1167,6 +1175,7 @@ def clear_view(message):
 
 def reset_view():
 	os.system('clear')
+	print(Path(__file__))
 	print_title()
 
 	repo_updated_message = ' [green](up to date)[green]' if GLOBAL.IS_REPO_UPDATED else ''
@@ -1236,26 +1245,27 @@ def update_existing_installation():
 
 
 def auto_install():
-	GLOBAL.MODE = 'AUTO_INSTALL'
+	set_install_dirs('User')
 	check_os_release()
+	check_local_repo()
 	check_existing_installation()
 	nuke_legacy_installations()
 	if GLOBAL.EXISTING_INSTALLATION:
-		check_local_repo()
 		clone_repository()
 		setup_venv()
 		setup_source()
 		make_executable_file()
 		make_desktop_file()
+		cleanup(False, 'Hyprsettings Auto Mode Done')
 	else:
 		run_script_install_sequence()
 
 
 def run_script_install_sequence():
-	# if gtk_ready():
-	# 	GLOBAL.IS_DEPENDENCY_INSTALLED = True
+	if gtk_ready():
+		GLOBAL.IS_DEPENDENCY_INSTALLED = True
 	nuke_legacy_installations()
-	if not GLOBAL.EXISTING_INSTALLATION:
+	if not GLOBAL.EXISTING_INSTALLATION and not GLOBAL.MODE == 'UPDATE':
 		select_installation_directory()
 	check_local_repo()
 	clone_repository()
@@ -1269,38 +1279,7 @@ def run_script_install_sequence():
 	cleanup(False, 'Hyprsettings successfully installed')
 
 
-def init_parser():
-	parser = argparse.ArgumentParser(description='Install Hyprsettings', epilog=print_title())
-	action_group = parser.add_mutually_exclusive_group()
-	action_group.add_argument('-u', '--update', action='store_true', help='Update existing installation')
-	action_group.add_argument('-r', '--uninstall', action='store_true', help='Uninstall Hyprsettings')
-	parser.add_argument('-a', '--auto', action='store_true', help='Automatically install Hyprsettings system-wide')
-	parser.add_argument('-e', '--emulate-distro', required=False, metavar='DISTRO', help='Emulate a specific distro name')
-	args = parser.parse_args()
-	return args
-
-
-def main():
-	args = init_parser()
-	signal.signal(signal.SIGINT, cleanup)
-	if args.update:
-		GLOBAL.MODE = 'UPDATE'
-		update_existing_installation()
-
-	elif args.uninstall:
-		uninstall()
-	os.system('clear')
-	check_os_release(args.emulate_distro)
-	check_existing_installation()
-	check_local_repo()
-	# if gtk_ready():
-	# 	GLOBAL.IS_DEPENDENCY_INSTALLED = True
-	# 	GLOBAL.NO_GTK = False
-	# 	GLOBAL.NO_WEBVIEW = False
-	reset_view()
-	if not GLOBAL.EXISTING_INSTALLATION and not GLOBAL.IS_DEPENDENCY_INSTALLED:
-		ask_os_release()
-
+def run_installation_wizard():
 	choices = []
 	if not GLOBAL.EXISTING_INSTALLATION:
 		choices.append('Install Hyprsettings')
@@ -1324,7 +1303,7 @@ def main():
 					cleanup(False, 'Successfully Installed via AUR')
 				else:
 					spinner = Spinner('AUR Installation Declined. Proceeding with script installation.')
-					time.sleep(2)
+					time.sleep(1)
 					spinner.stop()
 					run_script_install_sequence()
 			elif GLOBAL.OS_RELEASE == 'nixos':
@@ -1332,7 +1311,64 @@ def main():
 			else:
 				run_script_install_sequence()
 
+	os.system('clear')
+	check_os_release(GLOBAL.ARGS.emulate_distro)
+	check_existing_installation()
+	check_local_repo()
+	if gtk_ready():
+		GLOBAL.IS_DEPENDENCY_INSTALLED = True
+		GLOBAL.NO_GTK = False
+		GLOBAL.NO_WEBVIEW = False
+	reset_view()
+	if not GLOBAL.EXISTING_INSTALLATION and not GLOBAL.IS_DEPENDENCY_INSTALLED:
+		ask_os_release()
 	onboarding_choice()
+
+
+def init_parser():
+	parser = argparse.ArgumentParser(description='Install Hyprsettings', epilog=print_title())
+	action_group = parser.add_mutually_exclusive_group()
+	action_group.add_argument('-u', '--update', action='store_true', help='Update existing installation')
+	action_group.add_argument('-r', '--uninstall', action='store_true', help='Uninstall Hyprsettings')
+	# action_group.add_argument('-a', '--auto', action='store_true', help='Automatically install Hyprsettings system-wide')
+	action_group.add_argument(
+		'-a',
+		'--auto',
+		action='store_true',
+		help='Automatically install Hyprsettings to current user unless it is installed to system already then it will update the system installation.',
+	)
+	action_group.add_argument(
+		'-f',
+		'--update_fake',
+		action='store_true',
+		help='If repo already exists, installs that without fetching updates from Github',
+	)
+
+	parser.add_argument('-e', '--emulate-distro', required=False, metavar='DISTRO', help='Emulate a specific distro name')
+	args = parser.parse_args()
+	return args
+
+
+def main():
+	args = init_parser()
+	print(args)
+	signal.signal(signal.SIGINT, cleanup)
+	GLOBAL.ARGS = args
+
+	if args.update_fake:
+		GLOBAL.MODE = 'UPDATE'
+		GLOBAL.NO_GIT_PULL = True
+		update_existing_installation()
+	elif args.update:
+		GLOBAL.MODE = 'UPDATE'
+		update_existing_installation()
+	elif args.auto:
+		GLOBAL.MODE = 'UPDATE'
+		auto_install()
+	elif args.uninstall:
+		uninstall()
+	else:
+		run_installation_wizard()
 
 
 if __name__ == '__main__':
