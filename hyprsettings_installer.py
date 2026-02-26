@@ -947,6 +947,7 @@ def setup_source():
 		# Use cp for recursion copy to handle sudo if needed
 		run(['cp', '-r', str(GLOBAL.CLONE_REPOSITORY / 'src'), str(GLOBAL.LIB_DIRECTORY)])
 		run(['cp', str(GLOBAL.CLONE_REPOSITORY / 'run.sh'), str(GLOBAL.LIB_DIRECTORY / 'run.sh')])
+		print(str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings_installer.py'), Path(str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings_installer.py')).exists())
 		run(['cp', '-f', str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings_installer.py'), str(GLOBAL.LIB_DIRECTORY / 'hyprsettings_installer.py')])
 		run(['rm', '-rf', str(GLOBAL.LIB_DIRECTORY / 'src' / 'ui-src')])
 		marker_file = '/tmp/.scriptv2_installed'
@@ -1050,12 +1051,13 @@ def uninstall():
 	check_os_release()
 	check_local_repo()
 	check_existing_installation()
+	print_title()
 	if not GLOBAL.EXISTING_INSTALLATION:
 		log('No existing installation found.')
 		cleanup('Nothing to uninstall.')
 		return
-
-	# remove library directory
+	if not confirm('Are you sure you want to uninstall hyprsettings? :<'):
+		cleanup(False, 'Great choice.')
 	lib_path = Path(GLOBAL.LIB_DIRECTORY)
 	if lib_path.is_dir():
 		log(f'Deleting {lib_path}')
@@ -1088,7 +1090,7 @@ def uninstall():
 	else:
 		log(f'{desktop_path} not found.', 'WARNING')
 
-	cleanup(False, 'Done uninstalling.')
+	cleanup(False, 'Done uninstalling. Sad to see you go.')
 
 
 def nuke_legacy_installations():
