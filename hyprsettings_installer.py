@@ -743,7 +743,7 @@ def clone_repository():
 		elif GLOBAL.MODE == 'UPDATE':
 			to_update = True
 		else:
-			to_update = confirm('Do you want to pull updates from github?')
+			to_update = confirm('Do you want to pull updates from github to your local repository?')
 
 		if to_update:
 			spinner = Spinner('Updating local repository...')
@@ -760,28 +760,38 @@ def clone_repository():
 	else:
 		destination = GLOBAL.CLONE_REPOSITORY
 		destination.mkdir(parents=True, exist_ok=True)
-		log(f'[bold]Clone Directory:[/bold] {str(destination)}')
+		# log(f'[bold]Clone Directory:[/bold] {str(destination)}')
 		marker = ConsoleMarker()
 
 		if destination.is_dir() and Path(destination / '.git').exists():
 			if GLOBAL.NO_GIT_PULL:
 				return
-			to_update = confirm('Do you want to pull updates from github?')
+			to_update = False
+			if GLOBAL.MODE == 'UPDATE':
+				to_update = True
+			else:
+				to_update = confirm('Do you want to pull updates from github to the cached hyprsettings repository?')
+
 			if to_update:
-				spinner = Spinner(f'Updating hyprsettings repository in {destination}')
+				# spinner = Spinner(f'Updating hyprsettings repository in {destination}')
+				marker = ConsoleMarker()
 				try:
 					run(
 						['git', '-C', str(destination), 'pull'],
 					)
 					GLOBAL.IS_REPO_UPDATED = True
-					spinner.stop()
+					marker.clear()
+					# spinner.stop()
 				except subprocess.CalledProcessError as e:
 					log(f'Failed to clone repository. Error: {e.stderr}', 'WARNING')
-					spinner.stop(1)
+					# spinner.stop(1)
+
 		else:
-			spinner = Spinner(f'Cloning hyprsettings repository to {destination}')
+			marker = ConsoleMarker()
+			log(f'Cloning hyprsettings repository to {destination}')
+			# spinner = Spinner(f'Cloning hyprsettings repository to {destination}')
 			try:
-				run(
+				subprocess.run(
 					[
 						'git',
 						'clone',
@@ -789,11 +799,13 @@ def clone_repository():
 						str(destination),
 					],
 				)
-				spinner.stop()
+				# spinner.stop()
 				GLOBAL.IS_REPO_UPDATED = True
+				marker.clear()
 			except subprocess.CalledProcessError as e:
 				log(f'Failed to clone repository. Error: {e.stderr}', 'WARNING')
-				spinner.stop(1)
+				marker.clear()
+				# spinner.stop(1)
 		marker.clear()
 
 
@@ -935,8 +947,7 @@ def setup_source():
 		# Use cp for recursion copy to handle sudo if needed
 		run(['cp', '-r', str(GLOBAL.CLONE_REPOSITORY / 'src'), str(GLOBAL.LIB_DIRECTORY)])
 		run(['cp', str(GLOBAL.CLONE_REPOSITORY / 'run.sh'), str(GLOBAL.LIB_DIRECTORY / 'run.sh')])
-		run(['rm', '-f', str(GLOBAL.LIB_DIRECTORY / 'hyprsettings_installer.py')])
-		subprocess.run(['cp', '-f', str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings_installer.py'), str(GLOBAL.LIB_DIRECTORY)])
+		run(['cp', '-f', str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings_installer.py'), str(GLOBAL.LIB_DIRECTORY / 'hyprsettings_installer.py')])
 		run(['rm', '-rf', str(GLOBAL.LIB_DIRECTORY / 'src' / 'ui-src')])
 		marker_file = '/tmp/.scriptv2_installed'
 		with open(marker_file, 'w+') as f:
@@ -1230,6 +1241,7 @@ def reset_view():
 
 def update_existing_installation():
 	check_os_release()
+	check_local_repo()
 	check_existing_installation()
 	nuke_legacy_installations()
 	if GLOBAL.EXISTING_INSTALLATION:
@@ -1251,6 +1263,7 @@ def auto_install():
 	check_existing_installation()
 	nuke_legacy_installations()
 	if GLOBAL.EXISTING_INSTALLATION:
+		check_local_repo()
 		clone_repository()
 		setup_venv()
 		setup_source()
@@ -1280,14 +1293,13 @@ def run_script_install_sequence():
 
 
 def run_installation_wizard():
-	choices = []
-	if not GLOBAL.EXISTING_INSTALLATION:
-		choices.append('Install Hyprsettings')
-	elif GLOBAL.EXISTING_INSTALLATION:
-		choices.append('Update Hyprsettings')
-		choices.append('Uninstall Hyprsettings')
-
 	def onboarding_choice():
+		choices = []
+		if not GLOBAL.EXISTING_INSTALLATION:
+			choices.append('Install Hyprsettings')
+		elif GLOBAL.EXISTING_INSTALLATION:
+			choices.append('Update Hyprsettings')
+			choices.append('Uninstall Hyprsettings')
 		response = choose_from('What would you like to do?', choices)
 		if response.startswith('Update'):
 			GLOBAL.MODE = 'UPDATE'

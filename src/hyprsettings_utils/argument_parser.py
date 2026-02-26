@@ -20,6 +20,7 @@ def createArgParse(parser):
 	# )
 	if Path(Path(__file__).resolve().parent.parent.parent / '.scriptv2_installed').is_file():
 		general.add_argument('-up', '--update', action='store_true', help='Update hyprsettings automatically.')
+		general.add_argument('-rrr', '--uninstall', action='store_true', help='Uninstall hyprsettings.')
 	# general.add_argument('--version', action='version', version=f'%(prog)s {hs_globals.CURRENT_VERSION}')
 
 	# UI / Browser Options
