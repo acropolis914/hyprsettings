@@ -202,7 +202,7 @@ class ConsoleMarker:
 
 def print_title():
 	version = ''
-	if GLOBAL.CLONE_REPOSITORY:
+	if GLOBAL.CLONE_REPOSITORY and GLOBAL.CLONE_REPOSITORY.is_dir():
 		with open(GLOBAL.CLONE_REPOSITORY / 'src' / '.version', 'r') as f:
 			version = f.read().strip()
 
