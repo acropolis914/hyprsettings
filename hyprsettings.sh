@@ -1,11 +1,8 @@
 #!/bin/sh
 """:"
-if [ "$(basename "$0")" = "sh" ]; then
-    exec python3 - "$@"
-else
-    exec python3 "$0" "$@"
-fi
-":"""
+# Run this script with Python if executed via sh
+exec python3 "$0" "$@"
+"""
 
 import argparse
 import ctypes
