@@ -1,7 +1,11 @@
 #!/bin/sh
 """:"
-# Run this script with Python if executed via sh
-exec python3 "$0" "$@"
+# If running via sh and script is on stdin, run Python from stdin
+if [ "$0" = "sh" ]; then
+    exec python3 - "$@"
+else
+    exec python3 "$0" "$@"
+fi
 """
 
 import argparse
