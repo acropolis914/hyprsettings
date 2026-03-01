@@ -802,7 +802,6 @@ def clone_repository():
 		except subprocess.CalledProcessError as e:
 			log(f'Failed to clone repository. Error: {e}', 'WARNING')
 			marker.clear()
-	reset_view()
 
 
 def check_local_repo():
