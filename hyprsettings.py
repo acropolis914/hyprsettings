@@ -768,7 +768,7 @@ def clone_repository():
 		return
 
 	# Else: cloning to cached repository
-	destination = GLOBAL.CLONE_REPOSITORY
+	destination = GLOBAL.CLONE_REPOSITORY.resolve()
 	destination.mkdir(parents=True, exist_ok=True)
 
 	if (destination / '.git').exists():
@@ -798,7 +798,7 @@ def clone_repository():
 				],
 				check=True,
 			)
-			chown_recursive(destination)
+			# chown_recursive(destination)
 			GLOBAL.IS_REPO_UPDATED = True
 			marker.clear()
 		except subprocess.CalledProcessError as e:
