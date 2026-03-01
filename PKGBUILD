@@ -72,3 +72,4 @@ EOF
     # 9. License
     install -Dm644 "$srcdir/$pkgname/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
+ 

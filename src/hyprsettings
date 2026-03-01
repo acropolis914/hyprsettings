@@ -75,7 +75,7 @@ def log(msg, prefix='', only_verbose=False):
 def handle_interrupt(signum, frame):
 	log('Sigint signal detected! Cleaning up...')
 	log('Exited cleanly.')
-	os._exit(0)
+	sys.exit(0)
 
 
 def kill_hyprsettings():
@@ -193,7 +193,6 @@ class LogFilter:
 
 # WINDOW FUNCTIONS
 def on_loaded(window):
-	# log("DOM is ready")
 	window.events.loaded -= on_loaded
 
 
@@ -386,7 +385,7 @@ def main():
 	except Exception as e:
 		log(e)
 		log('I am ded')
-		os._exit(1)
+		sys.exit(1)
 
 
 if __name__ == '__main__':
@@ -455,6 +454,6 @@ if __name__ == '__main__':
 
 	if not state.args.no_daemon and is_port_open(state.webview_port):
 		if send_toggle():
-			os._exit(0)
+			sys.exit(0)
 
 	gotoMain()
