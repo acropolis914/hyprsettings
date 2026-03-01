@@ -207,7 +207,7 @@ def print_title():
 			version = f.read().strip()
 
 	version_text = f'v[green][bold]{version}[/bold][/green]' if version else ''
-	art = f"""\  
+	art = f"""  
 [bold][blue]   ╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓
    ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓
    ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛[/bold][/blue]{version_text}
