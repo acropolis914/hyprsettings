@@ -203,7 +203,7 @@ class ConsoleMarker:
 def print_title():
 	version = ''
 	if GLOBAL.CLONE_REPOSITORY:
-		with open(GLOBAL.CLONE_REPOSITORY.resolve() / 'src' / '.version', 'r') as f:
+		with open(GLOBAL.CLONE_REPOSITORY / 'src' / '.version', 'r') as f:
 			version = f.read().strip()
 
 	version_text = f'v[green][bold]{version}[/bold][/green]' if version else ''
@@ -756,7 +756,6 @@ def clone_repository():
 			spinner = Spinner('Updating local repository...')
 			try:
 				subprocess.run(['git', 'pull'], check=True)
-				# chown_recursive(Path(__file__).parent)
 				spinner.stop()
 				GLOBAL.IS_REPO_UPDATED = True
 				reset_view()
@@ -777,7 +776,6 @@ def clone_repository():
 			marker = ConsoleMarker()
 			try:
 				subprocess.run(['git', '-C', str(destination), 'pull'], check=True)
-				# chown_recursive(destination)
 				GLOBAL.IS_REPO_UPDATED = True
 				marker.clear()
 			except subprocess.CalledProcessError as e:

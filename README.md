@@ -12,7 +12,7 @@
 Install now!
 
 ```sh
-curl - sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.py | python3 - --auto
+curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh -s -- --auto
 ```
 
 ## ✨ Features
@@ -65,7 +65,7 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 The included installer script (`hyprsettings.sh`) handles cloning the repo, setting up a contained Python virtual
 environment (`.venv`), installing dependencies, and creating the necessary launcher links (`~/.local/bin/hyprsettings`).
 
-**Run the interactive installer directly:**
+**Run the installer insteractively:**
 
 ````bash
 curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh
