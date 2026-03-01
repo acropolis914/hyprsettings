@@ -114,7 +114,9 @@ def log(message: str = '', level: LOGTYPE = 'INFO', no_prefix: bool = False, onl
 	if GLOBAL.VERBOSE or not onlyWhenVerbose:
 		prefix = LEVEL_COLORS.get(level, f'[{level}]')
 		text = f'{prefix} {message}' if not no_prefix else message
-		print(bbcode(text))
+		print(
+			bbcode(text),
+		)
 
 
 def run(cmd: List[str] | str, check=True, capture_output=True, text=True, shell=False, stdout=None, stderr=None, bufsize=-1):
