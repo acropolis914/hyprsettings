@@ -745,15 +745,6 @@ def clone_repository():
 	uid = os.getuid()
 	gid = os.getgid()
 
-	def chown_recursive(path: Path):
-		"""Recursively fix ownership of files to the current user."""
-		for root, dirs, files in os.walk(path):
-			for momo in dirs:
-				os.chown(os.path.join(root, momo), uid, gid)
-			for momo in files:
-				os.chown(os.path.join(root, momo), uid, gid)
-		os.chown(path, uid, gid)
-
 	if GLOBAL.IN_LOCAL_CLONE:
 		to_update = False
 		if GLOBAL.NO_GIT_PULL:
@@ -767,7 +758,7 @@ def clone_repository():
 			spinner = Spinner('Updating local repository...')
 			try:
 				subprocess.run(['git', 'pull'], check=True)
-				chown_recursive(Path(__file__).parent)
+				# chown_recursive(Path(__file__).parent)
 				spinner.stop()
 				GLOBAL.IS_REPO_UPDATED = True
 				reset_view()
@@ -788,7 +779,7 @@ def clone_repository():
 			marker = ConsoleMarker()
 			try:
 				subprocess.run(['git', '-C', str(destination), 'pull'], check=True)
-				chown_recursive(destination)
+				# chown_recursive(destination)
 				GLOBAL.IS_REPO_UPDATED = True
 				marker.clear()
 			except subprocess.CalledProcessError as e:
@@ -1326,10 +1317,10 @@ def update_existing_installation():
 
 
 def auto_install(install_type: Literal['User', 'System'] = 'User'):
+	check_hyprland_installation()
 	set_install_dirs(install_type)
 	check_os_release()
 	check_local_repo()
-	check_hyprland_installation()
 	check_existing_installation()  # if there's an existing installation this will just auto update that. Setting install dir won't have any effect
 	nuke_legacy_installations()
 	if GLOBAL.EXISTING_INSTALLATION:
