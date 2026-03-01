@@ -1,8 +1,4 @@
-#!/bin/sh
-""":"
-# If running via sh or stdin, execute Python from stdin
-exec python3 - "$@"
-"""
+#!/usr/bin/env python3
 
 import argparse
 import ctypes
@@ -958,7 +954,7 @@ def setup_source():
 		run(['cp', '-r', str(GLOBAL.CLONE_REPOSITORY / 'src'), str(GLOBAL.LIB_DIRECTORY)])
 		run(['cp', str(GLOBAL.CLONE_REPOSITORY / 'run.sh'), str(GLOBAL.LIB_DIRECTORY / 'run.sh')])
 		# print(str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings_installer.py'), Path(str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings_installer.py')).exists())
-		run(['cp', '-f', str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings.sh'), str(GLOBAL.LIB_DIRECTORY / 'hyprsettings_installer.py')])
+		run(['cp', '-f', str(GLOBAL.CLONE_REPOSITORY / 'hyprsettings.py'), str(GLOBAL.LIB_DIRECTORY / 'hyprsettings_installer.py')])
 		run(['rm', '-rf', str(GLOBAL.LIB_DIRECTORY / 'src' / 'ui-src')])
 		marker_file = '/tmp/.scriptv2_installed'
 		with open(marker_file, 'w+') as f:
@@ -1116,7 +1112,7 @@ def uninstall(no_confirm=False):
 	[green][bold]Uninstall Complete[/bold][/green]
 
 	[dim]You can always come back and try it again by running:[/dim]
-	[bold]curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh[/bold]
+	[bold]curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.py | python3 - -a[/bold]
 	
 	Thank you for trying 💧hyprsettings!
 	[underline][blue][link=https://github.com/acropolis914/hyprsettings]Made with ❣️ by AcroPolis914 — Project page[/link][/blue][/underline]

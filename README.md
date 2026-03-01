@@ -11,8 +11,8 @@
 
 Install now!
 
-```
-curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh -s -- --auto
+```sh
+curl - sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.py | python3 - --auto
 ```
 
 ## ✨ Features
