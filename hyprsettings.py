@@ -742,15 +742,7 @@ def print_unsupported_os_guide():
 	)
 
 
-from pathlib import Path
-from getpass import getuser
-
-
 def clone_repository():
-	user = getuser()
-	uid = os.getuid()
-	gid = os.getgid()
-
 	if GLOBAL.IN_LOCAL_CLONE:
 		to_update = False
 		if GLOBAL.NO_GIT_PULL:
@@ -810,6 +802,7 @@ def clone_repository():
 		except subprocess.CalledProcessError as e:
 			log(f'Failed to clone repository. Error: {e}', 'WARNING')
 			marker.clear()
+	reset_view()
 
 
 def check_local_repo():
