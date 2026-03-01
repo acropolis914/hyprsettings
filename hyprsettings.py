@@ -910,6 +910,7 @@ def setup_venv():
 			str(venv_directory / 'bin/pip'),
 			'install',
 			'--upgrade-strategy',
+			"--system-site-packages",
 			'only-if-needed',
 		]
 
