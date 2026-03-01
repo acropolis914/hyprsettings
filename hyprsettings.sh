@@ -743,9 +743,25 @@ def print_unsupported_os_guide():
 	)
 
 
+from pathlib import Path
+from getpass import getuser
+
+
 def clone_repository():
+	user = getuser()
+	uid = os.getuid()
+	gid = os.getgid()
+
+	def chown_recursive(path: Path):
+		"""Recursively fix ownership of files to the current user."""
+		for root, dirs, files in os.walk(path):
+			for momo in dirs:
+				os.chown(os.path.join(root, momo), uid, gid)
+			for momo in files:
+				os.chown(os.path.join(root, momo), uid, gid)
+		os.chown(path, uid, gid)
+
 	if GLOBAL.IN_LOCAL_CLONE:
-		# log(f'[bold]Clone Directory:[/bold] {Path(__file__).parent} (here)')
 		to_update = False
 		if GLOBAL.NO_GIT_PULL:
 			to_update = False
@@ -757,65 +773,53 @@ def clone_repository():
 		if to_update:
 			spinner = Spinner('Updating local repository...')
 			try:
-				subprocess.run('git pull', shell=True)  # TODO UNCOMMENT THIS
+				subprocess.run(['git', 'pull'], check=True)
+				chown_recursive(Path(__file__).parent)
 				spinner.stop()
 				GLOBAL.IS_REPO_UPDATED = True
 				reset_view()
-				# log('[bold]Repository:[/bold] up to date')
-			except Exception as e:
+			except subprocess.CalledProcessError as e:
 				log(f'Failed to update repository. Error: {e}', 'WARNING')
 				spinner.stop(1)
 		return
-	else:
-		destination = GLOBAL.CLONE_REPOSITORY
-		destination.mkdir(parents=True, exist_ok=True)
-		# log(f'[bold]Clone Directory:[/bold] {str(destination)}')
-		marker = ConsoleMarker()
 
-		if destination.is_dir() and Path(destination / '.git').exists():
-			if GLOBAL.NO_GIT_PULL:
-				return
-			to_update = False
-			if GLOBAL.MODE == 'UPDATE':
-				to_update = True
-			else:
-				to_update = confirm('Do you want to pull updates from github to the cached hyprsettings repository?')
+	# Else: cloning to cached repository
+	destination = GLOBAL.CLONE_REPOSITORY
+	destination.mkdir(parents=True, exist_ok=True)
 
-			if to_update:
-				# spinner = Spinner(f'Updating hyprsettings repository in {destination}')
-				marker = ConsoleMarker()
-				try:
-					run(
-						['git', '-C', str(destination), 'pull'],
-					)
-					GLOBAL.IS_REPO_UPDATED = True
-					marker.clear()
-					# spinner.stop()
-				except subprocess.CalledProcessError as e:
-					log(f'Failed to clone repository. Error: {e.stderr}', 'WARNING')
-					# spinner.stop(1)
-
-		else:
+	if (destination / '.git').exists():
+		if GLOBAL.NO_GIT_PULL:
+			return
+		to_update = GLOBAL.MODE == 'UPDATE' or confirm('Do you want to pull updates from github to the cached hyprsettings repository?')
+		if to_update:
 			marker = ConsoleMarker()
-			log(f'Cloning hyprsettings repository to {destination}')
-			# spinner = Spinner(f'Cloning hyprsettings repository to {destination}')
 			try:
-				subprocess.run(
-					[
-						'git',
-						'clone',
-						'https://github.com/acropolis914/hyprsettings',
-						str(destination),
-					],
-				)
-				# spinner.stop()
+				subprocess.run(['git', '-C', str(destination), 'pull'], check=True)
+				chown_recursive(destination)
 				GLOBAL.IS_REPO_UPDATED = True
 				marker.clear()
 			except subprocess.CalledProcessError as e:
-				log(f'Failed to clone repository. Error: {e.stderr}', 'WARNING')
+				log(f'Failed to update repository. Error: {e}', 'WARNING')
 				marker.clear()
-				# spinner.stop(1)
-		marker.clear()
+	else:
+		marker = ConsoleMarker()
+		log(f'Cloning hyprsettings repository to {destination}')
+		try:
+			subprocess.run(
+				[
+					'git',
+					'clone',
+					'https://github.com/acropolis914/hyprsettings',
+					str(destination),
+				],
+				check=True,
+			)
+			chown_recursive(destination)
+			GLOBAL.IS_REPO_UPDATED = True
+			marker.clear()
+		except subprocess.CalledProcessError as e:
+			log(f'Failed to clone repository. Error: {e}', 'WARNING')
+			marker.clear()
 
 
 def check_local_repo():
@@ -1246,7 +1250,7 @@ def clear_view(message):
 def reset_view():
 	os.system('clear')
 	log('Running automated installation scripts is generally [bold]unsafe[/bold]', 'WARNING')
-	log('[dim]Make it a habit of you to check the link for the script \nand look for questionable actions it does.[/dim]', "WARNING")
+	log('[dim]Make it a habit of you to check the link for the script \nand look for questionable actions it does.[/dim]', 'WARNING')
 	# print(Path(__file__))
 	print_title()
 	repo_updated_message = ' [green](up to date)[green]' if GLOBAL.IS_REPO_UPDATED else ''
