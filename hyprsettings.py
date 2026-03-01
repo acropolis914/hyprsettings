@@ -35,7 +35,7 @@ class GLOBALS:
 	ICON_DIRECTORY: PathLike | Path = None
 	DESKTOP_DIRECTORY: PathLike | Path = None
 	IS_DEPENDENCY_INSTALLED = False
-	IS_VENV_INSTALLED = False
+	IS_VENV_INSTALLED:bool = False
 	CLONE_REPOSITORY: Path = None
 	IS_SOURCEFILES_INSTALLED = False
 	IS_BINARY_INSTALLED = False
@@ -245,7 +245,7 @@ def confirm(
 		return default
 	else:
 		log(f'Invalid response: {response}')
-		new_response = confirm(message=message, default=default)
+		new_response:bool = confirm(message=message, default=default)
 		return new_response
 
 
@@ -724,7 +724,7 @@ def print_unsupported_os_guide():
 		'[bold][blue]Required components (and typical package names):[/blue][/bold]\n'
 		'[dim]'
 		'  - Python headers:        python3-dev / python3-devel\n'
-		'  - C Compiler:            gcc / build-essential\n'
+		'  - C Compiler:            build-essential / base-devel (for gcc and cmake)\n'
 		'  - Build config tool:     pkg-config / pkgconf\n'
 		'  - Cairo graphics:        libcairo2-dev / cairo-devel\n'
 		'  - GObject Introspection: gobject-introspection / libgirepository-2.0-dev\n'
@@ -910,14 +910,16 @@ def setup_venv():
 			str(venv_directory / 'bin/pip'),
 			'install',
 			'--upgrade-strategy',
-			"--system-site-packages",
 			'only-if-needed',
 		]
 
 		if not venv_directory.exists():
 			spinner.update('Fresh directory. Creating virtual environment...')
 			run(['mkdir', '-p', str(venv_directory)])
-			run(['python', '-m', 'venv', str(venv_directory)])
+			run(['python', '-m', 'venv', '--system-site-packages', str(venv_directory)])
+			venv_python = str(venv_directory / 'bin/python')
+			spinner.update('Bootstrapping pip...')
+			run([venv_python, '-m', 'ensurepip', '--upgrade', '--default-pip'], capture_output=True)
 
 		# always install deps
 		spinner.update('Installing python environment dependencies...')
