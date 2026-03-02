@@ -171,11 +171,11 @@ class Api:
 					state.daemon = True
 				return self.window_config
 
-		if not hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file() or hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
-			if hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
-				log('Config file exists but is empty. Creating a new one.')
-			else:
-				log(f'Configuration file not found in {hs_globals.HYPRSETTINGS_CONFIG_PATH}')
+		if not hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file():
+			log(f'Configuration file not found in {hs_globals.HYPRSETTINGS_CONFIG_PATH}')
+			create_new_config()
+		if hs_globals.HYPRSETTINGS_CONFIG_PATH.is_file() and hs_globals.HYPRSETTINGS_CONFIG_PATH.stat().st_size == 0:
+			log('Config file exists but is empty. Creating a new one.')
 			create_new_config()
 		else:
 			try:
