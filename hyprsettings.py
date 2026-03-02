@@ -329,27 +329,31 @@ def check_os_release(emulate: str = None):
 
 
 def ask_os_release():
-	release = GLOBAL.OS_RELEASE
-	if 'unsupported' in release:
-		choice = choose_from(
-			'Unsupported Distro detected. Is it based on one of the following distros?:',
-			['Arch', 'Fedora', 'NixOs', "Void", "None of the above"],
-			default='99',
-		)
-		if choice == 'Debian/Ubuntu/APT':
-			release = 'debian'
-		elif choice == 'Fedora':
-			release = 'fedora'
-		elif choice == 'Arch':
-			release = 'arch'
-		elif choice == 'NixOs':
-			release = 'nixos'
-		elif choice == 'Void':
-			release = 'void'
-		else:
-			show_unsupported_linux_prompt()
-	else:
+	if 'unsupported' not in GLOBAL.OS_RELEASE:
 		return
+	distro_choices = {
+		'Debian/Ubuntu (APT)': 'debian',
+		'Fedora/RHEL (DNF)': 'fedora',
+		'Arch (Pacman/AUR)': 'arch',
+		'NixOs (Nix)': 'nixos',
+		'Void (XBPS)': 'void',
+		'openSuse (Zypper)': 'suse',
+		'None of the above': 'unsupported',
+	}
+
+	choice = choose_from(
+		'Unsupported Distro detected. Is it based on one of the following distros?:',
+		list(distro_choices.keys()),
+		default='None of the above',
+	)
+
+	# Map the display name back to the internal ID
+	selected_id: str = distro_choices.get(choice)
+
+	if selected_id == 'unsupported':
+		show_unsupported_linux_prompt()
+	else:
+		GLOBAL.OS_RELEASE = selected_id
 
 
 def detect_family(distro_id: str, id_like: str) -> str:
@@ -591,6 +595,8 @@ def install_dependencies():
 		'arch': ('Arch', ['sudo', 'pacman', '-Sy', '--noconfirm', '--needed', 'python-gobject', 'webkit2gtk']),
 		'fedora': ('Fedora', ['sudo', 'dnf', 'install', '-y', 'python3-gobject', 'webkit2gtk4.1', 'gtk3']),
 		'void': ('Void', ['sudo', 'xbps-install', '-Sy', 'gobject-introspection', 'libwebkit2gtk41']),
+		'suse': ('openSUSE', ['sudo', 'zypper', 'install', '-y', 'python3-gobject', 'python3-gobject-Gdk', 'typelib-1_0-Gtk-4_0', 'libgtk-4-1']),
+		'debian': ('Debian', ['sudo', 'apt', 'install', '-y', 'python3-gi', 'python3-gi-cairo', 'gir1.2-gtk-4.0']),
 	}
 
 	config = next((val for key, val in distro_map.items() if key == GLOBAL.OS_RELEASE), None)
