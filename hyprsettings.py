@@ -322,7 +322,7 @@ def check_os_release(emulate: str = None):
 	if emulate is not None:
 		release = emulate
 	release = detect_family(release, '')
-	if release not in ['arch', 'fedora', 'nix', 'nixos', 'void']:
+	if release not in ['arch', 'fedora', 'nix', 'nixos', 'void', 'suse', 'debian']:
 		GLOBAL.OS_RELEASE = f'{release} (unsupported)'
 	else:
 		GLOBAL.OS_RELEASE = release
@@ -338,6 +338,7 @@ def ask_os_release():
 		'NixOs (Nix)': 'nixos',
 		'Void (XBPS)': 'void',
 		'openSuse (Zypper)': 'suse',
+		'Alpine (APK)': 'alpine',
 		'None of the above': 'unsupported',
 	}
 
@@ -348,7 +349,7 @@ def ask_os_release():
 	)
 
 	# Map the display name back to the internal ID
-	selected_id: str = distro_choices.get(choice)
+	selected_id = distro_choices.get(choice)
 
 	if selected_id == 'unsupported':
 		show_unsupported_linux_prompt()
@@ -597,6 +598,7 @@ def install_dependencies():
 		'void': ('Void', ['sudo', 'xbps-install', '-Sy', 'gobject-introspection', 'libwebkit2gtk41']),
 		'suse': ('openSUSE', ['sudo', 'zypper', 'install', '-y', 'python3-gobject', 'python3-gobject-Gdk', 'typelib-1_0-Gtk-4_0', 'libgtk-4-1']),
 		'debian': ('Debian', ['sudo', 'apt', 'install', '-y', 'python3-gi', 'python3-gi-cairo', 'gir1.2-gtk-4.0']),
+		'alpine': ('Alpine', ['sudo', 'apk', 'add', 'python3-dev', 'py3-gobject3', 'webkit2gtk-4.1']),
 	}
 
 	config = next((val for key, val in distro_map.items() if key == GLOBAL.OS_RELEASE), None)
@@ -725,7 +727,9 @@ def print_unsupported_os_guide():
 		'  Arch Linux:\n'
 		'  [dim]sudo pacman -S python-gobject webkit2gtk-4.1[/dim]\n\n'
 		'You can continue with the gui-enabled installation after these are installed.'
-		f'{missing_msg}\n'
+		f'{missing_msg}\n',
+		'WARNING',
+		no_prefix=True,
 	)
 
 
@@ -1253,7 +1257,7 @@ def reset_view():
 
 		# if GLOBAL.IS_HYPRLAND_INSTALLED:
 	log(
-		f'[bold]Hyprland Installed:[/bold]\n  [dim]{GLOBAL.IS_HYPRLAND_INSTALLED if GLOBAL.IS_HYPRLAND_INSTALLED else "[yellow]Hyprland is not installed. You should shouldn't you?[/orange]"}[/dim]'
+		f"""[bold]Hyprland Installed:[/bold]\n  [dim]{GLOBAL.IS_HYPRLAND_INSTALLED if GLOBAL.IS_HYPRLAND_INSTALLED else "[yellow]Hyprland is not installed. You should shouldn't you?[/orange]"}[/dim]"""
 	)
 
 	if GLOBAL.IS_DEPENDENCY_INSTALLED:
