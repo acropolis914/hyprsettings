@@ -35,7 +35,7 @@ class GLOBALS:
 	ICON_DIRECTORY: PathLike | Path = None
 	DESKTOP_DIRECTORY: PathLike | Path = None
 	IS_DEPENDENCY_INSTALLED = False
-	IS_VENV_INSTALLED:bool = False
+	IS_VENV_INSTALLED: bool = False
 	CLONE_REPOSITORY: Path = None
 	IS_SOURCEFILES_INSTALLED = False
 	IS_BINARY_INSTALLED = False
@@ -245,7 +245,7 @@ def confirm(
 		return default
 	else:
 		log(f'Invalid response: {response}')
-		new_response:bool = confirm(message=message, default=default)
+		new_response: bool = confirm(message=message, default=default)
 		return new_response
 
 
@@ -322,7 +322,7 @@ def check_os_release(emulate: str = None):
 	if emulate is not None:
 		release = emulate
 	release = detect_family(release, '')
-	if release not in ['arch', 'fedora', 'nix', 'nixos']:
+	if release not in ['arch', 'fedora', 'nix', 'nixos', 'void']:
 		GLOBAL.OS_RELEASE = f'{release} (unsupported)'
 	else:
 		GLOBAL.OS_RELEASE = release
@@ -333,7 +333,7 @@ def ask_os_release():
 	if 'unsupported' in release:
 		choice = choose_from(
 			'Unsupported Distro detected. Is it based on one of the following distros?:',
-			['Arch', 'Fedora', 'NixOs', 'None of the above'],
+			['Arch', 'Fedora', 'NixOs', "Void", "None of the above"],
 			default='99',
 		)
 		if choice == 'Debian/Ubuntu/APT':
@@ -344,6 +344,8 @@ def ask_os_release():
 			release = 'arch'
 		elif choice == 'NixOs':
 			release = 'nixos'
+		elif choice == 'Void':
+			release = 'void'
 		else:
 			show_unsupported_linux_prompt()
 	else:
@@ -411,12 +413,9 @@ def detect_family(distro_id: str, id_like: str) -> str:
 				return family
 		return None
 
-	# 1️⃣ Try exact ID first
 	family = match(distro_id)
 	if family:
 		return family
-
-	# 2️⃣ Then check ID_LIKE entries
 	for entry in id_like_list:
 		family = match(entry)
 		if family:
@@ -588,56 +587,33 @@ def run_nixos_wizard(log_message: bool = True):
 def install_dependencies():
 	if check_gtk_dependencies():
 		return 0
-	release = GLOBAL.OS_RELEASE
-	match release:
-		case 'arch':
-			clear_view('Installing Arch dependencies')
-			try:
-				run(
-					['sudo', 'pacman', '-Sy', '--noconfirm', '--needed', 'python-gobject', 'webkit2gtk'],
-					capture_output=False,
-					check=True,
-				)
-				log('[bold]Dependency Install:[/bold] Success')
-				GLOBAL.IS_DEPENDENCY_INSTALLED = True
-				reset_view()
-				return 0
+	distro_map = {
+		'arch': ('Arch', ['sudo', 'pacman', '-Sy', '--noconfirm', '--needed', 'python-gobject', 'webkit2gtk']),
+		'fedora': ('Fedora', ['sudo', 'dnf', 'install', '-y', 'python3-gobject', 'webkit2gtk4.1', 'gtk3']),
+		'void': ('Void', ['sudo', 'xbps-install', '-Sy', 'gobject-introspection', 'libwebkit2gtk41']),
+	}
 
-			except subprocess.CalledProcessError as e:
-				log(
-					f'Failed to install hyprsettings dependencies. Error: {e}',
-					'CRITICAL',
-				)
-				cleanup(True)
-				return 1
+	config = next((val for key, val in distro_map.items() if key == GLOBAL.OS_RELEASE), None)
 
-		case 'fedora':
-			# log('Installing Fedora dependencies')
-			clear_view(
-				'Installing Fedora dependencies',
-			)
-			try:
-				run(
-					'sudo dnf install gcc gobject-introspection-devel cairo-gobject-devel pkg-config python3-devel gtk4',
-					capture_output=False,
-					shell=True,
-				)
-				log('[bold]Dependency Install:[/bold] Success')
-				GLOBAL.IS_DEPENDENCY_INSTALLED = True
-				reset_view()
-				return 0
-			except subprocess.CalledProcessError as e:
-				log(
-					f'Failed to install dependencies via dnf. Error: {e}',
-					'CRITICAL',
-				)
-				cleanup(True)
-				return 1
+	if not config:
+		return 0  # NixOS or unsupported cases
 
-		case 'nixos':
-			return 0
-		case default:
-			return 0
+	display_name, cmd = config
+	clear_view(f'Installing {display_name} dependencies')
+
+	try:
+		# We check if cmd is a list; if so, shell=False (safer).
+		run(cmd, capture_output=False, check=True, shell=isinstance(cmd, str))
+
+		log('[bold]Dependency Install:[/bold] Success')
+		GLOBAL.IS_DEPENDENCY_INSTALLED = True
+		reset_view()
+		return 0
+
+	except subprocess.CalledProcessError as e:
+		log(f'Failed to install {display_name} dependencies: {e}', 'CRITICAL')
+		cleanup(True)
+		return 1
 
 
 def check_gtk_dependencies() -> bool:
@@ -717,28 +693,33 @@ def show_unsupported_linux_prompt(print_guide=True):
 
 def print_unsupported_os_guide():
 	clear_view('[red]Unsupported distro detected. Manual dependency installation is required.[/red]')
+
+	nl = '\n • '
+	missing_msg = (
+		f'\n\n[red][bold]Detected missing dependencies:[/bold][/red]{nl}{nl.join(GLOBAL.MISSING_DEPENDENCIES)}'
+		if GLOBAL.MISSING_DEPENDENCIES
+		else ''
+	)
+
 	log(
-		'[yellow]Hyprsettings may fail to launch a window on this system if these are not installed.[/yellow]\n\n'
-		'You must manually install the system dependencies required for [bold]PyGObject + GTK4[/bold].\n'
-		'These are the build dependencies referenced in Step 2 of the official setup guide.\n\n'
-		'[bold][blue]Required components (and typical package names):[/blue][/bold]\n'
+		'[yellow]Hyprsettings requires system-level GTK3 and WebKit libraries.[/yellow]\n\n'
+		'To run this app, you must install the [bold]GObject Introspection[/bold] and '
+		"[bold]WebKit2GTK[/bold] packages from your distro's repository.\n\n"
+		'[bold][blue]Standard Package Names:[/blue][/bold]\n'
 		'[dim]'
-		'  - Python headers:        python3-dev / python3-devel\n'
-		'  - C Compiler:            build-essential / base-devel (for gcc and cmake)\n'
-		'  - Build config tool:     pkg-config / pkgconf\n'
-		'  - Cairo graphics:        libcairo2-dev / cairo-devel\n'
-		'  - GObject Introspection: gobject-introspection / libgirepository-2.0-dev\n'
-		'  - GTK4 C Library:        gtk4 / libgtk-4-dev\n'
-		'  - GTK4 GI Data (Python): gir1.2-gtk-4.1 / typelib-1_0-Gtk-4_1\n'
+		'  - Python Bridge:         python3-gobject / python3-gi / pygobject3 /  gobject-introspection  \n'
+		'  - WebKit Engine:         libwebkit2gtk-4.1 / libwebkit2gtk41\n'
+		'  - GUI Toolkit:           gtk3(named gtk4 in some distros for some reason idk tbh)\n'
 		'[/dim]\n\n'
-		'[bold]Example installation commands:[/bold]\n'
-		'  Debian / Ubuntu / Mint (APT):\n'
-		'  [dim]sudo apt install libgirepository-2.0-dev gcc libcairo2-dev pkg-config python3-dev libgtk-4-dev libwebkit2gtk-4.1-0 gir1.2-gtk-4.1[/dim]\n\n'
-		'  openSUSE(zypper):\n'
-		'  [dim]sudo zypper install cairo-devel pkg-config python3-devel gcc gobject-introspection-devel gtk4 typelib-1_0-Gtk-4_0[/dim]\n\n'
-		'Refer to the official guide for distro-specific instructions:\n'
-		'  [link=https://pygobject.readthedocs.io/en/latest/getting_started.html]PyGObject Getting Started[/link]',
-		'WARNING',
+		'[bold]Example Commands:[/bold]\n'
+		'  Debian / Ubuntu / Mint:\n'
+		'  [dim]sudo apt install python3-gi gir1.2-gtk-3.0 gir1.2-webkit2-4.1[/dim]\n\n'
+		'  Fedora / RHEL:\n'
+		'  [dim]sudo dnf install python3-gobject webkit2gtk4.1[/dim]\n\n'
+		'  Arch Linux:\n'
+		'  [dim]sudo pacman -S python-gobject webkit2gtk-4.1[/dim]\n\n'
+		'You can continue with the gui-enabled installation after these are installed.'
+		f'{missing_msg}\n'
 	)
 
 
@@ -903,7 +884,7 @@ def setup_venv():
 		if not GLOBAL.NO_GTK:
 			spinner.temporary_message('Dedicated interface dependencies were installed. Adding pywebview to the environment', 1000)
 			packages.append('pywebview')
-			packages.append('pywebview[gtk]')
+			# packages.append('pywebview[gtk]')
 			time.sleep(1)
 
 		pip_base = [
