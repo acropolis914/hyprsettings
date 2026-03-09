@@ -8,6 +8,7 @@ export function createOverlay() {
 
 export async function destroyOverlay(immediate = false) {
 	const overlays = document.querySelectorAll('.darken-overlay')
+	console.log({ overlays, immediate })
 	for (const overlay of overlays) {
 		if (immediate) {
 			overlay.remove()
@@ -22,8 +23,8 @@ export async function destroyOverlay(immediate = false) {
 const nextPaint = () => new Promise((res) => requestAnimationFrame(() => setTimeout(res, 0)))
 
 export default async function createLoadingOverlay(message = 'Loading your Hyprland config') {
-	destroyOverlay(true)
-	await new Promise(requestAnimationFrame)
+	await destroyOverlay(true)
+	await new Promise((resolve) => requestAnimationFrame(resolve))
 	let contentArea = document.getElementById('content-area')
 	const overlay = document.createElement('div')
 	overlay.id = 'loading-overlay'

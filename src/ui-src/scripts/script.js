@@ -9,7 +9,7 @@ import './ui_components/onboarding.js'
 import './ui_components/testingScreen.js'
 import './ui_components/searchBar.js'
 import './ConfigRenderer/keyEditor_Slider.js'
-import '@scripts/ui_components/shareConfig.ts'
+import './ui_components/shareConfig.ts'
 
 import { GLOBAL } from './GLOBAL.ts'
 import { Backend } from './utils/backendAPI.js'
@@ -43,8 +43,6 @@ async function load_config() {
 	if (windowConfig['configuration-error']) {
 		return console.error('Configuration error:', windowConfig['configuration-error'])
 	}
-
-	// Merge and set themes
 	const themes = [...windowConfig.theme, ...builtin_themes.map((t) => ({ ...t, name: `[builtin] ${t.name}` }))]
 	window.themes = themes
 	GLOBAL.setKey('themes', themes)
@@ -64,8 +62,6 @@ function setupGTAG() {
 	var script = document.createElement('script')
 	script.async = true
 	script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1HDCZV8DTZ'
-
-	// 2. Append it to the head
 	document.head.appendChild(script)
 
 	// 3. Setup the gtag functions
@@ -77,7 +73,6 @@ function setupGTAG() {
 	gtag('config', 'G-1HDCZV8DTZ', {
 		cookie_domain: 'none',
 	})
-
 	console.log('Gtag initialized after DOMContentLoaded.')
 }
 
@@ -89,7 +84,7 @@ export async function reinitialize() {
 
 export async function initialize() {
 	// Array.from(document.scripts).forEach(s => console.log(s.src))
-	createLoadingOverlay()
+	await createLoadingOverlay()
 	await load_config()
 	await setupTheme()
 	await getDebugStatus()

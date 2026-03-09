@@ -946,7 +946,6 @@ def setup_source():
 			with open(nogtk_marker_file, 'w+') as f:
 				f.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 			run(['mv', nogtk_marker_file, str(GLOBAL.LIB_DIRECTORY)])
-
 		spinner.stop()
 
 		icon_spinner = Spinner(f'Copying icons to {GLOBAL.LIB_DIRECTORY}')
@@ -961,7 +960,6 @@ def setup_source():
 		except subprocess.CalledProcessError:
 			spinner.stop(1)
 		icon_spinner.stop()
-
 		GLOBAL.IS_SOURCEFILES_INSTALLED = True
 		reset_view()
 	except Exception as e:
