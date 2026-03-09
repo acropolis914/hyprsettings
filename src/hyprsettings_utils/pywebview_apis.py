@@ -141,7 +141,7 @@ class Api:
 			self.window_config['config']['font'] = temporary_font if temporary_font else 'monospace'
 			add_missing_keys()
 			if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
-				self.window_config['persistence']['fist_run'] = True
+				self.window_config['persistence']['first_run'] = True
 				self.window_config['persistence']['onboarding_version'] = hs_globals.ONBOARDING_VERSION
 			version_migration()
 			if self.window_config['config']['daemon']:
