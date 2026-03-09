@@ -1,0 +1,185 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "hyprsettings-config",
+  "title": "HyprSettings Configuration",
+  "description": "Schema for ~/.config/hypr/hyprsettings.toml — the HyprSettings app configuration file.",
+  "type": "object",
+  "required": ["file_info", "config", "persistence"],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "file_info": {
+      "type": "object",
+      "description": "Metadata written and read by HyprSettings. Do not edit manually.",
+      "required": ["version"],
+      "additionalProperties": true,
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "HyprSettings version that last wrote this file (e.g. '0.9.1').",
+          "pattern": "^\\d+\\.\\d+\\.\\d+.*$"
+        },
+        "user": {
+          "type": "string",
+          "description": "Display name of the user (cosmetic only)."
+        }
+      }
+    },
+
+    "config": {
+      "type": "object",
+      "description": "Runtime configuration options for HyprSettings.",
+      "additionalProperties": false,
+      "properties": {
+        "dryrun": {
+          "type": "boolean",
+          "description": "When true, changes are previewed but never written back to hyprland.conf.",
+          "default": false
+        },
+        "compact": {
+          "type": "boolean",
+          "description": "Hide bind fields by default for a more compact view.",
+          "default": true
+        },
+        "daemon": {
+          "type": "boolean",
+          "description": "Run HyprSettings as a background daemon.",
+          "default": false
+        },
+        "show_line_comments": {
+          "type": "boolean",
+          "description": "Show per-line comments in the editor.",
+          "default": true
+        },
+        "show_header_comments": {
+          "type": "boolean",
+          "description": "Show section header comments in the editor.",
+          "default": false
+        },
+        "show_contextmenu_label": {
+          "type": "boolean",
+          "description": "Show text labels next to context-menu icons.",
+          "default": true
+        },
+        "show_sidebar_icons": {
+          "type": "boolean",
+          "description": "Show icons in the sidebar navigation.",
+          "default": true
+        },
+        "current_theme": {
+          "type": "string",
+          "description": "Name of the active UI theme.",
+          "default": "Catppuccin Mocha"
+        },
+        "font": {
+          "type": ["string", "null"],
+          "description": "Primary UI font family. A Nerd Font is recommended for icon glyphs."
+        },
+        "transparency": {
+          "type": "number",
+          "description": "Window background transparency (0 = fully transparent, 1 = fully opaque).",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.9
+        },
+        "ui_animations": {
+          "type": "boolean",
+          "description": "Enable theme-change crossfade animations.",
+          "default": false
+        }
+      }
+    },
+
+    "persistence": {
+      "type": "object",
+      "description": "Values persisted across sessions (e.g. last active tab, onboarding state).",
+      "additionalProperties": false,
+      "properties": {
+        "onboarding_version": {
+          "type": "number",
+          "description": "Version of the onboarding flow the user last completed."
+        },
+        "first_run": {
+          "type": "boolean",
+          "description": "True if the onboarding screen should be shown on next launch.",
+          "default": true
+        },
+        "last_tab": {
+          "type": "string",
+          "description": "The tab that was active when HyprSettings was last closed."
+        }
+      }
+    },
+
+    "theme": {
+      "type": "array",
+      "description": "User-defined theme entries (TOML array of tables [[theme]]).",
+      "items": { "$ref": "#/$defs/ThemeDefinition" },
+      "default": []
+    }
+  },
+
+  "$defs": {
+    "CssColor": {
+      "type": "string",
+      "description": "A CSS hex colour string in the form '#RRGGBB' or '#RRGGBBAA'.",
+      "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+    },
+
+    "ThemeDefinition": {
+      "type": "object",
+      "description": "A complete HyprSettings colour theme.",
+      "required": [
+        "name",
+        "variant",
+        "surface-0", "surface-1", "surface-2", "surface-border",
+        "text-0", "text-1", "text-2", "text-3", "text-4", "text-disabled", "text-contrast",
+        "accent", "accent-hover", "accent-active",
+        "accent-success", "accent-warning", "accent-danger",
+        "red", "orange", "yellow", "green", "teal", "blue", "pink", "purple",
+        "overlay", "shadow"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name":        { "type": "string", "description": "Display name of the theme." },
+        "author":      { "type": "string", "description": "Theme author." },
+        "variant":     { "type": "string", "enum": ["Dark", "Light"], "description": "Colour variant." },
+        "description": { "type": "string", "description": "Short description of the theme." },
+        "link":        { "type": "string", "description": "URL to the theme's upstream source." },
+
+        "surface-0":      { "$ref": "#/$defs/CssColor", "description": "Primary background." },
+        "surface-1":      { "$ref": "#/$defs/CssColor", "description": "Secondary background." },
+        "surface-2":      { "$ref": "#/$defs/CssColor", "description": "Tertiary background." },
+        "surface-border": { "$ref": "#/$defs/CssColor", "description": "Border/divider colour." },
+
+        "text-0":        { "$ref": "#/$defs/CssColor", "description": "Primary text." },
+        "text-1":        { "$ref": "#/$defs/CssColor", "description": "Secondary text." },
+        "text-2":        { "$ref": "#/$defs/CssColor", "description": "Tertiary text." },
+        "text-3":        { "$ref": "#/$defs/CssColor", "description": "Quaternary text." },
+        "text-4":        { "$ref": "#/$defs/CssColor", "description": "Quinary text." },
+        "text-disabled": { "$ref": "#/$defs/CssColor", "description": "Disabled / muted text." },
+        "text-contrast": { "$ref": "#/$defs/CssColor", "description": "High-contrast text (used on accent backgrounds)." },
+
+        "accent":         { "$ref": "#/$defs/CssColor", "description": "Primary accent colour." },
+        "accent-hover":   { "$ref": "#/$defs/CssColor", "description": "Accent hover state." },
+        "accent-active":  { "$ref": "#/$defs/CssColor", "description": "Accent active/pressed state." },
+        "accent-success": { "$ref": "#/$defs/CssColor", "description": "Success feedback colour." },
+        "accent-warning": { "$ref": "#/$defs/CssColor", "description": "Warning feedback colour." },
+        "accent-danger":  { "$ref": "#/$defs/CssColor", "description": "Danger / error colour." },
+
+        "red":    { "$ref": "#/$defs/CssColor" },
+        "orange": { "$ref": "#/$defs/CssColor" },
+        "yellow": { "$ref": "#/$defs/CssColor" },
+        "green":  { "$ref": "#/$defs/CssColor" },
+        "teal":   { "$ref": "#/$defs/CssColor" },
+        "blue":   { "$ref": "#/$defs/CssColor" },
+        "pink":   { "$ref": "#/$defs/CssColor" },
+        "purple": { "$ref": "#/$defs/CssColor" },
+
+        "overlay": { "$ref": "#/$defs/CssColor", "description": "Overlay / backdrop colour." },
+        "shadow":  { "$ref": "#/$defs/CssColor", "description": "Drop-shadow colour." }
+      }
+    }
+  }
+}
