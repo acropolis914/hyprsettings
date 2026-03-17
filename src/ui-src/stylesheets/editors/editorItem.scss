@@ -240,42 +240,45 @@
 	}
 
 	&.disabled > .editor-item-preview {
-		@media (min-width: 769px) {
-			padding-left: 6rem;
-			&::before {
-				position: absolute;
-				transform: translateY(3px) translateX(-100%);
-				padding: 0 0.5ch;
-				content: 'Disabled';
-				color: var(--accent-warning);
-				font-size: 1.2rem;
-			}
-			//&::before {
-			//	transform: translateX(-90%) translateY(-0.7rem);
-			//	//transform: rotate(-90deg) translateY(-4.5rem) translateX(-2ch);
-			//	content: '󰈉';
-			//	//top: 50%;
-			//	//content: 'Disabled';
-			//	color: var(--accent-warning);
-			//	font-weight: bold;
-			//	font-size: 3rem;
-			//}
+		padding-left: 3rem;
+		&::before {
+			position: absolute;
+			top: 50%;
+			transform: translateX(-160%) translateY(-45%);
+			//transform: rotate(-90deg) translateY(-4.5rem) translateX(-2ch);
+			content: '󰈉';
+			//content: 'Disabled';
+			color: var(--accent-warning);
+			//font-weight: bold;
+			font-size: 2.5rem;
 		}
-
-		@media (max-width: 768px) {
-			padding-left: 3rem;
-			&::before {
-				position: absolute;
-				top: 50%;
-				transform: translateX(-160%) translateY(-45%);
-				//transform: rotate(-90deg) translateY(-4.5rem) translateX(-2ch);
-				content: '󰈉';
-				//content: 'Disabled';
-				color: var(--accent-warning);
-				//font-weight: bold;
-				font-size: 2.5rem;
-			}
-		}
+		//@media (min-width: 769px) {
+		//	padding-left: 3rem;
+		//	&::before {
+		//		position: absolute;
+		//		top: 50%;
+		//		transform: translateY(3px) translateX(-100%);
+		//		padding: 0 0.5ch;
+		//		content: '󰈉';
+		//		color: var(--accent-warning);
+		//		font-size: 2.5rem;
+		//	}
+		//}
+		//
+		//@media (max-width: 768px) {
+		//	padding-left: 3rem;
+		//	&::before {
+		//		position: absolute;
+		//		top: 50%;
+		//		transform: translateX(-160%) translateY(-45%);
+		//		//transform: rotate(-90deg) translateY(-4.5rem) translateX(-2ch);
+		//		content: '󰈉';
+		//		//content: 'Disabled';
+		//		color: var(--accent-warning);
+		//		//font-weight: bold;
+		//		font-size: 2.5rem;
+		//	}
+		//}
 	}
 
 	&:is(:focus-visible, :focus) {

@@ -1,20 +1,24 @@
-from configparser import ConfigParser
 import json
 import os
 import subprocess
 from pathlib import Path
 from packaging.version import Version
+import rich
+import rich.traceback
 from rich.console import Console
+from os import PathLike
 
 from .shared import hs_globals, state
 import tomlkit as toml
 
-thisfile_path = Path(__file__).parent.resolve()
-thisfile_path_parent = thisfile_path.parent.resolve()
-console = Console()
-
 from .hyprland_parser import ConfigParser, Node, makeUUID
 from .utils import log, ui_print
+
+
+thisfile_path = Path(__file__).parent.resolve()
+thisfile_path_parent = thisfile_path.parent.resolve()
+rich.traceback.install(show_locals=True)
+console = Console()
 
 
 class Api:
@@ -27,11 +31,13 @@ class Api:
 		return self.get_config()
 
 	@staticmethod
-	def get_hyprland_config(path=None):
+	def get_hyprland_config(path: PathLike | None = None):
 		global current_config
 		path = path if path else state.hyprland_config_path
-		config = ConfigParser(path).root.to_json()
-		current_config = config
+		config_node = ConfigParser.load(path)
+		# log(f'Config loaded from {path},{config_node}')
+		config = config_node.to_json()
+		# current_config = config
 		return config
 
 	@staticmethod
@@ -138,7 +144,7 @@ class Api:
 				default_config_text = default_config.read()
 
 			self.window_config = toml.parse(default_config_text)
-			self.window_config['config']['font'] = temporary_font if temporary_font else 'monospace'
+			self.window_config['config'].setdefault('font', temporary_font if temporary_font else 'monospace')
 			add_missing_keys()
 			if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 				self.window_config['persistence']['fist_run'] = True

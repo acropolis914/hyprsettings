@@ -1,3 +1,4 @@
+import { jsViewerInit } from '@scripts/ui_components/debugTab.js'
 import { GLOBAL } from '../GLOBAL.ts'
 import { debounce, waitFor } from './helpers.js'
 
@@ -22,6 +23,7 @@ export const Backend = {
 		let hyprlandConfig = await fetchFlask('get_hyprland_config' + query)
 		let stringifiedHyprlandConfig = JSON.parse(hyprlandConfig)
 		GLOBAL.setKey('data', stringifiedHyprlandConfig)
+		// jsViewerInit()
 		return hyprlandConfig
 	},
 	async debounceGetHyprlandConfig() {

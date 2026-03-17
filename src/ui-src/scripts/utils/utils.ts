@@ -96,12 +96,41 @@ export function saveKey(type, name, uuid, position, value, comment = null, disab
 		delete node['comment']
 	}
 
-	if (!GLOBAL['config'].dryrun) {
+	if (!GLOBAL['config'].dryrun && GLOBAL['config']['autosave']) {
 		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
 		saveConfigDebounced(JSON.stringify(GLOBAL['data']), [file])
 	} else {
+		queueManualSave(file)
 		console.log(`Dryrun save ${uuid}:`, node)
 	}
+}
+
+function queueManualSave(file: string | undefined) {
+	let saveChangedButton = document.getElementById('save-changed')
+	if (!saveChangedButton) {
+		console.warn('Save changed button not found')
+		return
+	}
+
+	// Rebind to avoid stacking listeners across multiple edits.
+	saveChangedButton.removeEventListener('click', saveChanged)
+	saveChangedButton.addEventListener('click', saveChanged)
+	saveChangedButton.classList.remove('btn-hidden')
+
+	if (!file) return
+
+	let changedFiles = Array.isArray(GLOBAL.changedFiles) ? GLOBAL.changedFiles : []
+	if (!changedFiles.includes(file)) {
+		GLOBAL.setKey('changedFiles', [...changedFiles, file])
+	}
+}
+
+export function saveChanged() {
+	let saveChangedButton = document.getElementById('save-changed')
+	saveChangedButton.removeEventListener('click', saveChanged)
+	saveChangedButton.classList.add('btn-hidden')
+	saveConfigDebounced(JSON.stringify(GLOBAL['data']), GLOBAL.changedFiles)
+	GLOBAL.changedFiles = []
 }
 
 export function deleteKey(uuid, position) {
@@ -111,18 +140,20 @@ export function deleteKey(uuid, position) {
 	let parent = findParent(root, path, uuid)
 	let node = parent.children.find((node) => node.uuid === uuid)
 	let nodeIndex = parent.children.findIndex((node) => node.uuid === uuid)
-	let changedPath = position.split(':')
 	let file = path
 		.slice(1)
 		.filter((path) => path.includes('.conf'))
 		.at(-1)
+
+	parent.children.splice(nodeIndex, 1)
+
 	if (!file) {
 		console.warn('No .conf file found in position:', position)
-	} else if (!GLOBAL['config'].dryrun) {
+	} else if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave === true) {
 		console.log(`Node ${uuid} deleted:`, node)
-		parent.children.splice(nodeIndex, 1)
 		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 	} else {
+		queueManualSave(file)
 		console.log(`Dryrun delete ${uuid}:`, node)
 	}
 }
@@ -144,12 +175,13 @@ export function duplicateKey(uuid, position, below = true, element: HTMLElement)
 		.slice(1)
 		.filter((path) => path.includes('.conf'))
 		.at(-1)
-	if (!GLOBAL['config'].dryrun) {
+	if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave === true) {
 		console.log(`Node ${uuid} duplicated:`, node)
 		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
 		window.jsViewer.data = GLOBAL['data']
 	} else {
+		queueManualSave(file)
 		console.log(`Dryrun duplicate ${uuid}:`, node)
 	}
 	// return newNode

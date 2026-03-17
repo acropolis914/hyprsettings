@@ -1,6 +1,6 @@
 import { GLOBAL } from '../GLOBAL.ts'
 import { changeTheme, incrementCurrentTheme } from '../utils/setupTheme.js'
-import { makeUUID, saveWindowConfig } from '../utils/utils.ts'
+import { makeUUID, saveChanged, saveWindowConfig } from '../utils/utils.ts'
 import { Backend } from '@scripts/utils/backendAPI.js'
 
 let settingsEl = document.querySelector('.config-set#settings')
@@ -11,6 +11,7 @@ export default async function renderSettings() {
 	await createAbout()
 	getHyprsettingsGithubVersion()
 	Backend.getHyprSettingsVersion()
+	createAutoSaveSetting()
 	createHeaderCommentsVisibilitySetting()
 	createLineCommentsVisibilitySetting()
 	createItemPreviewCommentVisibilitySetting()
@@ -234,6 +235,20 @@ function createLineCommentsVisibilitySetting() {
 	}
 	let tooltip_text = 'Shows or hides independent comments (not including the header comments)'
 	const item = new CheckBoxItem('Show line comments', 'show_line_comments', true, { onCheck, onUncheck }, tooltip_text)
+}
+
+function createAutoSaveSetting() {
+	function onCheck() {
+		let saveChangedButton = document.getElementById('save-changed')
+		saveChangedButton.removeEventListener('click', saveChanged)
+		saveChangedButton.classList.add('btn-hidden')
+		// document.getElementById('global-save-button')?.classList.add('settings-hidden')
+	}
+	function onUncheck() {
+		document.getElementById('global-save-button')?.classList.remove('settings-hidden')
+	}
+	let tooltipText = 'Sets autosave while editing keys'
+	const item = new CheckBoxItem('Autosave', 'autosave', true, { onCheck, onUncheck }, tooltipText)
 }
 
 function createHeaderCommentsVisibilitySetting() {

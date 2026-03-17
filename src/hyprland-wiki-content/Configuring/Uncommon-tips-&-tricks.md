@@ -1,5 +1,5 @@
 ---
-weight: 20
+weight: 36
 title: Uncommon tips & tricks
 ---
 
@@ -112,14 +112,22 @@ input {
 ## Minimize windows using special workspaces
 
 This approach uses special workspaces to mimic the "minimize window" function, by using a single keybind to toggle the minimized state.
-Note that one keybind can only handle one window.
+Note that this can only handle one window at a time. 
+
+```sh
+#!/usr/bin/env bash
+
+if [[ -z $(hyprctl workspaces | grep special:magic) ]]; then
+    hyprctl dispatch movetoworkspacesilent special:magic
+else
+    hyprctl --batch 'dispatch togglespecialworkspace magic;dispatch movetoworkspace +0'
+fi
+```
+
+then bind it:
 
 ```ini
-bind = $mod, S, togglespecialworkspace, magic
-bind = $mod, S, movetoworkspace, +0
-bind = $mod, S, togglespecialworkspace, magic
-bind = $mod, S, movetoworkspace, special:magic
-bind = $mod, S, togglespecialworkspace, magic
+  bind = $mainMod, S, exec, <PATH_TO_SCRIPT>
 ```
 
 ## Show desktop
@@ -280,14 +288,14 @@ bind = $mod SHIFT, 0, exec, hyprctl -q keyword cursor:zoom_factor 1
 ```
 
 ## Alt tab behaviour
-To mimic DE's alt-tab behaviour. Here is an example that uses foot, fzf, [grim-hyprland](https://github.com/eriedaberrie/grim-hyprland) and chafa to the screenshot in the terminal.
+To mimic DE's alt-tab behaviour. Here is an example that uses foot, fzf, grim and chafa to the screenshot in the terminal.
 
 ![alttab](https://github.com/user-attachments/assets/2a260809-b1b0-4f72-8644-46cc9d8b8971)
 
 Dependencies :
 - foot
 - fzf
-- [grim-hyprland](https://github.com/eriedaberrie/grim-hyprland)
+- grim
 - chafa
 - jq
 
@@ -323,19 +331,19 @@ windowrule = match:class alttab, border_size 0
 ```bash {filename="alttab.sh"}
 #!/usr/bin/env bash
 hyprctl -q dispatch submap alttab
-start=$1
-address=$(hyprctl -j clients | jq -r 'sort_by(.focusHistoryID) | .[] | select(.workspace.id >= 0) | "\(.address)\t\(.title)"' |
+
+address=$(hyprctl -j clients | jq -r 'sort_by(.focusHistoryID) | .[] | select(.workspace.id >= 0) | "\(.stableId)\t\(.title)\t\(.address)"' |
 	      fzf --color prompt:green,pointer:green,current-bg:-1,current-fg:green,gutter:-1,border:bright-black,current-hl:red,hl:red \
 		  --cycle \
 		  --sync \
-		  --bind tab:down,shift-tab:up,start:$start,double-click:ignore \
+		  --bind tab:down,shift-tab:up,start:"$1",double-click:ignore \
 		  --wrap \
 		  --delimiter=$'\t' \
 		  --with-nth=2 \
 		  --preview "$XDG_CONFIG_HOME/hypr/scripts/alttab/preview.sh {}" \
 		  --preview-window=down:80% \
 		  --layout=reverse |
-	      awk -F"\t" '{print $1}')
+	      awk -F"\t" '{print $3}')
 
 if [ -n "$address" ] ; then
 	echo "$address" > $XDG_RUNTIME_DIR/hypr/alttab/address
@@ -352,10 +360,10 @@ I chose to exclude windows that are in special workspaces but it can be modified
 #!/usr/bin/env bash
 line="$1"
 
-IFS=$'\t' read -r addr _ <<< "$line"
+IFS=$'\t' read -r stableId _ <<< "$line"
 dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
 
-grim -t png -l 0 -w "$addr" $XDG_RUNTIME_DIR/hypr/alttab/preview.png
+grim -t png -l 0 -T "$stableId" $XDG_RUNTIME_DIR/hypr/alttab/preview.png
 chafa --animate false --dither=none -s "$dim" "$XDG_RUNTIME_DIR/hypr/alttab/preview.png"
 ```
 
@@ -406,3 +414,11 @@ someValue = 0.52
 The -git branch exports the variable for the next major release.
 
 All future releases will export all _past_ variables as well, e.g. 0.54 will also export 0.53.
+
+## Per-workspace layouts
+
+Use workspace rules to set per-workspace layouts:
+
+```ini
+workspace = 2, layout:scrolling
+```

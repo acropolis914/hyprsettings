@@ -8,7 +8,7 @@ type ConfigGlobal = {
 
 export class GLOBAL {
 	// Map of key → array of callbacks
-	private static _listeners: Map<string, (() => void)[]> = new Map()
+	static _listeners: Map<string, (() => void)[]> = new Map()
 
 	// Optional config string
 	static configText?: string
@@ -35,6 +35,8 @@ export class GLOBAL {
 	// Focus tracking: tab ID → element UUID
 	static mainFocus: Record<string, string> = {}
 	static configGlobals: ConfigGlobal[]
+	static config = null
+	static changedFiles: string[] = []
 
 	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,

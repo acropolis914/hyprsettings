@@ -2,6 +2,9 @@ from .pywebview_apis import api
 from flask import send_from_directory, jsonify, request, Flask
 from flask_cors import CORS
 import urllib.request
+import rich.traceback
+
+rich.traceback.install(show_locals=True)
 
 
 # app = state.app
@@ -36,7 +39,11 @@ def register_routes(app: Flask):
 	@app.route('/api/get_hyprland_config', methods=['GET'])
 	def api_get_hyprland_config():
 		path = request.args.get('path')
-		return jsonify(api.get_hyprland_config(path=path)), 200
+		try:
+			config = api.get_hyprland_config(path)
+			return jsonify(config), 200
+		except Exception as e:
+			return jsonify({'error': str(e)}), 500
 
 	@app.route('/api/get_hyprland_config_texts', methods=['POST'])
 	def api_get_hyprland_config_texts():

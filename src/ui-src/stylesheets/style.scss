@@ -17,7 +17,7 @@ html {
 	transition: opacity 0.2s ease-in-out;
 	box-sizing: border-box;
 	background-color: var(--surface-0);
-	min-width: 400px;
+	min-width: 300px;
 	height: 100%;
 	min-height: 0;
 	overflow: hidden;
@@ -137,6 +137,7 @@ header#main-header {
 
 #main {
 	display: flex;
+	position: relative;
 	flex: 1;
 	max-width: 100%;
 	min-height: 0;
@@ -263,6 +264,41 @@ header#main-header {
 	}
 
 	position: relative;
+}
+
+#main-floating {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	//border: 1px solid red;
+
+	button {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		transform: scale(1);
+
+		// default state (visible)
+		opacity: 1;
+		transition:
+			opacity 0.3s ease,
+			transform 0.3s ease;
+		cursor: pointer;
+		border: none;
+		padding: 0.5rem 1rem;
+		font-size: 3rem;
+		.button-label {
+			font-size: 1.4rem;
+		}
+
+		// nested .hidden class
+		&.btn-hidden {
+			transform: scale(0.95) translateX(10rem); // prevent clicks when hidden
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
 }
 
 footer {

@@ -47,7 +47,7 @@ function applyThemeVars(theme) {
 	})
 	GLOBAL['config']['current_theme'] = theme.name
 	window.themeVariant = theme.variant.toLowerCase()
-	GLOBAL.setKey(`themeVariant`, theme)
+	GLOBAL.setKey(`themeVariant`, theme.variant)
 
 	root.classList.remove('dark')
 	root.classList.remove('light')

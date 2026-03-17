@@ -15,7 +15,7 @@ import { GLOBAL } from './GLOBAL.ts'
 import { Backend } from './utils/backendAPI.js'
 import setupTheme from './utils/setupTheme.js'
 
-import initializeJSViewer from './ui_components/jsViewer.js'
+import initializeJSViewer from './ui_components/debugTab.js'
 import initializeSearchBar from './ui_components/searchBar.js'
 import createDynamicTabs from './ui_components/createDynamicTabs.ts'
 import createLoadingOverlay, { destroyOverlay } from './ui_components/darkenOverlay.js'
@@ -89,12 +89,12 @@ export async function initialize() {
 	await setupTheme()
 	await getDebugStatus()
 	await createDynamicTabs()
+	initializeJSViewer()
 	await getAndRenderConfig().then(async () => {
 		console.log('Done rendering received config')
 		await destroyOverlay(true)
 	})
 
-	initializeJSViewer()
 	renderSettings().then(() => console.log('Done rendering received settings tab'))
 	initializeSearchBar().then(() => console.log('Done initializing search bar'))
 	createWiki().then(() => console.log('Done initializing wikit tab'))
@@ -117,3 +117,12 @@ window.addEventListener('error', (e) => {
 window.addEventListener('unhandledrejection', (e) => {
 	console.error('🚨 Unhandled Promise rejection:', e.reason?.stack || e.reason)
 })
+
+// window.addEventListener('beforeunload', (event) => {
+// 	if (GLOBAL.changedFiles.length > 0) {
+// 		// Standard way to trigger the browser prompt
+// 		event.preventDefault()
+// 		// Some browsers require setting returnValue
+// 		event.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
+// 	}
+// })

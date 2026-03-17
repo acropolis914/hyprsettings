@@ -1,0 +1,59 @@
+#global-debugger {
+	&.debug-panel {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: 0.75rem;
+
+		.debug-selector {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+
+			.debug-key-btn {
+				cursor: pointer;
+				border: none;
+				border-radius: 0.4rem;
+				background-color: var(--text-2);
+				padding: 0.35rem 0.6rem;
+				font-weight: 700;
+				font-size: 1.4rem;
+
+				// states
+				&:hover {
+				}
+
+				&:active {
+				}
+
+				&:focus,
+				&:focus-within,
+				&:focus-within {
+					scale: 1.05;
+					outline: none;
+					background-color: var(--accent);
+				}
+			}
+		}
+
+		.debug-output {
+			border-radius: 0.4rem;
+			padding: 0.6rem;
+
+			min-height: 120px;
+			max-height: 300px;
+			overflow: auto;
+			font-size: 1.4rem;
+			font-family: monospace;
+			white-space: pre-wrap;
+			word-break: break-word;
+
+			// optional scroll styling
+			&::-webkit-scrollbar {
+			}
+
+			&::-webkit-scrollbar-thumb {
+			}
+		}
+	}
+}

@@ -9,10 +9,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Literal, get_args
 import inspect
+from os import PathLike
 
 import rich
 import rich.traceback
 from rich.console import Console
+# import pretty_errors
 
 from .shared import state
 
@@ -223,7 +225,7 @@ class Node:
 			value=data.get('value'),
 			comment=data.get('comment'),
 			position=data.get('position'),
-			disabled=data.get('disabled'),
+			disabled=data.get('disabled', False),
 			line_number=data.get('line_number'),
 			resolved_path=data.get('resolved_path'),
 		)
@@ -268,19 +270,21 @@ def print_hyprland(config_list, print: bool = False, save: bool = False):
 
 
 class ConfigParser:
-	def __init__(self, path: Path, verbose=state.verbose):
+	def __init__(self, path: Path | PathLike, verbose=state.verbose):
 		global global_verbose
 		global_verbose = verbose
 		self.root = Node('root', 'GROUP')
 		self.stack = [self.root]
+		# self.stack: list[Node] = []
 		self.parse_config(path)
 
 	@classmethod
-	def load(cls, path: Path) -> Node:
+	def load(cls, path: Path | PathLike) -> Node:
 		parser = cls(path)
 		return parser.root
+		# return parser.stack[0]
 
-	def parse_config(self, config_path):
+	def parse_config(self, config_path: Path | PathLike) -> None:
 		with open(config_path, 'r', encoding='UTF-8') as config_file:
 			new_file_node = Node(
 				Path(config_path).name,
@@ -288,16 +292,17 @@ class ConfigParser:
 				str(config_path),
 				resolved_path=str(config_path),
 			)
-			self.stack[-1].addChildren(new_file_node)
+			if len(self.stack) > 0:
+				self.stack[-1].addChildren(new_file_node)
 			self.stack.append(new_file_node)
-			sources = []
-			globals = {}
+			sources: list[PathLike] = []
+			globals: dict[str, str] = {}
 
 			for line_index, line_content in enumerate(config_file, start=1):
 				# First check if a line is disabled and give the line and tells if it is disabled
 				match = re.match(r'^#\s*disabled\b', line_content.lstrip(), re.IGNORECASE)
 				is_disabled = bool(match)
-				none_disabled_name = line_content
+				none_disabled_name: str = line_content
 				if is_disabled:
 					none_disabled_name = re.sub(
 						r'^\s*#\s*disabled\b\s*',
@@ -307,10 +312,12 @@ class ConfigParser:
 					).lstrip()
 					# log(f'{none_disabled_name.strip()} is disabled: {is_disabled}')
 
-				check = self.sanitize(none_disabled_name)
+				check: str = self.sanitize(none_disabled_name)
+				line: str
+				comment: str
 				line, comment = self.get_parts(none_disabled_name, '#')
-				is_comment = line_content.strip().startswith('#') and not is_disabled and '=' not in line
-				position = ':'.join(node.name for node in self.stack)
+				is_comment: bool = line_content.strip().startswith('#') and not is_disabled and '=' not in line
+				position: str = ':'.join(node.name for node in self.stack)
 
 				if not check and not comment:
 					blank_line = Node(
@@ -402,43 +409,6 @@ class ConfigParser:
 					self.stack.pop()
 				else:
 					ui_print(f'Line {line_index} is unrecognized: {line_content.strip()}')
-					# name, value = self.get_parts(line, "=")
-					# if value is None:
-					# 	print(f"{value} has no value.")
-					# node = Node(
-					# 	name,
-					# 	"KEY",
-					# 	value=value,
-					# 	comment=comment,
-					# 	position=position,
-					# 	disabled=is_disabled,
-					# 	line_number=line_index,
-					# )
-					# if name.startswith("$"):
-					# 	if "$" in value:
-					# 		log(
-					# 			f"Global {name} uses globals in its value {value}",
-					# 			only_verbose=True,
-					# 		)
-					# 		for key, val in globals.items():
-					# 			if key in value:
-					# 				value = value.replace(key, val)
-					# 				log(
-					# 					f"Replaced {name} value to {value} based on globals.",
-					# 					only_verbose=True,
-					# 				)
-					# 				break
-					# 		old_value = value
-					# 		value = os.path.expandvars(value)
-					# 		if value != old_value:
-					# 			log(
-					# 				f"Expanded {old_value} to {value} based on os variables.",
-					# 				only_verbose=True,
-					# 			)
-					# 		globals[name] = value
-					# 	else:
-					# 		globals[name] = value
-					# self.stack[-1].addChildren(node)
 
 				if check.startswith('source'):
 					_, file_path = map(str.strip, line.split('=', 1))
@@ -451,43 +421,26 @@ class ConfigParser:
 						log(f'Sourcing {file_path} based on globals.', only_verbose=True)
 						file_path = os.path.expandvars(file_path)
 
-					def glob_path(path):
-						path_str = path.rstrip('*')
-						if not os.path.exists(path_str):
-							ui_print(f'Path does not exist: {path_str}')
-							return
-						for content in os.listdir(path_str):
-							if Path(path_str, content).is_file():
-								sources.append(Path(path_str, content).resolve())
-							elif Path(path_str, content).is_dir():
-								glob_path(str(Path(path_str, content)))
-							log(
-								f'Added via glob: {Path(path_str, content).resolve()}',
-								only_verbose=True,
-							)
-
 					if file_path.startswith('~'):
 						file_path = str(Path(file_path).expanduser())
 						if file_path.endswith('.conf'):
 							sources.append(Path(file_path).resolve())
 							log(f'Added ~ conf: {file_path}', only_verbose=True)
 						elif file_path.endswith('*'):
-							glob_path(file_path)
+							sources.append(self.glob_path(file_path))
 
 					elif file_path.startswith('/'):
 						if file_path.endswith('.conf'):
 							sources.append(Path(file_path).resolve())
 							log(f'Added abs conf: {file_path}', only_verbose=True)
 						elif file_path.endswith('*'):
-							glob_path(file_path)
+							sources.append(self.glob_path(file_path))
 					else:
 						resolved = (config_path.parent / file_path).resolve()
 						sources.append(resolved)
 						log(f'Added relative: {resolved}', only_verbose=True)
 
 			if sources:
-				# global global_verbose
-				# ui_print(global_verbose)
 				log('Reading files sourced in the main config file.')
 				for source in sources:
 					try:
@@ -500,6 +453,7 @@ class ConfigParser:
 							traceback.print_exc()
 
 			if len(self.stack) > 0:
+				# log(self.stack)
 				self.stack.pop()
 
 	def sanitize(self, string: str) -> str:
@@ -518,6 +472,21 @@ class ConfigParser:
 			part2 = None
 			part1 = string.strip()
 			return part1, part2
+
+	def glob_path(self, path: Path | str):
+		path_str = str(path).rstrip('*')
+		if not os.path.exists(path_str):
+			ui_print(f'Path does not exist: {path_str}')
+			return
+		for content in os.listdir(path_str):
+			if Path(path_str, content).is_file():
+				return Path(path_str, content).resolve()
+			elif Path(path_str, content).is_dir():
+				return self.glob_path(str(Path(path_str, content)))
+			log(
+				f'Added via glob: {Path(path_str, content).resolve()}',
+				only_verbose=True,
+			)
 
 
 # os.system("clear")

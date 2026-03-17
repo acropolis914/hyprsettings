@@ -252,6 +252,16 @@ monitor = eDP-1, 2880x1800@90, 0x0, 1, bitdepth, 10, cm, hdr, sdrbrightness, 1.2
 
 The default transfer function assumed to be in use on an SDR display for sRGB content is defined by `, sdr_eotf, X`. The default (`0`) is to follow `render:cm_sdr_eotf`. This can be changed to piecewise sRGB with `1`, or  Gamma 2.2 with `2`.
 
+### ICC Profiles
+
+You can load an icc profile via `, icc, /path/to/icc.icm` (or `icc = path` in v2).
+
+Please note:
+- path needs to be absolute.
+- having an ICC applied will automatically force sdr_eotf to `sRGB` for that monitor (for color accuracy)
+- having an ICC applied overrides the CM preset.
+- ICCs are fundamentally incompatible with HDR gaming. Funky stuff may happen.
+
 ### VRR
 
 Per-display VRR can be done by adding `, vrr, X` where `X` is the mode from the
@@ -306,6 +316,7 @@ EDID overrides and SDR &rarr; HDR settings:
 | min_luminance | Monitor's minimum luminance | float |
 | max_luminance | Monitor's maximum possible luminance | int |
 | max_avg_luminance | Monitor's maximum luminance on average for a typical frame | int |
+| sdr_eotf | Transfer function for displaying SDR apps. default - Use default value (Gamma 2.2), gamma22 - Gamma 2.2, srgb - sRGB piecewise | str |
 
 Note: those values might get passed to the monitor itself and cause increased burn-in or other damage if it's firmware lacks some safety checks. 
 

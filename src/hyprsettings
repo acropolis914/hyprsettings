@@ -134,6 +134,7 @@ class LogFilter:
 
 		# Filter common noise
 		if '[pywebview]' in text:
+			log("POLOLOLOLOL")
 			text = f'[green]{text}[/green]'
 			# pass
 		elif 'GET /' in text and 'HTTP' in text and not state.verbose:
