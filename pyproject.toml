@@ -1,7 +1,7 @@
 [project]
 name = "hyprsettings"
 version = "0.9.1"
-description = "Add your description here"
+description = "A graphical configuration editor for Hyprland that faithfully reconstructs your hyprland.conf"
 requires-python = ">=3.14"
 dependencies = [
     "flask>=3.1.2",
@@ -13,3 +13,11 @@ dependencies = [
     "rich>=14.2.0",
     "tomlkit>=0.13.3",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
