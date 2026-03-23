@@ -2,7 +2,6 @@ import { ContextMenu } from './contextMenu.js'
 import { addItem, deleteKey, saveKey } from '../utils/utils.js'
 import { debounce } from '../utils/helpers.js'
 import { GLOBAL } from '../GLOBAL.js'
-import { findAdjacentConfigKeys, findConfigDescription } from '@scripts/HyprlandSpecific/hyprland_config_descriptions.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { SliderModal } from './keyEditor_Slider.js'
 import { GradientModal } from './keyEditor_Gradient.js'
@@ -22,6 +21,10 @@ import createToolTippy from '@scripts/ui_components/toolTippy.ts'
 import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
 import { newEditorItemGeneric } from '@scripts/HyprlandSpecific/editorItem_newKey.ts' // optional for styling
 import keyEditor_Bind from '@scripts/ConfigRenderer/keyEditor_Bind.svelte'
+import {
+	findAdjacentConfigKeys,
+	findConfigDescription,
+} from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -83,14 +86,18 @@ export class EditorItem_Generic {
 		this.saveDebounced = debounce(() => this.save(), 15)
 		const template = document.createElement('div')
 		render(templateString, template)
-		this.el = template.firstElementChild!.cloneNode(true) as HTMLDivElement
+		this.el = template.firstElementChild!.cloneNode(
+			true,
+		) as HTMLDivElement
 
 		this.el.classList.add('editor-item')
 		this.el.classList.add('editor-item-generic')
 		if (GLOBAL['config'].compact) {
 			this.el.classList.add('compact')
 		}
-		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
+		let position_title = json['position']
+			.replace('root:', '')
+			.replaceAll(':', ' 󰄾 ')
 		this.tippyTitle = `  Location: ${position_title}`
 		this.el.dataset.name = name
 		this.el.dataset.uuid = uuid
@@ -122,11 +129,17 @@ export class EditorItem_Generic {
 		this.info = findConfigDescription(this.config_position, name)
 
 		this.valueEditor = this.createValueEditor(value)
-		if (!this.valueEditor && this.el.dataset.name !== 'animation' && !this.el.dataset.name.startsWith('bind')) {
+		if (
+			!this.valueEditor &&
+			this.el.dataset.name !== 'animation' &&
+			!this.el.dataset.name.startsWith('bind')
+		) {
 			// console.log(this.el.dataset, 'has no value editor')
 			this.valueEditor = document.createElement('textarea')
 			this.valueEditor.rows = 1
-			if (this.info) this.valueEditor.dataset.defaultData = this.info.data.trim('"')
+			if (this.info)
+				this.valueEditor.dataset.defaultData =
+					this.info.data.trim('"')
 			this.valueEditor.value = value
 			this.valueEditor.id = 'generic-value'
 		}
@@ -135,8 +148,13 @@ export class EditorItem_Generic {
 			let description = JSON.stringify(this.info['description'])
 			let type = JSON.stringify(this.info['type'])
 			let description_title = `${JSON.parse(description)}\n\n<strong> Type:</strong> ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
-			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
-			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
+			description_title =
+				description_title.charAt(0).toUpperCase() +
+				description_title.slice(1)
+			if (
+				JSON.parse(type) === 'CONFIG_OPTION_INT' ||
+				JSON.parse(type) === 'CONFIG_OPTION_FLOAT'
+			) {
 				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
 				const [defaultValue, min, max] = this.info['data']
 					.split(',')
@@ -145,7 +163,10 @@ export class EditorItem_Generic {
 				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue} • Min: ${min} • Max: ${max}`
 			} else {
 				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
-				let defaultValue = this.info['data']?.replace(/^\s*"(.*)"\s*$/, '$1')
+				let defaultValue = this.info['data']?.replace(
+					/^\s*"(.*)"\s*$/,
+					'$1',
+				)
 				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
 			}
 		}
@@ -186,9 +207,14 @@ export class EditorItem_Generic {
 	}
 
 	createValueEditor(value) {
-		if (this.info?.type === 'CONFIG_OPTION_INT' || this.info?.type === 'CONFIG_OPTION_FLOAT') {
+		if (
+			this.info?.type === 'CONFIG_OPTION_INT' ||
+			this.info?.type === 'CONFIG_OPTION_FLOAT'
+		) {
 			this.el.dataset.infoType = this.info.type
-			const [def, min, max] = this.info.data.split(',').map((s) => Number(s.trim()))
+			const [def, min, max] = this.info.data
+				.split(',')
+				.map((s) => Number(s.trim()))
 			const isFloat = this.info.type !== 'CONFIG_OPTION_INT'
 			const editor = new SliderModal(min, max, isFloat)
 			editor.value = value
@@ -309,7 +335,8 @@ export class EditorItem_Generic {
 			formatted = `<a onclick='window.gotoWiki("wiki:animations")' title="Go to Wiki">${formatted}</a>`
 		}
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
-		let value = this.valueEditor?.value ?? this.value ?? 'Please input a value'
+		let value =
+			this.valueEditor?.value ?? this.value ?? 'Please input a value'
 
 		if (name === null || value === null) {
 			this.keyEditor.classList.remove('hidden')
@@ -317,7 +344,9 @@ export class EditorItem_Generic {
 		} else {
 			this.el.classList.remove('invalid')
 		}
-		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
+		let comment = this.commentArea.value
+			? `# ${this.commentArea.value}`
+			: ''
 		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
 		if (!this.initial_load) {
 			this.saveDebounced()
@@ -341,7 +370,10 @@ export class EditorItem_Generic {
 			this.contextMenu.show()
 		})
 		this.el.addEventListener('dblclick', (e) => {
-			if (this.el.dataset.name === 'bezier' && this.valueEditor.contains(e.target)) {
+			if (
+				this.el.dataset.name === 'bezier' &&
+				this.valueEditor.contains(e.target)
+			) {
 				// this.el.classList.toggle('compact')
 				// this.contextMenu.hide()
 			} else if (this.flipValueIfBool()) {
@@ -367,15 +399,25 @@ export class EditorItem_Generic {
 			if (e.key === 'Delete') {
 				e.preventDefault()
 				e.stopPropagation()
-				Array.from(this.contextMenu.el.children).forEach((element) => {
-					let label_el = element.querySelector('.ctx-button-label')
-					if (label_el.textContent.toLowerCase().includes('delete')) {
-						setTimeout(() => element.click(), 0)
-					}
-				})
+				Array.from(this.contextMenu.el.children).forEach(
+					(element) => {
+						let label_el =
+							element.querySelector('.ctx-button-label')
+						if (
+							label_el.textContent
+								.toLowerCase()
+								.includes('delete')
+						) {
+							setTimeout(() => element.click(), 0)
+						}
+					},
+				)
 			}
 			if (e.key === 'd') {
-				if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
+				if (
+					e.target.tagName === 'TEXTAREA' ||
+					e.target.tagName === 'INPUT'
+				) {
 					return
 				}
 				e.stopPropagation()
@@ -445,7 +487,11 @@ export class EditorItem_Generic {
 	async add(type: string, below = true) {
 		switch (type) {
 			case 'KEY':
-				await newEditorItemGeneric({ relatedElement: this.el, position: this.config_position, below: below })
+				await newEditorItemGeneric({
+					relatedElement: this.el,
+					position: this.config_position,
+					below: below,
+				})
 				break
 
 			case 'COMMENT':
@@ -456,10 +502,19 @@ export class EditorItem_Generic {
 	async valueReset() {
 		let confirm = await dmenuConfirm()
 		if (confirm) {
-			if (this.info.type == 'CONFIG_OPTION_INT' || (this.info.data.includes(',') && this.info.data.split(',').length === 3)) {
-				this.valueEditor.value = this.info['data'].split(',')[0].replace(/^\s*"(.*)"\s*$/, '$1')
+			if (
+				this.info.type == 'CONFIG_OPTION_INT' ||
+				(this.info.data.includes(',') &&
+					this.info.data.split(',').length === 3)
+			) {
+				this.valueEditor.value = this.info['data']
+					.split(',')[0]
+					.replace(/^\s*"(.*)"\s*$/, '$1')
 			} else {
-				this.valueEditor.value = this.info['data'].replace(/^\s*"(.*)"\s*$/, '$1')
+				this.valueEditor.value = this.info['data'].replace(
+					/^\s*"(.*)"\s*$/,
+					'$1',
+				)
 			}
 			this.el.dataset.value = this.valueEditor.value
 			this.update()
@@ -508,7 +563,8 @@ export class EditorItem_Generic {
 	}
 
 	async delete() {
-		let nextSibling = this.el.nextElementSibling || this.el.previousElementSibling
+		let nextSibling =
+			this.el.nextElementSibling || this.el.previousElementSibling
 		let confirm = await dmenuConfirm()
 		if (confirm) {
 			deleteKey(this.el.dataset.uuid, this.el.dataset.position)
@@ -520,16 +576,23 @@ export class EditorItem_Generic {
 	disable(disabled: boolean | null = null, groupSave: boolean = false) {
 		if (disabled !== null) {
 			this.el.dataset.disabled = disabled.toString()
-			disabled === true ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
+			disabled === true
+				? this.el.classList.add('disabled')
+				: this.el.classList.remove('disabled')
 		} else {
-			this.el.dataset.disabled = this.el.dataset.disabled === 'true' ? 'false' : 'true'
+			this.el.dataset.disabled =
+				this.el.dataset.disabled === 'true' ? 'false' : 'true'
 			// this.el.classList.toggle('disabled')
-			this.el.dataset.disabled === 'true' ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
+			this.el.dataset.disabled === 'true'
+				? this.el.classList.add('disabled')
+				: this.el.classList.remove('disabled')
 		}
 		if (!groupSave) {
 			this.saveDebounced()
 		} else {
-			console.log(`Saving key as a part of a group. Skipping self save.`)
+			console.log(
+				`Saving key as a part of a group. Skipping self save.`,
+			)
 		}
 	}
 

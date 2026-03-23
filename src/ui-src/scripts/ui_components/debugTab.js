@@ -26,10 +26,20 @@ export function jsViewerInit() {
 
 	// Try to find existing viewer
 	let viewer = debugWindow.querySelector('andypf-json-viewer')
+	let viewerContainer = document.querySelector(
+		'.config-set#debug>#json-viewer',
+	)
 
 	if (!viewer) {
 		viewer = document.createElement('andypf-json-viewer')
 		viewer.setAttribute('show-toolbar', 'true')
+		viewerContainer = document.createElement('div')
+		viewerContainer.setAttribute('id', 'json-viewer')
+		viewerContainer.classList.add('editor-item')
+		viewerContainer.tabIndex = 0
+		viewerContainer.appendChild(label)
+		viewerContainer.appendChild(viewer)
+		debugWindow.appendChild(viewerContainer)
 	}
 
 	// Always update data
@@ -37,9 +47,6 @@ export function jsViewerInit() {
 
 	// Keep global reference in sync
 	window.jsViewer = viewer
-
-	debugWindow.appendChild(label)
-	debugWindow.appendChild(viewer)
 
 	updateJsonViewerTheme(window.themeVariant)
 }
@@ -78,7 +85,15 @@ function initGlobalDebugger() {
 		const globalKeys = Object.getOwnPropertyNames(GLOBAL)
 
 		globalKeys.forEach((key) => {
-			let hiddenkeys = ['length', 'name', 'prototype', 'onChange', 'setKey', 'configText', 'wikiTree']
+			let hiddenkeys = [
+				'length',
+				'name',
+				'prototype',
+				'onChange',
+				'setKey',
+				'configText',
+				'wikiEntry',
+			]
 			if (hiddenkeys.includes(key)) return
 			const button = document.createElement('button')
 			button.classList.add('debug-key-btn')
@@ -90,10 +105,25 @@ function initGlobalDebugger() {
 				// Clear previous viewer content
 				viewer.innerHTML = ''
 
-				if (typeof value === 'object' && value !== null && key !== '_listeners') {
-					viewer.textContent = JSON.stringify(value, null, 2)
+				if (
+					typeof value === 'object' &&
+					value !== null &&
+					key !== '_listeners'
+				) {
+					let jsonviewer =
+						document.createElement('andypf-json-viewer')
+					jsonviewer.setAttribute('show-toolbar', 'true')
+					jsonviewer.setAttribute(
+						'theme',
+						`default-${GLOBAL.themeVariant.toLowerCase()}`,
+					)
+					jsonviewer.data = JSON.stringify(value, null, 2)
+					viewer.appendChild(jsonviewer)
 				} else if (key === '_listeners') {
-					for (const [listenerKey, callbacks] of GLOBAL._listeners) {
+					for (const [
+						listenerKey,
+						callbacks,
+					] of GLOBAL._listeners) {
 						const section = document.createElement('div')
 						section.style.marginBottom = '0.5rem'
 
@@ -102,12 +132,14 @@ function initGlobalDebugger() {
 						section.appendChild(header)
 
 						callbacks.forEach((cb, i) => {
-							const cbButton = document.createElement('button')
+							const cbButton =
+								document.createElement('button')
 							cbButton.textContent = `Callback ${i + 1}`
 							cbButton.style.marginLeft = '0.5rem'
 
 							// Create dialog
-							const dialog = document.createElement('dialog')
+							const dialog =
+								document.createElement('dialog')
 							dialog.style.width = '400px'
 							dialog.style.padding = '1rem'
 							dialog.style.borderRadius = '0.4rem'
@@ -116,7 +148,8 @@ function initGlobalDebugger() {
 							dialog.textContent = cb.toString()
 
 							// Add a close button inside dialog
-							const closeBtn = document.createElement('button')
+							const closeBtn =
+								document.createElement('button')
 							closeBtn.textContent = 'Close'
 							closeBtn.style.display = 'block'
 							closeBtn.style.marginTop = '0.5rem'

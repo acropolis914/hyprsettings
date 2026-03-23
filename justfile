@@ -9,7 +9,6 @@ dev:
 kill-hs:
     hyprsettings -k &
 
-
 # Build UI and preview the app
 bld-prev:
     cd src/ui-src && vite build && cd ../../ && sh ./run.sh --debug --no-daemon
@@ -45,3 +44,9 @@ clean-font:
 # Format UI code (alias for npm run format)
 format:
     cd src/ui-src && npm run format
+
+compare-last-config-description:
+    webstorm diff src/ui-src/scripts/HyprlandSpecific/configDescriptions.ts tooling/ConfigDescriptions/hyprland_config_descriptions.js
+
+generate-new-config-description:
+    python tooling/ConfigDescriptions/sconfigdescriptions_parser.py

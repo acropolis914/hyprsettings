@@ -110,6 +110,7 @@ Static effects are evaluated once when the window is opened and never again. Thi
 | suppress_event | \[types...\] | Ignores specific events from the window. Events are space separated, and can be: `fullscreen`, `maximize`, `activate`, `activatefocus`, `fullscreenoutput`. |
 | content | \[none\|photo\|video\|game\] | Sets content type. |
 | no_close_for | \[ms\] | Makes the window uncloseable with the `killactive` dispatcher for a given amount of ms on open. |
+| scrolling_width | \[float\] | Set column width for window when starting on a workspace with the scrolling layout. |
 
 #### Expressions
 
@@ -253,7 +254,7 @@ windowrule = border_color rgb(FF0000) rgb(880808), match:fullscreen 1           
 windowrule = border_color rgb(FFFF00), match:title .*Hyprland.*                           # Set border color to yellow when title contains Hyprland
 windowrule = opacity 1.0 override 0.5 override 0.8 override, match:class kitty            # Set opacity to 1.0 active, 0.5 inactive and 0.8 fullscreen for kitty
 windowrule = match:class kitty, rounding 10                                               # Set rounding to 10 for kitty
-windowrule = match:class (pinentry-)(.*), stay_focused on                                  # Fix pinentry losing focus
+windowrule = match:class (pinentry-)(.*), stay_focused on                                 # Fix pinentry losing focus
 ```
 
 ### Notes

@@ -37,7 +37,7 @@
             python3Packages.python-dotenv
             gtk3
             gobject-introspection
-            webkitgtk
+            webkitgtk_4_1
           ];
         };
       }

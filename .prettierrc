@@ -3,8 +3,8 @@
   "useTabs": true,
   "semi": false,
   "singleQuote": true,
-  "printWidth": 140,
+  "printWidth": 80,
   "plugins": [
-    "prettier-plugin-css-order"
+    "./src/ui-src/node_modules/prettier-plugin-css-order"
   ]
 }
