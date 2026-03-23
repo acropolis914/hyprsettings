@@ -14,10 +14,14 @@
 
 html {
 	opacity: 0;
-	transition: opacity 0.2s ease-in-out;
+	transition:
+		opacity 0.2s ease-in-out,
+		width 0s;
+	will-change: flex-basis, transform, width, height;
 	box-sizing: border-box;
 	background-color: var(--surface-0);
-	min-width: 300px;
+	//min-width: 300px;
+	min-width: 100%;
 	height: 100%;
 	min-height: 0;
 	overflow: hidden;
@@ -69,12 +73,17 @@ html.no-anim *::after {
 body {
 	display: flex;
 	flex-direction: column;
-	transition: v.$transition-main;
+	transition:
+		v.$transition-main,
+		width 0s;
+	will-change: flex-basis, transform, width, height;
+	//background-color: var(--red);
+	min-width: 100%;
 	max-width: 100%;
 	height: 100%;
 	min-height: 0;
 	overflow: hidden;
-	overflow-x: hidden;
+	//overflow-x: hidden;
 	font-size: 1.6rem;
 }
 
@@ -86,7 +95,7 @@ header#main-header {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	transition: transform v.$transition-speed-fast ease;
+	transition: transform v.$transition-speed-fast ease width 0s ease;
 	border-bottom: 1px solid var(--surface-border);
 	border-radius: 0;
 	padding: var(--spacing-unit);
@@ -139,13 +148,18 @@ header#main-header {
 	display: flex;
 	position: relative;
 	flex: 1;
+	transition: width 0s ease;
 	max-width: 100%;
 	min-height: 0;
 }
 
 #sidebar {
 	flex: 0 0 20%;
-	transition: flex-basis 0.2s ease-out;
+	transition:
+		flex-basis 0.2s ease-out,
+		width 0s ease;
+	will-change: flex-basis, transform, width, height;
+	contain: layout style paint;
 	background-color: var(--surface-0);
 	min-width: 0;
 	height: 100%;
@@ -246,6 +260,7 @@ header#main-header {
 	flex: 0 0 80%;
 	flex-direction: column;
 	transition: none !important;
+	will-change: flex-basis, transform, width, height;
 	background-color: var(--surface-1);
 	padding-top: var(--spacing-unit);
 	height: 100%;

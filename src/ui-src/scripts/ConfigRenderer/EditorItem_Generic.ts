@@ -21,6 +21,7 @@ import keyEditor_Animation from '@scripts/ConfigRenderer/keyEditor_Animation.sve
 import createToolTippy from '@scripts/ui_components/toolTippy.ts'
 import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
 import { newEditorItemGeneric } from '@scripts/HyprlandSpecific/editorItem_newKey.ts' // optional for styling
+import keyEditor_Bind from '@scripts/ConfigRenderer/keyEditor_Bind.svelte'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -121,7 +122,7 @@ export class EditorItem_Generic {
 		this.info = findConfigDescription(this.config_position, name)
 
 		this.valueEditor = this.createValueEditor(value)
-		if (!this.valueEditor && this.el.dataset.name !== 'animation') {
+		if (!this.valueEditor && this.el.dataset.name !== 'animation' && !this.el.dataset.name.startsWith('bind')) {
 			// console.log(this.el.dataset, 'has no value editor')
 			this.valueEditor = document.createElement('textarea')
 			this.valueEditor.rows = 1
@@ -216,6 +217,24 @@ export class EditorItem_Generic {
 					onChange: (v) => {
 						this.value = v
 						this.el.dataset.value = v
+						this.update()
+					},
+				},
+			})
+			return null
+		} else if (this.el.dataset.name.startsWith('bind')) {
+			mount(keyEditor_Bind, {
+				target: this.genericEditor_el,
+				props: {
+					inputValue: value,
+					bindName: this.el.dataset.name,
+					onChange: (v) => {
+						this.value = v
+						this.el.dataset.value = v
+						this.update()
+					},
+					onNameChange: (name) => {
+						this.el.dataset.name = name
 						this.update()
 					},
 				},

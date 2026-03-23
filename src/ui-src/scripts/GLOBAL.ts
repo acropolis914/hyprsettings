@@ -38,6 +38,9 @@ export class GLOBAL {
 	static config = null
 	static changedFiles: string[] = []
 
+	//rendererTemporaryContainer
+	static editorItemTemporaryContainers: Record<string, DocumentFragment> = {}
+
 	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,
 		callback: {

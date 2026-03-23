@@ -238,13 +238,20 @@
 			opacity: 0;
 		}
 	}
-
+	&.disabled {
+		opacity: 0.5;
+		outline-right: 10px solid var(--accent-danger) !important;
+		&:is(:focus-within) {
+			opacity: 0.8 !important;
+		}
+	}
 	&.disabled > .editor-item-preview {
-		padding-left: 3rem;
+		padding-right: 3rem;
 		&::before {
 			position: absolute;
 			top: 50%;
-			transform: translateX(-160%) translateY(-45%);
+			right: 0;
+			transform: translateX(-50%) translateY(-45%);
 			//transform: rotate(-90deg) translateY(-4.5rem) translateX(-2ch);
 			content: '󰈉';
 			//content: 'Disabled';

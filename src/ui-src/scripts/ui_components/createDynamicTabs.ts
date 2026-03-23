@@ -10,11 +10,10 @@ let initialLoad = true
 
 class ConfigTab {
 	private configview: any
+	sidebar = document.querySelector('aside#sidebar>ul')
 
 	constructor(tab) {
-		// console.log(tab)
 		if (tab.name === 'separator') {
-			this.sidebar = document.querySelector('aside#sidebar>ul')
 			this.make_separator(tab)
 			return
 		}
@@ -28,11 +27,11 @@ class ConfigTab {
 		}
 
 		this.shown = tab.default
-
 		this.sidebar = document.querySelector('aside#sidebar>ul')
 		this.configview = document.querySelector('#content-area')
 		this.makeSidebarItem()
 		this.makeContentView()
+		this.makeDocumentFragment(tab)
 	}
 
 	make_separator(tab) {
@@ -116,6 +115,11 @@ class ConfigTab {
 		this.configview.appendChild(item)
 	}
 
+	makeDocumentFragment(tab) {
+		const frag = new DocumentFragment()
+		GLOBAL.editorItemTemporaryContainers[`${tab.id}`] = frag
+	}
+
 	handleTabClick(id) {
 		document.querySelectorAll('.config-set').forEach((element) => {
 			element.id === id ? element.classList.remove('hidden') : element.classList.add('hidden')
@@ -156,23 +160,21 @@ class ConfigTab {
 
 export default async function createDynamicTabs() {
 	return new Promise(async (resolve) => {
-		// const simpleBarInstance = new SimpleBar(document.querySelector('#scroll-wrapper'))
-		// const contentEl = simpleBarInstance.getContentElement()
-
-		let sidebar = document.querySelector('aside#sidebar>ul') //TODO Fix sidebar .simplebar-content > ul:nth-child(1)
-		// let sidebar = await waitFor(() => document.querySelector('.simplebar-content > ul'))
+		let sidebar = document.querySelector('aside#sidebar>ul')
 		sidebar.innerHTML = ''
 		document.querySelectorAll('.config-set').forEach((element) => {
 			element.remove()
 		})
 		for (let tab of tabs) {
-			// console.log(tab)
+			if (tab.name === 'debug' && !(GLOBAL['isDebugging'] === true)) {
+				return
+			}
 			new ConfigTab(tab)
 		}
+
 		if (!(GLOBAL['isDebugging'] === true)) {
 			let debugTab = sidebar.querySelector('li#debug')
 			debugTab.classList.add('hidden')
-		} else {
 		}
 
 		if (GLOBAL['persistence']['last_tab']) {
@@ -186,6 +188,6 @@ export default async function createDynamicTabs() {
 			console.log(GLOBAL)
 		}
 		initialLoad = false
-		resolve()
+		resolve(true)
 	})
 }

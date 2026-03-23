@@ -7,7 +7,7 @@ import { ConfigGroup } from './ConfigGroup.ts'
 import { GLOBAL } from '../GLOBAL.js'
 import { Backend } from '@scripts/utils/backendAPI.js'
 import { destroyOverlay } from '@scripts/ui_components/darkenOverlay.js'
-import { waitFor } from '../utils/helpers'
+// import { waitFor } from '../utils/helpers'
 
 export default async function getAndRenderConfig() {
 	GLOBAL.onChange('data', (value: any) => {
@@ -36,26 +36,32 @@ export function clearConfigItems() {
 
 export class _configRenderer {
 	private readonly json: Record<string, any>
-	current_container: any[]
+	container_stack: any[]
 	comment_stack: any[]
 	comment_queue: any[]
 	group_stack: any[]
 	temporaryElement: HTMLDivElement
 	renderTo: HTMLElement
 	renderAfter: boolean
+	nodesSinceYield: number
+	readonly yieldEveryNodes: number
 
 	constructor(json: Record<string, any>, renderTo: HTMLElement = null, renderAfter: boolean = true) {
 		this.renderTo = renderTo
 		this.renderAfter = renderAfter
 		this.json = json
-		this.current_container = []
+		this.nodesSinceYield = 0
+		this.yieldEveryNodes = 80
+		this.container_stack = []
 		if (renderTo) {
 			this.temporaryElement = document.createElement('div')
 			this.temporaryElement.style.display = 'none'
+			this.temporaryElement.id = 'temporary'
 			document.body.appendChild(this.temporaryElement)
-			this.current_container.push(this.temporaryElement)
+			this.container_stack.push(this.temporaryElement)
 		} else {
-			this.current_container.push(document.querySelector('.config-set#general'))
+			// this.container_stack.push(document.querySelector('.config-set#general'))//todo docfrags
+			this.container_stack.push(GLOBAL.editorItemTemporaryContainers['general'])
 		}
 
 		this.comment_stack = [] //for the block comments
@@ -71,9 +77,34 @@ export class _configRenderer {
 		})
 	}
 
+	private nextFrame(): Promise<void> {
+		return new Promise((resolve) => {
+			if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+				window.requestAnimationFrame(() => resolve())
+				return
+			}
+			setTimeout(resolve, 0)
+		})
+	}
+
+	private async maybeYieldToUI() {
+		this.nodesSinceYield++
+		if (this.nodesSinceYield < this.yieldEveryNodes) {
+			return
+		}
+		this.nodesSinceYield = 0
+		await this.nextFrame()
+	}
+
 	async invokeParser() {
 		console.time('parseJSON')
 		await this.parse(this.json)
+
+		for (const [key, val] of Object.entries(GLOBAL.editorItemTemporaryContainers)) {
+			let set = document.querySelector(`.config-set#${key}`)
+			set.appendChild(val)
+		}
+
 		console.timeEnd('parseJSON')
 		destroyOverlay()
 
@@ -89,15 +120,18 @@ export class _configRenderer {
 			el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 		}
 
-		document.querySelector('.config-set').addEventListener('click', (e) => {
-			// let target = e.target
-			GLOBAL.setKey('currentView', 'main')
-			// @ts-ignore
-			// GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
+		document.querySelectorAll('.config-set').forEach((el) => {
+			el.addEventListener('click', (e) => {
+				// let target = e.target
+				GLOBAL.setKey('currentView', 'main')
+				// @ts-ignore
+				// GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
+			})
 		})
 	}
 
 	async parse(json: string | Record<string, any> | JSON) {
+		await this.maybeYieldToUI()
 		//Comment Stacking for three line label comments from default hyprland.conf
 		const self = this
 
@@ -108,7 +142,7 @@ export class _configRenderer {
 				if (!GLOBAL['config']['show_header_comments']) {
 					comment_element.el.classList.add('settings-hidden')
 				}
-				comment_element.addToParent(self.current_container.at(-1))
+				comment_element.addToParent(self.container_stack.at(-1))
 			}
 			self.comment_stack = []
 		}
@@ -121,7 +155,7 @@ export class _configRenderer {
 				if (!GLOBAL['config']['show_line_comments']) {
 					comment_item_el.el.classList.add('settings-hidden')
 				}
-				comment_item_el.addToParent(self.current_container.at(-1))
+				comment_item_el.addToParent(self.container_stack.at(-1))
 				self.comment_queue.shift()
 			}
 		}
@@ -150,10 +184,11 @@ export class _configRenderer {
 			for (const [key, value] of tabids) {
 				if (comment.toLowerCase().includes(key)) {
 					// console.info(`Comment ${comment} includes [${key}]`)
-					let container = document.querySelector(`.config-set#${value}`)
+					const container = GLOBAL.editorItemTemporaryContainers[value]
+					// let container = document.querySelector(`.config-set#${value}`)//todo replace with docfrags
 					if (container) {
-						this.current_container.pop()
-						this.current_container.push(container)
+						this.container_stack.pop()
+						this.container_stack.push(container)
 					}
 					break
 				}
@@ -187,12 +222,18 @@ export class _configRenderer {
 				if (this.comment_queue.length > 0) {
 					renderCommentQueue(false)
 				}
-				let group_el = new ConfigGroup(json).return()
+				let group_el = new ConfigGroup(json as JSON).return()
 				let matched: boolean
 				if (!this.renderTo) {
 					for (const [key, value] of configGroups) {
 						if (json.name.trim().startsWith(key)) {
-							document.querySelector(`.config-set#${value}`).appendChild(group_el)
+							const container = GLOBAL.editorItemTemporaryContainers[value]
+							if (container) {
+								container.appendChild(group_el)
+							} else {
+								console.warn(`No container for value: ${value}`, GLOBAL.editorItemTemporaryContainers)
+							}
+							// document.querySelector(`.config-set#${value}`).appendChild(group_el) //TODO put to documentfragment
 							matched = true
 							break
 						}
@@ -200,19 +241,21 @@ export class _configRenderer {
 				}
 
 				if (!matched) {
-					this.current_container.at(-1).appendChild(group_el)
+					console.warn(
+						`Config group ${json['name']} has no specified tab. Rendering to the last container `,
+						this.container_stack.at(-1),
+					)
+					this.container_stack.at(-1).appendChild(group_el)
 				}
-				this.current_container.push(group_el)
+				this.container_stack.push(group_el)
 				try {
-					Array.from(json['children']).forEach((child, index, arr) => {
-						if (index === arr.length - 1) {
+					for (const [index, child] of Array.from(json['children']).entries()) {
+						if (index === json['children'].length - 1) {
+							//Todo hmmm should this be -1?
 							renderCommentQueue(true)
 						}
-						this.parse(child)
-					})
-					// for (const child of json['children']) {
-					// 	this.parse(child)
-					// }
+						await this.parse(child)
+					}
 				} catch (e) {
 					console.error(e, json)
 				}
@@ -221,7 +264,7 @@ export class _configRenderer {
 			if (this.comment_queue.length > 0) {
 				renderCommentQueue(false)
 			}
-			this.current_container.pop()
+			this.container_stack.pop()
 		} else if (json['type'] === 'KEY') {
 			try {
 				let genericItem: EditorItem_Binds | EditorItem_Generic
@@ -230,34 +273,38 @@ export class _configRenderer {
 				} else {
 					genericItem = new EditorItem_Generic(json, json['disabled'])
 				}
+
 				let tabToAddTo: any
-				for (const [key, value, exclude] of keyNameStarts) {
-					if (this.current_container.at(-1).classList.contains('config-group')) {
-						break
+
+				const foundPair = keyNameStarts.find(([key, value, exclude]) => {
+					// console.log(value, typeof value, GLOBAL.editorItemTemporaryContainers[String(value)])
+					// console.log(this.container_stack.at(-1))
+
+					// skip if the last container is a config-group
+					if (this.container_stack.at(-1)?.classList?.contains('config-group')) {
+						// console.log(this.container_stack.at(-1).classList.contains('config-group'))
+						return false // don't consider this pair
 					}
+
 					let excluded = exclude ? exclude : []
-					if (json.name.trim().startsWith(key) && !excluded.includes(json.name.trim())) {
-						tabToAddTo = document.querySelector(`.config-set#${value}`)
-						break
-					}
+					return json.name.trim().startsWith(key) && !excluded.includes(json.name.trim())
+				})
+
+				if (foundPair) {
+					const [, value] = foundPair
+					tabToAddTo = GLOBAL.editorItemTemporaryContainers[String(value)]
+					// tabToAddTo = document.querySelector(`.config-set#${value}`) //TODO Replace with document fragment
 				}
+
 				if (!tabToAddTo) {
-					tabToAddTo = this.current_container.at(-1)
+					tabToAddTo = this.container_stack.at(-1)
 				} else {
-					this.current_container.pop()
-					this.current_container.push(tabToAddTo)
+					this.container_stack.pop()
+					this.container_stack.push(tabToAddTo)
 				}
 				if (this.comment_queue.length > 0) {
 					renderCommentQueue()
 				}
-				// genericItem.el.addEventListener('focus', () => {
-				// 	GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
-				// 	GLOBAL.setKey('currentView', 'main')
-				// })
-				// genericItem.el.addEventListener('click', () => {
-				// 	GLOBAL['mainFocus'][GLOBAL['activeTab']] = genericItem.el.dataset.uuid
-				// 	GLOBAL.setKey('currentView', 'main')
-				// })
 				genericItem.addToParent(tabToAddTo)
 			} catch (e) {
 				console.log(e, json)
@@ -274,10 +321,9 @@ export class _configRenderer {
 				}
 				if (json.children) {
 					for (const child of json.children) {
-						this.parse(child)
+						await this.parse(child)
 					}
 				}
-
 				if (this.comment_queue.length > 0) {
 					renderCommentQueue(true)
 				}
@@ -296,7 +342,7 @@ export class _configRenderer {
 		if (json['children'] && json['name'] === 'root') {
 			// console.log(json)
 			for (const child of json.children) {
-				this.parse(child)
+				await this.parse(child)
 			}
 
 			if (this.comment_queue.length > 0) {

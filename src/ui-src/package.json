@@ -3,23 +3,16 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"killhs": "hyprsettings -k &",
-		"dev": "concurrently -k -s first -n py,vt -c cyan,green \"cd ../../ && sh ./run.sh --bun-dev --debug --no-daemon --no-browser\" \"vite --host\"",
-		"build_ui": "vite build",
-		"bldprev": "vite build && cd ../../ && sh ./run.sh --debug --no-daemon",
-		"kill-ports": "sh -c 'for p in 3000 6969; do echo \"\\n== Port $p ==\"; lsof -iTCP:$p -sTCP:LISTEN -Pn | awk \"NR>1 {print \\\"PID=\\\"$2, \\\"NAME=\\\"$1}\"; lsof -tiTCP:$p -sTCP:LISTEN | xargs -r kill -9; done'",
-		"hs": "cd ../../ && sh ./run.sh --debug --no-daemon",
+		"build-ui": "vite build",
 		"preview": "vite preview",
 		"clean-font": "DEBUG=glyphhanger* glyphhanger --delay=20000 --whitelist=\"U+E000-U+F8FF,U+F0DA,U+F0000-U+FFFFD\" --formats=woff2,otf --subset=../ui-src/public/fonts/CommitMonoNerdFontMono-Regular.otf --output=../ui-src/public/fonts/ http://localhost:3000/",
-		"format": "prettier --write \"**/*.{js,ts,jsx,tsx,css,scss}\"",
-		"update_version": "python ../../tooling/git_tag_version.py && git add .",
-		"build_py": "vite build && cd .. && pyinstaller --clean --distpath output hyprsettings.spec"
+		"format": "prettier --write \"**/*.{js,ts,jsx,tsx,css,scss}\""
 	},
 	"devDependencies": {
+		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@types/bun": "latest",
 		"@types/prismjs": "^1.26.5",
 		"concurrently": "^9.2.1",
-		"pako": "^2.1.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-css-order": "^2.2.0",
 		"rollup-plugin-visualizer": "^6.0.5",
@@ -28,23 +21,20 @@
 		"vite": "^7.3.1"
 	},
 	"dependencies": {
-		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"compress-json": "^3.4.0",
-		"hastscript": "^9.0.1",
 		"hotkeys-js": "^4.0.0",
-		"tom-select": "^2.4.5",
 		"lit": "^3.3.2",
+		"pako": "^2.1.0",
 		"prismjs": "^1.30.0",
 		"rehype-stringify": "^10.0.1",
-		"remark": "^15.0.1",
 		"remark-directive": "^4.0.0",
 		"remark-gfm": "^4.0.1",
 		"remark-parse": "^11.0.0",
 		"remark-rehype": "^11.1.2",
 		"svelte": "^5.50.0",
 		"tippy.js": "^6.3.7",
-		"unified": "^11.0.5",
-		"vfile-matter": "^5.0.1"
+		"tom-select": "^2.4.5",
+		"unified": "^11.0.5"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
