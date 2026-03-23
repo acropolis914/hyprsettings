@@ -1091,7 +1091,7 @@ def uninstall(no_confirm=False):
      [green][bold]Uninstall Complete[/bold][/green]
 
      [dim]You can always come back and try it again by running:[/dim]
-     [bold]curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.py | python3 - -a[/bold]
+     [bold]curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh -s --[/bold]
      
      Thank you for trying 💧hyprsettings!
      [underline][blue][link=https://github.com/acropolis914/hyprsettings]Made with ❣️ by AcroPolis914 — Project page[/link][/blue][/underline]
@@ -1345,16 +1345,17 @@ def run_script_install_sequence(show_success: bool = True):
 def run_installation_wizard():
 	def onboarding_choice():
 		choices = []
-		if not GLOBAL.EXISTING_INSTALLATION:
+
+		if GLOBAL.OS_RELEASE.startswith('nix'):
+			run_nixos_wizard()
+			cleanup(False, 'Hyprsettings successfully installed for nix')
+		elif not GLOBAL.EXISTING_INSTALLATION:
 			choices.append('Install Hyprsettings interactively')
 			choices.append('Quick install hyprsettings to user')
 			choices.append('Quick install hyprsettings to system')
 		elif GLOBAL.EXISTING_INSTALLATION and not GLOBAL.OS_RELEASE.startswith('nix'):
 			choices.append('Update Hyprsettings')
 			choices.append('Uninstall Hyprsettings')
-		elif GLOBAL.OS_RELEASE.startswith('nix'):
-			run_nixos_wizard()
-			cleanup(False, 'Hyprsettings successfully installed for nix')
 
 		response = choose_from('What would you like to do?', choices)
 		if response.startswith('Update'):
