@@ -1,5 +1,8 @@
 import json
 import re
+import subprocess
+from datetime import datetime
+from pathlib import Path
 
 
 def dumpjsobject(obj, indent=2):
@@ -31,3 +34,18 @@ def dumpjsobject(obj, indent=2):
 			return json.dumps(o)
 
 	return _format(obj)
+
+
+def get_wiki_version() -> str:
+	SCRIPT_DIR = Path(__file__).parent.resolve()
+	LOCAL_REPO = SCRIPT_DIR / '.hyprland-wiki'
+	# Get latest commit date in ISO format
+	commit_date_bytes = subprocess.check_output(['git', '-C', str(LOCAL_REPO), 'log', '-1', '--format=%cI'])
+	commit_date_str = commit_date_bytes.decode().strip()
+	commit_dt = datetime.fromisoformat(commit_date_str)
+
+	# Get latest commit SHA (7 chars)
+	commit_sha_bytes = subprocess.check_output(['git', '-C', str(LOCAL_REPO), 'rev-parse', '--short=7', 'HEAD'])
+	commit_sha = commit_sha_bytes.decode().strip()
+	version = f'v{commit_dt:%Y.%m.%d_%H%M}_{commit_sha}'
+	return version

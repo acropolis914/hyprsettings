@@ -1,9 +1,15 @@
 # Justfile for hyprsettings project
 # Run with `just <recipe>` from any directory
 
+set unstable := true
+
 # Full development setup (Python backend + Vite dev server)
 dev:
-    concurrently -k -s first -n py,vt -c cyan,green "sh ./run.sh --bun-dev --debug --no-daemon --no-browser" "cd src/ui-src && vite --host"
+    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser" "vite --host"
+
+setup_dev:
+    uv sync
+    cd src/ui-src && bun install
 
 # Kill hyprsettings process
 kill-hs:
@@ -11,7 +17,7 @@ kill-hs:
 
 # Build UI and preview the app
 bld-prev:
-    cd src/ui-src && vite build && cd ../../ && sh ./run.sh --debug --no-daemon
+    cd src/ui-src && bunx vite build && cd ../../ && sh ./run.sh --debug --no-daemon
 
 # Run the app in debug mode
 hs:
@@ -27,26 +33,29 @@ update-version:
 
 # Build UI and create PyInstaller executable
 build-py:
-    cd src/ui-src && vite build && cd .. && pyinstaller --clean --distpath output hyprsettings.spec
+    cd src/ui-src && bunx vite build && cd .. && pyinstaller --clean --distpath output hyprsettings.spec
 
-# Build UI (alias for npm run build-ui)
+# Build UI (alias for bun run build-ui)
 build-ui:
-    cd src/ui-src && npm run build-ui
+    cd src/ui-src && bun run build-ui
 
-# Preview built UI (alias for npm run preview)
+# Preview built UI (alias for bun run preview)
 preview:
-    cd src/ui-src && npm run preview
+    cd src/ui-src && bun run preview
 
-# Clean fonts (alias for npm run clean-font)
+# Clean fonts (alias for bun run clean-font)
 clean-font:
-    cd src/ui-src && npm run clean-font
+    cd src/ui-src && bun run clean-font
 
-# Format UI code (alias for npm run format)
+# Format UI code (alias for bun run format)
 format:
-    cd src/ui-src && npm run format
-
-compare-last-config-description:
-    webstorm diff src/ui-src/scripts/HyprlandSpecific/configDescriptions.ts tooling/ConfigDescriptions/hyprland_config_descriptions.js
+    cd src/ui-src && bun run format
 
 generate-new-config-description:
     python tooling/ConfigDescriptions/sconfigdescriptions_parser.py
+
+generate-dispatchers:
+    python tooling/Dispatchers/getdispatchers.py
+
+fmt:
+    just --unstable --fmt

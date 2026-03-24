@@ -1,7 +1,5 @@
 import shutil
-from datetime import datetime
 import os.path
-import subprocess
 from pathlib import Path
 from rich.console import Console
 
@@ -12,8 +10,6 @@ sys.path.insert(0, str(parent_dir))
 
 import helpers
 
-SCRIPT_DIR = Path(__file__).parent.parent.resolve()
-LOCAL_REPO = SCRIPT_DIR / '.hyprland-wiki'
 
 console = Console()
 
@@ -47,19 +43,12 @@ for line in contents:
 	final_data = {}
 	for i, header in enumerate(headers):
 		final_data[header] = data_content[i]
-	final_data['text'] = final_data['dispatcher']
+	final_data['text'] = final_data['dispatcher']  # compatibility
+	final_data['label'] = final_data['dispatcher']  # futureproofing
+	final_data['value'] = final_data['dispatcher']  # futureproofing
 	dataset.append(final_data)
 
-# Get latest commit date in ISO format
-commit_date_bytes = subprocess.check_output(['git', '-C', str(LOCAL_REPO), 'log', '-1', '--format=%cI'])
-commit_date_str = commit_date_bytes.decode().strip()
-commit_dt = datetime.fromisoformat(commit_date_str)
-
-# Get latest commit SHA (7 chars)
-commit_sha_bytes = subprocess.check_output(['git', '-C', str(LOCAL_REPO), 'rev-parse', '--short=7', 'HEAD'])
-commit_sha = commit_sha_bytes.decode().strip()
-version = f'v{commit_dt:%Y.%m.%d_%H%M}_{commit_sha}'
-
+version = helpers.get_wiki_version()
 
 with open(f'{Path(__file__).resolve().parent}/dispatchers.ts', 'w+') as file:
 	file.write('export const dispatchers = ')

@@ -1,10 +1,11 @@
 [project]
 name = "hyprsettings"
-version = "0.9.1"
-description = "Add your description here"
+version = "0.9.2"
+description = "A configurator for hyprland with "
 requires-python = ">=3.14"
 dependencies = [
     "flask>=3.1.2",
+    "flask-cors>=6.0.2",
     "packaging>=25.0",
     "pretty-errors>=1.2.25",
     "pyinstaller>=6.19.0",
