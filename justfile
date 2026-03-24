@@ -20,8 +20,11 @@ bld-prev:
     cd src/ui-src && bunx vite build && cd ../../ && sh ./run.sh --debug --no-daemon
 
 # Run the app in debug mode
-hs:
+hs-debug:
     sh ./run.sh --debug --no-daemon
+
+hs:
+    sh ./run.sh --no-daemon
 
 # Kill processes on ports 3000 and 6969
 kill-ports:

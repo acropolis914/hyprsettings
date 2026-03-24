@@ -11,7 +11,7 @@ from os import PathLike
 from .shared import hs_globals, state
 import tomlkit as toml
 
-from .hyprland_parser import ConfigParser, Node, makeUUID
+from .hyprland_parser import Node, makeUUID
 from .utils import log, ui_print
 
 
@@ -27,14 +27,14 @@ class Api:
 	def __init__(self):
 		self.window_config = None
 
-	def init(self):
-		return self.get_config()
+	# def init(self):
+	# return self.get_config()
 
 	@staticmethod
 	def get_hyprland_config(path: PathLike | None = None):
 		global current_config
 		path = path if path else state.hyprland_config_path
-		config_node = ConfigParser.load(path)
+		config_node = Node.load(path)
 		# log(f'Config loaded from {path},{config_node}')
 		config = config_node.to_json()
 		# current_config = config

@@ -14,3 +14,8 @@ dependencies = [
     "rich>=14.2.0",
     "tomlkit>=0.13.3",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.7",
+]

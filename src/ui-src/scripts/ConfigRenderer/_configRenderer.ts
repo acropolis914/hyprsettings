@@ -121,7 +121,6 @@ export class _configRenderer {
 		}
 
 		console.timeEnd('parseJSON')
-		destroyOverlay()
 
 		while (this.renderTo && this.temporaryElement.firstChild) {
 			let el = this.temporaryElement
@@ -144,6 +143,7 @@ export class _configRenderer {
 				// GLOBAL['mainFocus'][GLOBAL['activeTab']] = element.dataset.uuid
 			})
 		})
+		destroyOverlay()
 	}
 
 	async parse(json: string | Record<string, any> | JSON) {

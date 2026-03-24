@@ -134,7 +134,7 @@ class LogFilter:
 
 		# Filter common noise
 		if '[pywebview]' in text:
-			log("POLOLOLOLOL")
+			log('POLOLOLOLOL')
 			text = f'[green]{text}[/green]'
 			# pass
 		elif 'GET /' in text and 'HTTP' in text and not state.verbose:
@@ -453,7 +453,7 @@ if __name__ == '__main__':
 			state.webview_port += 1
 		log(f'Using port {state.webview_port} for the no daemon pywebview window.', only_verbose=True)
 
-	if not state.args.no_daemon and is_port_open(state.webview_port):
+	if not state.args.no_daemon and is_port_open(state.webview_port) and not state.args.config:
 		if send_toggle():
 			sys.exit(0)
 

@@ -59,7 +59,7 @@ async function load_config() {
 }
 
 function setupGTAG() {
-	var script = document.createElement('script')
+	const script = document.createElement('script')
 	script.async = true
 	script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1HDCZV8DTZ'
 	document.head.appendChild(script)
@@ -92,7 +92,7 @@ export async function initialize() {
 	initializeJSViewer()
 	await getAndRenderConfig().then(async () => {
 		console.log('Done rendering received config')
-		await destroyOverlay(true)
+		// await destroyOverlay(true)
 	})
 
 	renderSettings().then(() => console.log('Done rendering received settings tab'))
