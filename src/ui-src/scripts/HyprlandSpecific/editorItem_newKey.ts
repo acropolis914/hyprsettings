@@ -18,7 +18,7 @@ export async function newEditorItemGeneric(options: {
 		.filter((i) => !allowed_dupes.includes(i))
 	console.log(existingSiblingKeys)
 
-	let availableKeys
+	let availableKeys: any[]
 	try {
 		availableKeys = findAdjacentConfigKeys(
 			options.position,
@@ -37,8 +37,8 @@ export async function newEditorItemGeneric(options: {
 
 	console.debug('keyToAdd raw:', keyToAdd)
 
-	let name
-	let value
+	let name: string
+	let value: string
 
 	if (keyToAdd) {
 		name = keyToAdd.name

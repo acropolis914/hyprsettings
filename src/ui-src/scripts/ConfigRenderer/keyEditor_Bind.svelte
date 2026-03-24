@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { bindFlags, modkeys, dispatchers } from "@scripts/HyprlandSpecific/hyprlandBindDefinitions.js"
+	import { bindFlags, modkeys, dispatchers } from "@scripts/HyprlandSpecific/bindDefinitions.js"
 	import { selectFrom } from "@scripts/ui_components/dmenu.ts"
 
 	type SelectOption = {

@@ -598,127 +598,7 @@ h1#config-set-title {
 	display: flex;
 	flex: 1 1 auto;
 	flex-direction: column;
-}
-
-%about-section {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.25rem;
-}
-
-%about-label {
-	color: var(--text-1);
-	font-weight: 600;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-}
-
-%about-body {
-	justify-content: center;
-	color: var(--text-1, #ccc);
-	font-size: 1.2rem;
-	text-align: center;
-}
-
-.editor-item-about {
-	align-items: center;
-	opacity: 1;
-	transition: height 1s ease-in-out;
-	background-color: transparent;
-	@media (max-width: 33rem) {
-		scale: 0.8;
-	}
-
-	.title {
-		color: var(--accent);
-		font-weight: 600;
-		font-size: larger;
-		line-height: 2rem;
-		text-align: center;
-		white-space: pre;
-	}
-
-	.info {
-		@extend %about-section;
-		align-items: center;
-		gap: 0.75rem;
-		width: 100%;
-	}
-
-	.version {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.25rem;
-		color: var(--text-0, #fff);
-		font-weight: 600;
-		@media (max-width: 33rem) {
-			flex-direction: column;
-		}
-
-		a {
-			color: var(--accent);
-			text-decoration: none;
-
-			&:hover {
-				text-decoration: underline;
-			}
-		}
-		.outdated-text {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			justify-items: center;
-			margin-top: var(--spacing-unit);
-			margin-bottom: var(--spacing-unit);
-			text-align: center;
-			//> * {
-			//	align-self: flex-end;
-			//}
-		}
-		.outdated-message {
-			@extend %about-body;
-		}
-	}
-
-	.credits {
-		@extend %about-section;
-
-		.credits-title {
-			@extend %about-label;
-		}
-
-		.credits-body {
-			@extend %about-body;
-		}
-	}
-
-	.technologies {
-		@extend %about-section;
-		gap: 0.5rem;
-
-		.tech-group {
-			@extend %about-section;
-
-			.tech-title {
-				@extend %about-label;
-			}
-
-			.tech-list {
-				@extend %about-body;
-			}
-		}
-	}
-
-	// Compact mode hides credits and technologies
-	&.compact {
-		.credits,
-		.technologies {
-			display: none;
-		}
-	}
+	max-height: 100%;
 }
 
 a {
@@ -743,7 +623,7 @@ button {
 	border: none;
 	border-radius: var(--border-rad);
 	background-color: var(--accent);
-	padding: var(--spacing-unit);
+	padding: calc(var(--spacing-unit) / 2);
 
 	&:active {
 		background-color: var(--accent-active);

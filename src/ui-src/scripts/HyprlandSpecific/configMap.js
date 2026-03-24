@@ -48,8 +48,8 @@ export const keyNameStarts = [
 	// monitor
 	['monitor', 'monitor'],
 
-	// persmissions (misspelling preserved)
-	['permission', 'persmissions'],
+	// permissions (misspelling preserved)
+	['permission', 'permissions'],
 
 	// win rules
 	['windowrule', 'win-rules'],
