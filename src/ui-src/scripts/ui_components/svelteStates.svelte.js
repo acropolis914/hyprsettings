@@ -21,6 +21,29 @@ export const menuState = $state({
 				window.reinitialize()
 			},
 		},
+		{
+			label: 'Expand all items',
+			icon: '󰡏',
+			action: () => {
+				document
+					.querySelectorAll('.editor-item')
+					.forEach((item) => {
+						item.classList.remove('compact')
+					})
+			},
+		},
+		{
+			label: 'Collapse all items',
+			icon: '󰘕',
+			action: () => {
+				document
+					.querySelectorAll('.editor-item')
+					.forEach((item) => {
+						item.classList.add('compact')
+					})
+			},
+		},
+
 		// { label: 'Copy', icon: '󰆏', action: () => console.log('Copy') }, // nf-md-content_copy
 		// { label: 'Paste', icon: '󰆒', action: () => console.log('Paste') }, // nf-md-content_paste
 		// {

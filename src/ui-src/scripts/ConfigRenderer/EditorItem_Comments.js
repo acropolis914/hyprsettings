@@ -35,6 +35,33 @@ export class EditorItem_Comments {
 		this.textarea.value = comment
 		this.saveDebounced = debounce(() => this.save(), 100)
 		this.textarea.addEventListener('input', () => this.update())
+		this.contextMenu = new ContextMenu([])
+		this.addListeners()
+
+		this.initial_load = false
+	}
+
+	update() {
+		this.el.dataset.comment = this.textarea.value
+		if (!this.initial_load) {
+			this.saveDebounced()
+		}
+	}
+
+	getElementRects() {
+		this.el.offsetHeight
+		let box = this.el.getBoundingClientRect()
+		let [x1, x2, y1, y2] = [box.left, box.right, box.top, box.bottom]
+		return [x1, x2, y1, y2]
+	}
+
+	createContextMenu(x = 0, y = 0) {
+		if (x === 0 || y === 0) {
+			let [, x2, , y2] = this.getElementRects()
+			x = x2
+			y = y2
+		}
+
 		this.contextMenu = new ContextMenu([
 			{
 				label: 'Add Above',
@@ -48,35 +75,41 @@ export class EditorItem_Comments {
 				action: () => this.delete(),
 			},
 		])
-		this.el.appendChild(this.contextMenu.el)
-		this.addListeners()
 
-		this.initial_load = false
-	}
-
-	update() {
-		this.el.dataset.comment = this.textarea.value
-		if (!this.initial_load) {
-			this.saveDebounced()
-		}
+		this.contextMenu.show(x, y)
 	}
 
 	addListeners() {
-		this.el.addEventListener('click', (e) => {
-			this.contextMenu.show()
+		this.el.addEventListener('click', () => {
+			this.createContextMenu()
 		})
 		this.el.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
-			this.contextMenu.show()
+			e.stopPropagation()
+			this.createContextMenu(e.clientX, e.clientY)
 		})
-		this.el.addEventListener('dblclick', (e) => {
+		this.el.addEventListener('dblclick', () => {
 			this.contextMenu.hide()
 		})
-		this.el.addEventListener('focus', (e) => {
-			this.contextMenu.show()
+		this.el.addEventListener('focus', () => {
+			this.createContextMenu()
 			if (this.editing) {
 				this.textarea.focus()
 			}
+		})
+		this.el.addEventListener('blur', (e) => {
+			const nextTarget = e.relatedTarget
+			if (nextTarget?.closest?.('.context-menu')) {
+				return
+			}
+
+			setTimeout(() => {
+				const active = document.activeElement
+				if (active?.closest?.('.context-menu')) {
+					return
+				}
+				this.contextMenu.hide()
+			}, 20)
 		})
 		this.el.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter') {
@@ -85,7 +118,7 @@ export class EditorItem_Comments {
 					// console.debug(this.editing)
 					this.editing = true
 					setTimeout(() => this.textarea.focus(), 0)
-					this.contextMenu.show()
+					this.createContextMenu()
 				} else {
 					e.preventDefault()
 					// console.debug(this.editing)

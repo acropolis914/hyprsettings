@@ -5,6 +5,7 @@ import { roundArrow } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 import 'tippy.js/dist/svg-arrow.css'
 import '@stylesheets/subs/tippy.css'
+import { createOverlay } from '@scripts/ui_components/darkenOverlay.js'
 
 export class ContextMenu {
 	constructor(items = []) {
@@ -12,7 +13,10 @@ export class ContextMenu {
 		this.el.classList.add('context-menu', 'hidden')
 		this.el.setAttribute('contenteditable', 'false')
 		this.el.addEventListener('transitionend', (e) => {
-			if (e.propertyName === 'opacity' && getComputedStyle(e.target).opacity === '0') {
+			if (
+				e.propertyName === 'opacity' &&
+				getComputedStyle(e.target).opacity === '0'
+			) {
 				this.el.classList.add('hidden')
 			}
 		})
@@ -43,50 +47,11 @@ export class ContextMenu {
 				labelEl.classList.add('hidden')
 			}
 			labelEl.textContent = label
-
-			// if (label.toLowerCase().includes('delete') || label.toLowerCase().includes('reset')) {
-			// 	let clickCount = 0
-			// 	let timeoutId
-			// 	btnEl.addEventListener('click', (e) => {
-			// 		e.stopPropagation()
-			//
-			// 		clickCount += 1
-			//
-			// 		if (clickCount === 1) {
-			// 			iconEl.classList.add('warn')
-			// 			labelEl.classList.add('warn')
-			// 			labelEl.textContent = 'You sure?'
-			// 			console.log('Are you sure?')
-			//
-			// 			clearTimeout(timeoutId)
-			// 			timeoutId = setTimeout(() => reset(), 2000) // auto-reset after 2s
-			// 		} else {
-			// 			clearTimeout(timeoutId)
-			// 			reset()
-			// 			action?.()
-			// 		}
-			// 	})
-			//
-			// 	function reset() {
-			// 		clickCount = 0
-			// 		iconEl.classList.remove('warn')
-			// 		labelEl.classList.remove('warn')
-			// 		labelEl.textContent = label
-			// 	}
-			//
-			// 	btnEl.addEventListener('mouseleave', () => {
-			// 		clearTimeout(timeoutId)
-			// 		timeoutId = setTimeout(() => reset(), 1500)
-			// 	})
-			// } else {
-			// 	btnEl.addEventListener('click', (e) => {
-			// 		e.stopPropagation()
-			// 		action?.()
-			// 	})
-			// }
-
+			const self = this
 			btnEl.addEventListener('click', (e) => {
 				e.stopPropagation()
+				console.log(`clicked: ${label}, running ${action}`)
+				self.hide()
 				action?.()
 			})
 
@@ -99,37 +64,38 @@ export class ContextMenu {
 		this.el.classList.toggle('hidden')
 	}
 
-	show() {
+	show(x = 0, y = 0) {
+		// createOverlay()
+		this.el.focus()
 		hideAllContextMenus()
-		this.el.style.visibility = 'hidden'
-		this.el.classList.remove('hidden')
-		setTimeout(() => {
-			let currentSet = document.querySelector(`.config-set#${GLOBAL['activeTab']}`)
-			let currentSetRect = currentSet.getBoundingClientRect()
-			let [setX1, setX2, setY1, setY2] = [
-				currentSetRect.left, // x1 (left)
-				currentSetRect.right, // x2 (right)
-				currentSetRect.top, // y1 (top)
-				currentSetRect.bottom, // y2 (bottom)
-			]
-			this.el.offsetHeight
-			let thisElRect = this.el.getBoundingClientRect()
-			let ctxRect = this.el.getBoundingClientRect()
-			let [x1, x2, y1, y2] = [ctxRect.left, ctxRect.right, ctxRect.top, ctxRect.bottom]
+		document.body.appendChild(this.el)
 
-			if (setY2 < y2) {
-				this.el.style.top = `calc(-${ctxRect.height}px - 1rem)`
-			} else {
-				this.el.style.top = 'calc(100% + 1rem)'
-			}
-			this.el.style.visibility = 'visible'
-			this.el.style.opacity = 1
-		}, 1)
+		this.el.classList.remove('hidden')
+		this.el.style.position = 'absolute'
+		// this.el.style.opacity = 0 // hide while measuring
+		this.el.style.zIndex = '99999'
+
+		// Force reflow to make sure getBoundingClientRect is accurate
+		this.el.offsetHeight
+
+		const ctxRect = this.el.getBoundingClientRect()
+		const bodyRect = document.body.getBoundingClientRect()
+
+		// Compute max coordinates so menu doesn't overflow
+		const maxX = bodyRect.width - ctxRect.width
+		const maxY = bodyRect.height - ctxRect.height
+
+		// Clamp x and y
+		const finalX = Math.min(Math.max(x, 0), maxX)
+		const finalY = Math.min(Math.max(y, 0), maxY)
+
+		this.el.style.left = `${finalX}px`
+		this.el.style.top = `${finalY}px`
+		this.el.style.visibility = 'visible'
+		this.el.style.opacity = 1
 	}
 	hide() {
-		this.el.style.opacity = 0
-		// setTimeout(() => {
-		// 	this.el.classList.add('hidden')
-		// }, 500)
+		this.el.remove()
+		// destroyOverlay()
 	}
 }

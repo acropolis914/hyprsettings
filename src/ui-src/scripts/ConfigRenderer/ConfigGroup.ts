@@ -9,6 +9,9 @@ export class ConfigGroup {
 	private document: HTMLDivElement
 	private contextMenu: ContextMenu
 	private saveDebounced: any
+	private title: string
+
+	// private el: any
 
 	constructor(json: JSON) {
 		this.group_el = document.createElement('div')
@@ -22,12 +25,18 @@ export class ConfigGroup {
 		this.group_el.dataset.type = json['type']
 		this.group_el.disable = this.disable.bind(this)
 		this.saveDebounced = debounce(() => this.save(), 15)
-		this.group_el.setAttribute('title', json['position'].replace('root:', ''))
+		this.group_el.setAttribute(
+			'title',
+			json['position'].replace('root:', ''),
+		)
 		this.title = this.group_el.title
 		if (json['comment']) {
 			this.group_el.dataset.comment = json['comment']
 		}
-		if (this.group_el.dataset.name === 'windowrule' || this.group_el.dataset.name === 'layerrule') {
+		if (
+			this.group_el.dataset.name === 'windowrule' ||
+			this.group_el.dataset.name === 'layerrule'
+		) {
 			this.group_el.classList.add('rule')
 		}
 		this.group_el.addEventListener('keydown', (e) => {
@@ -39,29 +48,36 @@ export class ConfigGroup {
 			// 	console.log(firstChild)
 			// 	console.log("Group is entered");
 			// }
-			if (e.key == 'd' && e.target.tagName != 'TEXTAREA' && e.target.tagName != 'INPUT') {
+			if (
+				e.key == 'd' &&
+				e.target.tagName != 'TEXTAREA' &&
+				e.target.tagName != 'INPUT'
+			) {
 				e.stopPropagation()
 				e.stopImmediatePropagation()
 				this.disable()
 			}
 		})
 
+		this.contextMenu = new ContextMenu([])
+		this.addEventListeners()
+	}
+
+	getElementRects(): number[] {
+		this.group_el.offsetHeight
+		const box = this.group_el.getBoundingClientRect()
+		const [x1, x2, y1, y2] = [box.left, box.right, box.top, box.bottom]
+		return [x1, x2, y1, y2]
+	}
+
+	createContextMenu(x = 0, y = 0) {
+		if (x === 0 || y === 0) {
+			const [, x2, , y2] = this.getElementRects()
+			x = x2
+			y = y2
+		}
+
 		this.contextMenu = new ContextMenu([
-			// {
-			// 	label: 'Comment Above',
-			// 	icon: '',
-			// 	action: () => this.add('COMMENT', false),
-			// },
-			// {
-			// 	label: 'Comment Below',
-			// 	icon: '',
-			// 	action: () => this.add('COMMENT', true),
-			// },
-			// {
-			// 	label: 'NewBind Above',
-			// 	icon: '󰅃',
-			// 	action: () => this.add('KEY', false),
-			// },
 			{
 				label: 'Add key',
 				icon: '',
@@ -70,10 +86,10 @@ export class ConfigGroup {
 			{
 				label: 'Duplicate Group',
 				icon: '󰅀',
-				action: () => this.duplicateKey(true),
+				action: () => this.duplicateKey(),
 			},
 			{
-				label: 'Toggle Disable',
+				label: `${this.group_el.dataset.disabled === 'true' ? 'Enable' : 'Disable'}`,
 				icon: '󰈉',
 				action: () => this.disable(),
 			},
@@ -84,25 +100,51 @@ export class ConfigGroup {
 			},
 		])
 
-		this.group_el.appendChild(this.contextMenu.el)
-		this.addEventListeners()
+		this.contextMenu.show(x, y)
 	}
 
 	async addEventListeners() {
 		this.group_el.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
-			this.contextMenu.show()
+			e.stopPropagation()
+			this.createContextMenu(e.clientX, e.clientY)
 		})
-		this.group_el.addEventListener('focus', (e) => {
-			this.contextMenu.show()
+		this.group_el.addEventListener('focus', () => {
+			this.createContextMenu()
 		})
 
 		this.group_el.addEventListener('blur', (e) => {
-			this.contextMenu.hide()
+			const nextTarget = e.relatedTarget as HTMLElement | null
+			if (nextTarget?.closest('.context-menu')) {
+				return
+			}
+
+			// Let focus/click transition into detached context menu settle first.
+			setTimeout(() => {
+				const active = document.activeElement as HTMLElement | null
+				if (active?.closest('.context-menu')) {
+					return
+				}
+				this.contextMenu.hide()
+			}, 20)
 		})
 
 		this.group_el.addEventListener('keydown', async (e) => {
-			if (e.key === 'Delete' && !(e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement)) {
+			if (e.key === 'Enter' || e.key === 'Space') {
+				e.preventDefault()
+				e.stopPropagation()
+				e.stopImmediatePropagation()
+				this.createContextMenu()
+				return
+			}
+
+			if (
+				e.key === 'Delete' &&
+				!(
+					e.target instanceof HTMLTextAreaElement ||
+					e.target instanceof HTMLInputElement
+				)
+			) {
 				e.preventDefault()
 				e.stopPropagation()
 				const confirm = await dmenuConfirm()
@@ -126,7 +168,10 @@ export class ConfigGroup {
 			let parent = el.parentElement
 			console.log(parent)
 			while (parent) {
-				if (parent.dataset.type === 'GROUP' && parent.dataset.disabled === 'true') {
+				if (
+					parent.dataset.type === 'GROUP' &&
+					parent.dataset.disabled === 'true'
+				) {
 					return true
 				}
 				parent = parent.parentElement
@@ -142,10 +187,13 @@ export class ConfigGroup {
 		} else {
 			let isParentDisabled = hasDisabledParent(this.group_el)
 			if (isParentDisabled) {
-				console.warn('Parent is disabled, cannot enable/disable child')
+				console.warn(
+					'Parent is disabled, cannot enable/disable child',
+				)
 				return
 			}
-			this.group_el.dataset.disabled = this.group_el.dataset.disabled === 'true' ? 'false' : 'true'
+			this.group_el.dataset.disabled =
+				this.group_el.dataset.disabled === 'true' ? 'false' : 'true'
 			disabled = this.group_el.dataset.disabled === 'true'
 		}
 		this.save()
@@ -165,9 +213,19 @@ export class ConfigGroup {
 		return this.group_el
 	}
 
-	delete() {
+	async delete() {
+		const confirmation = await dmenuConfirm(
+			`Are you sure you want to delete group ${this.group_el.dataset.name} ?`,
+		)
+		console.log(confirmation)
+		if (!confirmation) {
+			return
+		}
 		this.group_el.style.backgroundColor = 'var(--surface-1)'
-		let before = this.group_el.previousElementSibling || this.group_el.nextElementSibling
+		let before =
+			this.group_el.previousElementSibling ||
+			this.group_el.nextElementSibling
+
 		function collapseElementFull(el, duration = 1000) {
 			const style = getComputedStyle(el)
 
@@ -200,13 +258,15 @@ export class ConfigGroup {
 				el.style.opacity = startOpacity * invFactor
 
 				el.style.paddingTop = startPaddingTop * invFactor + 'px'
-				el.style.paddingBottom = startPaddingBottom * invFactor + 'px'
+				el.style.paddingBottom =
+					startPaddingBottom * invFactor + 'px'
 
 				el.style.marginTop = startMarginTop * invFactor + 'px'
 				el.style.marginBottom = startMarginBottom * invFactor + 'px'
 
 				el.style.borderTopWidth = startBorderTop * invFactor + 'px'
-				el.style.borderBottomWidth = startBorderBottom * invFactor + 'px'
+				el.style.borderBottomWidth =
+					startBorderBottom * invFactor + 'px'
 
 				if (t < 1) {
 					requestAnimationFrame(animate)
@@ -229,8 +289,14 @@ export class ConfigGroup {
 		// Usage
 		collapseElementFull(this.group_el, 500)
 	}
+
 	duplicateKey() {
-		duplicateKey(this.group_el.dataset.uuid, this.group_el.dataset.position, true, this.group_el)
+		duplicateKey(
+			this.group_el.dataset.uuid,
+			this.group_el.dataset.position,
+			true,
+			this.group_el,
+		)
 	}
 
 	save() {

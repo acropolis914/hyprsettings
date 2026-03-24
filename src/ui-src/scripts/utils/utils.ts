@@ -5,6 +5,7 @@ import { _configRenderer } from '../ConfigRenderer/_configRenderer.ts'
 export function hideAllContextMenus() {
 	document.querySelectorAll('.context-menu').forEach((ctx) => {
 		ctx.style.opacity = 0
+		ctx.remove()
 	})
 }
 
@@ -28,8 +29,14 @@ function findParent(root, path, childuuid = null) {
 		if (node.length > 1) {
 			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
 			if (Array.isArray(node)) {
-				let possibleParents = node.filter((node) => Array.isArray(node.children))
-				let parent = possibleParents.filter((parentNode) => parentNode.children.some((child) => child.uuid === childuuid))
+				let possibleParents = node.filter((node) =>
+					Array.isArray(node.children),
+				)
+				let parent = possibleParents.filter((parentNode) =>
+					parentNode.children.some(
+						(child) => child.uuid === childuuid,
+					),
+				)
 				return parent[0]
 			}
 		} else if (node.length === 1) {
@@ -55,7 +62,15 @@ function findParent(root, path, childuuid = null) {
  * @param {Boolean} disabled=false
  * @returns {any}
  */
-export function saveKey(type, name, uuid, position, value, comment = null, disabled = false) {
+export function saveKey(
+	type,
+	name,
+	uuid,
+	position,
+	value,
+	comment = null,
+	disabled = false,
+) {
 	if (type === 'KEY' && GLOBAL.groupsave === true) {
 		console.log('Group save in progress, skipping key save for ', name)
 		return
@@ -119,7 +134,9 @@ function queueManualSave(file: string | undefined) {
 
 	if (!file) return
 
-	let changedFiles = Array.isArray(GLOBAL.changedFiles) ? GLOBAL.changedFiles : []
+	let changedFiles = Array.isArray(GLOBAL.changedFiles)
+		? GLOBAL.changedFiles
+		: []
 	if (!changedFiles.includes(file)) {
 		GLOBAL.setKey('changedFiles', [...changedFiles, file])
 	}
@@ -149,7 +166,10 @@ export function deleteKey(uuid, position) {
 
 	if (!file) {
 		console.warn('No .conf file found in position:', position)
-	} else if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave === true) {
+	} else if (
+		!GLOBAL['config'].dryrun &&
+		GLOBAL['config'].autosave === true
+	) {
 		console.log(`Node ${uuid} deleted:`, node)
 		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 	} else {
@@ -158,7 +178,12 @@ export function deleteKey(uuid, position) {
 	}
 }
 
-export function duplicateKey(uuid, position, below = true, element: HTMLElement) {
+export function duplicateKey(
+	uuid,
+	position,
+	below = true,
+	element: HTMLElement,
+) {
 	console.log(`Duplicating ${position} => with uuid ${uuid}`)
 	let root = GLOBAL['data']
 	let path = position.split(':')
@@ -187,12 +212,22 @@ export function duplicateKey(uuid, position, below = true, element: HTMLElement)
 	// return newNode
 }
 
-export async function addItem(type, name, value, comment, position, relative_uuid, below = true) {
+export async function addItem(
+	type,
+	name,
+	value,
+	comment,
+	position,
+	relative_uuid,
+	below = true,
+) {
 	let root = GLOBAL['data']
 	let path = position.split(':')
 	let parent = findParent(root, path, relative_uuid)
 	// console.log(parent)
-	let nodeIndex = parent.children.findIndex((node) => node.uuid == relative_uuid)
+	let nodeIndex = parent.children.findIndex(
+		(node) => node.uuid == relative_uuid,
+	)
 	// console.log({ nodeIndex })
 	let newuuid = await Backend.newUUID()
 	let targetIndex = below ? nodeIndex + 1 : nodeIndex
@@ -226,7 +261,10 @@ export function makeUUID(length = 8) {
 export function saveWindowConfig() {
 	try {
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
-		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		Backend.saveWindowConfig(
+			JSON.stringify(GLOBAL['persistence']),
+			'persistence',
+		)
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
@@ -242,13 +280,20 @@ export async function saveWindowConfig_Config() {
 
 export async function saveWindowConfig_Persistence() {
 	try {
-		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
+		Backend.saveWindowConfig(
+			JSON.stringify(GLOBAL['persistence']),
+			'persistence',
+		)
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
 }
 
-export function splitWithRemainder(str: string, sep: string, limit: number): string[] {
+export function splitWithRemainder(
+	str: string,
+	sep: string,
+	limit: number,
+): string[] {
 	let parts = str.split(sep)
 	if (parts.length > limit) {
 		let firstParts = parts.slice(0, limit)

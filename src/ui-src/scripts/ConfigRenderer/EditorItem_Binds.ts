@@ -324,8 +324,20 @@ export class EditorItem_Binds {
 		this.el.addEventListener('focus', (e) => {
 			this.contextMenu.show()
 		})
-		this.el.addEventListener('blur', () => {
-			this.contextMenu.hide()
+		this.el.addEventListener('blur', (e) => {
+			const nextTarget = e.relatedTarget as HTMLElement | null
+			if (nextTarget?.closest('.context-menu')) {
+				return
+			}
+
+			// Let focus/click transition into detached context menu settle first.
+			setTimeout(() => {
+				const active = document.activeElement as HTMLElement | null
+				if (active?.closest('.context-menu')) {
+					return
+				}
+				this.contextMenu.hide()
+			}, 20)
 		})
 	}
 

@@ -217,15 +217,17 @@
 
 	<div class="dispatcher-section field">
 		<label>Dispatcher:</label>
-		<textarea
-			class="dispatcher"
-			bind:value={state.dispatcher}
-			oninput={updateDispatcher}
-			onkeydown={preventComma}
-			placeholder="e.g., exec, movewindow"
-			rows="1"
-		></textarea>
-		<button class="select-dispatcher" onclick={selectDispatcher}>Select</button>
+		<div class="dispatcher-input-row">
+			<textarea
+				class="dispatcher"
+				bind:value={state.dispatcher}
+				oninput={updateDispatcher}
+				onkeydown={preventComma}
+				placeholder="e.g., exec, movewindow"
+				rows="1"
+			></textarea>
+			<button class="add-modkey select-dispatcher" title="Select dispatcher" onclick={selectDispatcher}>󰒓</button>
+		</div>
 	</div>
 
 	<div class="params-section field">
@@ -360,13 +362,15 @@
 		border-color: #007acc;
 	}
 
+	.dispatcher-input-row {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
 	.select-dispatcher {
-		background: #007acc;
-		color: white;
-		border: none;
-		border-radius: 0.25rem;
-		padding: 0.25rem 0.5rem;
-		cursor: pointer;
+		padding: 0.2rem 0.4rem;
+		line-height: 1;
 	}
 
 	.select-dispatcher:hover {

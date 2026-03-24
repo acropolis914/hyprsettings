@@ -6,7 +6,14 @@ import { createOverlay, destroyOverlay } from './darkenOverlay.js'
  * Generic DMenu (reusable, app-agnostic)
  * ============================================================ */
 class DMenu {
-	constructor({ items = [], onSelect = () => {}, onCancel = () => {}, promptText = '', searchbar = true, footer = '↑ ↓ Enter' } = {}) {
+	constructor({
+		items = [],
+		onSelect = () => {},
+		onCancel = () => {},
+		promptText = '',
+		searchbar = true,
+		footer = '↑ ↓ Enter',
+	} = {}) {
 		this.items = items
 		this.filteredItems = items
 		this.onSelect = onSelect
@@ -28,7 +35,9 @@ class DMenu {
 			this.inputEl.type = 'text'
 			this.inputEl.className = 'dmenu-search'
 			this.inputEl.placeholder = this.promptText
-			this.inputEl.addEventListener('input', () => this._filter(this.inputEl.value))
+			this.inputEl.addEventListener('input', () =>
+				this._filter(this.inputEl.value),
+			)
 			this.root.appendChild(this.inputEl)
 		}
 
@@ -69,7 +78,11 @@ class DMenu {
 
 	_filter(query) {
 		const q = query.toLowerCase()
-		this.filteredItems = this.items.filter((item) => (item.label ?? String(item.value ?? item)).toLowerCase().includes(q))
+		this.filteredItems = this.items.filter((item) =>
+			(item.label ?? String(item.value ?? item))
+				.toLowerCase()
+				.includes(q),
+		)
 		this._renderItems(this.filteredItems)
 		this.focusFirst()
 	}
@@ -81,7 +94,8 @@ class DMenu {
 
 		const label = document.createElement('div')
 		label.className = 'dmenu-item-label'
-		label.textContent = item.label ?? item.name ?? String(item.value ?? item)
+		label.textContent =
+			item.label ?? item.name ?? String(item.value ?? item)
 		li.appendChild(label)
 
 		if (item.description) {
@@ -99,11 +113,15 @@ class DMenu {
 		})
 		li.addEventListener('focus', () => {
 			li.classList.add('selected')
-			li.querySelector('.dmenu-item-description')?.classList.remove('hidden')
+			li.querySelector('.dmenu-item-description')?.classList.remove(
+				'hidden',
+			)
 		})
 		li.addEventListener('blur', () => {
 			li.classList.remove('selected')
-			li.querySelector('.dmenu-item-description')?.classList.add('hidden')
+			li.querySelector('.dmenu-item-description')?.classList.add(
+				'hidden',
+			)
 		})
 
 		li.addEventListener('keydown', (e) => {
@@ -111,11 +129,16 @@ class DMenu {
 			if (e.key === 'Escape') this.onCancel()
 			if (e.key === 'ArrowDown') {
 				e.preventDefault()
-				;(li.nextElementSibling ?? this.listEl.firstElementChild)?.focus()
+				;(
+					li.nextElementSibling ?? this.listEl.firstElementChild
+				)?.focus()
 			}
 			if (e.key === 'ArrowUp') {
 				e.preventDefault()
-				;(li.previousElementSibling ?? this.listEl.lastElementChild)?.focus()
+				;(
+					li.previousElementSibling ??
+					this.listEl.lastElementChild
+				)?.focus()
 			}
 		})
 
@@ -137,11 +160,13 @@ class DMenu {
  * ============================================================ */
 function runMenu(menu, resolve, reject, isSelectFrom = false) {
 	const root = menu.render()
+	const previousView = GLOBAL.currentView ?? 'main'
+	GLOBAL.previousView = previousView
 
 	const cleanup = () => {
 		menu.destroy()
 		destroyOverlay()
-		GLOBAL.currentView = GLOBAL.previousView
+		GLOBAL.currentView = previousView
 		document.removeEventListener('click', outsideClick)
 	}
 
@@ -163,12 +188,14 @@ function runMenu(menu, resolve, reject, isSelectFrom = false) {
 		isSelectFrom ? reject('selectioncancelled') : resolve(null)
 	}
 
-	GLOBAL.previousView = GLOBAL.currentView
-	GLOBAL.currentView = 'dmenu'
 	createOverlay()
 
 	setTimeout(() => document.addEventListener('click', outsideClick), 10)
 	document.getElementById('content-area').appendChild(root)
+	// Delay this so click handlers in editor rows cannot immediately flip view back to `main`.
+	setTimeout(() => {
+		GLOBAL.currentView = 'dmenu'
+	}, 0)
 	menu.focusFirst()
 }
 
@@ -184,17 +211,26 @@ export function selectFrom(options, addCustom = true) {
 			originalReference: o, // Keep the whole object to return it
 		}))
 		if (addCustom) {
-			items.push({ label: 'Custom value...', value: 'custom', description: 'Enter a custom value' })
+			items.push({
+				label: 'Custom value...',
+				value: 'custom',
+				description: 'Enter a custom value',
+			})
 		}
-		runMenu(new DMenu({ items, promptText: 'Type to search' }), resolve, reject, true)
+		runMenu(
+			new DMenu({ items, promptText: 'Type to search' }),
+			resolve,
+			reject,
+			true,
+		)
 	})
 }
 
-export function dmenuConfirm() {
+export async function dmenuConfirm(message: string = null) {
 	return new Promise((resolve) => {
 		runMenu(
 			new DMenu({
-				promptText: 'Are you sure?',
+				promptText: message || 'Are you sure?',
 				items: [
 					{ label: 'Yes', value: true },
 					{ label: 'No', value: false },
@@ -220,7 +256,21 @@ export function dmenuWrapper({
 			value: o.value,
 			description: o.description,
 		}))
-		if (addCustom) menuItems.push({ label: 'Custom value...', value: 'custom' })
-		runMenu(new DMenu({ searchbar, promptText, footer: footerText, items: menuItems }), resolve, null)
+		if (addCustom)
+			menuItems.push({
+				label: 'Custom value...',
+				value: 'custom',
+				description: 'Enter a custom value',
+			})
+		runMenu(
+			new DMenu({
+				searchbar,
+				promptText,
+				footer: footerText,
+				items: menuItems,
+			}),
+			resolve,
+			null,
+		)
 	})
 }

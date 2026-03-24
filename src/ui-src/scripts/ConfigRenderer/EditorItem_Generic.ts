@@ -70,7 +70,7 @@ export class EditorItem_Generic {
 	genericEditor_el: Element
 	valueEditor: any
 	info: string
-	private contextMenu: HTMLElement
+	private contextMenu: ContextMenu
 	private commentArea: HTMLElement
 	config_position: any
 
@@ -198,7 +198,8 @@ export class EditorItem_Generic {
 
 		this.commentArea = this.el.querySelector('.comment')
 		this.commentArea.value = this.el.dataset.comment
-		this.createContextMenu()
+		// Initialize menu instance without opening it during initial render.
+		// this.createContextMenu(0, 0, false)
 		this.addListeners()
 		this.update()
 		setTimeout(() => {
@@ -206,7 +207,7 @@ export class EditorItem_Generic {
 		}, 20)
 	}
 
-	createValueEditor(value) {
+	createValueEditor(value: string) {
 		if (
 			this.info?.type === 'CONFIG_OPTION_INT' ||
 			this.info?.type === 'CONFIG_OPTION_FLOAT'
@@ -261,6 +262,7 @@ export class EditorItem_Generic {
 					},
 					onNameChange: (name) => {
 						this.el.dataset.name = name
+						this.keyEditor.value = name
 						this.update()
 					},
 				},
@@ -276,7 +278,13 @@ export class EditorItem_Generic {
 		}
 	}
 
-	createContextMenu() {
+	createContextMenu(x = 0, y = 0, show = true) {
+		if (x == 0 || y == 0) {
+			let [x0, x1, y0, y1] = this.getElementRects()
+			x = x1
+			y = y1
+		}
+		// console.log({ x, y })
 		let contextMenuItems = [
 			{
 				label: 'Comment Above',
@@ -304,7 +312,7 @@ export class EditorItem_Generic {
 				action: () => this.editName(),
 			},
 			{
-				label: 'Toggle Disable',
+				label: `${this.el.dataset.disabled === 'true' ? 'Enable' : 'Disable'}`,
 				icon: '󰈉',
 				action: () => this.disable(),
 			},
@@ -324,12 +332,17 @@ export class EditorItem_Generic {
 			contextMenuItems.splice(4, 0, contextMenuItem_reset)
 		}
 		this.contextMenu = new ContextMenu(contextMenuItems)
-		this.contextMenu.el.tabIndex = 0
-		this.el.appendChild(this.contextMenu.el)
+		if (show) {
+			this.contextMenu.show(x, y)
+		}
 	}
 
 	update() {
-		let name = this.keyEditor.value
+		// Keep dataset as source-of-truth so external editors (e.g. bind editor) update preview correctly.
+		let name = this.el.dataset.name ?? this.keyEditor.value ?? ''
+		if (this.keyEditor.value !== name) {
+			this.keyEditor.value = name
+		}
 		let formatted = name.replace(/_/g, ' ') || 'Please input a key'
 		if (formatted.trim().toLowerCase() === 'animation') {
 			formatted = `<a onclick='window.gotoWiki("wiki:animations")' title="Go to Wiki">${formatted}</a>`
@@ -353,6 +366,12 @@ export class EditorItem_Generic {
 		}
 	}
 
+	getElementRects(): number[] {
+		this.el.offsetHeight
+		let box = this.el.getBoundingClientRect()
+		let [x1, x2, y1, y2] = [box.left, box.right, box.top, box.bottom]
+		return [x1, x2, y1, y2]
+	}
 	addListeners() {
 		this.el.addEventListener('click', (e) => {
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.el.dataset.uuid
@@ -362,12 +381,29 @@ export class EditorItem_Generic {
 			} else {
 				this.el.classList.remove('compact')
 			}
-			this.contextMenu.show()
+			// this.createContextMenu()
 		})
+		// this.el.addEventListener('contextmenu', (e) => {
+		// 	e.preventDefault()
+		// 	e.stopPropagation()
+		//
+		// 	this.createContextMenu()
+		// })
+
 		this.el.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
 			e.stopPropagation()
-			this.contextMenu.show()
+			// e is a MouseEvent
+			if (e.pointerType === 'mouse' || e instanceof MouseEvent) {
+				// Mouse right-click
+				console.log('Mouse right-click at:', e.clientX, e.clientY)
+				this.createContextMenu(e.clientX, e.clientY)
+			} else {
+				this.createContextMenu()
+			}
+
+			// Optional: prevent default context menu
+			e.preventDefault()
 		})
 		this.el.addEventListener('dblclick', (e) => {
 			if (
@@ -394,7 +430,7 @@ export class EditorItem_Generic {
 					return
 				}
 				this.el.classList.toggle('compact')
-				this.contextMenu.show()
+				this.createContextMenu()
 			}
 			if (e.key === 'Delete') {
 				e.preventDefault()
@@ -426,11 +462,23 @@ export class EditorItem_Generic {
 			}
 		})
 		this.el.addEventListener('focus', (e) => {
-			this.contextMenu.show()
+			this.createContextMenu()
 		})
-		this.el.addEventListener('blur', () => {
-			// GLOBAL.setKey('currentView', GLOBAL.previousView)
-			this.contextMenu.hide()
+		this.el.addEventListener('blur', (e) => {
+			const nextTarget = e.relatedTarget as HTMLElement | null
+			if (nextTarget?.closest('.context-menu')) {
+				return
+			}
+
+			// Delay slightly so click/focus on detached context menu buttons can settle.
+			setTimeout(() => {
+				const active = document.activeElement as HTMLElement | null
+				if (active?.closest('.context-menu')) {
+					return
+				}
+				this.contextMenu.hide()
+			}, 20)
+
 			// this.el.classList.add("compact")
 		})
 		this.keyEditor.addEventListener('input', () => {

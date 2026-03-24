@@ -40,7 +40,10 @@ function handleKeyInput(event) {
 			break
 		case 'editorItem':
 			if (event.key === 'Tab') {
-			} else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			} else if (
+				event.key === 'ArrowUp' ||
+				event.key === 'ArrowDown'
+			) {
 				event.preventDefault()
 			}
 			break
@@ -142,7 +145,9 @@ function attemptSwitchToMain() {
 
 	// Fallback to first focusable child
 	if (!targetElement) {
-		targetElement = currentSet.querySelector('.editor-item:not(.settings-hidden)')
+		targetElement = currentSet.querySelector(
+			'.editor-item:not(.settings-hidden)',
+		)
 		// targetElement = Array.from(currentSet.children).find(
 		// 	(child) => !child.classList.contains('settings-hidden') && child.getAttribute('tabindex') != null,
 		// )
@@ -188,13 +193,22 @@ function navigateSidebar(direction) {
 	const currentSelected = document.querySelector('.selected')
 	if (!currentSelected || !currentSelected.parentElement) return
 
-	const children = Array.from(currentSelected.parentElement.querySelectorAll('li'))
+	const children = Array.from(
+		currentSelected.parentElement.querySelectorAll('li'),
+	)
 	const currentIndex = children.indexOf(currentSelected)
 
-	let newIndex = getNextValidIndex(children, currentIndex, direction, (item) => {
-		// Skip DIVs or Hidden items
-		return item.tagName === 'DIV' || item.classList.contains('hidden')
-	})
+	let newIndex = getNextValidIndex(
+		children,
+		currentIndex,
+		direction,
+		(item) => {
+			// Skip DIVs or Hidden items
+			return (
+				item.tagName === 'DIV' || item.classList.contains('hidden')
+			)
+		},
+	)
 
 	// UI Updates
 	currentSelected.classList.remove('selected', 'keyboard-selected')
@@ -208,7 +222,9 @@ function navigateSidebar(direction) {
 }
 
 function navigateEditorItems(direction) {
-	const currentSet = document.querySelector(`.config-set#${GLOBAL['activeTab']}`)
+	const currentSet = document.querySelector(
+		`.config-set#${GLOBAL['activeTab']}`,
+	)
 	if (!currentSet) return
 
 	let activeElement = document.activeElement
@@ -217,20 +233,29 @@ function navigateEditorItems(direction) {
 	if (!currentSet.contains(activeElement)) {
 		const savedUuid = GLOBAL['mainFocus'][GLOBAL['activeTab']]
 		if (savedUuid) {
-			activeElement = currentSet.querySelector(`[data-uuid='${savedUuid}']`) || currentSet.querySelector('.editor-item')
+			activeElement =
+				currentSet.querySelector(`[data-uuid='${savedUuid}']`) ||
+				currentSet.querySelector('.editor-item')
 		}
 	}
 
 	if (!activeElement || activeElement.getAttribute('tabindex') == null) {
-		activeElement = currentSet.querySelector('.editor-item:not(.settings-hidden)')
+		activeElement = currentSet.querySelector(
+			'.editor-item:not(.settings-hidden)',
+		)
 	}
 
 	const children = Array.from(currentSet.querySelectorAll('.editor-item'))
 	const currentIndex = children.indexOf(activeElement)
 
-	let newIndex = getNextValidIndex(children, currentIndex, direction, (item) => {
-		return item.classList.contains('settings-hidden')
-	})
+	let newIndex = getNextValidIndex(
+		children,
+		currentIndex,
+		direction,
+		(item) => {
+			return item.classList.contains('settings-hidden')
+		},
+	)
 
 	const newActiveElement = children[newIndex]
 	if (!newActiveElement) return
@@ -246,10 +271,16 @@ function navigateEditorItems(direction) {
 	// Scroll Logic
 	if (newActiveElement.classList.contains('config-group')) {
 		const offset = 80
-		const top = newActiveElement.getBoundingClientRect().top + window.scrollY - offset
+		const top =
+			newActiveElement.getBoundingClientRect().top +
+			window.scrollY -
+			offset
 		window.scrollTo({ top, behavior: 'smooth' })
 	} else {
-		newActiveElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+		newActiveElement.scrollIntoView({
+			behavior: 'smooth',
+			block: 'nearest',
+		})
 	}
 }
 
@@ -310,14 +341,19 @@ function initializeGlobalListeners() {
 
 	document.addEventListener('click', (e) => {
 		// console.log(e.target)
-		if (e.target.classList.contains('config-set') || e.target.classList.contains('editor-item')) {
+		if (
+			e.target.classList.contains('config-set') ||
+			e.target.classList.contains('editor-item')
+		) {
 			handleMainView(e)
 		}
 	})
 
 	// 3. Key Logger Visualizer
 	const pressed = new Set()
-	hotkeys('*', { keydown: true, keyup: true }, (event) => handleKeyVisualizer(event, pressed))
+	hotkeys('*', { keydown: true, keyup: true }, (event) =>
+		handleKeyVisualizer(event, pressed),
+	)
 
 	// 4. State Change Listener
 	GLOBAL.onChange('currentView', handleViewChangeEffect)
@@ -326,7 +362,9 @@ function initializeGlobalListeners() {
 function handleViewChangeEffect(value) {
 	switch (value) {
 		case 'main':
-			document.querySelector('.sidebar-item.keyboard-selected')?.classList.remove('keyboard-selected')
+			document
+				.querySelector('.sidebar-item.keyboard-selected')
+				?.classList.remove('keyboard-selected')
 			break
 		case 'tabs':
 			// Logic for returning to tabs if needed
