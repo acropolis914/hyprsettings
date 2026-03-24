@@ -256,7 +256,7 @@ class Node:
 		return data
 
 	@classmethod
-	def from_json_to_hyprland(cls, json_string: str, **kwargs):
+	def from_json_to_hyprland(cls, json_string: str, **kwargs) -> str:
 		return cls.from_json(json_string).to_hyprland(**kwargs)
 
 	@staticmethod
@@ -304,20 +304,20 @@ class ConfigParser:
 	@classmethod
 	def load(cls, path: Path | PathLike) -> Node:
 		parser = cls(path)
-		log(parser.root)
+		# log(parser.root)
 		return parser.root
 
 	@classmethod
 	def load_string(cls, config_string: str) -> Node:
 		parser = cls()
 		parser.parse_config(config_string.splitlines())
-		log(parser.root)
+		# log(parser.root)
 		return parser.root
 
 	def _load_path(self, path: Path | PathLike) -> Node:
 		with open(path, 'r', encoding='UTF-8') as config_file:
 			new_file_node = Node(
-				Path(config_path).name,
+				Path(path).name,
 				'FILE',
 				str(config_path),
 				resolved_path=str(config_path),
@@ -332,7 +332,7 @@ class ConfigParser:
 		variables: dict[str, str] = {}
 
 		for line_index, line_content in enumerate(config_lines, start=1):
-			log(f'Parsing line {line_index, line_content} of {len(config_lines)}.', only_verbose=True)
+			# log(f'Parsing line {line_index, line_content} of {len(config_lines)}.', only_verbose=True)
 			# First check if a line is disabled and give the line and tells if it is disabled
 			match = re.match(r'^#\s*disabled\b', line_content.lstrip(), re.IGNORECASE)
 			is_disabled = bool(match)
@@ -488,7 +488,7 @@ class ConfigParser:
 					log(f'Added relative: {resolved}', only_verbose=True)
 
 		if sources:
-			log('Reading files sourced in the main config file.')
+			# log('Reading files sourced in the main config file.')
 			for source in sources:
 				try:
 					self._load_path(source)
