@@ -1,19 +1,72 @@
-# Contributing to hyprsettings
+# Contributing
 
-Thanks for contributing.
+Nice. Thanks for helping out.
 
-## Prerequisites
+This project has a Python backend + GTK WebView + Bun UI toolchain, so there are a few system packages you need first.
 
-Install these tools first:
+## 1) System packages first (GI + WebKit)
 
-- [`just`](https://github.com/casey/just) (task runner)
-- [`uv`](https://docs.astral.sh/uv/) (Python env/deps)
-- [`bun`](https://bun.sh/) (UI deps/build tooling)
+`hyprsettings.py` checks for these at runtime:
+
+- shared libs: `gtk-4`, `webkit2gtk-4.1`, `gobject-2.0`
+- typelibs: `Gtk-4.0`, `WebKit2-4.1`, `GObject-2.0`
+
+So before anything else, install your distro's GI/GObject + WebKit2GTK packages.
+
+### Arch
+
+```bash
+sudo pacman -Sy --needed python-gobject webkit2gtk
+```
+
+### Fedora
+
+```bash
+sudo dnf install -y python3-gobject webkit2gtk4.1 gtk3
+```
+
+### Debian / Ubuntu / Mint
+
+```bash
+sudo apt install -y python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-webkit2-4.1
+```
+
+### Void
+
+```bash
+sudo xbps-install -Sy gobject-introspection libwebkit2gtk41
+```
+
+### openSUSE
+
+```bash
+sudo zypper install -y python3-gobject python3-gobject-Gdk typelib-1_0-Gtk-4_0 libgtk-4-1
+```
+
+### Alpine
+
+```bash
+sudo apk add python3-dev py3-gobject3 webkit2gtk-4.1
+```
+
+If you're on another distro, install the equivalents for:
+
+- Python GI bridge (`python3-gi` / `python3-gobject` / `pygobject3`)
+- WebKit2GTK 4.1
+- GTK/GObject introspection typelibs
+
+## 2) Tooling you need
+
+Install these:
+
+- [`just`](https://github.com/casey/just) - task runner (recommended)
+- [`uv`](https://docs.astral.sh/uv/) - Python env/deps
+- [`bun`](https://bun.sh/) - frontend deps/build
 
 Example install commands (Linux):
 
 ```bash
-# just (choose one that matches your distro)
+# just (pick your distro package manager)
 sudo pacman -S just
 # or: sudo apt install just
 
@@ -24,22 +77,19 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 curl -fsSL https://bun.sh/install | bash
 ```
 
-## Recommended workflow (Justfile)
+## 3) Recommended workflow (Justfile)
 
-Use `just` recipes from the project root.
+From project root:
 
 ```bash
 just setup_dev
 just dev
 ```
 
-What each does:
+What those do:
 
-- `just setup_dev`
-  - runs `uv sync` for backend dependencies
-  - runs `bun install` in `src/ui-src` for frontend dependencies
-- `just dev`
-  - starts Python backend and Vite dev server concurrently
+- `just setup_dev`: runs `uv sync`, then `bun install` in `src/ui-src`
+- `just dev`: starts backend + Vite dev server together
 
 Other useful recipes:
 
@@ -54,23 +104,23 @@ just generate-dispatchers
 just fmt
 ```
 
-Tooling-focused notes:
+Tooling notes:
 
-- `just generate-new-config-description` updates config description data from `tooling/ConfigDescriptions`.
-- `just generate-dispatchers` refreshes dispatcher metadata via `tooling/Dispatchers/getdispatchers.py`.
-- `just fmt` formats the `justfile` itself (`just --unstable --fmt`).
+- `just generate-new-config-description` updates data from `tooling/ConfigDescriptions`
+- `just generate-dispatchers` refreshes dispatcher data via `tooling/Dispatchers/getdispatchers.py`
+- `just fmt` formats the `justfile` itself (`just --unstable --fmt`)
 
-## UI dependency policy (`src/ui-src`)
+## 4) UI dependency policy (`src/ui-src`)
 
-When updating imports, keep `package.json` aligned with **actual Node module imports**.
+Keep `src/ui-src/package.json` aligned with real Node imports only.
 
-- Add to `dependencies`/`devDependencies` only when importing from a package name (for example: `import tippy from 'tippy.js'`).
-- Do **not** add packages for assets/libraries imported from local files (for example: `scripts/jslib/*`).
-- `eruda` is currently file-based (`scripts/jslib/eruda.min.js` / optional script include), so it should not be added as an npm/bun dependency unless imports are switched to `node_modules`.
+- Add deps only when importing package names (example: `import tippy from 'tippy.js'`)
+- Do not add deps for local file libs (example: `scripts/jslib/*`)
+- `eruda` is currently file-based (`scripts/jslib/eruda.min.js` / optional HTML script), so do not add it to Bun deps unless you migrate it to `node_modules`
 
-If you migrate a library from local file import to `node_modules` import, update `src/ui-src/package.json` in the same PR.
+If you migrate a library from file import to package import, update `src/ui-src/package.json` in the same PR.
 
-## Verify before opening a PR
+## 5) Quick checks before PR
 
 ```bash
 just setup_dev
@@ -78,7 +128,7 @@ just format
 just bld-prev
 ```
 
-If you only changed UI dependencies, you can also run:
+If you only changed UI deps:
 
 ```bash
 cd src/ui-src
