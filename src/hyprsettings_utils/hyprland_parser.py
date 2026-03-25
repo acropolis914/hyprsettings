@@ -186,6 +186,7 @@ class Node:
 				save_all: bool = changedFileList == 'all'
 
 				content = []
+				log(self.children[0])
 				for child in self.children:
 					if child.type == 'FILE':
 						child.to_hyprland(0, save)
@@ -336,8 +337,8 @@ class ConfigParser:
 			new_file_node = Node(
 				Path(path).name,
 				'FILE',
-				str(config_path),
-				resolved_path=str(config_path),
+				str(path),
+				resolved_path=str(path),
 			)
 			if len(self.stack) > 0:
 				self.stack[-1].addChildren(new_file_node)

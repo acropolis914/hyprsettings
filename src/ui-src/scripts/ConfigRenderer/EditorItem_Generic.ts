@@ -307,7 +307,7 @@ export class EditorItem_Generic {
 				action: () => this.add('KEY', true),
 			},
 			{
-				label: 'Edit name',
+				label: `${this.keyEditor.classList.contains('hidden') ? 'Edit Name' : 'Hide name'}`,
 				icon: '󰙂',
 				action: () => this.editName(),
 			},
@@ -421,6 +421,7 @@ export class EditorItem_Generic {
 		})
 		this.el.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter' || e.key === 'Space') {
+				if (e.target != this.el) return
 				// GLOBAL.setKey('currentView', 'editorItem')
 				// console.log("Pressed enter")
 				e.preventDefault()
@@ -481,7 +482,11 @@ export class EditorItem_Generic {
 
 			// this.el.classList.add("compact")
 		})
-		this.keyEditor.addEventListener('input', () => {
+		this.keyEditor.addEventListener('input', (e) => {
+			if (e.key === 'Enter') {
+				e.stopPropagation()
+				this.keyEditor?.classList.add('hidden')
+			}
 			this.el.dataset.name = this.keyEditor.value
 			this.update()
 		})

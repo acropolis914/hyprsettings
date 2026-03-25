@@ -86,7 +86,7 @@ export function saveKey(
 	// })
 	let root = GLOBAL['data']
 	let path = position.split(':')
-	let file = path
+	let file: string = path
 		.slice(1)
 		.filter((path) => path.includes('.conf'))
 		.at(-1)
@@ -113,6 +113,7 @@ export function saveKey(
 
 	if (!GLOBAL['config'].dryrun && GLOBAL['config']['autosave']) {
 		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
+		console.log('Saving config:', { name, value, file })
 		saveConfigDebounced(JSON.stringify(GLOBAL['data']), [file])
 	} else {
 		queueManualSave(file)
