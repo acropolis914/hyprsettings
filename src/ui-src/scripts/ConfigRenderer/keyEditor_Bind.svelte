@@ -226,7 +226,8 @@
 				placeholder="e.g., exec, movewindow"
 				rows="1"
 			></textarea>
-			<button class="add-modkey select-dispatcher" title="Select dispatcher" onclick={selectDispatcher}>󰒓</button>
+			<button class="add-modkey select-dispatcher" title="Select dispatcher" onclick={selectDispatcher}>󰒓
+			</button>
 		</div>
 	</div>
 

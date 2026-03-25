@@ -36,7 +36,7 @@ changedFileList = []
 
 
 def ui_print(*args, **kwargs):
-	frame = inspect.currentframe().f_back
+	frame = inspect.currentframe().f_back.f_back
 	lineno = frame.f_lineno
 	now = datetime.now().strftime('%H:%M:%S')
 	console.print(f'[green]\\[HyprParser : {lineno}] {now} [/green]', *args, **kwargs)
@@ -49,10 +49,9 @@ _last_log_count = 1
 def log(msg, prefix='', only_verbose=False):
 	global _last_log_message, _last_log_count
 
-	prefix_str = f'{prefix}' if prefix else ''
-	full_message = f'{prefix_str} {msg}'
-
 	if not only_verbose or state.verbose:
+		prefix_str = f'{prefix}' if prefix else ''
+		full_message = f'{prefix_str} {msg}'
 		if full_message == _last_log_message:
 			_last_log_count += 1
 
@@ -95,7 +94,7 @@ def debounced_write(path: Path, contents: str):
 		timer.start()
 
 
-class Node:
+class HyprParser:
 	def __init__(
 		self,
 		name: str,
@@ -186,7 +185,6 @@ class Node:
 				save_all: bool = changedFileList == 'all'
 
 				content = []
-				log(self.children[0])
 				for child in self.children:
 					if child.type == 'FILE':
 						child.to_hyprland(0, save)
@@ -238,8 +236,8 @@ class Node:
 		return ''
 
 	@staticmethod
-	def from_dict(data: dict) -> 'Node':
-		node = Node(
+	def from_dict(data: dict) -> 'HyprParser':
+		node = HyprParser(
 			name=data['name'],
 			type_=data['type'],
 			value=data.get('value'),
@@ -252,13 +250,13 @@ class Node:
 		if 'uuid' in data:
 			node.uuid = data['uuid']
 		for child in data.get('children', []):
-			node.addChildren(Node.from_dict(child))
+			node.addChildren(HyprParser.from_dict(child))
 		return node
 
 	@staticmethod
-	def from_json(json_string: str) -> 'Node':
+	def from_json(json_string: str) -> 'HyprParser':
 		data = json.loads(json_string)
-		data = Node.from_dict(data)
+		data = HyprParser.from_dict(data)
 		return data
 
 	@classmethod
@@ -266,12 +264,12 @@ class Node:
 		return cls.from_json(json_string).to_hyprland(**kwargs)
 
 	@staticmethod
-	def load(path: PathLike) -> Node:
-		return ConfigParser.load(path)
+	def load(path: PathLike) -> HyprParser:
+		return _ConfigParser.load(path)
 
 	@staticmethod
-	def load_string(string: str) -> 'Node':
-		return ConfigParser.load_string(string)
+	def load_string(string: str) -> 'HyprParser':
+		return _ConfigParser.load_string(string)
 
 	def __repr__(self):
 		is_disabled = {self.disabled}
@@ -299,13 +297,13 @@ def print_hyprland(config_list, print: bool = False, save: bool = False):
 node_count = 0
 
 
-class ConfigParser:
+class _ConfigParser:
 	def __init__(self, path: Path | PathLike = None, verbose=state.verbose):
 		global global_verbose
 		global_verbose = verbose
 
-		self.root = Node('root', 'GROUP')
-		self.stack: list[Node] = [self.root]
+		self.root = HyprParser('root', 'GROUP')
+		self.stack: list[HyprParser] = [self.root]
 		if path:
 			start = time.time()
 			self._load_path(path)
@@ -313,7 +311,7 @@ class ConfigParser:
 			log(f'Done parsing {node_count} nodes. Took {round(end - start, 3)} seconds.')
 
 	@classmethod
-	def load(cls, path: Path | PathLike) -> Node:
+	def load(cls, path: Path | PathLike) -> HyprParser:
 		global node_count
 		node_count = 0
 
@@ -322,7 +320,7 @@ class ConfigParser:
 		return parser.root
 
 	@classmethod
-	def load_string(cls, config_string: str) -> Node:
+	def load_string(cls, config_string: str) -> HyprParser:
 		global node_count
 		parser = cls()
 		node_count = 0
@@ -332,9 +330,9 @@ class ConfigParser:
 		log(f'Done parsing {node_count} nodes. Took {round(end - start, 3)} seconds.')
 		return parser.root
 
-	def _load_path(self, path: Path | PathLike) -> Node:
+	def _load_path(self, path: Path | PathLike) -> HyprParser:
 		with open(path, 'r', encoding='UTF-8') as config_file:
-			new_file_node = Node(
+			new_file_node = HyprParser(
 				Path(path).name,
 				'FILE',
 				str(path),
@@ -355,6 +353,7 @@ class ConfigParser:
 
 		for line_index, line_content in enumerate(config_lines, start=1):
 			node_count += 1
+			current_node = None
 			# log(f'Parsing line {line_index, line_content} of {len(config_lines)}.', only_verbose=True)
 			line_stripped = line_content.strip()
 			# First check if a line is disabled and give the line and tells if it is disabled
@@ -379,7 +378,7 @@ class ConfigParser:
 			# log({check, line, comment, position, is_comment})
 
 			if not check and not comment:
-				blank_line = Node(
+				blank_line = HyprParser(
 					'blank',
 					'BLANK',
 					position=position,
@@ -397,7 +396,7 @@ class ConfigParser:
 				if value is None:
 					ui_print(f'{name} has no value.')
 					return
-				node = Node(
+				node = HyprParser(
 					name,
 					'KEY',
 					value=value,
@@ -406,6 +405,7 @@ class ConfigParser:
 					disabled=is_disabled,
 					line_number=line_index,
 				)
+				current_node = node
 				if '$' in value:
 					log(
 						f'Global {name} uses globals in its value {value}',
@@ -432,8 +432,8 @@ class ConfigParser:
 				add_child(node)
 			elif line_stripped.startswith('#') and not is_disabled:
 				new_comment = f'#{comment}' if line_stripped.startswith('##') else f'# {comment}'
-				comment_node = Node(
-					'comment',
+				comment_node = HyprParser(
+					'_',
 					'COMMENT',
 					value=None,
 					comment=new_comment,
@@ -443,7 +443,7 @@ class ConfigParser:
 				add_child(comment_node)
 			elif check.endswith('{'):
 				name = line.rstrip('{').strip()
-				child_node = Node(
+				child_node = HyprParser(
 					name,
 					'GROUP',
 					value=None,
@@ -457,7 +457,7 @@ class ConfigParser:
 				current_parent = stack[-1]
 				add_child = current_parent.addChildren
 			elif check.endswith('}'):
-				groupend_node = Node(
+				groupend_node = HyprParser(
 					'group_end',
 					'GROUPEND',
 					value=None,
@@ -472,8 +472,8 @@ class ConfigParser:
 					current_parent = stack[-1]
 					add_child = current_parent.addChildren
 			else:
-				unknown_node = Node(
-					'unknown_node',
+				unknown_node = HyprParser(
+					'_',
 					'UNKNOWN',
 					value=line_content,
 					comment=None,
@@ -499,6 +499,7 @@ class ConfigParser:
 				if file_path.startswith('~'):
 					file_path = str(Path(file_path).expanduser())
 					if file_path.endswith('.conf'):
+						current_node.resolved_path = str(Path(file_path).resolve())
 						sources.append(Path(file_path).resolve())
 						log(f'Added ~ conf: {file_path}', only_verbose=True)
 					elif file_path.endswith('*'):
@@ -506,12 +507,16 @@ class ConfigParser:
 
 				elif file_path.startswith('/'):
 					if file_path.endswith('.conf'):
+						current_node.resolved_path = str(Path(file_path).resolve())
 						sources.append(Path(file_path).resolve())
 						log(f'Added abs conf: {file_path}', only_verbose=True)
 					elif file_path.endswith('*'):
 						sources.append(self.glob_path(file_path))
 				else:
 					resolved = (config_path.parent / file_path).resolve()
+					current_node.resolved_path = str(resolved)
+
+					# current_node['resolved_path'] = resolved
 					sources.append(resolved)
 					log(f'Added relative: {resolved}', only_verbose=True)
 
@@ -618,11 +623,11 @@ def test():
 	for i, config_str in enumerate(test_cases, 1):
 		try:
 			# Parse the config string
-			root = Node.load_string(config_str)
+			root = HyprParser.load_string(config_str)
 			# print(root)
 
 			# Convert back to hyprland format
-			result = Node.to_hyprland(root)
+			result = HyprParser.to_hyprland(root)
 
 			# to_hyprland() returns a list of file dicts when called on root, extract content
 			if isinstance(result, list) and result and isinstance(result[0], dict):

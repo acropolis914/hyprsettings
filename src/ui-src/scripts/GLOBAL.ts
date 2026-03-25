@@ -1,10 +1,17 @@
-type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem'
-type ConfigGlobal = {
-	file: string
-	name: string
-	value: string | number | any
-	uuid: string
-}
+type ViewType =
+	| 'tabs'
+	| 'main'
+	| 'search'
+	| 'dmenu'
+	| 'overlay'
+	| 'colorSelect'
+	| 'editorItem'
+// type ConfigGlobal = {
+// 	file: string
+// 	name: string
+// 	value: string | number | any
+// 	uuid: string
+// }
 
 export class GLOBAL {
 	// Map of key → array of callbacks
@@ -34,7 +41,7 @@ export class GLOBAL {
 
 	// Focus tracking: tab ID → element UUID
 	static mainFocus: Record<string, string> = {}
-	static configGlobals: ConfigGlobal[]
+	static configGlobals: Record<string, any> = {}
 	static config = null
 	static changedFiles: string[] = []
 
@@ -55,7 +62,10 @@ export class GLOBAL {
 		this._listeners.get(key).push(callback)
 	}
 
-	static setKey<K extends keyof typeof GLOBAL>(key: string, value: string | number | boolean | any[]) {
+	static setKey<K extends keyof typeof GLOBAL>(
+		key: string,
+		value: string | number | boolean | any[],
+	) {
 		// console.trace(`setkey was called for: ${key}`)
 		if (!value) {
 			console.trace('GLOBAL setKey()', key, value)

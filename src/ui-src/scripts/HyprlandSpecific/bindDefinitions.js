@@ -7,7 +7,8 @@ export const bindFlags = [
 	{
 		value: 'l',
 		text: 'Locked',
-		description: 'Will also work when an input inhibitor (e.g. a lockscreen) is active.',
+		description:
+			'Will also work when an input inhibitor (e.g. a lockscreen) is active.',
 	},
 	{
 		value: 'r',
@@ -17,12 +18,14 @@ export const bindFlags = [
 	{
 		value: 'c',
 		text: 'Click',
-		description: 'Will trigger on release of a key or button as long as the mouse cursor stays inside binds:drag_threshold.',
+		description:
+			'Will trigger on release of a key or button as long as the mouse cursor stays inside binds:drag_threshold.',
 	},
 	{
 		value: 'g',
 		text: 'Drag',
-		description: 'Will trigger on release of a key or button as long as the mouse cursor moves outside binds:drag_threshold.',
+		description:
+			'Will trigger on release of a key or button as long as the mouse cursor moves outside binds:drag_threshold.',
 	},
 	{
 		value: 'o',
@@ -37,7 +40,8 @@ export const bindFlags = [
 	{
 		value: 'n',
 		text: 'Non-consuming',
-		description: 'Key/mouse events will be passed to the active window in addition to triggering the dispatcher.',
+		description:
+			'Key/mouse events will be passed to the active window in addition to triggering the dispatcher.',
 	},
 	{
 		value: 'm',
@@ -57,7 +61,8 @@ export const bindFlags = [
 	{
 		value: 's',
 		text: 'Separate',
-		description: 'Will arbitrarily combine keys between each mod/key, see Keysym combos.',
+		description:
+			'Will arbitrarily combine keys between each mod/key, see Keysym combos.',
 	},
 	{
 		value: 'd',
@@ -95,12 +100,12 @@ export const modkeys = [
 	{
 		value: 'MOD2',
 		text: 'MOD2',
-		description: 'Secondary modifier (system-dependent)',
+		description: 'Secondary modifier (system-dependent)(US: NumLock)',
 	},
 	{
 		value: 'MOD3',
 		text: 'MOD3',
-		description: 'Tertiary modifier (system-dependent)',
+		description: 'Tertiary modifier (system-dependent)(Usually unused)',
 	},
 	{
 		value: 'SUPER',
@@ -110,7 +115,7 @@ export const modkeys = [
 	{
 		value: 'MOD5',
 		text: 'MOD5',
-		description: 'Additional modifier (system-dependent)',
+		description: 'Additional modifier (system-dependent)(US: AltGr)',
 	},
 ]
 
@@ -133,12 +138,14 @@ export const dispatchers = [
 	{
 		value: 'sendshortcut',
 		text: 'Sendshortcut',
-		description: 'Sends specified keys (with mods) to an optionally specified window.',
+		description:
+			'Sends specified keys (with mods) to an optionally specified window.',
 	},
 	{
 		value: 'sendkeystate',
 		text: 'Sendkeystate',
-		description: 'Send a key with specific state (down/repeat/up) to a specified window.',
+		description:
+			'Send a key with specific state (down/repeat/up) to a specified window.',
 	},
 	{
 		value: 'killactive',
@@ -208,7 +215,8 @@ export const dispatchers = [
 	{
 		value: 'fullscreenstate',
 		text: 'Fullscreenstate',
-		description: 'Sets the focused window’s fullscreen state and the one sent to the client.',
+		description:
+			'Sets the focused window’s fullscreen state and the one sent to the client.',
 	},
 	{
 		value: 'dpms',
@@ -218,7 +226,8 @@ export const dispatchers = [
 	{
 		value: 'forceidle',
 		text: 'Forceidle',
-		description: 'Sets elapsed time for all idle timers, ignoring idle inhibitors.',
+		description:
+			'Sets elapsed time for all idle timers, ignoring idle inhibitors.',
 	},
 	{
 		value: 'pin',
@@ -233,12 +242,14 @@ export const dispatchers = [
 	{
 		value: 'movewindow',
 		text: 'Movewindow',
-		description: 'Moves the active window in a direction or to a monitor.',
+		description:
+			'Moves the active window in a direction or to a monitor.',
 	},
 	{
 		value: 'swapwindow',
 		text: 'Swapwindow',
-		description: 'Swaps the active window with another window in the given direction or with a specific window.',
+		description:
+			'Swaps the active window with another window in the given direction or with a specific window.',
 	},
 	{
 		value: 'centerwindow',
@@ -258,7 +269,8 @@ export const dispatchers = [
 	{
 		value: 'resizewindowpixel',
 		text: 'Resizewindowpixel',
-		description: 'Resizes a selected window with pixel/resolution params.',
+		description:
+			'Resizes a selected window with pixel/resolution params.',
 	},
 	{
 		value: 'movewindowpixel',
@@ -268,12 +280,14 @@ export const dispatchers = [
 	{
 		value: 'cyclenext',
 		text: 'Cyclenext',
-		description: 'Focuses the next window (on a workspace) optionally filtered.',
+		description:
+			'Focuses the next window (on a workspace) optionally filtered.',
 	},
 	{
 		value: 'swapnext',
 		text: 'Swapnext',
-		description: 'Swaps the focused window with the next window on a workspace.',
+		description:
+			'Swaps the focused window with the next window on a workspace.',
 	},
 	{
 		value: 'tagwindow',
@@ -318,7 +332,8 @@ export const dispatchers = [
 	{
 		value: 'forcerendererreload',
 		text: 'Forcerendererreload',
-		description: 'Forces the renderer to reload all resources and outputs.',
+		description:
+			'Forces the renderer to reload all resources and outputs.',
 	},
 	{
 		value: 'movecurrentworkspacetomonitor',
@@ -328,7 +343,8 @@ export const dispatchers = [
 	{
 		value: 'focusworkspaceoncurrentmonitor',
 		text: 'Focusworkspaceoncurrentmonitor',
-		description: 'Focuses the requested workspace on the current monitor.',
+		description:
+			'Focuses the requested workspace on the current monitor.',
 	},
 	{
 		value: 'moveworkspacetomonitor',
@@ -343,12 +359,14 @@ export const dispatchers = [
 	{
 		value: 'bringactivetotop',
 		text: 'Bringactivetotop',
-		description: 'Brings the current window to the top of the stack (deprecated).',
+		description:
+			'Brings the current window to the top of the stack (deprecated).',
 	},
 	{
 		value: 'alterzorder',
 		text: 'Alterzorder',
-		description: 'Modify the window stack order of the active or specified window (zheight[,window]).',
+		description:
+			'Modify the window stack order of the active or specified window (zheight[,window]).',
 	},
 	{
 		value: 'togglespecialworkspace',
@@ -373,12 +391,14 @@ export const dispatchers = [
 	{
 		value: 'focuscurrentorlast',
 		text: 'Focuscurrentorlast',
-		description: 'Switch focus from current to previously focused window.',
+		description:
+			'Switch focus from current to previously focused window.',
 	},
 	{
 		value: 'lockgroups',
 		text: 'Lockgroups',
-		description: 'Locks the groups (prevents new windows entering groups).',
+		description:
+			'Locks the groups (prevents new windows entering groups).',
 	},
 	{
 		value: 'lockactivegroup',
@@ -388,7 +408,8 @@ export const dispatchers = [
 	{
 		value: 'moveintogroup',
 		text: 'Moveintogroup',
-		description: 'Moves the active window into a group in a specified direction.',
+		description:
+			'Moves the active window into a group in a specified direction.',
 	},
 	{
 		value: 'moveoutofgroup',
@@ -398,12 +419,14 @@ export const dispatchers = [
 	{
 		value: 'movewindoworgroup',
 		text: 'Movewindoworgroup',
-		description: 'Behaves as moveintogroup or moveoutofgroup relative to groups.',
+		description:
+			'Behaves as moveintogroup or moveoutofgroup relative to groups.',
 	},
 	{
 		value: 'denywindowfromgroup',
 		text: 'Denywindowfromgroup',
-		description: 'Prohibits the active window from being added to/entering a group.',
+		description:
+			'Prohibits the active window from being added to/entering a group.',
 	},
 	{
 		value: 'setignoregrouplock',

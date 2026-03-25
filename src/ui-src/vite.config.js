@@ -12,6 +12,7 @@ export default defineConfig({
 			extensions: ['.svelte'],
 			onwarn: (warning, handler) => {
 				if (warning.code.includes('a11y')) return
+				if (warning.code.startsWith('css')) return
 				handler(warning)
 			},
 		}),

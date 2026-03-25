@@ -1,17 +1,17 @@
 import json
 import os
+from os import PathLike
 import subprocess
 from pathlib import Path
 from packaging.version import Version
 import rich
 import rich.traceback
 from rich.console import Console
-from os import PathLike
 
-from .shared import hs_globals, state
 import tomlkit as toml
 
-from .hyprland_parser import Node, makeUUID
+from .shared import hs_globals, state
+from .hyprland_parser import HyprParser, makeUUID
 from .utils import log, ui_print
 
 
@@ -27,14 +27,11 @@ class Api:
 	def __init__(self):
 		self.window_config = None
 
-	# def init(self):
-	# return self.get_config()
-
 	@staticmethod
 	def get_hyprland_config(path: PathLike | None = None):
 		global current_config
 		path = path if path else state.hyprland_config_path
-		config_node = Node.load(path)
+		config_node = HyprParser.load(path)
 		# log(f'Config loaded from {path},{config_node}')
 		config = config_node.to_json()
 		# current_config = config
@@ -42,14 +39,14 @@ class Api:
 
 	@staticmethod
 	def get_hyprland_config_texts(json_string: str):
-		node = Node.from_json(json_string)
+		node = HyprParser.from_json(json_string)
 		files = node.to_hyprland(indent_level=0, save=False)
 		return files
 
 	@staticmethod
 	def save_config(json_string: str, changedFiles=None):
 		# console.print_json(json)
-		node = Node.from_json(json_string)
+		node = HyprParser.from_json(json_string)
 		files = node.to_hyprland(save=True, changedFiles=changedFiles)
 		# console.print(Pretty(files))
 		return files

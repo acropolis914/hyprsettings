@@ -1,4 +1,5 @@
 // import { hideAllContextMenus, waitFor } from './utils.js'
+// import { waitFor } from '../utils/helpers'
 import { EditorItem_Generic } from './EditorItem_Generic.ts'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { EditorItem_Binds } from './EditorItem_Binds.ts'
@@ -11,30 +12,28 @@ import { ConfigGroup } from './ConfigGroup.ts'
 import { GLOBAL } from '../GLOBAL.js'
 import { Backend } from '@scripts/utils/backendAPI.js'
 import { destroyOverlay } from '@scripts/ui_components/darkenOverlay.js'
-// import { waitFor } from '../utils/helpers'
 
 export default async function getAndRenderConfig() {
-	GLOBAL.onChange('data', (value: any) => {
+	GLOBAL.onChange('data', (value?: object): Promise<void> => {
 		if (typeof value === 'object') {
 			new _configRenderer(GLOBAL.data)
 		}
+		return
 	})
 	await Backend.getHyprlandConfig()
 	setTimeout(async () => {
 		await Backend.getHyprlandConfigTexts()
 	}, 3000)
-	// }
 }
 
 export function clearConfigItems() {
 	document.querySelectorAll('.config-set').forEach((element) => {
 		if (['settings', 'debug', 'wiki'].includes(element.id)) {
 			return
-		} else {
-			Array.from(element.children).forEach((child) => {
-				child.remove()
-			})
 		}
+		Array.from(element.children).forEach((child) => {
+			child.remove()
+		})
 	})
 }
 
@@ -78,8 +77,8 @@ export class _configRenderer {
 		this.comment_queue = []
 		this.group_stack = []
 
-		GLOBAL.configGlobals = []
 		if (!renderTo) {
+			GLOBAL.configGlobals = {}
 			clearConfigItems()
 		}
 		this.invokeParser().then(() => {
@@ -112,14 +111,12 @@ export class _configRenderer {
 	async invokeParser() {
 		console.time('parseJSON')
 		await this.parse(this.json)
-
 		for (const [key, val] of Object.entries(
 			GLOBAL.editorItemTemporaryContainers,
 		)) {
 			let set = document.querySelector(`.config-set#${key}`)
 			set.appendChild(val)
 		}
-
 		console.timeEnd('parseJSON')
 
 		while (this.renderTo && this.temporaryElement.firstChild) {
@@ -253,7 +250,7 @@ export class _configRenderer {
 				let matched: boolean
 				if (!this.renderTo) {
 					for (const [key, value] of configGroups) {
-						if (json.name.trim().startsWith(key)) {
+						if (json['name'].trim().startsWith(key)) {
 							const container =
 								GLOBAL.editorItemTemporaryContainers[
 									value
@@ -338,8 +335,8 @@ export class _configRenderer {
 
 						let excluded = exclude ? exclude : []
 						return (
-							json.name.trim().startsWith(key) &&
-							!excluded.includes(json.name.trim())
+							json['name'].trim().startsWith(key) &&
+							!excluded.includes(json['name'].trim())
 						)
 					},
 				)
@@ -376,8 +373,71 @@ export class _configRenderer {
 				if (this.comment_stack.length > 0) {
 					renderCommentStack()
 				}
-				if (json.children) {
-					for (const child of json.children) {
+				if (
+					json &&
+					typeof json === 'object' &&
+					(json as JSON)['children']
+				) {
+					for (const child of (json as JSON)['children']) {
+						// Only proceed if child is a valid object with a name
+						if (
+							child &&
+							typeof child === 'object' &&
+							typeof child.name === 'string'
+						) {
+							if (child.name.startsWith('$')) {
+								const key = (json as JSON)[
+									'resolved_path'
+								]
+
+								// Make sure GLOBAL.configGlobals exists
+								if (
+									!GLOBAL.configGlobals ||
+									typeof GLOBAL.configGlobals !==
+										'object'
+								) {
+									GLOBAL.configGlobals = {}
+									console.log(GLOBAL.configGlobals)
+								}
+
+								// Ensure the object for this key exists
+								if (
+									!GLOBAL.configGlobals[key] ||
+									typeof GLOBAL.configGlobals[
+										key
+									] !== 'object'
+								) {
+									GLOBAL.configGlobals[key] = {}
+									console.log(GLOBAL.configGlobals)
+								}
+
+								// Only add child.value if it’s defined
+								if (child.value !== undefined) {
+									GLOBAL.configGlobals[key] = {
+										...(GLOBAL.configGlobals[
+											key
+										] || {}), // default to empty object
+										[child.name]: child.value,
+									}
+
+									console.log(GLOBAL.configGlobals)
+								} else {
+									console.warn(
+										`Child ${child.name} has undefined value, skipping`,
+									)
+								}
+
+								// console.log(
+								// 	GLOBAL.configGlobals,
+								// 	child.name,
+								// 	child.value,
+								// 	key,
+								// )
+							}
+						} else {
+							console.warn('Invalid child object:', child)
+						}
+
 						await this.parse(child)
 					}
 				}
@@ -398,7 +458,7 @@ export class _configRenderer {
 		//recursive children rendering
 		if (json['children'] && json['name'] === 'root') {
 			// console.log(json)
-			for (const child of json.children) {
+			for (const child of json['children']) {
 				await this.parse(child)
 			}
 
