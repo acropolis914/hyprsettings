@@ -274,10 +274,10 @@ export class _configRenderer {
 				}
 
 				if (!matched) {
-					console.warn(
-						`Config group ${json['name']} has no specified tab. Rendering to the last container `,
-						this.container_stack.at(-1),
-					)
+					// console.warn(
+					// 	`Config group ${json['name']} has no specified tab. Rendering to the last container `,
+					// 	this.container_stack.at(-1),
+					// )
 					this.container_stack.at(-1).appendChild(group_el)
 				}
 				this.container_stack.push(group_el)
