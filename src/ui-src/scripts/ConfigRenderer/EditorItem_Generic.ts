@@ -69,7 +69,7 @@ export class EditorItem_Generic {
 	keyEditor: HTMLTextAreaElement
 	genericEditor_el: Element
 	valueEditor: any
-	info: string
+	info: ConfigDescription
 	private contextMenu: ContextMenu
 	private commentArea: HTMLElement
 	config_position: any
@@ -126,7 +126,9 @@ export class EditorItem_Generic {
 			.filter((s: string) => !s.endsWith('.conf'))
 			.join(':')
 
-		this.info = findConfigDescription(this.config_position, name)
+		this.info = findConfigDescription(this.config_position, name, [
+			'GROUP',
+		])
 
 		this.valueEditor = this.createValueEditor(value)
 		if (

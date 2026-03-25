@@ -5,7 +5,7 @@
 ✨   ╻ ╻╻ ╻┏━┓┏━┓┏━┓┏━╸╺┳╸╺┳╸╻┏┓╻┏━╸┏━┓   ✨
 ✨   ┣━┫┗┳┛┣━┛┣┳┛┗━┓┣╸  ┃  ┃ ┃┃┗┫┃╺┓┗━┓   ✨
 ✨   ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛   ✨
-💧 HyprSettings : your loyal `hyprland.conf` editor!
+     Your loyal `hyprland.conf` editor!
 </pre>
 </h1>
 
@@ -45,7 +45,6 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 - [👻 Autostart and Daemon mode](#-autostart-and-daemon-mode)
 - [🗂️ Organizing Comments into Tabs](#️-organizing-comments-into-tabs)
 - [Contributing](#contributing)
-- [❄ Testing the UI (Development)](#-testing-the-ui-development)
 - [💬 A Personal Note](#-a-personal-note)
     - [Notice on the use of AI](#notice-on-the-use-of-ai)
 
@@ -140,53 +139,29 @@ This will place the section under the **Animations** tab in the UI.
 
 ## Contributing
 
-I'm actively looking for contributors. Help wanted with:
+I'm actively looking for contributors. No experience required, beginners welcome.
 
+**Help wanted with:**
+
+- Parser and config validation reliability
+- Specific key editors (binds, rules, gradients, bezier, animations)
+- Keyboard navigation and accessibility polish
+- Conditional activation system (rule-based enable/disable)
+- Profile system (work/gaming/laptop configs with quick switching)
+- Config health panel (conflicts, deprecated keys, unsafe values)
 - Autocomplete color selectors
-- Floating sidebar for Hyprland documentation
-- Minor UI or UX improvements and polish
-- Accessibility and small quality of life tweaks
+- UI/UX improvements and consistency
 - Packaging for more distros
-- Basic automated tests (parsing and UI sanity)
+- Basic automated tests and regressions
 
-How to get started:
+**How to get started:**
 
-1. Pick or open an issue or discussion.
-2. Hack in a branch.
-3. Keep PRs focused and small if possible.
-4. Describe changes clearly (screenshots for UI tweaks help).
+1. Check [CONTRIBUTING.md](CONTRIBUTING.md) for full setup and current priorities
+2. Pick or open an issue or discussion
+3. Hack in a branch, keep PRs focused
+4. Describe changes clearly (screenshots for UI tweaks help)
 
-No experience requirements. Beginners welcome.
-
-## ❄ Testing the UI (Development)
-
-If you are developing locally instead of using the AUR package:
-
-1. Clone the repo (if you haven't already):
-
-<!-- end list -->
-
-```bash
-git clone https://github.com/acropolis914/hyprsettings
-cd hyprsettings
-```
-
-2. Install required dependencies and create a virtual environment:
-
-```bash
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install -U pip setuptools wheel tomlkit rich pywebview packaging
-```
-
-3. Run the UI:
-
-```bash
-sh run.sh
-```
-
-> **Note:** If you are running tests or working, you should use the `nix develop` shell (if you use Nix) or the
-> installer script (`sh hyprsettings.sh`) as your primary launch method.
+**Future directions:** Hypr ecosystem expansion, `niri`, other Wayland compositors, `waybar`, and more.
 
 ---
 

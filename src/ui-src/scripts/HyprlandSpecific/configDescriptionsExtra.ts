@@ -1,4 +1,6 @@
-export const configDescriptionsExtra = [
+import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
+
+export const configDescriptionsExtra: ConfigDescription[] = [
 	// -------------------------
 	// WindowRuleProps
 	// -------------------------
@@ -654,5 +656,12 @@ export const configDescriptionsExtra = [
 		data: 'global, 0, 10, 1, 1',
 		description:
 			'Animation rule following the syntax: [name], [on/off], [speed], [curve], [style].',
+	},
+	{
+		name: 'windowrule',
+		path: '',
+		type: 'GROUP',
+		data: '',
+		description: 'A rule',
 	},
 ]

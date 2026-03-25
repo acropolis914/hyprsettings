@@ -3,6 +3,7 @@ import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.t
 import { addItem } from '@scripts/utils/utils.ts'
 import { EditorItem_Comments } from '@scripts/ConfigRenderer/EditorItem_Comments'
 import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
+import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 
 export async function newEditorItemGeneric(options: {
 	relatedElement: Element | HTMLElement
@@ -16,7 +17,7 @@ export async function newEditorItemGeneric(options: {
 		.filter((el) => el.classList.contains('editor-item-generic'))
 		.map((el) => el.dataset.name)
 		.filter((i) => !allowed_dupes.includes(i))
-	console.log(existingSiblingKeys)
+	// console.log(existingSiblingKeys)
 
 	let availableKeys: any[]
 	try {
@@ -28,7 +29,7 @@ export async function newEditorItemGeneric(options: {
 		console.error('findAdjacentConfigKeys threw:', e)
 	}
 
-	let keyToAdd
+	let keyToAdd: ConfigDescription
 	if (Array.isArray(availableKeys) && availableKeys.length > 0) {
 		keyToAdd = await selectFrom(availableKeys, true)
 	} else {

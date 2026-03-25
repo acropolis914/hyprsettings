@@ -1,8 +1,17 @@
 // @ts-check
-import { saveKey, deleteKey, duplicateKey } from '../utils/utils.js'
+import {
+	saveKey,
+	deleteKey,
+	duplicateKey,
+	addChildItem,
+	addItem,
+} from '../utils/utils.js'
 import { debounce } from '../utils/helpers.js'
 import { ContextMenu } from './contextMenu.js'
 import { dmenuConfirm } from '../ui_components/dmenu.ts'
+import type { ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
+import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
+import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.ts'
 
 export class ConfigGroup {
 	group_el: HTMLDivElement
@@ -78,11 +87,11 @@ export class ConfigGroup {
 		}
 
 		this.contextMenu = new ContextMenu([
-			{
-				label: 'Add key',
-				icon: '',
-				action: () => {},
-			},
+			// {
+			// 	label: 'Add key',
+			// 	icon: '',
+			// 	action: () => this.newKey(),
+			// },
 			{
 				label: 'Duplicate Group',
 				icon: '󰅀',
@@ -160,6 +169,34 @@ export class ConfigGroup {
 				this.group_el.title = this.title
 			}
 		})
+	}
+	async newKey() {
+		let [itemToAdd, parent_node] = await addChildItem(
+			this.group_el.dataset.position,
+			this.group_el.dataset.uuid,
+		)
+
+		let itemProps: ItemPropsKey = {
+			name: itemToAdd.name,
+			uuid: itemToAdd.uuid,
+			value: itemToAdd['data'],
+			comment: '',
+			type: 'KEY',
+			position: `${this.group_el.dataset.position}:${this.group_el.dataset.name}`,
+		}
+		console.log(itemProps)
+		let newEditorItem = new EditorItem_Generic({ ...itemProps })
+		let below = false
+		this.group_el.prepend(newEditorItem.el)
+		await addItem(
+			itemProps.type,
+			itemProps.name,
+			itemProps.value,
+			itemProps.comment,
+			itemProps.position,
+			null, // used as relative_uuid
+			false, // below
+		)
 	}
 
 	disable(disable: boolean | null = null) {

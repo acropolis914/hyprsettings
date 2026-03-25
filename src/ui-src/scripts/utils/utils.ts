@@ -1,6 +1,13 @@
 import { Backend, saveConfigDebounced } from './backendAPI.js'
 import { GLOBAL } from '../GLOBAL.js'
 import { _configRenderer } from '../ConfigRenderer/_configRenderer.ts'
+import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
+import { selectFrom } from '@scripts/ui_components/dmenu.ts'
+import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
+import type {
+	ItemProps,
+	ItemPropsGroup,
+} from '@scripts/types/editorItemTypes.ts'
 
 export function hideAllContextMenus() {
 	document.querySelectorAll('.context-menu').forEach((ctx) => {
@@ -51,26 +58,15 @@ function findParent(root, path, childuuid = null) {
 	return node
 }
 
-/**
- * Description
- * @param {String} type
- * @param {String} name
- * @param {String} uuid
- * @param {String} position
- * @param {String} value
- * @param {String} comment=null
- * @param {Boolean} disabled=false
- * @returns {any}
- */
 export function saveKey(
-	type,
-	name,
-	uuid,
-	position,
-	value,
-	comment = null,
-	disabled = false,
-) {
+	type: string,
+	name: string,
+	uuid: string,
+	position: string,
+	value: string,
+	comment: string = null,
+	disabled: boolean = false,
+): any {
 	if (type === 'KEY' && GLOBAL.groupsave === true) {
 		console.log('Group save in progress, skipping key save for ', name)
 		return
@@ -214,37 +210,80 @@ export function duplicateKey(
 }
 
 export async function addItem(
-	type,
-	name,
-	value,
-	comment,
-	position,
-	relative_uuid,
+	type: string,
+	name: string,
+	value: string,
+	comment: string,
+	position: string,
+	relative_uuid?: string,
 	below = true,
 ) {
 	let root = GLOBAL['data']
 	let path = position.split(':')
-	let parent = findParent(root, path, relative_uuid)
-	// console.log(parent)
-	let nodeIndex = parent.children.findIndex(
-		(node) => node.uuid == relative_uuid,
-	)
-	// console.log({ nodeIndex })
+
+	// Cast to ItemPropsGroup so TypeScript knows .children exists
+	let parent = findParent(root, path, relative_uuid) as ItemPropsGroup
+
+	// Find the index of the relative item
+	let nodeIndex = relative_uuid
+		? parent.children.findIndex((node) => node.uuid === relative_uuid)
+		: -1
+
 	let newuuid = await Backend.newUUID()
-	let targetIndex = below ? nodeIndex + 1 : nodeIndex
-	// console.log(value)
-	parent.children.splice(targetIndex, 0, {
-		type: type,
+	let targetIndex: number
+
+	if (nodeIndex === -1) {
+		// DEFAULT LOGIC: If no UUID or not found, add to the very beginning (0)
+		// or the very end (length) based on 'below'
+		targetIndex = below ? parent.children.length : 0
+	} else {
+		// RELATIVE LOGIC: Place it exactly before or after the found node
+		targetIndex = below ? nodeIndex + 1 : nodeIndex
+	}
+
+	const newItem: ItemProps = {
+		type: type as any, // Cast to any or specific NodeType if needed
 		name: name,
 		value: value,
 		position: position,
 		uuid: newuuid,
-	})
-	return { type, name, value, comment, position, uuid: newuuid, below }
+		comment: comment,
+		line_number: null, // Python parser expectation
+	}
+
+	parent.children.splice(targetIndex, 0, newItem)
+
+	return { ...newItem, below }
+}
+
+export async function addChildItem(position: string, parent_uuid: string) {
+	let root: ItemProps = GLOBAL['data']
+	let path = position.split(':')
+	let parent_node_of_group = findParent(
+		root,
+		path,
+		parent_uuid,
+	) as ItemPropsGroup
+	let parent_node = parent_node_of_group.children.find(
+		(node) => node['uuid'] === parent_uuid,
+	) as ItemPropsGroup
+	let existingSiblingKeys: string[] = parent_node.children.map(
+		(i: { name: any }) => i.name,
+	)
+	let availableKeys: ConfigDescription[] = findAdjacentConfigKeys(
+		parent_node.name,
+		existingSiblingKeys,
+	)
+	// console.log(availableKeys)
+	let itemToAdd: ConfigDescription = (await selectFrom(
+		availableKeys,
+	)) as ConfigDescription
+	itemToAdd['uuid'] = makeUUID()
+	return [itemToAdd as ConfigDescription, parent_node]
 }
 
 export function makeUUID(length = 8) {
-	let full
+	let full = ''
 
 	if (crypto?.randomUUID) {
 		full = crypto.randomUUID().replace(/-/g, '')
