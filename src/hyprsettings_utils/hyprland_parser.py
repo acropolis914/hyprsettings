@@ -2,7 +2,9 @@
 import json
 import os
 import re
+import sys
 import threading
+import time
 import traceback
 import uuid
 from datetime import datetime
@@ -304,19 +306,29 @@ class ConfigParser:
 		self.root = Node('root', 'GROUP')
 		self.stack: list[Node] = [self.root]
 		if path:
+			start = time.time()
 			self._load_path(path)
-			print(f'Done parsing {node_count} nodes.\n')
+			end = time.time()
+			log(f'Done parsing {node_count} nodes. Took {round(end - start, 3)} seconds.')
 
 	@classmethod
 	def load(cls, path: Path | PathLike) -> Node:
+		global node_count
+		node_count = 0
+
 		parser = cls(path)
+
 		return parser.root
 
 	@classmethod
 	def load_string(cls, config_string: str) -> Node:
+		global node_count
 		parser = cls()
+		node_count = 0
+		start = time.time()
 		parser.parse_config(config_string.splitlines())
-		# log(parser.root)
+		end = time.time()
+		log(f'Done parsing {node_count} nodes. Took {round(end - start, 3)} seconds.')
 		return parser.root
 
 	def _load_path(self, path: Path | PathLike) -> Node:
@@ -600,7 +612,7 @@ def test():
 		'# This is a comment\n\ngeneral {\n  border_size = 2\n}\n\n# Another comment',
 	]
 
-	print('Running roundtrip tests...\n')
+	log('Running roundtrip tests...\n')
 
 	for i, config_str in enumerate(test_cases, 1):
 		try:
@@ -621,16 +633,18 @@ def test():
 			is_similar, similarity = compare_configs(config_str, result_str)
 
 			status = '✓' if is_similar else '✗'
-			print(f'{status} Test {i}: {similarity * 100:.1f}% similar')
-			print(f'  Input:\n    {repr(config_str)}')
-			print(f'  Output:\n    {repr(result_str)}')
-			print()
+			log(f'{status} Test {i}: {similarity * 100:.1f}% similar')
+			log(f'  Input:    {repr(config_str)}')
+			log(f'  Output:   {repr(result_str)}\n')
+			# print()
 
 		except Exception as e:
-			print(f'✗ Test {i} failed: {e}\n')
+			log(f'[red]✗ Test {i} failed: {e}\n[red]')
 
-	print('Tests completed!')
+	log('[bold]Tests completed!')
 
 
 if __name__ == '__main__':
-	test()
+	args = sys.argv[1:]
+	if '--test' in args:
+		test()
