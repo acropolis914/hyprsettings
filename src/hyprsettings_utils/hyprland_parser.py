@@ -64,6 +64,9 @@ def log(msg, prefix='', only_verbose=False):
 
 config_path = Path.home() / '.config' / 'hypr' / 'hyprland.conf'
 NodeType = Literal['KEY', 'GROUP', 'COMMENT', 'BLANK', 'FILE', 'GROUPEND', 'UNKNOWN']
+_DISABLED_LINE_RE = re.compile(r'^#\s*disabled\b', re.IGNORECASE)
+_DISABLED_PREFIX_RE = re.compile(r'^\s*#\s*disabled\b\s*', re.IGNORECASE)
+_ANY_WHITESPACE_RE = re.compile(r'\s')
 
 
 def makeUUID(length: int):
@@ -290,6 +293,8 @@ def print_hyprland(config_list, print: bool = False, save: bool = False):
 # 	with open(f"test_{file["name"]}", "w", encoding="UTF-8") as file:
 # 		file.write(file["content"])
 
+node_count = 0
+
 
 class ConfigParser:
 	def __init__(self, path: Path | PathLike = None, verbose=state.verbose):
@@ -300,11 +305,11 @@ class ConfigParser:
 		self.stack: list[Node] = [self.root]
 		if path:
 			self._load_path(path)
+			print(f'Done parsing {node_count} nodes.\n')
 
 	@classmethod
 	def load(cls, path: Path | PathLike) -> Node:
 		parser = cls(path)
-		# log(parser.root)
 		return parser.root
 
 	@classmethod
@@ -328,22 +333,26 @@ class ConfigParser:
 			self.parse_config(config_file.readlines())
 
 	def parse_config(self, config_lines: list[str]) -> None:
+		global node_count
 		sources: list[PathLike] = []
 		variables: dict[str, str] = {}
+		stack = self.stack
+		current_parent = stack[-1]
+		add_child = current_parent.addChildren
 
 		for line_index, line_content in enumerate(config_lines, start=1):
+			node_count += 1
 			# log(f'Parsing line {line_index, line_content} of {len(config_lines)}.', only_verbose=True)
+			line_stripped = line_content.strip()
 			# First check if a line is disabled and give the line and tells if it is disabled
-			match = re.match(r'^#\s*disabled\b', line_content.lstrip(), re.IGNORECASE)
+			match = _DISABLED_LINE_RE.match(line_content.lstrip())
 			is_disabled = bool(match)
 			# log({is_disabled})
 			none_disabled_name: str = line_content
 			if is_disabled:
-				none_disabled_name = re.sub(
-					r'^\s*#\s*disabled\b\s*',
+				none_disabled_name = _DISABLED_PREFIX_RE.sub(
 					'',
 					line_content,
-					flags=re.IGNORECASE,
 				).lstrip()
 				# log(f'{none_disabled_name.strip()} is disabled: {is_disabled}')
 			# log({none_disabled_name})
@@ -352,7 +361,7 @@ class ConfigParser:
 			line: str
 			comment: str
 			line, comment = self.get_parts(none_disabled_name, '#')
-			is_comment: bool = line_content.strip().startswith('#') and not is_disabled and '=' not in line
+			is_comment: bool = line_stripped.startswith('#') and not is_disabled and '=' not in line
 			position: str = ':'.join(node.name for node in self.stack)
 			# log({check, line, comment, position, is_comment})
 
@@ -363,7 +372,7 @@ class ConfigParser:
 					position=position,
 					line_number=line_index,
 				)
-				self.stack[-1].addChildren(blank_line)
+				add_child(blank_line)
 				continue
 			# if colon_index != -1 and equal_index != -1 and colon_index < equal_index:
 			# 	# TODO:IMPLEMENT COLON GROUPS
@@ -407,9 +416,9 @@ class ConfigParser:
 					variables[name] = value
 				else:
 					variables[name] = value
-				self.stack[-1].addChildren(node)
-			elif line_content.strip().startswith('#') and not is_disabled:
-				new_comment = f'#{comment}' if line_content.strip().startswith('##') else f'# {comment}'
+				add_child(node)
+			elif line_stripped.startswith('#') and not is_disabled:
+				new_comment = f'#{comment}' if line_stripped.startswith('##') else f'# {comment}'
 				comment_node = Node(
 					'comment',
 					'COMMENT',
@@ -418,7 +427,7 @@ class ConfigParser:
 					position=position,
 					line_number=line_index,
 				)
-				self.stack[-1].addChildren(comment_node)
+				add_child(comment_node)
 			elif check.endswith('{'):
 				name = line.rstrip('{').strip()
 				child_node = Node(
@@ -430,8 +439,10 @@ class ConfigParser:
 					line_number=line_index,
 					disabled=is_disabled,
 				)
-				self.stack[-1].addChildren(child_node)
-				self.stack.append(child_node)
+				add_child(child_node)
+				stack.append(child_node)
+				current_parent = stack[-1]
+				add_child = current_parent.addChildren
 			elif check.endswith('}'):
 				groupend_node = Node(
 					'group_end',
@@ -442,8 +453,11 @@ class ConfigParser:
 					line_number=line_index,
 					disabled=is_disabled,
 				)
-				self.stack[-1].addChildren(groupend_node)
-				self.stack.pop()
+				add_child(groupend_node)
+				stack.pop()
+				if stack:
+					current_parent = stack[-1]
+					add_child = current_parent.addChildren
 			else:
 				unknown_node = Node(
 					'unknown_node',
@@ -454,8 +468,9 @@ class ConfigParser:
 					line_number=line_index,
 					disabled=is_disabled,
 				)
-				self.stack[-1].addChildren(unknown_node)
-				ui_print(f'Line {line_index} is unrecognized: {line_content.strip()}')
+				add_child(unknown_node)
+				if state.verbose:
+					ui_print(f'Line {line_index} is unrecognized: {line_stripped}')
 
 			if check.startswith('source'):
 				_, file_path = map(str.strip, line.split('=', 1))
@@ -505,6 +520,8 @@ class ConfigParser:
 
 	@staticmethod
 	def sanitize(string: str) -> str:
+		if '#' not in string and _ANY_WHITESPACE_RE.search(string) is None:
+			return string
 		no_comments = string.split('#', 1)[0]
 		return ''.join(no_comments.split())
 

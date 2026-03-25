@@ -59,7 +59,7 @@ export class _configRenderer {
 		this.renderAfter = renderAfter
 		this.json = json
 		this.nodesSinceYield = 0
-		this.yieldEveryNodes = 80
+		this.yieldEveryNodes = 1000
 		this.container_stack = []
 		if (renderTo) {
 			this.temporaryElement = document.createElement('div')
