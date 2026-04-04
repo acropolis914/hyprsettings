@@ -296,6 +296,7 @@ export class EditorItem_Generic {
 
 			const checkbox2 = document.createElement('input')
 			checkbox2.type = 'checkbox'
+			checkbox2.id = 'preview-boolean-switch-box'
 			checkbox2.checked = this.parseBool(this.el.dataset.value)
 
 			const fakeSlider = document.createElement('span')
@@ -641,6 +642,8 @@ export class EditorItem_Generic {
 				// Commit to UI, DOM, and Backend
 				this.valueEditor.value = next
 				this.el.dataset.value = next
+				const previewCheckboxEl = this.el.querySelector('#preview-boolean-switch-box') as HTMLInputElement
+				previewCheckboxEl.checked = ['yes', 'true', 'on', '1'].some((t) => next.startsWith(t))
 				this.update()
 			}
 			return true
