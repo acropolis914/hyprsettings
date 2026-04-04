@@ -6,10 +6,10 @@ export default async function getDebugStatus() {
 	let debugIndicator = document.getElementById('debug-indicator')
 	let isDebug: boolean
 	try {
-		console.log('Contacting backend if debug mode is on')
+		// console.log('Contacting backend if debug mode is on')
 		isDebug = await Backend.getDebugStatus()
 	} catch (e) {
-		console.log('Error while contacting backend: ', e)
+		console.log('Error while contacting backend to get debug status: ', e)
 		isDebug = false
 	}
 	GLOBAL.setKey('isDebugging', isDebug)
@@ -18,6 +18,6 @@ export default async function getDebugStatus() {
 		debugIndicator.classList.remove('hidden')
 	} else {
 		debugIndicator.classList.add('hidden')
-		console.info('Debug mode is turned off.')
+		// console.info('Debug mode is turned off.')
 	}
 }

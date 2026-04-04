@@ -25,8 +25,12 @@
 		padding: 0.15rem;
 	}
 	@media (max-width: 768px) {
-		border: 0px;
-		padding: 0.5rem;
+		border-right: 3px solid transparent;
+		border-bottom: 3px solid transparent;
+		border-left: 3px solid transparent;
+		border-radius: 0;
+		//border: 0px;
+		padding: 0.25rem;
 		padding-top: 1.5rem;
 	}
 
@@ -40,7 +44,7 @@
 	&[data-disabled='true'] {
 		//border: 3px solid var(--accent-warning);
 		&::before {
-			content: attr(data-name) ' (Disabled)';
+			content: attr(data-name) ' 󰈉';
 			color: var(--accent-warning);
 		}
 	}

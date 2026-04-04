@@ -397,7 +397,7 @@ export class _configRenderer {
 										'object'
 								) {
 									GLOBAL.configGlobals = {}
-									console.log(GLOBAL.configGlobals)
+								//	console.log(GLOBAL.configGlobals)
 								}
 
 								// Ensure the object for this key exists
@@ -408,7 +408,7 @@ export class _configRenderer {
 									] !== 'object'
 								) {
 									GLOBAL.configGlobals[key] = {}
-									console.log(GLOBAL.configGlobals)
+								//	console.log(GLOBAL.configGlobals)
 								}
 
 								// Only add child.value if it’s defined
@@ -420,7 +420,7 @@ export class _configRenderer {
 										[child.name]: child.value,
 									}
 
-									console.log(GLOBAL.configGlobals)
+								//	console.log(GLOBAL.configGlobals)
 								} else {
 									console.warn(
 										`Child ${child.name} has undefined value, skipping`,

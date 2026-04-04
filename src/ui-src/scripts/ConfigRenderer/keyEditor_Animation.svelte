@@ -179,6 +179,7 @@
 		gap: 2rem;
 		/*column-count: 2;*/
 		/*column-gap: 10px;*/
+		row-gap: 0rem;
 		flex-wrap: wrap;
 	}
 
@@ -224,7 +225,8 @@
 
 		&:is(:focus, :focus-within) {
 			outline: none;
-			border: 1px solid var(--accent);
+			border:none;
+			//border: 1px solid var(--accent);
 		}
 
 		&:has(input[type="checkbox"]) {

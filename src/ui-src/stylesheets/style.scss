@@ -60,7 +60,9 @@ html.no-anim *::after {
 		color 0s,
 		background-color 0s,
 		none !important;
+}
 
+html.no-anim {
 	.editor-item {
 		transition: margin 0 ease !important;
 	}
@@ -283,10 +285,13 @@ header#main-header {
 
 #main-floating {
 	position: absolute;
-	top: 1rem;
 	right: 1rem;
+	bottom: 1rem;
+	pointer-events: none;
 	//border: 1px solid red;
-
+	* {
+		pointer-events: auto;
+	}
 	button {
 		display: flex;
 		flex-direction: column;
@@ -305,6 +310,9 @@ header#main-header {
 		font-size: 3rem;
 		.button-label {
 			font-size: 1.4rem;
+		}
+		&:active {
+			transform: scale(0.9);
 		}
 
 		// nested .hidden class
@@ -652,6 +660,55 @@ button#theme-toggle {
 	}
 }
 
+.switch {
+	position: relative;
+	//background-color: var(--accent);
+	//border: 1px solid red;
+	width: 4ch;
+	input[type='checkbox'] {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+	.fake-slider {
+		position: absolute;
+		top: 50%;
+		left: 0;
+		transform: translateY(-50%);
+		cursor: pointer;
+		border-radius: 9999px;
+		//background-color: var(--text-0);
+		background-color: color-mix(in srgb, var(--text-0), transparent 50%);
+
+		width: 100%;
+		height: 50%;
+	}
+	.fake-slider::before {
+		position: absolute;
+		top: 50%;
+		//bottom: 3px;
+		//left: 3px;
+		right: 100%;
+		transform: translateY(-50%) translateX(100%);
+		transition: all 0.2s;
+		border-radius: 50%;
+		background-color: var(--text-2);
+		aspect-ratio: 1/1;
+		//width: 200%;
+		height: 200%;
+		content: '';
+	}
+	input:checked + .fake-slider {
+		//background-color: color-mix(in srgb, var(--accent), transparent 50%);
+		//background-color: var(--accent);
+	}
+	input:checked + .fake-slider::before {
+		right: 0;
+		transform: translateX(0) translateY(-50%);
+		//color: red;
+		background-color: var(--accent);
+	}
+}
 /* --- Drag & Drop ---*/
 .sortable-ghost {
 	scale: 0.8;
@@ -667,5 +724,5 @@ button#theme-toggle {
 .sortable-drag {
 	//border: 1px solid var(--green) !important;
 	//transform: scale(0.5);
-	//display: none;
+	//display: none;s
 }

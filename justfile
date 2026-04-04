@@ -15,17 +15,6 @@ setup_dev:
 kill-hs:
     hyprsettings -k &
 
-# Build UI and preview the app
-bld-prev:
-    cd src/ui-src && bunx vite build && cd ../../ && sh ./run.sh --debug --no-daemon
-
-# Run the app in debug mode
-hs-debug:
-    sh ./run.sh --debug --no-daemon
-
-hs:
-    sh ./run.sh --no-daemon
-
 # Kill processes on ports 3000 and 6969
 kill-ports:
     sh -c 'for p in 3000 6969; do echo "\n== Port $p =="; lsof -iTCP:$p -sTCP:LISTEN -Pn | awk "NR>1 {print \"PID=\"$2, \"NAME=\"$1}"; lsof -tiTCP:$p -sTCP:LISTEN | xargs -r kill -9; done'
@@ -42,9 +31,20 @@ build-py:
 build-ui:
     cd src/ui-src && bun run build-ui
 
+# Build UI and preview the app
+build-prev:
+    cd src/ui-src && bunx vite build && cd ../../ && sh ./run.sh --debug --no-daemon
+
 # Preview built UI (alias for bun run preview)
 preview:
     cd src/ui-src && bun run preview
+
+# Run the app in debug mode
+hs-debug:
+    sh ./run.sh --debug --no-daemon
+
+hs:
+    sh ./run.sh --no-daemon
 
 # Clean fonts (alias for bun run clean-font)
 clean-font:
@@ -59,6 +59,9 @@ generate-new-config-description:
 
 generate-dispatchers:
     python tooling/Dispatchers/getdispatchers.py
+
+generate-wiki:
+    python tooling/wiki-content-checkout.py
 
 fmt:
     just --unstable --fmt

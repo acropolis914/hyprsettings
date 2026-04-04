@@ -15,7 +15,7 @@ import { GLOBAL } from './GLOBAL.ts'
 import { Backend } from './utils/backendAPI.js'
 import setupTheme from './utils/setupTheme.js'
 
-import initializeJSViewer from './ui_components/debugTab.js'
+import initializeDebugTab from './ui_components/debugTab.ts'
 import initializeSearchBar from './ui_components/searchBar.js'
 import createDynamicTabs from './ui_components/createDynamicTabs.ts'
 import createLoadingOverlay, { destroyOverlay } from './ui_components/darkenOverlay.js'
@@ -89,7 +89,7 @@ export async function initialize() {
 	await setupTheme()
 	await getDebugStatus()
 	await createDynamicTabs()
-	initializeJSViewer()
+	initializeDebugTab()
 	await getAndRenderConfig().then(async () => {
 		console.log('Done rendering received config')
 		// await destroyOverlay(true)

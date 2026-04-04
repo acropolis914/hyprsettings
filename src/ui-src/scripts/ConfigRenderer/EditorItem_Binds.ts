@@ -20,7 +20,9 @@ import { dmenuConfirm } from '../ui_components/dmenu.ts'
 // import TomSelect from "../../jslib/tom-select.complete.min"
 const templateString = html`
 	<div class="editor-item" tabindex="0">
-		<div class="editor-item-preview"></div>
+		<div class="preview-wrapper">
+			<div class="editor-item-preview"></div>
+		</div>
 		<div class="keybind-editor">
 			<select class="bindflags" multiple></select>
 			<select class="modkey" multiple></select>

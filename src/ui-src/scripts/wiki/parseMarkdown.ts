@@ -4,11 +4,11 @@ import remarkFrontmatter from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
 import remarkRehype from 'remark-rehype'
 import rehypeStringify from 'rehype-stringify'
-// import { shortcodes } from 'remark-hugo-shortcodes'
 import remarkDirective from 'remark-directive'
 import { remarkObsidianAdmonitions } from './markdown/remarkObsidianAdmonitions.ts'
 import { remarkHugoTabsToDirectives } from './markdown/remarkTabs'
 import { remarkHugoDetailsToHTML } from './markdown/remarkHugoDetails'
+import remarkHeadingId from 'remark-heading-id'
 
 /* -----------------------------
  * Minimal frontmatter stripper
@@ -42,7 +42,9 @@ export default async function parseMarkdown(input: string) {
 	const { matter, content } = stripFrontmatter(input)
 
 	const processor = unified()
+		.use(remarkHeadingId, { defaults: true })
 		.use(remarkParse, { breaks: true })
+
 		.use(remarkDirective)
 		.use(remarkObsidianAdmonitions)
 		.use(remarkHugoTabsToDirectives)

@@ -13,14 +13,16 @@
 		"@types/bun": "latest",
 		"@types/prismjs": "^1.26.5",
 		"concurrently": "^9.2.1",
+		"postcss-strip-inline-comments": "^0.1.5",
 		"prettier": "^3.8.1",
 		"prettier-plugin-css-order": "^2.2.0",
 		"rollup-plugin-visualizer": "^6.0.5",
 		"sass": "^1.97.3",
 		"terser": "^5.46.0",
-		"vite": "^7.3.1"
+		"vite": "npm:rolldown-vite@latest"
 	},
 	"dependencies": {
+		"@types/remark-heading-id": "^1.0.0",
 		"compress-json": "^3.4.0",
 		"hotkeys-js": "^4.0.0",
 		"lit": "^3.3.2",
@@ -30,13 +32,15 @@
 		"remark-directive": "^4.0.0",
 		"remark-frontmatter": "^5.0.0",
 		"remark-gfm": "^4.0.1",
+		"remark-heading-id": "^1.0.1",
 		"remark-parse": "^11.0.0",
 		"remark-rehype": "^11.1.2",
 		"svelte": "^5.50.0",
 		"tippy.js": "^6.3.7",
 		"tom-select": "^2.4.5",
 		"unified": "^11.0.5",
-		"unist-util-visit": "^5.0.0"
+		"unist-util-visit": "^5.0.0",
+		"re2js": "^1.2.3"
 	},
 	"peerDependencies": {
 		"typescript": "^5"

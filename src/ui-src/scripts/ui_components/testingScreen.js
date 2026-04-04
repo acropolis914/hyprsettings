@@ -1,4 +1,9 @@
 import { GLOBAL } from '@scripts/GLOBAL.ts'
+
+import Prism from 'prismjs'
+import 'prismjs/components/prism-ini.js'
+import '@stylesheets/subs/prism.css'
+
 const testingScreen = document.querySelector('.testing-screen')
 const testingScreenHeader = document.getElementById('testing-screen-header')
 let open = false
@@ -39,10 +44,6 @@ function toggleTestingScreen() {
 	}
 	open = !open
 }
-
-import Prism from 'prismjs'
-import 'prismjs/components/prism-ini.js'
-import '@stylesheets/subs/prism.css'
 
 export async function renderTextPreview() {
 	let configPreview_el = document.getElementById('config-preview')

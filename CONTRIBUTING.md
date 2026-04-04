@@ -6,9 +6,22 @@ There are so many things that can be improved in the project and you'll know tha
 take a look at what can be improved and if you can code, help me. If you can't please suggest things that I should
 fix/prioritize. Thank you 💕
 
+### Known Bugs
+
+- [ ] Arriving at the last theme option and pressing the change theme button throws an error
+- [ ] Wiki navigation button obscured by the floating toolbar.
+- [ ] New switch button for booleans not yet bound
+
+### MVP Features
+
+- [ ] Adding top level keys via right click.
+- [ ] Resolving globals for values that use them
+
+## Overview
+
 This project is Python (backend) + GTK WebView + Bun (UI), so a few system packages first, then you're good.
 
-## 1) System packages first (GI + WebKit)
+### 1) System packages first (GI + WebKit)
 
 `hyprsettings.py` checks for these at runtime:
 

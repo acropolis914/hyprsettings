@@ -1,4 +1,4 @@
-import { jsViewerInit } from '@scripts/ui_components/debugTab.js'
+import { jsViewerInit } from '@scripts/ui_components/debugTab.ts'
 import { GLOBAL } from '../GLOBAL.ts'
 import { debounce, waitFor } from './helpers.js'
 

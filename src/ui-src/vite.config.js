@@ -13,6 +13,11 @@ export default defineConfig({
 			onwarn: (warning, handler) => {
 				if (warning.code.includes('a11y')) return
 				if (warning.code.startsWith('css')) return
+				if (warning.code.startsWith('state_referenced_locally')) {
+					console.log('srl')
+					return
+				}
+
 				handler(warning)
 			},
 		}),
@@ -20,6 +25,8 @@ export default defineConfig({
 	build: {
 		// output to ../ui (relative to src/ui-src)
 		minify: 'terser',
+		cssMinify: 'esbuild',
+		chunkSizeWarningLimit: 1024,
 		terserOptions: {
 			sourceMap: false,
 			keep_fnames: true,
@@ -36,16 +43,27 @@ export default defineConfig({
 			input: resolve(__dirname, 'index.html'),
 			output: {
 				entryFileNames: 'index.js',
-				chunkFileNames: 'chunks/[name]-[hash].js',
-				assetFileNames: 'assets/[name]-[hash][extname]',
-				manualChunks(id) {
-					if (id.includes('node_modules')) return 'vendor'
-					if (id.includes('/wiki/')) return 'wiki'
-				},
+				chunkFileNames: 'chunks/[name].js',
+				assetFileNames: 'assets/[name][extname]',
+				// advancedChunks: {
+				// 	groups: [
+				// 		{
+				// 			name: 'vendor',
+				// 			test: /[\\/]node_modules[\\/]/,
+				// 			priority: 10,
+				// 		},
+				// 		{
+				// 			name: 'wiki',
+				// 			test: /[\\/]wiki[\\/]/,
+				// 			priority: 5,
+				// 		},
+				// 	],
+				// },
 			},
 		},
 		assetsDir: 'assets',
 	},
+	css: { transformer: 'postcss', minify: 'esbuild', lightningcss: false },
 	server: {
 		port: 3000,
 		open: false,

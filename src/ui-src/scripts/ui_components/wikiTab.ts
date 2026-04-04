@@ -45,6 +45,12 @@ async function createWikiNavigation() {
 	GLOBAL.onChange('activeTab', (value) => {
 		if (GLOBAL.activeTab !== 'wiki') {
 			navigationElToggle.classList.add('hidden')
+		}
+	})
+
+	GLOBAL.onChange('activeTab', (value) => {
+		if (GLOBAL.activeTab !== 'wiki') {
+			navigationElToggle.classList.add('hidden')
 		} else {
 			navigationElToggle.classList.remove('hidden')
 		}
@@ -92,7 +98,11 @@ async function createWikiNavigation() {
 
 	let tree: Object = GLOBAL.wikiTree
 	GLOBAL.setKey('wikiEntry', [])
-	async function setupNavigation(object: object, indentation = 0, path = 'wiki') {
+	async function setupNavigation(
+		object: object,
+		indentation = 0,
+		path = 'wiki',
+	) {
 		let indent = '       '.repeat(indentation)
 		for (const [key, value] of Object.entries(object)) {
 			if (key === 'navigation.txt' || key === 'version-selector.md') {
@@ -109,7 +119,10 @@ async function createWikiNavigation() {
 			el.setAttribute('tabindex', 0)
 			el.dataset.uuid = makeUUID()
 			el.dataset.name = key
-			el.dataset.cleanName = key.trim().replace('.md', '').replace('-', ' ')
+			el.dataset.cleanName = key
+				.trim()
+				.replace('.md', '')
+				.replace('-', ' ')
 			el.dataset.position = path
 			function setElValue(el) {
 				setViewElValue(el.dataset.value, el.dataset.position)
@@ -138,7 +151,11 @@ async function createWikiNavigation() {
 				indentation -= 1
 
 				objectTree.pop()
-			} else if (key == '_index.md' && typeof value === 'string' && objectTree.length != 1) {
+			} else if (
+				key == '_index.md' &&
+				typeof value === 'string' &&
+				objectTree.length != 1
+			) {
 				// console.log(value)
 				let parsed = await parseMarkdown(value)
 				// el.dataset.value =
@@ -148,7 +165,8 @@ async function createWikiNavigation() {
 				el.dataset.wikiEntry = uuid
 				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
 				objectTree.at(-1).dataset.wikiEntry = uuid
-				objectTree.at(-1).dataset.weight = parsed.data.matter.weight || -1
+				objectTree.at(-1).dataset.weight =
+					parsed.data.matter.weight || -1
 				continue
 			} else if (objectTree.length === 1 && key == '_index.md') {
 				el.classList.add('wiki-file')
@@ -230,15 +248,265 @@ export function reorderByWeight(el: HTMLElement): void {
 	}
 }
 
-function findWikiViewElement(target_element: string): HTMLElement {
-	let linkTargetName = target_element.replace('#', '').replaceAll('-', ' ')
-	let wikiView = document.getElementById('wikiView_content')
-	let element = Array.from(wikiView.childNodes).find((element: HTMLElement) => {
-		if (element.innerText) {
-			return element.innerText.toLowerCase() === linkTargetName.toLowerCase()
+/**
+ * Hyprland Wiki Element Resolver (SPA API)
+ * like many other files here, I sometimes feed them to ai to complete my
+ * documentation and stuff and you can notice them with the descriptive formatted
+ * inline comments, cleaner formatting, naming etc, but the logic starts with
+ * me manually coding them. AI is kind of last pass to help with readability and
+ * stuff. I dont push stuff I dont understand.
+ * =============================================================================
+ * A high-performance, tiered resolution engine that maps string identifiers
+ * to DOM elements within the Hyprland Wiki content container.
+ *
+ * DESIGN PRINCIPLE: "The Waterfall"
+ * ---------------------------------
+ * The function follows a strict priority hierarchy. If a higher-tier search
+ * fails, it "falls through" to the next most logical match.
+ *
+ * RESOLUTION TIERS (In Order of Priority):
+ * 1. [FAST PATH] Native ID Match: Case-insensitive check using browser CSS engine.
+ * 2. [SYNTAX MATCH] Prefixed Search: Handles <tag>, #header, -list, `code`, **bold**.
+ * 3. [EXACT TEXT] Case-insensitive, trimmed match of the full innerText.
+ * 4. [STARTS-WITH] Case-insensitive match for the beginning of the innerText.
+ * 5. [INCLUDES] Final loose "contains" search (Last resort).
+ *
+ * SAMPLE TEST RESOLUTIONS:
+ * | Input String      | Resolver Logic                               | Target Example               |
+ * |-------------------|----------------------------------------------|------------------------------|
+ * | "animations"      | Fast Path (ID) -> Exact Text                 | <h2 id="animations">         |
+ * | "#binds"          | Tier 2 (Header + ID/Text)                    | <h3>Binds</h3>              |
+ * | "<pre>dispatch"   | Tier 2 (Specific Tag + ID/Text)              | <pre id="dispatch">          |
+ * | "<a>"             | Tier 2 (Tag Only)                            | First <a> on page            |
+ * | "- layout"        | Tier 2 (List + Includes)                     | <li>Set the layout to...</li>|
+ * | "`rounding`"      | Tier 2 (Code + Includes)                     | <code>rounding = 10</code>   |
+ * | "**strong**"      | Tier 2 (Bold + Includes)                     | <strong>strong</strong>      |
+ * | "windowrulev2"    | Exact ID -> Exact Text -> StartsWith         | <div id="windowrulev2">      |
+ *
+ * CONSTRAINTS:
+ * - target_element must not contain spaces.
+ * - wikiView_content must be the parent container ID.
+ * =============================================================================
+ */
+function findWikiViewElement(target_element: string): HTMLElement | null {
+	if (target_element.startsWith('#uncommon')) {
+		console.log({ target_element })
+	}
+	const raw = target_element.trim()
+	if (!raw) {
+		console.log('[wiki] section resolver: empty target')
+		return null
+	}
+
+	const wikiView = document.getElementById('wikiView_content')
+	if (!wikiView) {
+		console.log('[wiki] section resolver: wikiView_content not found', {
+			target: raw,
+		})
+		return null
+	}
+
+	const cleanId = raw
+		.replace(/^[#<>\-\*`]+/, '') // Strip prefix
+		.replace(/>$/, '') // Strip trailing HTML bracket
+		.toLowerCase()
+
+	const quickMatch =
+		wikiView.querySelector(`#${cleanId}`) ||
+		wikiView.querySelector(`[id="${cleanId}" i]`)
+	if (quickMatch) {
+		console.log('[wiki] section resolver: fast-path id match', {
+			target: raw,
+			cleanId,
+			matchedTag: (quickMatch as HTMLElement).tagName,
+			matchedId: (quickMatch as HTMLElement).id,
+		})
+		return quickMatch as HTMLElement
+	}
+
+	// Convert NodeList to Array once for filtering
+	const elements = Array.from(
+		wikiView.querySelectorAll('*'),
+	) as HTMLElement[]
+
+	// Safety: Ignore non-visible/metadata tags that might contain the search text
+	const searchable = elements.filter(
+		(el) =>
+			!['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE'].includes(
+				el.tagName,
+			),
+	)
+
+	// --- TIER 2: SYNTAX-SPECIFIC RESOLUTION ---
+
+	// A. HTML Tag Logic: Handles <tag>id or <tag>
+	const tagMatch = raw.match(/^<(\w+)>(.*)$/)
+	if (tagMatch) {
+		const [, tagName, identifier] = tagMatch
+		const upperTag = tagName.toUpperCase()
+		const idPart = identifier.trim().toLowerCase()
+
+		const sameTags = searchable.filter((el) => el.tagName === upperTag)
+		if (sameTags.length > 0) {
+			console.log('[wiki] section resolver: tag syntax match', {
+				target: raw,
+				tag: upperTag,
+				candidates: sameTags.length,
+				identifier: idPart || null,
+			})
+			// Priority: ID Match inside tag -> Content Match inside tag -> First occurrence
+			if (!idPart) {
+				console.log(
+					'[wiki] section resolver: tag syntax used first candidate',
+					{
+						tag: upperTag,
+					},
+				)
+				return sameTags[0]
+			}
+			const tagIdMatch = sameTags.find(
+				(el) => el.id.toLowerCase() === idPart,
+			)
+			if (tagIdMatch) {
+				console.log(
+					'[wiki] section resolver: tag syntax id match',
+					{
+						tag: upperTag,
+						identifier: idPart,
+					},
+				)
+				return tagIdMatch
+			}
+			const tagTextMatch = sameTags.find((el) =>
+				el.innerText.toLowerCase().includes(idPart),
+			)
+			if (tagTextMatch) {
+				console.log(
+					'[wiki] section resolver: tag syntax text match',
+					{
+						tag: upperTag,
+						identifier: idPart,
+					},
+				)
+				return tagTextMatch
+			}
+			console.log(
+				'[wiki] section resolver: tag syntax falling back to first tag',
+				{
+					tag: upperTag,
+				},
+			)
+			return sameTags[0]
 		}
+	}
+
+	// B. Markdown Header Match (#)
+	if (raw.startsWith('#')) {
+		const headerMatch =
+			searchable.find(
+				(el) =>
+					/^H[1-6]$/.test(el.tagName) &&
+					(el.id.toLowerCase() === cleanId ||
+						el.innerText.toLowerCase().includes(cleanId)),
+			) || null
+		console.log('[wiki] section resolver: header syntax lookup', {
+			target: raw,
+			cleanId,
+			matched: Boolean(headerMatch),
+		})
+		return headerMatch
+	}
+
+	// C. Markdown Inline Code (`)
+	if (raw.startsWith('`')) {
+		const codeMatch =
+			searchable.find(
+				(el) =>
+					el.tagName === 'CODE' &&
+					el.innerText.toLowerCase().includes(cleanId),
+			) || null
+		console.log('[wiki] section resolver: code syntax lookup', {
+			target: raw,
+			cleanId,
+			matched: Boolean(codeMatch),
+		})
+		return codeMatch
+	}
+
+	// D. Markdown List Item (-)
+	if (raw.startsWith('-')) {
+		const listMatch =
+			searchable.find(
+				(el) =>
+					el.tagName === 'LI' &&
+					el.innerText.toLowerCase().includes(cleanId),
+			) || null
+		console.log('[wiki] section resolver: list syntax lookup', {
+			target: raw,
+			cleanId,
+			matched: Boolean(listMatch),
+		})
+		return listMatch
+	}
+
+	// E. Markdown Emphasis (** or *)
+	if (raw.startsWith('*')) {
+		const isBold = raw.startsWith('**')
+		const tag = isBold ? 'STRONG' : 'EM'
+		const emphasisMatch =
+			searchable.find(
+				(el) =>
+					el.tagName === tag &&
+					el.innerText.toLowerCase().includes(cleanId),
+			) || null
+		console.log('[wiki] section resolver: emphasis syntax lookup', {
+			target: raw,
+			cleanId,
+			tag,
+			matched: Boolean(emphasisMatch),
+		})
+		return emphasisMatch
+	}
+
+	// 1. Exact Match (The most specific text match)
+	const exactMatch = searchable.find(
+		(el) => el.innerText?.trim().toLowerCase() === cleanId,
+	)
+	if (exactMatch) {
+		console.log('[wiki] section resolver: exact text match', {
+			target: raw,
+			cleanId,
+			matchedTag: exactMatch.tagName,
+			matchedId: exactMatch.id || null,
+		})
+		return exactMatch
+	}
+
+	// 2. Starts With (Better for matching "Binds" when searching "bind")
+	const startsWithMatch = searchable.find((el) =>
+		el.innerText?.trim().toLowerCase().startsWith(cleanId),
+	)
+	if (startsWithMatch) {
+		console.log('[wiki] section resolver: starts-with text match', {
+			target: raw,
+			cleanId,
+			matchedTag: startsWithMatch.tagName,
+			matchedId: startsWithMatch.id || null,
+		})
+		return startsWithMatch
+	}
+
+	// 3. Includes (The broadest possible match)
+	const includesMatch =
+		searchable.find((el) =>
+			el.innerText?.toLowerCase().includes(cleanId),
+		) || null
+	console.log('[wiki] section resolver: includes fallback', {
+		target: raw,
+		cleanId,
+		matched: Boolean(includesMatch),
 	})
-	return <HTMLElement>element
+	return includesMatch
 }
 
 function fixLinxElement(element: HTMLElement, position: string) {
@@ -247,7 +515,10 @@ function fixLinxElement(element: HTMLElement, position: string) {
 
 	if (link.startsWith('..') || link.startsWith('.')) {
 		// console.log({ position })
-		let link_without_section = link.replace(link.substring(link.indexOf('#')), '')
+		let link_without_section = link.replace(
+			link.substring(link.indexOf('#')),
+			'',
+		)
 		// console.log(link_without_section)
 		let position_paths = position.split(':').filter(Boolean)
 		let link_parts = link
@@ -258,17 +529,25 @@ function fixLinxElement(element: HTMLElement, position: string) {
 			.split('/')
 			.filter(Boolean)
 			.filter((item) => item.startsWith('#'))
+
 		let linkToFix = link_parts.join(':')
 		while (link_parts[0] === '..') {
 			link_parts.shift()
-			if (!link_without_section.endsWith('/') && position_paths.length > 1) {
+			if (
+				!link_without_section.endsWith('/') &&
+				position_paths.length > 1
+			) {
 				position_paths.pop()
 			}
 		}
 		while (link_parts[0] === '.') {
 			link_parts.shift()
 		}
-		const newLink = [...position_paths, ...link_parts, ...link_section].join(':')
+		const newLink = [
+			...position_paths,
+			...link_parts,
+			...link_section,
+		].join(':')
 		title = newLink
 		// console.log('Fixing link element', { link_without_section, position,newLink })
 		element.addEventListener('click', (e) => {
@@ -282,7 +561,7 @@ function fixLinxElement(element: HTMLElement, position: string) {
 	} else if (link.startsWith('#')) {
 		element.addEventListener('click', (e) => {
 			e.preventDefault()
-			let element = findWikiViewElement(link)
+			let element = findWikiViewElement(link.replace('--', '-'))
 			element.scrollIntoView({ behavior: 'smooth', block: 'start' })
 		})
 	} else if (link.trim().startsWith('http')) {
@@ -307,8 +586,11 @@ export function gotoWiki(wikidir: string) {
 	let wikiDir_path_immutable = wikiDir_path
 	let wikiDir_section = wikidir.split(':').filter((e) => e.startsWith('#'))
 
-	// console.log(`Wiki: ${wikiDir_path.join(":")}`)
-	console.log(wikiDir_path)
+	console.log('[wiki] gotoWiki request', {
+		wikidir,
+		path: [...wikiDir_path_immutable],
+		section: wikiDir_section[0] || null,
+	})
 	let wikiDirNavigationEl = document.querySelector('#wikiNavigation')
 	wikiDir_path.shift()
 
@@ -324,37 +606,70 @@ export function gotoWiki(wikidir: string) {
 		})
 
 		if (!node) {
-			console.error('Could not find wiki node:', wikiDir_path[0])
+			console.error('[wiki] could not resolve navigation segment', {
+				missingSegment: wikiDir_path[0],
+				remainingPath: [...wikiDir_path],
+				fullPath: [...wikiDir_path_immutable],
+			})
 		}
 		wikiDir_path.shift()
 	}
 	// console.log(node)
 	if (node) {
+		console.log('[wiki] resolved node via tree traversal', {
+			targetPath: [...wikiDir_path_immutable],
+		})
 		node.click()
 	} else {
 		let directory = wikidir
 			.split(':')
 			.filter((e) => !e.startsWith('#'))
 			.at(-1)
-		console.log(directory)
-		let directories = Array.from(wikiDirNavigationEl.querySelectorAll('.wiki-item'))
-		let found = directories.find((e) => normalizeText(e.dataset.name) === normalizeText(directory))
-		console.log({ directory, directories, found })
+		console.log('[wiki] tree traversal failed, trying flat lookup', {
+			directory,
+		})
+		let directories = Array.from(
+			wikiDirNavigationEl.querySelectorAll('.wiki-item'),
+		)
+		let found = directories.find(
+			(e) =>
+				normalizeText(e.dataset.name) === normalizeText(directory),
+		)
+		console.log('[wiki] flat lookup result', {
+			directory,
+			found: Boolean(found),
+			candidateCount: directories.length,
+		})
 		if (found) {
 			found.click()
 		} else {
-			console.error('Could not find wiki node:', wikiDir_path[0])
+			console.error('[wiki] could not find wiki node in flat lookup', {
+				directory,
+				targetPath: [...wikiDir_path_immutable],
+			})
 		}
 	}
 
 	setTimeout(() => {
 		if (wikiDir_section[0]) {
+			console.log('[wiki] scrolling to section', {
+				section: wikiDir_section[0],
+			})
 			let section = findWikiViewElement(wikiDir_section[0])
-
+			if (!section) {
+				console.log('[wiki] section not found', {
+					section: wikiDir_section[0],
+				})
+				return
+			}
 			// console.log(section)
 			section.scrollIntoView({ behavior: 'smooth', block: 'start' })
 		} else {
-			let wikiView_content = document.querySelector('#wikiView_content')
+			console.log(
+				'[wiki] no section provided, scrolling to top of wiki view',
+			)
+			let wikiView_content =
+				document.querySelector('#wikiView_content')
 			wikiView_content.scrollTo(0, 0)
 		}
 	}, 100)
@@ -372,7 +687,8 @@ async function setViewElValue(value: string, position: string, title = '') {
 		let viewEl_content = document.getElementById('wikiView_content')
 		let viewEl_position = document.getElementById('wikiView_position')
 		if (parsed.data.matter.title) {
-			viewEl_title.textContent = parsed.data.matter.title || 'Hyprland Wiki'
+			viewEl_title.textContent =
+				parsed.data.matter.title || 'Hyprland Wiki'
 			viewEl_title.classList.remove('hidden')
 		} else if (title) {
 			viewEl_title.textContent = title
@@ -386,10 +702,14 @@ async function setViewElValue(value: string, position: string, title = '') {
 
 		viewEl_content.innerHTML = parsed['value']
 		// console.clear()
-		viewEl_content.querySelectorAll('a').forEach((element: HTMLElement) => {
-			fixLinxElement(element, position)
-		})
-		const wikiWarning = viewEl_content.querySelector('p:has(> em > strong)')
+		viewEl_content
+			.querySelectorAll('a')
+			.forEach((element: HTMLElement) => {
+				fixLinxElement(element, position)
+			})
+		const wikiWarning = viewEl_content.querySelector(
+			'p:has(> em > strong)',
+		)
 		if (wikiWarning) {
 			wikiWarning.style.border = '1px solid #ff4444'
 			wikiWarning.classList.add('hidden')
@@ -404,7 +724,9 @@ async function setViewElValue(value: string, position: string, title = '') {
 					code.classList.add('language-bash')
 					element.classList.add('language-bash')
 					Prism.highlightElement(code)
-				} else if (code.innerText.toLowerCase().includes('vga compatible')) {
+				} else if (
+					code.innerText.toLowerCase().includes('vga compatible')
+				) {
 					console.log(code.innerText)
 					code.classList.add('language-shell-session')
 					element.classList.add('language-shell-session')
