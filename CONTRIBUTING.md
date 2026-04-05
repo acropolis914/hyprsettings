@@ -9,13 +9,14 @@ fix/prioritize. Thank you 💕
 ### Known Bugs
 
 - [ ] Arriving at the last theme option and pressing the change theme button throws an error
-- [ ] Wiki navigation button obscured by the floating toolbar.
-- [ ] New switch button for booleans not yet bound
+- [x] Wiki navigation button obscured by the floating toolbar.
+- [x] New switch button for booleans not yet bound
 
 ### MVP Features
 
 - [ ] Adding top level keys via right click.
 - [ ] Resolving globals for values that use them
+- [ ] Force manual save on certain keys like `monitor`
 
 ## Overview
 

@@ -26,6 +26,7 @@ except ImportError:
 	class _State:
 		verbose = False
 
+
 	state = _State()
 
 files = []
@@ -96,15 +97,15 @@ def debounced_write(path: Path, contents: str):
 
 class HyprParser:
 	def __init__(
-		self,
-		name: str,
-		type_: NodeType,
-		value: str | None = None,
-		comment: str | None = None,
-		position=None,
-		disabled=False,
-		line_number: int | None = None,
-		resolved_path: str | None = None,
+		  self,
+		  name: str,
+		  type_: NodeType,
+		  value: str | None = None,
+		  comment: str | None = None,
+		  position=None,
+		  disabled=False,
+		  line_number: int | None = None,
+		  resolved_path: str | None = None,
 	):
 		allowed_types = get_args(NodeType)
 		assert type_ in allowed_types, f'Invalid node type {type_}. Must be one of {allowed_types}'
@@ -225,7 +226,8 @@ class HyprParser:
 					content = child.to_hyprland(indent_level)
 					group_content.append(content)
 				indent_level -= 1
-				group_content.append(f'{indent * indent_level}' + f'{disabled_text}' + '}' + f' {groupeend_comment}')
+				group_content.append(
+					  f'{indent * indent_level}' + f'{disabled_text}' + '}' + f' {groupeend_comment}')
 				group_text = '\n'.join(group_content)
 				return group_text
 		elif len(self.children) == 0:
@@ -238,14 +240,14 @@ class HyprParser:
 	@staticmethod
 	def from_dict(data: dict) -> 'HyprParser':
 		node = HyprParser(
-			name=data['name'],
-			type_=data['type'],
-			value=data.get('value'),
-			comment=data.get('comment'),
-			position=data.get('position'),
-			disabled=data.get('disabled', False),
-			line_number=data.get('line_number'),
-			resolved_path=data.get('resolved_path'),
+			  name=data['name'],
+			  type_=data['type'],
+			  value=data.get('value'),
+			  comment=data.get('comment'),
+			  position=data.get('position'),
+			  disabled=data.get('disabled', False),
+			  line_number=data.get('line_number'),
+			  resolved_path=data.get('resolved_path'),
 		)
 		if 'uuid' in data:
 			node.uuid = data['uuid']
@@ -333,10 +335,10 @@ class _ConfigParser:
 	def _load_path(self, path: Path | PathLike) -> HyprParser:
 		with open(path, 'r', encoding='UTF-8') as config_file:
 			new_file_node = HyprParser(
-				Path(path).name,
-				'FILE',
-				str(path),
-				resolved_path=str(path),
+				  Path(path).name,
+				  'FILE',
+				  str(path),
+				  resolved_path=str(path),
 			)
 			if len(self.stack) > 0:
 				self.stack[-1].addChildren(new_file_node)
@@ -363,26 +365,26 @@ class _ConfigParser:
 			none_disabled_name: str = line_content
 			if is_disabled:
 				none_disabled_name = _DISABLED_PREFIX_RE.sub(
-					'',
-					line_content,
+					  '',
+					  line_content,
 				).lstrip()
-				# log(f'{none_disabled_name.strip()} is disabled: {is_disabled}')
+			# log(f'{none_disabled_name.strip()} is disabled: {is_disabled}')
 			# log({none_disabled_name})
 			check: str = self.sanitize(none_disabled_name)
 			# log({check})
 			line: str
 			comment: str
-			line, comment = self.get_parts(none_disabled_name, '#')
+			line, comment = self.get_line_and_comment(none_disabled_name)
 			is_comment: bool = line_stripped.startswith('#') and not is_disabled and '=' not in line
 			position: str = ':'.join(node.name for node in self.stack)
 			# log({check, line, comment, position, is_comment})
 
 			if not check and not comment:
 				blank_line = HyprParser(
-					'blank',
-					'BLANK',
-					position=position,
-					line_number=line_index,
+					  'blank',
+					  'BLANK',
+					  position=position,
+					  line_number=line_index,
 				)
 				add_child(blank_line)
 				continue
@@ -397,34 +399,34 @@ class _ConfigParser:
 					ui_print(f'{name} has no value.')
 					return
 				node = HyprParser(
-					name,
-					'KEY',
-					value=value,
-					comment=comment,
-					position=position,
-					disabled=is_disabled,
-					line_number=line_index,
+					  name,
+					  'KEY',
+					  value=value,
+					  comment=comment,
+					  position=position,
+					  disabled=is_disabled,
+					  line_number=line_index,
 				)
 				current_node = node
 				if '$' in value:
 					log(
-						f'Global {name} uses globals in its value {value}',
-						only_verbose=True,
+						  f'Global {name} uses globals in its value {value}',
+						  only_verbose=True,
 					)
 					for key, val in variables.items():
 						if key in value:
 							value = value.replace(key, val)
 							log(
-								f'Replaced {name} value to {value} based on globals.',
-								only_verbose=True,
+								  f'Replaced {name} value to {value} based on globals.',
+								  only_verbose=True,
 							)
 							break
 					old_value = value
 					value = os.path.expandvars(value)
 					if value != old_value:
 						log(
-							f'Expanded {old_value} to {value} based on os variables.',
-							only_verbose=True,
+							  f'Expanded {old_value} to {value} based on os variables.',
+							  only_verbose=True,
 						)
 					variables[name] = value
 				else:
@@ -433,24 +435,24 @@ class _ConfigParser:
 			elif line_stripped.startswith('#') and not is_disabled:
 				new_comment = f'#{comment}' if line_stripped.startswith('##') else f'# {comment}'
 				comment_node = HyprParser(
-					'_',
-					'COMMENT',
-					value=None,
-					comment=new_comment,
-					position=position,
-					line_number=line_index,
+					  '_',
+					  'COMMENT',
+					  value=None,
+					  comment=new_comment,
+					  position=position,
+					  line_number=line_index,
 				)
 				add_child(comment_node)
 			elif check.endswith('{'):
 				name = line.rstrip('{').strip()
 				child_node = HyprParser(
-					name,
-					'GROUP',
-					value=None,
-					comment=comment,
-					position=position,
-					line_number=line_index,
-					disabled=is_disabled,
+					  name,
+					  'GROUP',
+					  value=None,
+					  comment=comment,
+					  position=position,
+					  line_number=line_index,
+					  disabled=is_disabled,
 				)
 				add_child(child_node)
 				stack.append(child_node)
@@ -458,13 +460,13 @@ class _ConfigParser:
 				add_child = current_parent.addChildren
 			elif check.endswith('}'):
 				groupend_node = HyprParser(
-					'group_end',
-					'GROUPEND',
-					value=None,
-					comment=comment,
-					position=position,
-					line_number=line_index,
-					disabled=is_disabled,
+					  'group_end',
+					  'GROUPEND',
+					  value=None,
+					  comment=comment,
+					  position=position,
+					  line_number=line_index,
+					  disabled=is_disabled,
 				)
 				add_child(groupend_node)
 				stack.pop()
@@ -473,13 +475,13 @@ class _ConfigParser:
 					add_child = current_parent.addChildren
 			else:
 				unknown_node = HyprParser(
-					'_',
-					'UNKNOWN',
-					value=line_content,
-					comment=None,
-					position=position,
-					line_number=line_index,
-					disabled=is_disabled,
+					  '_',
+					  'UNKNOWN',
+					  value=line_content,
+					  comment=None,
+					  position=position,
+					  line_number=line_index,
+					  disabled=is_disabled,
 				)
 				add_child(unknown_node)
 				if state.verbose:
@@ -557,6 +559,28 @@ class _ConfigParser:
 			part1 = string.strip()
 			return part1, part2
 
+	@staticmethod
+	def get_line_and_comment(line):
+		# print(line)
+		in_quote = False
+		quote_char = None
+
+		for i, char in enumerate(line):
+			if char in ('"', "'"):
+				if not in_quote:
+					in_quote = True
+					quote_char = char
+				elif char == quote_char:
+					in_quote = False
+					quote_char = None
+
+			if char == '#' and not in_quote:
+				line, comment = line[:i].strip(), line[i + 1:].strip()
+				if line.startswith("exec"):
+					log(line, comment)
+				return line, comment
+		return line.strip(), ""
+
 	def glob_path(self, path: Path | str):
 		path_str = str(path).rstrip('*')
 		if not os.path.exists(path_str):
@@ -568,8 +592,8 @@ class _ConfigParser:
 			elif Path(path_str, content).is_dir():
 				return self.glob_path(str(Path(path_str, content)))
 			log(
-				f'Added via glob: {Path(path_str, content).resolve()}',
-				only_verbose=True,
+				  f'Added via glob: {Path(path_str, content).resolve()}',
+				  only_verbose=True,
 			)
 			return None
 		return None
@@ -604,18 +628,18 @@ def test():
 		return similarity >= 0.8, similarity
 
 	test_cases = [
-		# Simple key-value
-		'monitor = DP-1, 1920x1080, 0x0, 1',
-		# Multiple keys
-		'input {\n  kb_layout = us\n  mouse_speed = 0.5\n}',
-		# With comment
-		'general {\n  gaps_in = 10 # inner gaps\n  gaps_out = 20\n}',
-		# Disabled config
-		'#DISABLED exec = some_command',
-		# Multiple sections
-		'decoration {\n  blur = yes\n}\nanimations {\n  enabled = yes\n}',
-		# Blank lines and comments
-		'# This is a comment\n\ngeneral {\n  border_size = 2\n}\n\n# Another comment',
+		  # Simple key-value
+		  'monitor = DP-1, 1920x1080, 0x0, 1',
+		  # Multiple keys
+		  'input {\n  kb_layout = us\n  mouse_speed = 0.5\n}',
+		  # With comment
+		  'general {\n  gaps_in = 10 # inner gaps\n  gaps_out = 20\n}',
+		  # Disabled config
+		  '#DISABLED exec = some_command',
+		  # Multiple sections
+		  'decoration {\n  blur = yes\n}\nanimations {\n  enabled = yes\n}',
+		  # Blank lines and comments
+		  '# This is a comment\n\ngeneral {\n  border_size = 2\n}\n\n# Another comment',
 	]
 
 	log('Running roundtrip tests...\n')
@@ -642,7 +666,7 @@ def test():
 			log(f'{status} Test {i}: {similarity * 100:.1f}% similar')
 			log(f'  Input:    {repr(config_str)}')
 			log(f'  Output:   {repr(result_str)}\n')
-			# print()
+		# print()
 
 		except Exception as e:
 			log(f'[red]✗ Test {i} failed: {e}\n[red]')

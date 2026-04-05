@@ -24,10 +24,12 @@
 	"dependencies": {
 		"@types/remark-heading-id": "^1.0.0",
 		"compress-json": "^3.4.0",
+		"highlight.js": "^11.11.1",
 		"hotkeys-js": "^4.0.0",
 		"lit": "^3.3.2",
 		"pako": "^2.1.0",
 		"prismjs": "^1.30.0",
+		"re2js": "^1.2.3",
 		"rehype-stringify": "^10.0.1",
 		"remark-directive": "^4.0.0",
 		"remark-frontmatter": "^5.0.0",
@@ -39,8 +41,7 @@
 		"tippy.js": "^6.3.7",
 		"tom-select": "^2.4.5",
 		"unified": "^11.0.5",
-		"unist-util-visit": "^5.0.0",
-		"re2js": "^1.2.3"
+		"unist-util-visit": "^5.0.0"
 	},
 	"peerDependencies": {
 		"typescript": "^5"

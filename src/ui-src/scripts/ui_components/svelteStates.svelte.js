@@ -8,6 +8,33 @@ export const menuState = $state({
 	y: 0,
 	items: [
 		{
+			label: 'Add new item',
+			icon: '',
+		},
+		{ label: 'separator' },
+		{
+			label: 'Expand all items',
+			icon: '󰡏',
+			action: () => {
+				document.querySelectorAll('.editor-item').forEach((item) => {
+					item.classList.remove('compact')
+				})
+			},
+		},
+		{
+			label: 'Collapse all items',
+			icon: '󰘕',
+			action: () => {
+				document.querySelectorAll('.editor-item').forEach((item) => {
+					item.classList.add('compact')
+				})
+			},
+		},
+
+		{
+			label: 'separator',
+		},
+		{
 			label: 'Reload window',
 			icon: '󱄋',
 			action: () => {
@@ -21,39 +48,17 @@ export const menuState = $state({
 				window.reinitialize()
 			},
 		},
-		{
-			label: 'Expand all items',
-			icon: '󰡏',
-			action: () => {
-				document
-					.querySelectorAll('.editor-item')
-					.forEach((item) => {
-						item.classList.remove('compact')
-					})
-			},
-		},
-		{
-			label: 'Collapse all items',
-			icon: '󰘕',
-			action: () => {
-				document
-					.querySelectorAll('.editor-item')
-					.forEach((item) => {
-						item.classList.add('compact')
-					})
-			},
-		},
 
 		// { label: 'Copy', icon: '󰆏', action: () => console.log('Copy') }, // nf-md-content_copy
 		// { label: 'Paste', icon: '󰆒', action: () => console.log('Paste') }, // nf-md-content_paste
-		// {
-		// 	label: 'More',
-		// 	icon: '󰁍', // nf-md-dots_horizontal
-		// 	submenu: [
-		// 		{ label: 'Option 1', icon: '󰐊', action: () => console.log('Option 1') }, // nf-md-checkbox_blank_circle
-		// 		{ label: 'Option 2', icon: '󰐊', action: () => console.log('Option 2') },
-		// 	],
-		// },
+		{
+			label: 'More',
+			icon: '', // nf-md-dots_horizontal
+			submenu: [
+				{ label: 'Option 1', icon: '󰐊', action: () => console.log('Option 1') }, // nf-md-checkbox_blank_circle
+				{ label: 'Option 2', icon: '󰐊', action: () => console.log('Option 2') },
+			],
+		},
 		// { label: 'Delete', icon: '󰆴', action: () => console.log('Delete') }, // nf-md-delete
 	],
 })

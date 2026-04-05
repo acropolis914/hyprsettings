@@ -1,12 +1,28 @@
+
+
+
+
 <script lang="ts">
 	import { tick } from 'svelte';
+	interface item {
+		label: string;
+		action?: ()=> void;
+		submenu?: object;
+		icon?: string;
+	}
 
-	export let items: Object[] = [];        // array of { label, action?, submenu?, icon? }
-	export let visible: boolean = false;
-	export let x = 0;
-	export let y = 0;
+	interface Props {
+		items?: Item[];
+		visible?: boolean;
+		x?: number;
+		y?: number;
+		submenu?: Item[];
+	}
 
-	function select(item) {
+	let {items, visible, x, y, submenu} = $props() as Props;
+
+
+	function select(item:item) {
 		item.action?.();
 		visible = false;
 	}
@@ -22,7 +38,7 @@
 		window.addEventListener('mousemove',()=>{
 			setTimeout(()=>{
 				handleClickOutside
-			}, 1000)
+			}, 100)
 		});
 	}
 
@@ -40,12 +56,17 @@
 		if (rect.top < 0) y = 0;
 	}
 
-	$: if (visible) clampPosition();
+
+	// $: if (visible) clampPosition();
+	$effect(()=>{
+		if (visible) clampPosition();
+	})
 </script>
 
 {#if visible}
 	<ul class="context-menu-sv" style="top:{y}px; left:{x}px;">
 		{#each items as item}
+			{#if !(item.label === "separator")}
 			<li>
 				<div on:click={() => item.submenu ? null : select(item)}>
 					<span class="icon">{item.icon}</span> {item.label} <span class="submenu-arrow">{item.submenu ? '▶' : ''}</span>
@@ -59,6 +80,9 @@
 					</ul>
 				{/if}
 			</li>
+			{:else}
+				<hr>
+			{/if}
 		{/each}
 	</ul>
 {/if}
@@ -75,10 +99,20 @@
 		list-style: none;
 		margin: 0;
 		/*padding: 0.25rem 0;*/
+		padding-block: 0.1rem;
 		width: 15rem;
 		/*font-family: sans-serif;*/
 		font-size: 1.2rem;
 		z-index: 300;
+
+
+	}
+
+	hr{
+		margin-inline: 1.5rem;
+		margin-block: .3rem;
+		//border-width: 5px;
+		color: color-mix(in srgb, var(--surface-2) 40%, transparent);
 	}
 
 	.context-menu-sv li {
@@ -102,13 +136,16 @@
 	.icon{
 		font-size: 2rem;
 		line-height: 2rem;
-		font-family: v.$font-nerd;
+		//font-family: v.$font-nerd;
+		margin-right: 0.5rem;
+		min-width: 1.3rem;
+		min-height: 2rem;
 	}
 
 	.submenu-arrow{
 		/*color: var(--red);*/
 		margin-left: auto ;
-		align-self: flex-end;
+		//align-self: flex-end;
 	}
 
 	/* Submenu */
@@ -116,7 +153,7 @@
 		display: none;
 		position: absolute;
 		top: 0;
-		left: 100%;
+		left: 101%;
 		list-style: none;
 		margin: 0;
 		padding: 0.25rem 0;

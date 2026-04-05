@@ -18,6 +18,10 @@ import { newEditorItemGeneric } from '@scripts/HyprlandSpecific/editorItem_newKe
 import keyEditor_Bind from '@scripts/ConfigRenderer/keyEditor_Bind.svelte'
 import { findAdjacentConfigKeys, findConfigDescription } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
+import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelte'
+// import hljs from 'highlight.js/lib/core'
+// import bash from 'highlight.js/lib/languages/bash.js'
+// hljs.registerLanguage('bash', bash)
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -27,7 +31,8 @@ import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts
 //         this.initial_load=true
 //     }
 //     update() {
-//         if (!this.initial_load){
+//         if (!this.initial_load){import bash from 'highlight.js/lib/languages/bash'
+// // hljs.registerLanguage('bash', bash)
 //             this.saveDebounced()
 //         }
 //     }
@@ -75,10 +80,20 @@ const wikiMap = {
 	bezier: 'animations:#curves',
 }
 
+export const execNames = [
+	{ name: 'exec-once', description: 'command will execute only on launch (support rules)' },
+	{ name: 'execr-once', description: 'command will execute only on launch' },
+	{ name: 'exec', description: 'command will execute on each reload (support rules)' },
+	{ name: 'execr', description: 'command will execute on each reload' },
+	{ name: 'exec-shutdown', description: 'command will execute only on shutdown' },
+]
+
+void execNames
+
 export class EditorItem_Generic {
 	tippyTitle: string
 	initial_load: boolean
-	el: HTMLDivElement
+	el: Node | HTMLDivElement
 	preview_el: HTMLDivElement
 	saveDebounced: () => void | any
 	keyEditor: HTMLTextAreaElement
@@ -124,12 +139,7 @@ export class EditorItem_Generic {
 
 		this.preview_el = this.el.querySelector('.editor-item-preview')
 		this.genericEditor_el = this.el.querySelector('.generic-editor')
-		this.keyEditor = document.createElement('textarea')
-		this.keyEditor.rows = 1
-		this.keyEditor.id = 'generic-key'
-		this.keyEditor.classList.add('hidden')
-		this.keyEditor.setAttribute('placeholder', 'Input key here...')
-		this.genericEditor_el.appendChild(this.keyEditor)
+		this.createNameEditor(name)
 		this.config_position = position
 			.split(':')
 			.slice(1) // Remove 'root'
@@ -165,6 +175,8 @@ export class EditorItem_Generic {
 		} else if (name.startsWith('$')) {
 			this.keyEditor.classList.remove('hidden')
 			this.keyEditor.value = name
+		} else if (name.startsWith('exec')) {
+			this.genericEditor_el.style.flex
 		} else {
 			this.keyEditor.value = name
 		}
@@ -184,30 +196,34 @@ export class EditorItem_Generic {
 		}, 20)
 	}
 
-	private createTooltip(json: string | object) {
-		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
-		this.tippyTitle = `<strong>  Location:</strong> ${position_title}`
-
-		if (this.info) {
-			let description = JSON.stringify(this.info['description'])
-			let type = JSON.stringify(this.info['type'])
-			let description_title = `${JSON.parse(description)}\n\n<strong> Type:</strong> ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
-			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
-			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
-				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
-				const [defaultValue, min, max] = this.info['data']
-					.split(',')
-					.map((item) => item.trim())
-					.map(Number)
-				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue} • Min: ${min} • Max: ${max}`
-			} else {
-				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
-				let defaultValue = this.info['data']?.replace(/^\s*"(.*)"\s*$/, '$1')
-				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
-			}
+	private createNameEditor(name) {
+		if (name.startsWith('exec')) {
+			mount(nameEditor_Chooser, {
+				target: this.genericEditor_el,
+				props: {
+					value: name,
+					items: execNames,
+					orientation: 'horizontal',
+					onChange: (value) => {
+						this.el.dataset.name = value
+						this.update()
+					},
+				},
+			})
+			// this.keyEditor = document.createElement('textarea')
+			// this.keyEditor.rows = 1
+			// this.keyEditor.id = 'generic-key'
+			// // this.keyEditor.classList.add('')
+			// this.keyEditor.setAttribute('placeholder', 'Input key here...')
+			// this.genericEditor_el.appendChild(this.keyEditor)
+		} else {
+			this.keyEditor = document.createElement('textarea')
+			this.keyEditor.rows = 1
+			this.keyEditor.id = 'generic-key'
+			this.keyEditor.classList.add('hidden')
+			this.keyEditor.setAttribute('placeholder', 'Input key here...')
+			this.genericEditor_el.appendChild(this.keyEditor)
 		}
-
-		createToolTippy({ target: this.el, content: this.tippyTitle })
 	}
 
 	createValueEditor(value: string) {
@@ -342,6 +358,32 @@ export class EditorItem_Generic {
 		}
 	}
 
+	private createTooltip(json: string | object) {
+		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
+		this.tippyTitle = `<strong>  Location:</strong> ${position_title}`
+
+		if (this.info) {
+			let description = JSON.stringify(this.info['description'])
+			let type = JSON.stringify(this.info['type'])
+			let description_title = `${JSON.parse(description)}\n\n<strong> Type:</strong> ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
+			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
+			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
+				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
+				const [defaultValue, min, max] = this.info['data']
+					.split(',')
+					.map((item) => item.trim())
+					.map(Number)
+				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue} • Min: ${min} • Max: ${max}`
+			} else {
+				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
+				let defaultValue = this.info['data']?.replace(/^\s*"(.*)"\s*$/, '$1')
+				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
+			}
+		}
+
+		createToolTippy({ target: this.el, content: this.tippyTitle })
+	}
+
 	createContextMenu(x = 0, y = 0, show = true) {
 		if (x == 0 || y == 0) {
 			let [x0, x1, y0, y1] = this.getElementRects()
@@ -371,7 +413,7 @@ export class EditorItem_Generic {
 				action: () => this.add('KEY', true),
 			},
 			{
-				label: `${this.keyEditor.classList.contains('hidden') ? 'Edit Name' : 'Hide name'}`,
+				label: `${this.keyEditor?.classList.contains('hidden') ? 'Edit Name' : 'Hide name'}`,
 				icon: '󰙂',
 				action: () => this.editName(),
 			},
@@ -403,7 +445,7 @@ export class EditorItem_Generic {
 
 	update() {
 		let name = this.el.dataset.name ?? this.keyEditor.value ?? ''
-		if (this.keyEditor.value !== name) {
+		if (this.keyEditor && this.keyEditor?.value !== name) {
 			this.keyEditor.value = name
 		}
 		let formatted = name.replace(/_/g, ' ') || 'Please input a key'
@@ -426,6 +468,7 @@ export class EditorItem_Generic {
 			this.el.classList.remove('invalid')
 		}
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
+
 		this.preview_el.innerHTML = `<span id="key">${formatted} </span><span id="equal-sign">= </span><span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
 		if (!this.initial_load) {
 			this.saveDebounced()
@@ -536,7 +579,7 @@ export class EditorItem_Generic {
 
 			// this.el.classList.add("compact")
 		})
-		this.keyEditor.addEventListener('input', (e) => {
+		this.keyEditor?.addEventListener('input', (e) => {
 			if (e.key === 'Enter') {
 				e.stopPropagation()
 				this.keyEditor?.classList.add('hidden')
@@ -544,7 +587,7 @@ export class EditorItem_Generic {
 			this.el.dataset.name = this.keyEditor.value
 			this.update()
 		})
-		this.keyEditor.addEventListener('change', () => {
+		this.keyEditor?.addEventListener('change', () => {
 			this.el.dataset.name = this.keyEditor.value
 			this.update()
 		})
@@ -583,11 +626,11 @@ export class EditorItem_Generic {
 	}
 
 	editName() {
-		if (this.keyEditor.classList.contains('hidden')) {
+		if (this.keyEditor && this.keyEditor.classList.contains('hidden')) {
 			this.keyEditor.classList.remove('hidden')
 			this.el.classList.remove('compact')
 		} else {
-			this.keyEditor.classList.add('hidden')
+			this.keyEditor?.classList.add('hidden')
 		}
 	}
 
