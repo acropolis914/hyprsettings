@@ -44,6 +44,7 @@ const templateString = html`
 		<!--		<div class="editor-item-preview"></div>-->
 		<div class="preview-wrapper">
 			<div class="editor-item-preview"></div>
+			<div class="save-editor-item-wrapper hidden"><button id="save-editor-item">Save</button></div>
 		</div>
 		<div class="generic-editor">
 			<!-- <textarea name="key" id="generic-key"></textarea>
@@ -185,7 +186,7 @@ export class EditorItem_Generic {
 
 	private createTooltip(json: string | object) {
 		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
-		this.tippyTitle = `  Location: ${position_title}`
+		this.tippyTitle = `<strong>  Location:</strong> ${position_title}`
 
 		if (this.info) {
 			let description = JSON.stringify(this.info['description'])
