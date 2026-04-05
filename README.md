@@ -1,4 +1,6 @@
-<img width="1568" height="792" alt="image" src="https://github.com/user-attachments/assets/25ffb079-0dfc-4445-b7c1-20609f4b26de" />
+<img width="1908" height="1032" alt="Hyprsettings with the helios theme and the commandline in background. Pretty isn't it?" src="https://github.com/user-attachments/assets/8be0d686-ac6d-45ad-a8bf-52bdee63ddf6" />
+Hyprsettings with the [helios] theme and the commandline in background. Pretty isn't it?
+
 
 <h1 align="center" red>
 <pre>
