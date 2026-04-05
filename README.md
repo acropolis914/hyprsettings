@@ -1,4 +1,4 @@
-<img width="1908" height="1032" alt="Hyprsettings with the helios theme and the commandline in background. Pretty isn't it?" src="https://github.com/user-attachments/assets/8be0d686-ac6d-45ad-a8bf-52bdee63ddf6" />
+<img width="100%" alt="Hyprsettings with the helios theme and the commandline in background. Pretty isn't it?" src="https://github.com/user-attachments/assets/8be0d686-ac6d-45ad-a8bf-52bdee63ddf6" />
 Hyprsettings with the [helios] theme and the commandline in background. Pretty isn't it?
 
 
@@ -11,11 +11,12 @@ Hyprsettings with the [helios] theme and the commandline in background. Pretty i
 </pre>
 </h1>
 
-Install now!
+**HyprSettings**: a configurator for `hyprland.conf` that very loyally reconstructs your configs exactly(almost*) as you
+wrote them, including comments. It presents everything in an organized UI that is also keyboard navigable. Themable,
+too!
 
-```sh
-curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh -s -- --auto
-```
+Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS libraries.
+<br>
 
 ## ✨ Features
 
@@ -28,16 +29,21 @@ curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh
 - Dynamic resizing
 - Theming support
 
-<img width="1444" height="442" alt="image" src="https://github.com/user-attachments/assets/135d9cc6-9f9e-4ffc-bcd3-b3895f4da25a" />
-
-
-HyprSettings: a configurator for `hyprland.conf` that very loyally reconstructs your configs exactly(almost*) as you
-wrote them, including comments. It presents everything in an organized UI that is also keyboard navigable. Themable,
-too!
-Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS libraries.
-<br>
 `*The cleanup however has a side effect that trims trailing spaces. This is by design.`
-<img width="1434" height="394" alt="image" src="https://github.com/user-attachments/assets/8b9c7c35-4d55-4b98-bf7f-71cb256b4ee5" />
+
+<img width="100%" alt="image" src="https://github.com/user-attachments/assets/135d9cc6-9f9e-4ffc-bcd3-b3895f4da25a" />
+
+## Install now!
+
+(Works on all distros with dedicated install logic for nix and arch)
+
+```sh
+curl -sL https://github.com/acropolis914/hyprsettings/raw/master/hyprsettings.sh | sh -s -- --auto
+```
+
+See [Installation](INSTALLATION.md) for more infromation
+
+<img width="100%" alt="image" src="https://github.com/user-attachments/assets/8b9c7c35-4d55-4b98-bf7f-71cb256b4ee5" />
 
 ## Table of Contents
 
@@ -49,10 +55,6 @@ Made with Python, web technologies via PyWebviewGTK, vanilla JS, and some JS lib
 - [Contributing](#contributing)
 - [💬 A Personal Note](#-a-personal-note)
     - [Notice on the use of AI](#notice-on-the-use-of-ai)
-
-## 📥 Installation
-
-Moved to [INSTALLATION.md](INSTALLATION.md)
 
 ## 🎨 Configuration and Theming
 
