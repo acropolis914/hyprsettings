@@ -9,11 +9,6 @@ import { parseHyprColor } from '@scripts/HyprlandSpecific/colorparser.js'
 import { dmenuConfirm, selectFrom } from '../ui_components/dmenu.js'
 import { BezierModal } from './keyEditor_Bezier.js'
 import { html, render } from 'lit'
-import tippy, { followCursor, hideAll } from 'tippy.js'
-import { roundArrow } from 'tippy.js'
-// import 'tippy.js/dist/tippy.css'
-// import 'tippy.js/dist/svg-arrow.css'
-// import '@stylesheets/subs/tippy.css'
 import { gotoWiki } from '../ui_components/wikiTab.ts'
 import { mount } from 'svelte'
 import keyEditor_Animation from '@scripts/ConfigRenderer/keyEditor_Animation.svelte'
@@ -93,6 +88,7 @@ export class EditorItem_Generic {
 	private commentArea: HTMLTextAreaElement
 	config_position: any
 	private value: any
+	private isBoolean: boolean = false
 
 	constructor(json: string | object, disabled = false) {
 		this.initial_load = true
@@ -269,9 +265,9 @@ export class EditorItem_Generic {
 				},
 			})
 			return null
-		}
-		if (this.flipValueIfBool(false) || this.info?.type === 'CONFIG_OPTION_BOOL') {
+		} else if (this.flipValueIfBool(false) || this.el.dataset.name === 'enable' || this.info?.type === 'CONFIG_OPTION_BOOL') {
 			// Extracted and modified logic from the else/reordered block
+			this.isBoolean = true
 			const ta = document.createElement('textarea')
 			ta.id = 'generic-value'
 			ta.rows = 1
@@ -309,7 +305,21 @@ export class EditorItem_Generic {
 
 			checkbox2.addEventListener('change', (e) => {
 				if (this.initial_load) return
-				this.flipValueIfBool(true)
+
+				const val = this.el.dataset.value?.trim()
+
+				if (val === '0' || val === '1') {
+					// Determine the new value (toggle it)
+					const newValue = val === '1' ? '0' : '1'
+
+					// Update the DOM and your editor state
+					this.el.dataset.value = newValue
+					this.valueEditor.value = newValue
+
+					console.log(`Changed value from ${val} to ${newValue}`)
+				} else {
+					this.flipValueIfBool(true)
+				}
 				this.update()
 			})
 
@@ -406,8 +416,8 @@ export class EditorItem_Generic {
 			formatted = `<a onclick='window.gotoWiki("wiki:configuring:${path}")' title="Go to ${match} wiki">${formatted}</a>`
 		}
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
-		let value = this.valueEditor?.value ?? this.value ?? 'Please input a value'
 
+		let value = this.valueEditor?.value ?? this.value ?? 'Please input a value'
 		if (name === '' || value === null) {
 			this.keyEditor.classList.remove('hidden')
 			this.el.classList.add('invalid')
@@ -415,7 +425,7 @@ export class EditorItem_Generic {
 			this.el.classList.remove('invalid')
 		}
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
-		this.preview_el.innerHTML = `<span id="key">${formatted} </span> <span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
+		this.preview_el.innerHTML = `<span id="key">${formatted} </span><span id="equal-sign">= </span><span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
 		if (!this.initial_load) {
 			this.saveDebounced()
 		}
@@ -433,7 +443,7 @@ export class EditorItem_Generic {
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.el.dataset.uuid
 			// GLOBAL.setKey('previousView', GLOBAL.currentView)
 			// GLOBAL.setKey('currentView', 'editorItem')
-			if (this.flipValueIfBool(false)) {
+			if (this.isBoolean) {
 			} else {
 				this.el.classList.remove('compact')
 			}
@@ -469,7 +479,7 @@ export class EditorItem_Generic {
 				// this.contextMenu.hide()
 			} else {
 				this.el.classList.toggle('compact')
-				this.contextMenu.hide()
+				this.contextMenu?.hide()
 			}
 		})
 		this.el.addEventListener('keydown', (e) => {
@@ -631,10 +641,10 @@ export class EditorItem_Generic {
 		const key = Object.keys(pairs).find((k) => val.startsWith(k))
 		const isConfigBool = this.el.dataset.infoType === 'CONFIG_OPTION_BOOL'
 
-		if (key || isConfigBool) {
+		if (key || isConfigBool || this.el.dataset.name === 'enable') {
 			if (save) {
 				// Determine the opposite value
-				let next = pairs[key] || (val === 'true' ? 'false' : 'true')
+				let next = pairs[key] || (val === 'true' ? 'false' : 'true') || (val === '1' ? '0' : '1')
 
 				// Apply specific flavor
 				if (next === 'yes') next = 'yes, please :)'

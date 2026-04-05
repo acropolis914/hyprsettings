@@ -292,7 +292,7 @@ header#main-header {
 	* {
 		pointer-events: auto;
 	}
-	button {
+	button, div {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -308,18 +308,34 @@ header#main-header {
 		border: none;
 		padding: 0.5rem 1rem;
 		font-size: 3rem;
+		aspect-ratio: 1/1;
+		height: 100%;
+		animation: quick-flash 1s ease-in-out infinite alternate;
+		animation-delay: 3s;
+		box-shadow: var(--surface-shadow);
 		.button-label {
-			font-size: 1.4rem;
+			padding: 0;
+			margin: 0;
+			//text-wrap: nowrap !important;
+			//white-space: nowrap !important;
+			font-size: 1.2rem;
+			font-weight: bold;
 		}
 		&:active {
 			transform: scale(0.9);
 		}
+		&:hover{
+			transform: scale(1.05);
+		}
 
-		// nested .hidden class
 		&.btn-hidden {
 			transform: scale(0.95) translateX(10rem); // prevent clicks when hidden
 			opacity: 0;
 			pointer-events: none;
+		}
+		@keyframes quick-flash {
+			to {background-color: var(--accent-hover)}
+
 		}
 	}
 }
