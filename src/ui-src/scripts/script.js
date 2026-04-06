@@ -17,7 +17,7 @@ import setupTheme from './utils/setupTheme.js'
 
 import initializeDebugTab from './ui_components/debugTab.ts'
 import initializeSearchBar from './ui_components/searchBar.js'
-import createDynamicTabs from './ui_components/createDynamicTabs.ts'
+import createTabView from './ui_components/createTabView.ts'
 import createLoadingOverlay, { destroyOverlay } from './ui_components/darkenOverlay.js'
 import createWiki from './ui_components/wikiTab.ts'
 
@@ -89,7 +89,7 @@ export async function initialize() {
 	await load_config()
 	await setupTheme()
 	await getDebugStatus()
-	await createDynamicTabs()
+	await createTabView()
 	initializeDebugTab()
 	await getAndRenderConfig().then(async () => {
 		console.log('Done rendering received config')

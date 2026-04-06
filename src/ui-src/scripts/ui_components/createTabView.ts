@@ -158,7 +158,7 @@ class ConfigTab {
 	}
 }
 
-export default async function createDynamicTabs() {
+export default async function createTabView() {
 	return new Promise(async (resolve) => {
 		let sidebar = document.querySelector('aside#sidebar>ul')
 		sidebar.innerHTML = ''
