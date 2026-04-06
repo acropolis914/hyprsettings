@@ -126,3 +126,19 @@
 	outline: none;
 	border: 2px solid var(--accent-active) !important;
 }
+
+
+/// Sets the opacity of a color.
+/// @param {Color} $color - any valid color (hex, rgb, rgba, hsl, etc.)
+/// @param {Number} $value - opacity as decimal (0–1) or percentage (0–100%)
+/// @return {Color} - the same color with alpha applied
+@function opacity($color, $value) {
+	@if type-of($value) == "number" and unit($value) == "%" {
+		// Convert percent to 0–1
+		$alpha: $value / 100;
+	} @else {
+		$alpha: $value;
+	}
+
+	@return rgba(red($color), green($color), blue($color), $alpha);
+}

@@ -27,6 +27,7 @@ import renderSettings from './ui_components/settings.js'
 import getDebugStatus from './utils/getDebugStatus.ts'
 
 import tippy from 'tippy.js'
+import "./utils/zoom.ts"
 
 window.Global = GLOBAL
 GLOBAL.setKey('backend', 'flask')

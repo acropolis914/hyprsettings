@@ -1,0 +1,74 @@
+@use "../variables" as v;
+footer {
+	transition: height 1kis;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	z-index: 10;
+	box-shadow: 10px 10px 10px var(--accent);
+	padding: 0 min(calc(var(--spacing-unit) * var(--zoom-factor)), var(--spacing-unit));
+	//height: 3rem;
+	height: min(calc(3rem * var(--zoom-factor)), 3rem);
+
+
+	> * {
+		font-size:calc( 1rem * var(--zoom-factor));
+		@media (max-width: 768px) and (pointer: coarse) {
+			padding: 0.5rem;
+			font-size: 1.6rem;
+		}
+	}
+
+	#shortcuts {
+		display: none;
+		margin-right: auto;
+		button {
+			background-color: transparent;
+			padding: 0.1 0.6rem;
+			color: var(--text-0);
+			font-size: 2rem;
+		}
+	}
+	#theme-toggle {
+
+	}
+
+	button {
+		transition:
+			transform v.$transition-speed-fast ease,
+			color v.$transition-speed-normal ease;
+
+		cursor: pointer;
+		//margin-left: 2rem;
+		border: none;
+		background: none;
+		color: var(--text-1);
+		font-size:calc( 2rem * var(--zoom-factor));
+		font-family: v.$font;
+		aspect-ratio: 1/1;
+		height: 100%;
+		align-items: center;
+		padding: 0;
+		@media (max-width: 768px) and (pointer: coarse) {
+			font-size: 3rem !important;
+		}
+		&:hover {
+			transform: scale(1.2);
+			color: var(--accent);
+			background-color: transparent;
+		}
+		&.active {
+			transform: scale(0.9);
+		}
+	}
+
+	.footer-outdated-text {
+		display: inline-block;
+		transform: translateY(0.05rem);
+		transition: all 1s ease;
+		width: 0ch;
+		overflow: hidden;
+		line-height: 0.9;
+	}
+}

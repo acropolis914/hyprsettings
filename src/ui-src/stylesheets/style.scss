@@ -340,50 +340,7 @@ header#main-header {
 	}
 }
 
-footer {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-end;
-	align-items: center;
-	z-index: 10;
-	box-shadow: 10px 10px 10px var(--accent);
-	padding: 0;
-	padding-right: var(--spacing-unit);
-	padding-left: var(--spacing-unit);
 
-	> * {
-		font-size: 1rem;
-		@media (max-width: 768px) and (pointer: coarse) {
-			padding: 0.5rem;
-			font-size: 1.6rem;
-		}
-	}
-	#shortcuts {
-		display: none;
-		margin-right: auto;
-		button {
-			background-color: transparent;
-			padding: 0.1 0.6rem;
-			color: var(--text-0);
-			font-size: 2rem;
-		}
-	}
-	#theme-toggle {
-		font-family: v.$font;
-		@media (max-width: 768px) and (pointer: coarse) {
-			font-size: 3rem !important;
-		}
-	}
-
-	.footer-outdated-text {
-		display: inline-block;
-		transform: translateY(0.05rem);
-		transition: all 1s ease;
-		width: 0ch;
-		overflow: hidden;
-		line-height: 0.9;
-	}
-}
 
 /* =================================
    4. Components
@@ -659,22 +616,7 @@ button {
 	}
 }
 
-button#theme-toggle {
-	transition:
-		transform v.$transition-speed-normal ease,
-		color v.$transition-speed-normal ease;
-	cursor: pointer;
-	margin-left: 2rem;
-	border: none;
-	background: none;
-	color: var(--text-1);
-	font-size: 2rem;
 
-	&:hover {
-		transform: scale(1.1);
-		color: var(--accent);
-	}
-}
 
 .switch {
 	position: relative;
