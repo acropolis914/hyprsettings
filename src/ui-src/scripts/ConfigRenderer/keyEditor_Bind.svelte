@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { bindFlags, modkeys, dispatchers } from "@scripts/HyprlandSpecific/bindDefinitions.js"
 	import { selectFrom } from "@scripts/ui_components/dmenu.ts"
+	import { onMount } from "svelte"
+
+	let root: HTMLDivElement = null
 
 	type SelectOption = {
 		name: string,
@@ -73,6 +76,16 @@
 	})
 	let bindKeyword = $derived(`bind${flags.join("")}`)
 
+	// onMount(() => (
+	// 	root.querySelectorAll("textarea").forEach(el => {
+	// 		el.addEventListener("keydown", e => {
+	// 			if (e.key === "Enter") {
+	// 				console.log("Pressed enter inside a textarea")
+	// 				e.preventDefault()
+	// 			}
+	// 		})
+	// 	}))
+	// )
 	$effect(() => {
 		onChange(fullValue)
 	})
@@ -163,12 +176,22 @@
 		state.dispatcher = target.value
 	}
 
-	function preventComma(event: KeyboardEvent) {
+	function preventIllegalKeys(event: KeyboardEvent) {
+		if (event.key === "Enter") event.preventDefault()
 		if (event.key === ",") event.preventDefault()
+	}
+
+	function enterKeySelectDispatcher(event: KeyboardEvent) {
+		console.log("enterKeySelectDispatcher", event)
+		if (event.key === "Enter") {
+			event.preventDefault()
+			selectDispatcher()
+		}
+
 	}
 </script>
 
-<div class="bind-editor">
+<div class="bind-editor" bind:this={root}>
 	<div class="bind-flags field">
 		<label>Flags:</label>
 		<div class="flags-list">
@@ -195,25 +218,12 @@
 			class="keypress"
 			bind:value={state.keypress}
 			oninput={updateKeypress}
-			onkeydown={preventComma}
+			onkeydown={preventIllegalKeys}
 			placeholder="e.g., F, Return, mouse_left"
 			rows="1"
 		></textarea>
 	</div>
 
-	{#if hasDescription}
-		<div class="description-section field">
-			<label>Description:</label>
-			<textarea
-				class="description"
-				bind:value={state.description}
-				oninput={updateDescription}
-				onkeydown={preventComma}
-				placeholder="Description for this bind"
-				rows="1"
-			></textarea>
-		</div>
-	{/if}
 
 	<div class="dispatcher-section field">
 		<label>Dispatcher:</label>
@@ -222,7 +232,7 @@
 				class="dispatcher"
 				bind:value={state.dispatcher}
 				oninput={updateDispatcher}
-				onkeydown={preventComma}
+				onkeydown={(event)=>{preventIllegalKeys(event); enterKeySelectDispatcher(event)}}
 				placeholder="e.g., exec, movewindow"
 				rows="1"
 			></textarea>
@@ -230,7 +240,19 @@
 			</button>
 		</div>
 	</div>
-
+	{#if hasDescription}
+		<div class="description-section field">
+			<label>Description:</label>
+			<textarea
+				class="description"
+				bind:value={state.description}
+				oninput={updateDescription}
+				onkeydown={preventIllegalKeys}
+				placeholder="Description for this bind"
+				rows="1"
+			></textarea>
+		</div>
+	{/if}
 	<div class="params-section field">
 		<label>Parameters:</label>
 		<textarea
@@ -247,9 +269,14 @@
 	.bind-editor {
 		display: flex;
 		flex-direction: row;
+		flex-wrap: wrap;
 		gap: 1rem;
 		padding: 0.5rem;
 		width: 100%;
+
+		> :last-child, .description-section:nth-last-child(2) {
+			flex-basis: 100%;
+		}
 	}
 
 	.bind-flags {
@@ -380,5 +407,9 @@
 
 	.field {
 		flex: 1;
+	}
+
+	.dispatcher-section {
+		flex: 1.5
 	}
 </style>

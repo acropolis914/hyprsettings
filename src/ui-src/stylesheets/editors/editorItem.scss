@@ -18,6 +18,8 @@
 	//overflow: clip;
 	font-size: 1.6rem;
 
+
+
 	&::after {
 		font-family: v.$font;
 	}
@@ -397,3 +399,25 @@
 		@include text-ellipsis;
 	}
 }
+
+
+.editor-item-generic:has(+ .editor-item-generic){
+	margin-bottom: 0;
+	//border-radius-block-end: 0;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	border-bottom: 1px solid opacity(var(--accent), 0.1);
+}
+.editor-item-generic + .editor-item-generic:has(+ .editor-item-generic) {
+	margin-bottom:0;
+	border-radius: 0;
+	border-bottom: 1px solid opacity(var(--accent), 0.1);
+}
+
+.editor-item-generic+ .editor-item-generic:not(:has(+ .editor-item-generic)){
+	//margin-bottom: 0;
+	//border-radius-block-end: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+

@@ -4,7 +4,6 @@ import { GLOBAL } from '../GLOBAL.js'
 import ContextMenu from './verticalContextMenu.svelte'
 import { mount, unmount } from 'svelte'
 import { counter, menuState } from './svelteStates.svelte.js'
-import { waitFor } from '@scripts/utils/helpers'
 
 let initialLoad = true
 
@@ -116,8 +115,7 @@ class ConfigTab {
 	}
 
 	makeDocumentFragment(tab) {
-		const frag = new DocumentFragment()
-		GLOBAL.editorItemTemporaryContainers[`${tab.id}`] = frag
+		GLOBAL.editorItemTemporaryContainers[`${tab.id}`] = new DocumentFragment()
 	}
 
 	handleTabClick(id) {

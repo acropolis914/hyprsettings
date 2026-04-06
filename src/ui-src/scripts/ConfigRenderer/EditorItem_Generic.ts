@@ -56,7 +56,7 @@ const templateString = html`
 			<textarea name="value" id="generic-value"></textarea> -->
 		</div>
 		<div class="comment-area">
-			<span class="comment-hashtag">#</span>
+			<span class="comment-hashtag">Comment:</span>
 			<textarea class="comment" placeholder="No Comment"></textarea>
 		</div>
 	</div>

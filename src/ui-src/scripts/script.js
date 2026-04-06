@@ -28,6 +28,7 @@ import getDebugStatus from './utils/getDebugStatus.ts'
 
 import tippy from 'tippy.js'
 import "./utils/zoom.ts"
+import { setZoom, zoom } from './utils/zoom.ts'
 
 window.Global = GLOBAL
 GLOBAL.setKey('backend', 'flask')
@@ -50,12 +51,14 @@ async function load_config() {
 
 	// Clean object assignment
 	GLOBAL.config = { ...windowConfig.config }
-	GLOBAL.persistence = { ...windowConfig.persistence }
+	GLOBAL.setKey("persistence" , { ...(windowConfig.persistence) })
 
 	// Onboarding logic
-	const isFirstRun = GLOBAL.persistence.first_run
+	const isFirstRun = (GLOBAL.persistence.first_run)
 	document.getElementById('onboarding').classList.toggle('hidden', !isFirstRun)
-
+	if (GLOBAL.persistence.zoom_factor){
+		setZoom(GLOBAL.persistence.zoom_factor)
+	}
 	if (!isFirstRun) GLOBAL.persistence.first_run = false
 }
 

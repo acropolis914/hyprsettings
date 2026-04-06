@@ -128,17 +128,10 @@
 }
 
 
-/// Sets the opacity of a color.
-/// @param {Color} $color - any valid color (hex, rgb, rgba, hsl, etc.)
-/// @param {Number} $value - opacity as decimal (0–1) or percentage (0–100%)
-/// @return {Color} - the same color with alpha applied
-@function opacity($color, $value) {
-	@if type-of($value) == "number" and unit($value) == "%" {
-		// Convert percent to 0–1
-		$alpha: $value / 100;
-	} @else {
-		$alpha: $value;
-	}
+@function opacity($color, $opacity) {
+	// Convert decimal to percentage for color-mix (e.g., 0.5 -> 50%)
+	$percent: $opacity * 100%;
 
-	@return rgba(red($color), green($color), blue($color), $alpha);
+	// 'in srgb' is the standard color space for web colors
+	@return color-mix(in srgb, #{$color} #{$percent}, transparent);
 }

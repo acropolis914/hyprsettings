@@ -1,11 +1,4 @@
-type ViewType =
-	| 'tabs'
-	| 'main'
-	| 'search'
-	| 'dmenu'
-	| 'overlay'
-	| 'colorSelect'
-	| 'editorItem'
+type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem'
 // type ConfigGlobal = {
 // 	file: string
 // 	name: string
@@ -42,7 +35,8 @@ export class GLOBAL {
 	// Focus tracking: tab ID → element UUID
 	static mainFocus: Record<string, string> = {}
 	static configGlobals: Record<string, any> = {}
-	static config = null
+	static config: Record<string, any> = {}
+	static persistence: Record<string, any> = null
 	static changedFiles: string[] = []
 
 	//rendererTemporaryContainer
@@ -62,10 +56,7 @@ export class GLOBAL {
 		this._listeners.get(key).push(callback)
 	}
 
-	static setKey<K extends keyof typeof GLOBAL>(
-		key: string,
-		value: string | number | boolean | any[],
-	) {
+	static setKey<K extends keyof typeof GLOBAL>(key: string, value: string | number | boolean | any[]) {
 		// console.trace(`setkey was called for: ${key}`)
 		if (!value) {
 			console.trace('GLOBAL setKey()', key, value)
