@@ -13,7 +13,7 @@ footer {
 
 
 	> * {
-		font-size:calc( 1rem * var(--zoom-factor));
+		font-size:calc( 1rem * var(--zoom-factor)) !important;
 		@media (max-width: 768px) and (pointer: coarse) {
 			padding: 0.5rem;
 			font-size: 1.6rem;
@@ -44,14 +44,15 @@ footer {
 		border: none;
 		background: none;
 		color: var(--text-1);
-		font-size:calc( 2rem * var(--zoom-factor));
+		font-size:calc( 2rem * var(--zoom-factor)) !important;
 		font-family: v.$font;
 		aspect-ratio: 1/1;
 		height: 100%;
 		align-items: center;
 		padding: 0;
+		zoom: 1 !important;
 		@media (max-width: 768px) and (pointer: coarse) {
-			font-size: 3rem !important;
+			font-size: calc( 3rem * var(--zoom-factor)) !important;
 		}
 		&:hover {
 			transform: scale(1.2);

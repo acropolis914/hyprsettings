@@ -22,13 +22,16 @@
 
 	&.rule > .editor-item {
 		//border: 1px red solid !important;
-		padding: 0.15rem;
+		&.compact{
+			padding: 0.15rem;
+		}
+
 	}
 	@media (max-width: 768px) {
 		border-right: 3px solid transparent;
 		border-bottom: 3px solid transparent;
 		border-left: 3px solid transparent;
-		border-radius: 0;
+		//border-radius: 0;
 		//border: 0px;
 		padding: 0.25rem;
 		padding-top: 1.5rem;

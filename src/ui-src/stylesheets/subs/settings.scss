@@ -1,3 +1,7 @@
+@use '../mixins' as *;
+@use '../_variables' as v;
+
+
 %about-section {
 	display: flex;
 	flex-direction: column;
@@ -114,6 +118,34 @@
 		.credits,
 		.technologies {
 			display: none;
+		}
+	}
+}
+
+#settings {
+	.setting-container {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		//margin-left: var(--spacing-unit);
+		height: 3rem;
+		padding: 1rem !important;
+
+		input[type='checkbox'] {
+			transition: v.$transition-main;
+			margin-right: var(--spacing-unit);
+			width: 2rem;
+			height: 2rem;
+
+			&:active {
+				transform: scale(1.5);
+			}
+		}
+		label{
+			margin-left: 1rem;
+		}
+		label:hover {
+			filter: brightness(5);
 		}
 	}
 }

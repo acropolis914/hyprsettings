@@ -63,7 +63,7 @@ export default defineConfig({
 		},
 		assetsDir: 'assets',
 	},
-	css: { transformer: 'postcss', minify: 'esbuild', lightningcss: false },
+	css: { transformer: 'postcss', minify: 'esbuild', lightningcss: false, devSourcemap: true },
 	server: {
 		port: 3000,
 		open: false,
@@ -73,6 +73,7 @@ export default defineConfig({
 		},
 		allowedHosts: ['192.168.1.1'],
 	},
+
 	resolve: {
 		alias: {
 			'@': resolve(__dirname, 'src'),

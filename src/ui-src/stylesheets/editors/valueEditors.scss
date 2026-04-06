@@ -219,10 +219,11 @@
 			aspect-ratio: 1/1;
 			width: 100%; /* fill flex width */
 			height: 100%; /* fill flex height */
+			//max-width: 20rem;
 			touch-action: none;
 		}
 		.curve-preview {
-			flex: 2;
+			flex: 3;
 			background-color: var(--surface-2);
 		}
 	}

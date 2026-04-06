@@ -7,11 +7,12 @@ import normalizeText from '../utils/normalizeText.ts'
 import Prism from 'prismjs/prism'
 import 'prismjs/components/prism-ini.min.js'
 import 'prismjs/components/prism-bash.min.js'
-import 'prismjs/plugins/toolbar/prism-toolbar.min.js'
-import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js'
+// import 'prismjs/plugins/toolbar/prism-toolbar.min.js'
+// import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js'
 import '@stylesheets/subs/prism.css'
 import '@stylesheets/subs/tippy.css'
 import tippy, { followCursor } from 'tippy.js'
+import { attemptSwitchToMain } from '@scripts/ui_components/documentListeners'
 
 export default async function createWiki() {
 	console.log('Creating Wiki...')
@@ -19,90 +20,14 @@ export default async function createWiki() {
 	await Backend.getHyprlandWikiNavigation()
 }
 
-async function createWikiNavigation() {
-	let wikiRoot_el = document.querySelector('.config-set#wiki')
-	wikiRoot_el.innerHTML = ''
-	let navigationEl = document.createElement('div')
-	navigationEl.setAttribute('id', 'wikiNavigation')
-	navigationEl.setAttribute('tabindex', '0')
-	navigationEl.dataset.uuid = 'wikiNavigation'
-
-	let open = true
-
-	let viewEl = document.createElement('div')
-	viewEl.setAttribute('id', 'wikiView')
-	viewEl.setAttribute('tabindex', '0')
-	viewEl.dataset.uuid = 'wikiView'
-
-	let navigationElToggle = document.createElement('div')
-	navigationElToggle.setAttribute('id', 'navigation_toggle')
-	navigationElToggle.innerText = ''
-
-	if (GLOBAL.activeTab !== 'wiki') {
-		navigationElToggle.classList.add('hidden')
-	}
-
-	GLOBAL.onChange('activeTab', (value) => {
-		if (GLOBAL.activeTab !== 'wiki') {
-			navigationElToggle.classList.add('hidden')
-		}
-	})
-
-	GLOBAL.onChange('activeTab', (value) => {
-		if (GLOBAL.activeTab !== 'wiki') {
-			navigationElToggle.classList.add('hidden')
-		} else {
-			navigationElToggle.classList.remove('hidden')
-		}
-	})
-	navigationElToggle.addEventListener('click', (e) => {
-		if (open) {
-			navigationEl.style.display = 'none'
-			viewEl.style.display = 'block'
-		} else {
-			navigationEl.style.display = 'block'
-			viewEl.style.display = 'none'
-		}
-		open = !open
-	})
-
-	navigationEl.addEventListener('click', (e) => {
-		if (!open) {
-			navigationElToggle.click()
-		}
-		open = !open
-	})
-
-	let configSetInfoEl = document.getElementById('config-set-info')
-	configSetInfoEl.appendChild(navigationElToggle)
-
-	let viewEl_title = document.createElement('div')
-	viewEl_title.setAttribute('id', 'wikiView_title')
-	viewEl_title.classList.add('hidden')
-	viewEl.appendChild(viewEl_title)
-
-	let viewEl_position = document.createElement('div')
-	viewEl_position.setAttribute('id', 'wikiView_position')
-	viewEl.appendChild(viewEl_position)
-
-	let viewEl_content = document.createElement('div')
-	viewEl_content.setAttribute('id', 'wikiView_content')
-	viewEl.appendChild(viewEl_content)
-
-	wikiRoot_el.appendChild(navigationEl)
-	wikiRoot_el.appendChild(viewEl)
-	// viewEl.classList.add("config-set", "editor-item")
-
+async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTMLDivElement) {
 	let objectTree = []
 	objectTree.push(navigationEl)
 
 	let tree: Object = GLOBAL.wikiTree
 	GLOBAL.setKey('wikiEntry', [])
-	async function setupNavigation(
-		object: object,
-		indentation = 0,
-		path = 'wiki',
-	) {
+
+	async function setupNavigation(object: object, indentation = 0, path = 'wiki') {
 		let indent = '       '.repeat(indentation)
 		for (const [key, value] of Object.entries(object)) {
 			if (key === 'navigation.txt' || key === 'version-selector.md') {
@@ -119,11 +44,9 @@ async function createWikiNavigation() {
 			el.setAttribute('tabindex', 0)
 			el.dataset.uuid = makeUUID()
 			el.dataset.name = key
-			el.dataset.cleanName = key
-				.trim()
-				.replace('.md', '')
-				.replace('-', ' ')
+			el.dataset.cleanName = key.trim().replace('.md', '').replace('-', ' ')
 			el.dataset.position = path
+
 			function setElValue(el) {
 				setViewElValue(el.dataset.value, el.dataset.position)
 			}
@@ -151,11 +74,7 @@ async function createWikiNavigation() {
 				indentation -= 1
 
 				objectTree.pop()
-			} else if (
-				key == '_index.md' &&
-				typeof value === 'string' &&
-				objectTree.length != 1
-			) {
+			} else if (key == '_index.md' && typeof value === 'string' && objectTree.length != 1) {
 				// console.log(value)
 				let parsed = await parseMarkdown(value)
 				// el.dataset.value =
@@ -165,8 +84,7 @@ async function createWikiNavigation() {
 				el.dataset.wikiEntry = uuid
 				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
 				objectTree.at(-1).dataset.wikiEntry = uuid
-				objectTree.at(-1).dataset.weight =
-					parsed.data.matter.weight || -1
+				objectTree.at(-1).dataset.weight = parsed.data.matter.weight || -1
 				continue
 			} else if (objectTree.length === 1 && key == '_index.md') {
 				el.classList.add('wiki-file')
@@ -205,6 +123,12 @@ async function createWikiNavigation() {
 				let wikiContentUUID = el.dataset.wikiEntry //TODO
 				let wikiContent = GLOBAL['wikiEntry'][wikiContentUUID]
 				setViewElValue(wikiContent, el.dataset.position)
+				const isMobile = window.matchMedia('(max-width: 768px)').matches
+				if (isMobile) {
+					navigationEl.classList.add('hidden-wikinav')
+					open = false
+				}
+				console.log({ isMobile, navi: navigationEl.style.display })
 			})
 			el.addEventListener('focus', (e) => {
 				if (e.target != el) {
@@ -214,9 +138,109 @@ async function createWikiNavigation() {
 				let wikiContent = GLOBAL['wikiEntry'][wikiContentUUID]
 				setViewElValue(wikiContent, el.dataset.position)
 			})
+			el.addEventListener('keydown', (e) => {
+				if (e.key === 'ArrowRight') {
+					viewEl_content.focus()
+					GLOBAL.setKey('previousView', 'wiki')
+					GLOBAL.setKey('currentView', 'wikiContent')
+				}
+			})
 		}
 	}
+
 	await setupNavigation(tree, 0, 'Wiki')
+}
+
+async function createWikiNavigation() {
+	let wikiRoot_el = document.querySelector('.config-set#wiki')
+	wikiRoot_el.innerHTML = ''
+	let navigationEl = document.createElement('div')
+	navigationEl.setAttribute('id', 'wikiNavigation')
+	navigationEl.setAttribute('tabindex', '0')
+	navigationEl.dataset.uuid = 'wikiNavigation'
+
+	let viewEl = document.createElement('div')
+	viewEl.setAttribute('id', 'wikiView')
+	viewEl.setAttribute('tabindex', '0')
+	viewEl.dataset.uuid = 'wikiView'
+
+	let navigationElToggle = document.createElement('div')
+	navigationElToggle.setAttribute('id', 'navigation_toggle')
+	navigationElToggle.innerText = ''
+
+	if (GLOBAL.activeTab !== 'wiki') {
+		navigationElToggle.classList.add('hidden')
+	}
+
+	GLOBAL.onChange('activeTab', (value) => {
+		if (GLOBAL.activeTab !== 'wiki') {
+			navigationElToggle.classList.add('hidden')
+		}
+	})
+
+	GLOBAL.onChange('activeTab', (value) => {
+		if (GLOBAL.activeTab !== 'wiki') {
+			navigationElToggle.classList.add('hidden')
+		} else {
+			navigationElToggle.classList.remove('hidden')
+		}
+	})
+	navigationElToggle.addEventListener('click', (e) => {
+		navigationEl.classList.toggle('hidden-wikinav')
+		open = !open
+	})
+
+	// navigationEl.addEventListener('click', (e) => {
+	// 	if (!open) {
+	// 		navigationElToggle.click()
+	// 	}
+	// 	open = !open
+	// })
+
+	let configSetInfoEl = document.getElementById('config-set-info')
+	configSetInfoEl.appendChild(navigationElToggle)
+
+	let viewEl_title = document.createElement('div')
+	viewEl_title.setAttribute('id', 'wikiView_title')
+	viewEl_title.classList.add('hidden')
+	viewEl.appendChild(viewEl_title)
+
+	let viewEl_position = document.createElement('div')
+	viewEl_position.setAttribute('id', 'wikiView_position')
+	viewEl.appendChild(viewEl_position)
+
+	let viewEl_content = document.createElement('div')
+	viewEl_content.setAttribute('id', 'wikiView_content')
+	viewEl_content.tabIndex = 0
+	viewEl.appendChild(viewEl_content)
+
+	viewEl_content.addEventListener('keydown', (e) => {
+		if (e.key === 'ArrowDown') {
+			viewEl_content.scrollBy({ top: 50, behavior: 'smooth' })
+		}
+		if (e.key === 'ArrowUp') {
+		}
+		if (e.key === 'ArrowLeft') {
+			let naviUUID = GLOBAL.mainFocus[GLOBAL.activeTab]
+			console.log('naviUUID', naviUUID)
+			navigationEl.classList.remove('hidden-wikinav')
+			open = true
+			const toFocus = navigationEl.querySelector(`[data-uuid="${naviUUID}"]`) || navigationEl.firstElementChild
+			toFocus.scrollIntoView({})
+			toFocus.focus()
+			// GLOBAL.setKey('currentView', 'wiki')
+			setTimeout(() => {
+				GLOBAL.currentView = 'wiki'
+			}, 10)
+
+			// attemptSwitchToMain()
+		}
+	})
+
+	wikiRoot_el.appendChild(navigationEl)
+	wikiRoot_el.appendChild(viewEl)
+	// viewEl.classList.add("config-set", "editor-item")
+	await createWikiNavi(navigationEl, viewEl_content)
 	let navigationNode = document.getElementById('wikiNavigation')
 	reorderByWeight(navigationNode)
 }
@@ -311,9 +335,7 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 		.replace(/>$/, '') // Strip trailing HTML bracket
 		.toLowerCase()
 
-	const quickMatch =
-		wikiView.querySelector(`#${cleanId}`) ||
-		wikiView.querySelector(`[id="${cleanId}" i]`)
+	const quickMatch = wikiView.querySelector(`#${cleanId}`) || wikiView.querySelector(`[id="${cleanId}" i]`)
 	if (quickMatch) {
 		console.log('[wiki] section resolver: fast-path id match', {
 			target: raw,
@@ -325,17 +347,10 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 	}
 
 	// Convert NodeList to Array once for filtering
-	const elements = Array.from(
-		wikiView.querySelectorAll('*'),
-	) as HTMLElement[]
+	const elements = Array.from(wikiView.querySelectorAll('*')) as HTMLElement[]
 
 	// Safety: Ignore non-visible/metadata tags that might contain the search text
-	const searchable = elements.filter(
-		(el) =>
-			!['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE'].includes(
-				el.tagName,
-			),
-	)
+	const searchable = elements.filter((el) => !['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE'].includes(el.tagName))
 
 	// --- TIER 2: SYNTAX-SPECIFIC RESOLUTION ---
 
@@ -356,46 +371,30 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 			})
 			// Priority: ID Match inside tag -> Content Match inside tag -> First occurrence
 			if (!idPart) {
-				console.log(
-					'[wiki] section resolver: tag syntax used first candidate',
-					{
-						tag: upperTag,
-					},
-				)
+				console.log('[wiki] section resolver: tag syntax used first candidate', {
+					tag: upperTag,
+				})
 				return sameTags[0]
 			}
-			const tagIdMatch = sameTags.find(
-				(el) => el.id.toLowerCase() === idPart,
-			)
+			const tagIdMatch = sameTags.find((el) => el.id.toLowerCase() === idPart)
 			if (tagIdMatch) {
-				console.log(
-					'[wiki] section resolver: tag syntax id match',
-					{
-						tag: upperTag,
-						identifier: idPart,
-					},
-				)
+				console.log('[wiki] section resolver: tag syntax id match', {
+					tag: upperTag,
+					identifier: idPart,
+				})
 				return tagIdMatch
 			}
-			const tagTextMatch = sameTags.find((el) =>
-				el.innerText.toLowerCase().includes(idPart),
-			)
+			const tagTextMatch = sameTags.find((el) => el.innerText.toLowerCase().includes(idPart))
 			if (tagTextMatch) {
-				console.log(
-					'[wiki] section resolver: tag syntax text match',
-					{
-						tag: upperTag,
-						identifier: idPart,
-					},
-				)
+				console.log('[wiki] section resolver: tag syntax text match', {
+					tag: upperTag,
+					identifier: idPart,
+				})
 				return tagTextMatch
 			}
-			console.log(
-				'[wiki] section resolver: tag syntax falling back to first tag',
-				{
-					tag: upperTag,
-				},
-			)
+			console.log('[wiki] section resolver: tag syntax falling back to first tag', {
+				tag: upperTag,
+			})
 			return sameTags[0]
 		}
 	}
@@ -405,9 +404,7 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 		const headerMatch =
 			searchable.find(
 				(el) =>
-					/^H[1-6]$/.test(el.tagName) &&
-					(el.id.toLowerCase() === cleanId ||
-						el.innerText.toLowerCase().includes(cleanId)),
+					/^H[1-6]$/.test(el.tagName) && (el.id.toLowerCase() === cleanId || el.innerText.toLowerCase().includes(cleanId)),
 			) || null
 		console.log('[wiki] section resolver: header syntax lookup', {
 			target: raw,
@@ -419,12 +416,7 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 
 	// C. Markdown Inline Code (`)
 	if (raw.startsWith('`')) {
-		const codeMatch =
-			searchable.find(
-				(el) =>
-					el.tagName === 'CODE' &&
-					el.innerText.toLowerCase().includes(cleanId),
-			) || null
+		const codeMatch = searchable.find((el) => el.tagName === 'CODE' && el.innerText.toLowerCase().includes(cleanId)) || null
 		console.log('[wiki] section resolver: code syntax lookup', {
 			target: raw,
 			cleanId,
@@ -435,12 +427,7 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 
 	// D. Markdown List Item (-)
 	if (raw.startsWith('-')) {
-		const listMatch =
-			searchable.find(
-				(el) =>
-					el.tagName === 'LI' &&
-					el.innerText.toLowerCase().includes(cleanId),
-			) || null
+		const listMatch = searchable.find((el) => el.tagName === 'LI' && el.innerText.toLowerCase().includes(cleanId)) || null
 		console.log('[wiki] section resolver: list syntax lookup', {
 			target: raw,
 			cleanId,
@@ -453,12 +440,7 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 	if (raw.startsWith('*')) {
 		const isBold = raw.startsWith('**')
 		const tag = isBold ? 'STRONG' : 'EM'
-		const emphasisMatch =
-			searchable.find(
-				(el) =>
-					el.tagName === tag &&
-					el.innerText.toLowerCase().includes(cleanId),
-			) || null
+		const emphasisMatch = searchable.find((el) => el.tagName === tag && el.innerText.toLowerCase().includes(cleanId)) || null
 		console.log('[wiki] section resolver: emphasis syntax lookup', {
 			target: raw,
 			cleanId,
@@ -469,9 +451,7 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 	}
 
 	// 1. Exact Match (The most specific text match)
-	const exactMatch = searchable.find(
-		(el) => el.innerText?.trim().toLowerCase() === cleanId,
-	)
+	const exactMatch = searchable.find((el) => el.innerText?.trim().toLowerCase() === cleanId)
 	if (exactMatch) {
 		console.log('[wiki] section resolver: exact text match', {
 			target: raw,
@@ -483,9 +463,7 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 	}
 
 	// 2. Starts With (Better for matching "Binds" when searching "bind")
-	const startsWithMatch = searchable.find((el) =>
-		el.innerText?.trim().toLowerCase().startsWith(cleanId),
-	)
+	const startsWithMatch = searchable.find((el) => el.innerText?.trim().toLowerCase().startsWith(cleanId))
 	if (startsWithMatch) {
 		console.log('[wiki] section resolver: starts-with text match', {
 			target: raw,
@@ -497,10 +475,7 @@ function findWikiViewElement(target_element: string): HTMLElement | null {
 	}
 
 	// 3. Includes (The broadest possible match)
-	const includesMatch =
-		searchable.find((el) =>
-			el.innerText?.toLowerCase().includes(cleanId),
-		) || null
+	const includesMatch = searchable.find((el) => el.innerText?.toLowerCase().includes(cleanId)) || null
 	console.log('[wiki] section resolver: includes fallback', {
 		target: raw,
 		cleanId,
@@ -515,10 +490,7 @@ function fixLinxElement(element: HTMLElement, position: string) {
 
 	if (link.startsWith('..') || link.startsWith('.')) {
 		// console.log({ position })
-		let link_without_section = link.replace(
-			link.substring(link.indexOf('#')),
-			'',
-		)
+		let link_without_section = link.replace(link.substring(link.indexOf('#')), '')
 		// console.log(link_without_section)
 		let position_paths = position.split(':').filter(Boolean)
 		let link_parts = link
@@ -533,21 +505,14 @@ function fixLinxElement(element: HTMLElement, position: string) {
 		let linkToFix = link_parts.join(':')
 		while (link_parts[0] === '..') {
 			link_parts.shift()
-			if (
-				!link_without_section.endsWith('/') &&
-				position_paths.length > 1
-			) {
+			if (!link_without_section.endsWith('/') && position_paths.length > 1) {
 				position_paths.pop()
 			}
 		}
 		while (link_parts[0] === '.') {
 			link_parts.shift()
 		}
-		const newLink = [
-			...position_paths,
-			...link_parts,
-			...link_section,
-		].join(':')
+		const newLink = [...position_paths, ...link_parts, ...link_section].join(':')
 		title = newLink
 		// console.log('Fixing link element', { link_without_section, position,newLink })
 		element.addEventListener('click', (e) => {
@@ -628,13 +593,8 @@ export function gotoWiki(wikidir: string) {
 		console.log('[wiki] tree traversal failed, trying flat lookup', {
 			directory,
 		})
-		let directories = Array.from(
-			wikiDirNavigationEl.querySelectorAll('.wiki-item'),
-		)
-		let found = directories.find(
-			(e) =>
-				normalizeText(e.dataset.name) === normalizeText(directory),
-		)
+		let directories = Array.from(wikiDirNavigationEl.querySelectorAll('.wiki-item'))
+		let found = directories.find((e) => normalizeText(e.dataset.name) === normalizeText(directory))
 		console.log('[wiki] flat lookup result', {
 			directory,
 			found: Boolean(found),
@@ -665,11 +625,8 @@ export function gotoWiki(wikidir: string) {
 			// console.log(section)
 			section.scrollIntoView({ behavior: 'smooth', block: 'start' })
 		} else {
-			console.log(
-				'[wiki] no section provided, scrolling to top of wiki view',
-			)
-			let wikiView_content =
-				document.querySelector('#wikiView_content')
+			console.log('[wiki] no section provided, scrolling to top of wiki view')
+			let wikiView_content = document.querySelector('#wikiView_content')
 			wikiView_content.scrollTo(0, 0)
 		}
 	}, 100)
@@ -678,6 +635,25 @@ export function gotoWiki(wikidir: string) {
 async function setViewElValue(value: string, position: string, title = '') {
 	// console.log(value, title, position)
 	const parsed = JSON.parse(value)
+	function replaceImagesWithLocal(viewEl: HTMLElement) {
+		let imageSources = [
+			{ src: 'https://i.ibb.co/7rxTRrw/395854121-47ed1ae0-a660-46f3-9bf5-917da0d3f675.png', alt: 'ml4w.png' },
+			{ src: 'https://i.ibb.co/7tMsnTv/default-waybar.png', alt: 'jakoolit.png' },
+			{
+				src: 'https://github.com/end-4/dots-hyprland/assets/97237370/5e081770-0f1e-45c4-ad9c-3d19f488cd85',
+				alt: 'end4.png',
+			},
+			{ src: 'https://i.ibb.co/W3SYJCc/showcase-2-2412602747.png', alt: 'hyde.png' },
+			{ src: 'https://i.ytimg.com/vi/Cft6mZDzIng/maxresdefault.jpg', alt: 'omarchy.jpg' },
+		]
+		viewEl.querySelectorAll('IMG').forEach((element: HTMLElement) => {
+			let source = imageSources.find((i) => i.src === element.getAttribute('src'))
+			if (source) {
+				element.setAttribute('src', `assets/wiki/images/${source.alt}`)
+			}
+		})
+	}
+
 	// console.log(parsed)
 	if (parsed['value']) {
 		// viewEl.innerHTML = ""
@@ -687,8 +663,7 @@ async function setViewElValue(value: string, position: string, title = '') {
 		let viewEl_content = document.getElementById('wikiView_content')
 		let viewEl_position = document.getElementById('wikiView_position')
 		if (parsed.data.matter.title) {
-			viewEl_title.textContent =
-				parsed.data.matter.title || 'Hyprland Wiki'
+			viewEl_title.textContent = parsed.data.matter.title || 'Hyprland Wiki'
 			viewEl_title.classList.remove('hidden')
 		} else if (title) {
 			viewEl_title.textContent = title
@@ -702,14 +677,13 @@ async function setViewElValue(value: string, position: string, title = '') {
 
 		viewEl_content.innerHTML = parsed['value']
 		// console.clear()
-		viewEl_content
-			.querySelectorAll('a')
-			.forEach((element: HTMLElement) => {
-				fixLinxElement(element, position)
-			})
-		const wikiWarning = viewEl_content.querySelector(
-			'p:has(> em > strong)',
-		)
+		viewEl_content.querySelectorAll('a').forEach((element: HTMLElement) => {
+			fixLinxElement(element, position)
+		})
+		replaceImagesWithLocal(viewEl)
+
+		wrapAllElements('#wikiView table:not(.table-wrapper > table)', 'div.table-wrapper')
+		const wikiWarning = viewEl_content.querySelector('p:has(> em > strong)')
 		if (wikiWarning) {
 			wikiWarning.style.border = '1px solid #ff4444'
 			wikiWarning.classList.add('hidden')
@@ -724,9 +698,7 @@ async function setViewElValue(value: string, position: string, title = '') {
 					code.classList.add('language-bash')
 					element.classList.add('language-bash')
 					Prism.highlightElement(code)
-				} else if (
-					code.innerText.toLowerCase().includes('vga compatible')
-				) {
+				} else if (code.innerText.toLowerCase().includes('vga compatible')) {
 					console.log(code.innerText)
 					code.classList.add('language-shell-session')
 					element.classList.add('language-shell-session')
@@ -738,8 +710,69 @@ async function setViewElValue(value: string, position: string, title = '') {
 					element.classList.add('language-ini')
 					Prism.highlightElement(code)
 				}
+
+				const preToolbar = document.createElement('div')
+				preToolbar.classList.add('pre-toolbar')
+				element.after(preToolbar)
+				const copyButton = document.createElement('button')
+				copyButton.classList.add('copy-button')
+				copyButton.innerText = ''
+				preToolbar.appendChild(copyButton)
+
+				copyButton.addEventListener('click', () => {
+					const text = code.innerText
+					navigator.clipboard.writeText(text)
+				})
 			})
 		}
+
+		/** Observe all table wrappers and add `.scrollable` if they overflow */
+		const tableWrappers = viewEl.querySelectorAll<HTMLElement>('.table-wrapper')
+
+		function updateScrollable(el: HTMLElement) {
+			const isScrollable = el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth
+			el.classList.toggle('scrollable', isScrollable)
+		}
+
+		// Initialize for all current wrappers
+		tableWrappers.forEach(updateScrollable)
+
+		// Observe size changes
+		const observer = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				updateScrollable(entry.target as HTMLElement)
+			}
+		})
+
+		// Start observing
+		tableWrappers.forEach((el) => observer.observe(el))
+
 		viewEl.scrollTo({ top: 0, behavior: 'smooth' })
 	}
+}
+
+/**
+ * Wrap all elements matching an Emmet-style selector in an Emmet-style wrapper
+ * e.g., wrapAllElements('table', 'div.responsive-table')
+ */
+export function wrapAllElements(selector: string, wrapper: string) {
+	const elements = Array.from(document.querySelectorAll(selector))
+	// console.log('[wiki] wrapAllElements', elements)
+
+	if (!elements.length) return
+
+	// Parse wrapper Emmet: tag#id.class1.class2
+	const emmetMatch = wrapper.match(/^([a-z]+)?(?:#([\w-]+))?(?:\.([\w-.]+))?$/i)
+	if (!emmetMatch) throw new Error(`Invalid wrapper string: ${wrapper}`)
+
+	const [, tag = 'div', id, classes] = emmetMatch
+
+	elements.forEach((el) => {
+		const wrapperEl = document.createElement(tag)
+		if (id) wrapperEl.id = id
+		if (classes) wrapperEl.className = classes.replace(/\./g, ' ')
+
+		el.parentNode?.insertBefore(wrapperEl, el)
+		wrapperEl.appendChild(el)
+	})
 }

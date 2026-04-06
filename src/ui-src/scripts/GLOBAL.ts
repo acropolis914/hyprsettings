@@ -1,4 +1,4 @@
-type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem'
+type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem' | 'wiki' | 'wikiContent'
 // type ConfigGlobal = {
 // 	file: string
 // 	name: string

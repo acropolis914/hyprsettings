@@ -352,7 +352,7 @@ export class BezierEditor {
 	constructor({ parent, grid = {} }) {
 		this.parent = parent
 
-		// Default points
+		11 // Default points
 		this._cp1 = { x: 0.25, y: 0.25 }
 		this._cp2 = { x: 0.75, y: 0.75 }
 		this.dragging = null
@@ -464,7 +464,7 @@ export class BezierEditor {
 		this.gridLines.forEach((line) => this.svg.removeChild(line))
 		this.gridLines = []
 
-		const addLine = (x1, y1, x2, y2, color, width = 1, dash = null) => {
+		const addLine = (x1, y1, x2, y2, color, width = 2, dash = null) => {
 			const l = document.createElementNS('http://www.w3.org/2000/svg', 'line')
 			l.setAttribute('x1', x1)
 			l.setAttribute('y1', y1)
@@ -472,6 +472,7 @@ export class BezierEditor {
 			l.setAttribute('y2', y2)
 			l.setAttribute('stroke', color)
 			l.setAttribute('stroke-width', width)
+			// l.setAttribute('fill', 'white')
 			if (dash) l.setAttribute('stroke-dasharray', dash)
 			this.svg.appendChild(l)
 			this.gridLines.push(l)
@@ -507,41 +508,104 @@ export class BezierEditor {
 
 	_setupEvents() {
 		const svg = this.svg
-		const isNear = (mx, my, cp) => {
-			const scaleX = this.width / (this.range.xMax - this.range.xMin)
-			const scaleY = this.height / (this.range.yMax - this.range.yMin)
-			return Math.hypot(mx - (cp.x - this.range.xMin) * scaleX, my - (this.height - (cp.y - this.range.yMin) * scaleY)) < 10
+
+		// Unified Coordinate Mapper (Isolates the Safari/AppleWebKit zoom bug)
+		const getCoords = (e) => {
+			const rect = svg.getBoundingClientRect()
+
+			// Detect Apple WebKit (Safari, macOS webviews), but exclude Chromium/Blink
+			const isAppleWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)
+
+			let pctX, pctY
+
+			if (isAppleWebKit) {
+				// Apple WebKit: Mouse is zoomed, rect is unzoomed.
+				// We apply your custom zoom variable to the mouse first.
+				const htmlNode = document.documentElement
+				const zoomFactorVar = parseFloat(getComputedStyle(htmlNode).getPropertyValue('--zoom-factor')) || 1
+
+				const unzoomedMouseX = e.clientX * zoomFactorVar
+				const unzoomedMouseY = e.clientY * zoomFactorVar
+
+				pctX = (unzoomedMouseX - rect.left) / rect.width
+				pctY = (unzoomedMouseY - rect.top) / rect.height
+			} else {
+				// Chrome, Firefox, Edge, etc.: Mouse and rect scale proportionally. Simple math.
+				pctX = (e.clientX - rect.left) / rect.width
+				pctY = (e.clientY - rect.top) / rect.height
+			}
+
+			// Clamp percentages strictly between 0.0 and 1.0
+			pctX = Math.max(0, Math.min(1, pctX))
+
+			// Invert Y because SVG y=0 is at the top, but mathematical y=0 is at the bottom
+			pctY = Math.max(0, Math.min(1, 1 - pctY))
+
+			// Map the 0-1 percentage to your mathematical range
+			const rangeX = this.range.xMax - this.range.xMin
+			const rangeY = this.range.yMax - this.range.yMin
+
+			return {
+				x: this.range.xMin + pctX * rangeX,
+				y: this.range.yMin + pctY * rangeY,
+			}
 		}
 
-		svg.addEventListener('pointerdown', (e) => {
-			const rect = svg.getBoundingClientRect()
-			const mx = e.clientX - rect.left
-			const my = e.clientY - rect.top
+		const setupHandle = (handle, pointReference) => {
+			handle.style.cursor = 'grab'
+			handle.style.touchAction = 'none' // Prevents mobile/touchscreen scrolling
 
-			if (isNear(mx, my, this._cp1)) this.dragging = this._cp1
-			else if (isNear(mx, my, this._cp2)) this.dragging = this._cp2
-		})
+			handle.addEventListener('pointerdown', (e) => {
+				this.dragging = pointReference
 
-		svg.addEventListener('pointermove', (e) => {
-			if (!this.dragging) return
-			const rect = svg.getBoundingClientRect()
-			const mx = e.clientX - rect.left
-			const my = e.clientY - rect.top
+				// SVG natively "grabs" the mouse so moves outside the window still register
+				handle.setPointerCapture(e.pointerId)
+				handle.style.cursor = 'grabbing'
 
-			const scaleX = this.width / (this.range.xMax - this.range.xMin)
-			const scaleY = this.height / (this.range.yMax - this.range.yMin)
+				// Instantly snap to the exact click point
+				const coords = getCoords(e)
+				this.dragging.x = coords.x
+				this.dragging.y = coords.y
 
-			this.dragging.x = Math.max(this.range.xMin, Math.min(this.range.xMax, mx / scaleX + this.range.xMin))
-			this.dragging.y = Math.max(this.range.yMin, Math.min(this.range.yMax, (this.height - my) / scaleY + this.range.yMin))
+				this._draw()
 
-			this._draw()
-			if (this.onchange) this.onchange(this.points)
-		})
+				e.preventDefault()
+				e.stopPropagation()
+			})
 
-		svg.addEventListener('pointerup', () => (this.dragging = null))
-		// svg.addEventListener("pointerleave", () => (this.dragging = null));
+			handle.addEventListener('pointermove', (e) => {
+				if (this.dragging !== pointReference) return
+
+				const coords = getCoords(e)
+				this.dragging.x = coords.x
+				this.dragging.y = coords.y
+
+				this._draw()
+
+				// Emit changes upwards to the Modal/Preview
+				if (this.onchange) this.onchange(this.points)
+			})
+
+			const endDrag = (e) => {
+				if (this.dragging === pointReference) {
+					this.dragging = null
+					handle.releasePointerCapture(e.pointerId)
+					handle.style.cursor = 'grab'
+				}
+			}
+
+			// Catch both intentional releases and system interruptions
+			handle.addEventListener('pointerup', endDrag)
+			handle.addEventListener('pointercancel', endDrag)
+		}
+
+		// Initialize both control points
+		setupHandle(this.handle1, this._cp1)
+		setupHandle(this.handle2, this._cp2)
+
+		// Prevent default HTML drag-and-drop ghosting on the parent SVG
+		svg.addEventListener('dragstart', (e) => e.preventDefault())
 	}
-
 	// Getter / setter
 	get points() {
 		return [this._cp1.x, this._cp1.y, this._cp2.x, this._cp2.y]

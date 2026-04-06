@@ -1,4 +1,5 @@
 @use '@stylesheets/_variables.scss' as v;
+@use '../mixins.scss' as *;
 
 @supports (-webkit-touch-callout: none) {
 	#wikiView_content {
@@ -34,10 +35,11 @@
 		}
 		&:hover {
 			transform: scale(1.1);
-			color: var(--accent-active);
+			color: var(--accent);
 		}
 		&:active {
-			color: var(--accent);
+			color: var(--accent-active);
+			transform: scale(0.9);
 		}
 	}
 }
@@ -50,7 +52,7 @@
 	width: 100%;
 	max-width: calc(100% - 5 * var(--spacing-unit));
 	height: 100%;
-	max-height: calc(90vh - var(--spacing-unit));
+	//max-height: calc(90vh - var(--spacing-unit));
 	overflow-y: hidden;
 	@media (max-width: 768px) {
 		padding-right: 1rem;
@@ -81,46 +83,62 @@
 	#wikiNavigation {
 		flex: 0 0 auto;
 		transition:
-			//all 1s ease-in-out,
-			left 10s ease-in-out,
+			left 1s ease-in-out,
 			opacity 150ms ease-in-out,
 			top 300ms ease-in-out,
-			transform 1s;
+			transform 0.5s,
+			width 0.2s ease;
 		max-width: 30%;
 		max-height: 100%;
 		overflow-x: hidden;
 		overflow-y: scroll;
-		@media (max-width: 768px) {
-			display: none;
-			justify-content: center;
-			//padding: var(--spacing-unit) var(--spacing-unit);
-			//margin: calc(2 * var(--spacing-unit)) 0;
-			margin-bottom: 0;
-			//max-height: 100%;
-			//height: 80%;
-			//border: 1px solid var(--text-1);
-			box-shadow: 1px 2rem 0.5rem 0.9rem rgba(var(--surface-0), 0);
-			border-radius: var(--border-rad);
-			//min-width: 80%;
-			//left: 50%;
-			//transform: translateX(-50%);
-			background-color: var(--surface-1);
-			padding-right: 0;
-			width: 100%;
-			//position: absolute;
-			max-width: 100%;
-			overflow-x: scroll;
-		}
-		@media (min-width: 768px) {
-			display: block;
-		}
+		//@media (max-width: 768px) {
+		//	//display: none;
+		//	justify-content: center;
+		//	//padding: var(--spacing-unit) var(--spacing-unit);
+		//	//margin: calc(2 * var(--spacing-unit)) 0;
+		//	margin-bottom: 0;
+		//	//max-height: 100%;
+		//	//height: 80%;
+		//	//border: 1px solid var(--text-1);
+		//	box-shadow: 1px 2rem 0.5rem 0.9rem rgba(var(--surface-0), 0);
+		//	border-radius: var(--border-rad);
+		//	//min-width: 80%;
+		//	//left: 50%;
+		//	//transform: translateX(-50%);
+		//	background-color: var(--surface-1);
+		//	padding-right: 0;
+		//	width: 100%;
+		//	//position: absolute;
+		//	//max-width: 100%;
+		//	overflow-x: scroll;
+		//}
+		//@media (min-width: 768px) {
+		//	display: block;
+		//}
 
 		.config-group {
 			margin-top: calc(2 * var(--spacing-unit));
 			padding: calc(1.5 * var(--spacing-unit));
+			margin-bottom:0;
+			//padding-top:0;
+			//margin-top:0;
+			:last-child{
+				margin-bottom: 0;
+			}
 			@media (max-width: 600px) {
 				padding: var(--spacing-unit);
 				min-width: 70%;
+			}
+			&:empty{
+				margin: calc(1.5*var(--spacing-unit));
+				background-color:var(--surface-0);
+				border:none;
+				min-height: 3rem;
+				&::before{
+					top:50%;
+					background-color:transparent;
+				}
 			}
 		}
 		.config-group::before {
@@ -143,6 +161,7 @@
 			//top: 10px
 			//word-wrap:
 		}
+
 	}
 
 	#wikiView {
@@ -158,15 +177,17 @@
 		padding-top: 0;
 		//max-width: 80%;
 		width: clamp(100px, 60%, 400px);
-		@media (max-width: 768px) {
-			margin-right: 0;
-			width: 100%;
-			//padding: 0;
-			max-width: 100%;
-		}
-		@media (min-width: 768px) {
-			display: flex !important;
-		}
+
+		//@media (max-width: 768px) {
+		//	margin-right: 0;
+		//	width: 100%;
+		//	//padding: 0;
+		//	max-width: 100%;
+		//}
+		//@media (min-width: 768px) {
+		//	display: flex !important;
+		//}
+
 
 		#wikiView_title {
 			color: var(--accent);
@@ -182,10 +203,56 @@
 	}
 }
 
-#wikiNavigation.hidden + #wikiView {
-	//transition: ;
+#wikiNavigation {
 	width: 100%;
+	@media (max-width: 768px) {
+		width: 100% !important;
+		max-width: 100% !important;
+		display: block;
+		z-index: 10;
+		padding:10px;
+		background-color: var(--surface-1);
+		box-shadow: 20px 0px 15px -20px rgba(0, 0, 0, 0.3);
+		transition: left 0.3s !important;
+	}
+	&.hidden-wikinav{
+		width: 0;
+		@media (max-width: 768px) {
+			position: absolute;
+			width: 100%;
+			//display: block !important;
+			left: -110%;
+
+		}
+
+		//transform: translateX(-100%);
+	}
+	&:not(.hidden-wikinav){
+		@media (max-width: 768px) {
+			left:0;
+			position: absolute;
+			max-width: 100% !important;
+
+			//background-color: red !important;
+			//color: white;
+		}
+	}
+	&.hidden-wikinav + #wikiView {
+		width: 100%;
+		//display: block;
+	}
+	&:not(.hidden-wikinav) + #wikiView {
+		@media (max-width: 768px) {
+			//width: 0 !important;
+			//display: none;
+			//transform: translateX(100%);
+		}
+
+	}
 }
+
+
+
 
 #wikiView_content {
 	padding: var(--spacing-unit);
@@ -196,9 +263,11 @@
 	font-family: v.$font;
 	word-wrap: break-word;
 	cursor: text;
+	width: 100%;
 	max-width: calc(100% - 0 * var(--spacing-unit)) !important;
 	max-height: calc(100% - 4rem);
 	color: var(--text-0);
+	overflow-x:hidden;
 	//font-size: 1.6rem;
 	line-height: 1.65;
 	-webkit-user-select: text !important; /* Chrome, Safari */
@@ -213,27 +282,16 @@
 
 	> * + *:not(.token) {
 		margin-top: var(--spacing-unit);
-		margin-right: var(--spacing-unit);
-		margin-left: var(--spacing-unit);
+		//margin-right: var(--spacing-unit);
+		//margin-left: var(--spacing-unit);
 		max-width: calc(100vw - 4 * var(--spacing-unit));
 	}
-	*:not(pre, code, .token) {
-		margin-right: var(--spacing-unit);
-		margin-left: var(--spacing-unit);
-		max-width: calc(100vw - 4 * var(--spacing-unit));
-	}
-	.code-toolbar > .toolbar {
-		margin-left: 0;
-		> * {
-			margin-left: 0;
-		}
-		.toolbar-item {
-			margin-left: auto;
-		}
-		button {
-			margin-left: auto;
-		}
-	}
+	//*:not(pre, code, .token) {
+	//	margin-right: var(--spacing-unit);
+	//	margin-left: var(--spacing-unit);
+	//	max-width: calc(100vw - 4 * var(--spacing-unit));
+	//}
+
 
 	/* Headings */
 	h1,
@@ -242,8 +300,8 @@
 	h4,
 	h5,
 	h6 {
-		//margin-top: calc(var(--spacing-unit) * 2);
-		margin-bottom: calc(var(--spacing-unit) * 0.75);
+		margin-top: calc(var(--spacing-unit) * 2) !important;
+		margin-bottom: calc(var(--spacing-unit) * 1);
 		color: var(--text-0);
 		font-weight: 600;
 		line-height: 1.3;
@@ -309,69 +367,137 @@
 	}
 
 	/* Code blocks */
+	.code-toolbar{
+		position: relative;
+	}
+	.code-toolbar > .toolbar {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		margin: 0;
+		> * {
+			margin-left: 0;
+		}
+		.toolbar-item {
+			margin-left: auto;
+		}
+		button {
+			margin-left: auto;
+		}
+	}
+
 	pre {
 		border: 1px solid var(--surface-border);
 		border-radius: var(--border-rad);
-		background: var(--surface-1);
-		padding: var(--spacing-unit);
-		max-width: 90%;
+		background-color: var(--surface-0);
+		padding: 1rem;
+		width: 100%;
+		max-width: 100%;
 		overflow-x: auto;
+		position: relative;
+		overflow: auto;
+		anchor-name: --preprepre;
+		margin-block: 1rem;
 
 		code {
 			background: none;
 			padding: 0;
 			color: var(--text-0);
 			font-size: 0.9em;
+			width: 100%;
+		}
+
+	}
+
+	.pre-toolbar{
+		width: 100%;
+		margin: 0;
+		position: relative;
+		//background-color: red;
+		position-anchor: --preprepre;
+		//top: anchor(top);
+		//right: anchor(right);
+		//border-radius: red;
+		//min-height: 2rem;
+		//height: 0;
+		//position: absolute;
+		//right: 0;
+		z-index: 1000;
+		display: flex;
+		//flex-direction: ;
+		justify-content: flex-end;
+		button{
+			//position: absolute;
+			//top:-5rem;
+			//margin-left:auto;
+			padding: 0;
+			margin: 0;
+			background: none;
+			color: var(--text-2);
+			font-weight: bold;
+			font-size: 1.6rem;
+			&:active{
+				color: var(--accent-active);
+				transform: scale(0.9) !important;
+			}
+			&:hover{
+				color: var(--accent-hover);
+				transform: scale(1.1);
+			}
 		}
 	}
 
 	/* Blockquotes */
-	blockquote,
-	.blockquote {
-		border-left: 3px solid var(--accent);
-		border-radius: var(--border-rad);
-		background: var(--surface-1);
-		padding: 0.75rem 1rem;
-		color: var(--text-2);
-
-		&.note {
-			border-left-color: var(--accent);
-			background: var(--surface-2);
-		}
-
-		&.tip {
-			border-left-color: var(--accent-success);
-			background: var(--surface-2);
-		}
-
-		&.warning {
-			border-left-color: var(--accent-warning);
-			background: var(--surface-2);
-		}
-
-		&.caution {
-			border-left-color: var(--accent-danger);
-			background: var(--surface-2);
-		}
-	}
-
-	/* Lists */
-	ul,
-	ol {
-		padding-left: 1.6rem;
-		color: var(--text-1);
-
-		li + li {
-			margin-top: 0.3rem;
-		}
-	}
+	//blockquote,
+	//.blockquote {
+	//	border-left: 3px solid var(--accent);
+	//	border-radius: var(--border-rad);
+	//	background-color: opacity(var(--surface-1), 0.1);
+	//	padding: 0.75rem 1rem;
+	//	color: var(--text-2);
+	//
+	//	&.note {
+	//		border-left-color: var(--accent);
+	//		background: var(--surface-2);
+	//	}
+	//
+	//	&.tip {
+	//		border-left-color: var(--accent-success);
+	//		background: var(--surface-2);
+	//	}
+	//
+	//	&.warning {
+	//		border-left-color: var(--accent-warning);
+	//		background: var(--surface-2);
+	//	}
+	//
+	//	&.caution {
+	//		border-left-color: var(--accent-danger);
+	//		background: var(--surface-2);
+	//	}
+	//}
+	//
+	///* Lists */
+	//ul,
+	//ol {
+	//	padding-left: 1.6rem;
+	//	color: var(--text-1);
+	//
+	//	li + li {
+	//		margin-top: 0.3rem;
+	//	}
+	//}
 
 	/* Tables */
+	.table-wrapper {
+		width: 99%;
+		overflow-x: auto;
+	}
 	table {
 		border-radius: var(--border-rad);
 		border-collapse: collapse;
 		background: var(--surface-1);
-		width: 100%;
+		width: 98%;
 		overflow: hidden;
 	}
 
@@ -527,7 +653,7 @@
 .details-wrapper {
 	display: flex;
 	flex-direction: column;
-	margin: var(--spacing-unit) 0;
+	//margin: var(--spacing-unit) 0;
 	border: 1px solid var(--surface-border);
 	border-radius: var(--border-rad);
 	background-color: var(--surface-1);
@@ -545,13 +671,14 @@
 		border: none;
 		background: var(--surface-1);
 
-		padding: 0.75rem 1rem;
+		//padding: 0.75rem 1rem;
 		width: 100%;
 		color: var(--accent);
 		font-weight: 600;
 		font-family: v.$font;
 		user-select: none;
 		text-align: left;
+		margin: 0;
 
 		&::before {
 			display: inline-block;
@@ -579,10 +706,11 @@
 		background-color: var(--surface-1);
 		padding: var(--spacing-unit);
 
+
 		// Nix code block styling inside
 		pre {
 			margin: 0;
-			background-color: var(--surface-2) !important;
+			//background-color: var(--surface-2) !important;
 		}
 	}
 }

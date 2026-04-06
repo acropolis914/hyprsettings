@@ -44,7 +44,6 @@ export default async function parseMarkdown(input: string) {
 	const processor = unified()
 		.use(remarkHeadingId, { defaults: true })
 		.use(remarkParse, { breaks: true })
-
 		.use(remarkDirective)
 		.use(remarkObsidianAdmonitions)
 		.use(remarkHugoTabsToDirectives)

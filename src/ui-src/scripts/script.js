@@ -1,7 +1,8 @@
 //@ts-check
 /* eslint-env browser */
 /* global pywebview, TomSelect */
-import '@stylesheets/style.scss'
+// import '@stylesheets/style.scss'
+// import '@stylesheets/style.scss'
 import '@stylesheets/subs/tippy.css'
 
 import './ui_components/documentListeners.js'
@@ -28,6 +29,7 @@ import getDebugStatus from './utils/getDebugStatus.ts'
 
 import tippy from 'tippy.js'
 import "./utils/zoom.ts"
+
 import { setZoom, zoom } from './utils/zoom.ts'
 import { shortHash } from '@scripts/utils/utils.ts'
 

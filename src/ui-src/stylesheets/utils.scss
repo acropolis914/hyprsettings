@@ -1,4 +1,5 @@
 /* --- Utility Classes ---*/
+@use "mixins" as m;
 .blank-line {
 	max-width: 100%;
 	color: transparent;
@@ -77,27 +78,28 @@ blockquote,
 .blockquote {
 	border-left: 3px solid var(--accent);
 	border-radius: var(--border-rad);
-	background: var(--surface-1);
+	background: var(--surface-0);
 	padding: 0.75rem 1rem;
 	color: var(--text-2);
+	width: 100%;
 
 	&.note {
 		border-left-color: var(--accent);
-		background: var(--surface-2);
+		//background: var(--surface-0);
 	}
 
 	&.tip {
 		border-left-color: var(--accent-success);
-		background: var(--surface-2);
+		//background: var(--surface-2);
 	}
 
 	&.warning {
 		border-left-color: var(--accent-warning);
-		background: var(--surface-2);
+		//background: var(--surface-2);
 	}
 
 	&.caution {
 		border-left-color: var(--accent-danger);
-		background: var(--surface-2);
+		//background: var(--surface-2);
 	}
 }
