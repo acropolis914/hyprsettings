@@ -12,8 +12,7 @@ import tomlkit as toml
 
 from .shared import hs_globals, state
 from .hyprland_parser import HyprParser, makeUUID
-from .utils import log, ui_print
-
+from .utils import log, ui_print, get_user_string
 
 thisfile_path = Path(__file__).parent.resolve()
 thisfile_path_parent = thisfile_path.parent.resolve()
@@ -66,9 +65,9 @@ class Api:
 
 			# Define the migration map: (key, from_table, to_table)
 			migrations = [
-				('last_tab', 'config', 'persistence'),
-				('first_run', 'config', 'persistence'),
-				('onboarding_version', 'file_info', 'persistence'),
+				  ('last_tab', 'config', 'persistence'),
+				  ('first_run', 'config', 'persistence'),
+				  ('onboarding_version', 'file_info', 'persistence'),
 			]
 
 			def move_key(key, src, dest):
@@ -135,8 +134,8 @@ class Api:
 				temporary_font = None
 
 			with open(
-				template,
-				'r',
+				  template,
+				  'r',
 			) as default_config:
 				default_config_text = default_config.read()
 
@@ -146,6 +145,8 @@ class Api:
 			if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 				self.window_config['persistence']['fist_run'] = True
 				self.window_config['persistence']['onboarding_version'] = hs_globals.ONBOARDING_VERSION
+			if str(self.window_config['file_info']["user"]).lower() == "hyprsettings":
+				self.window_config['file_info']["user"] = get_user_string()
 			version_migration()
 			if self.window_config['config']['daemon']:
 				state.daemon = True
@@ -169,6 +170,8 @@ class Api:
 				if self.window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 					self.window_config['persistence']['first_run'] = True
 					self.window_config['persistence']['onboarding_version'] = hs_globals.ONBOARDING_VERSION
+				if str(self.window_config['file_info']["user"]).lower() == "hyprsettings":
+					self.window_config['file_info']["user"] = get_user_string()
 				version_migration()
 				if self.window_config['config']['daemon']:
 					state.daemon = True
@@ -230,7 +233,8 @@ class Api:
 	def open_file(file_path: str):
 		ui_print(f'Opening {file_path}')
 		try:
-			subprocess.Popen(['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL, close_fds=True)
+			subprocess.Popen(['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+			                 stdin=subprocess.DEVNULL, close_fds=True)
 			return True
 		except Exception as e:
 			ui_print(f'Failed to open {file_path}: {e}')

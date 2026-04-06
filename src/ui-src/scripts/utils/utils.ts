@@ -4,10 +4,7 @@ import { _configRenderer } from '../ConfigRenderer/_configRenderer.ts'
 import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import { selectFrom } from '@scripts/ui_components/dmenu.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
-import type {
-	ItemProps,
-	ItemPropsGroup,
-} from '@scripts/types/editorItemTypes.ts'
+import type { ItemProps, ItemPropsGroup } from '@scripts/types/editorItemTypes.ts'
 
 export function hideAllContextMenus() {
 	document.querySelectorAll('.context-menu').forEach((ctx) => {
@@ -36,14 +33,8 @@ function findParent(root, path, childuuid = null) {
 		if (node.length > 1) {
 			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
 			if (Array.isArray(node)) {
-				let possibleParents = node.filter((node) =>
-					Array.isArray(node.children),
-				)
-				let parent = possibleParents.filter((parentNode) =>
-					parentNode.children.some(
-						(child) => child.uuid === childuuid,
-					),
-				)
+				let possibleParents = node.filter((node) => Array.isArray(node.children))
+				let parent = possibleParents.filter((parentNode) => parentNode.children.some((child) => child.uuid === childuuid))
 				return parent[0]
 			}
 		} else if (node.length === 1) {
@@ -131,9 +122,7 @@ function queueManualSave(file: string | undefined) {
 
 	if (!file) return
 
-	let changedFiles = Array.isArray(GLOBAL.changedFiles)
-		? GLOBAL.changedFiles
-		: []
+	let changedFiles = Array.isArray(GLOBAL.changedFiles) ? GLOBAL.changedFiles : []
 	if (!changedFiles.includes(file)) {
 		GLOBAL.setKey('changedFiles', [...changedFiles, file])
 	}
@@ -163,10 +152,7 @@ export function deleteKey(uuid, position) {
 
 	if (!file) {
 		console.warn('No .conf file found in position:', position)
-	} else if (
-		!GLOBAL['config'].dryrun &&
-		GLOBAL['config'].autosave === true
-	) {
+	} else if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave === true) {
 		console.log(`Node ${uuid} deleted:`, node)
 		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 	} else {
@@ -175,12 +161,7 @@ export function deleteKey(uuid, position) {
 	}
 }
 
-export function duplicateKey(
-	uuid,
-	position,
-	below = true,
-	element: HTMLElement,
-) {
+export function duplicateKey(uuid, position, below = true, element: HTMLElement) {
 	console.log(`Duplicating ${position} => with uuid ${uuid}`)
 	let root = GLOBAL['data']
 	let path = position.split(':')
@@ -225,9 +206,7 @@ export async function addItem(
 	let parent = findParent(root, path, relative_uuid) as ItemPropsGroup
 
 	// Find the index of the relative item
-	let nodeIndex = relative_uuid
-		? parent.children.findIndex((node) => node.uuid === relative_uuid)
-		: -1
+	let nodeIndex = relative_uuid ? parent.children.findIndex((node) => node.uuid === relative_uuid) : -1
 
 	let newuuid = await Backend.newUUID()
 	let targetIndex: number
@@ -259,25 +238,12 @@ export async function addItem(
 export async function addChildItem(position: string, parent_uuid: string) {
 	let root: ItemProps = GLOBAL['data']
 	let path = position.split(':')
-	let parent_node_of_group = findParent(
-		root,
-		path,
-		parent_uuid,
-	) as ItemPropsGroup
-	let parent_node = parent_node_of_group.children.find(
-		(node) => node['uuid'] === parent_uuid,
-	) as ItemPropsGroup
-	let existingSiblingKeys: string[] = parent_node.children.map(
-		(i: { name: any }) => i.name,
-	)
-	let availableKeys: ConfigDescription[] = findAdjacentConfigKeys(
-		parent_node.name,
-		existingSiblingKeys,
-	)
+	let parent_node_of_group = findParent(root, path, parent_uuid) as ItemPropsGroup
+	let parent_node = parent_node_of_group.children.find((node) => node['uuid'] === parent_uuid) as ItemPropsGroup
+	let existingSiblingKeys: string[] = parent_node.children.map((i: { name: any }) => i.name)
+	let availableKeys: ConfigDescription[] = findAdjacentConfigKeys(parent_node.name, existingSiblingKeys)
 	// console.log(availableKeys)
-	let itemToAdd: ConfigDescription = (await selectFrom(
-		availableKeys,
-	)) as ConfigDescription
+	let itemToAdd: ConfigDescription = (await selectFrom(availableKeys)) as ConfigDescription
 	itemToAdd['uuid'] = makeUUID()
 	return [itemToAdd as ConfigDescription, parent_node]
 }
@@ -301,10 +267,7 @@ export function makeUUID(length = 8) {
 export function saveWindowConfig() {
 	try {
 		Backend.saveWindowConfig(JSON.stringify(GLOBAL['config']), 'config')
-		Backend.saveWindowConfig(
-			JSON.stringify(GLOBAL['persistence']),
-			'persistence',
-		)
+		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
@@ -320,20 +283,13 @@ export async function saveWindowConfig_Config() {
 
 export async function saveWindowConfig_Persistence() {
 	try {
-		Backend.saveWindowConfig(
-			JSON.stringify(GLOBAL['persistence']),
-			'persistence',
-		)
+		Backend.saveWindowConfig(JSON.stringify(GLOBAL['persistence']), 'persistence')
 	} catch (err) {
 		console.error('Failed to save config:', err)
 	}
 }
 
-export function splitWithRemainder(
-	str: string,
-	sep: string,
-	limit: number,
-): string[] {
+export function splitWithRemainder(str: string, sep: string, limit: number): string[] {
 	let parts = str.split(sep)
 	if (parts.length > limit) {
 		let firstParts = parts.slice(0, limit)
@@ -342,4 +298,12 @@ export function splitWithRemainder(
 		return firstParts
 	}
 	return parts
+}
+
+export async function shortHash(str) {
+	const data = new TextEncoder().encode(str)
+	const hash = await crypto.subtle.digest('SHA-256', data)
+	const hex = [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')
+
+	return hex.slice(0, 8) // 👈 cut to 8 chars
 }

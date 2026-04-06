@@ -1,7 +1,7 @@
 import socket
 from .shared import *
 from rich.console import Console
-
+import os
 
 _last_log_message = None
 _last_log_count = 1
@@ -38,3 +38,20 @@ def log(msg, prefix='', only_verbose=False):
 			ui_print(f'{full_message}')
 			_last_log_message = full_message
 			_last_log_count = 1
+
+
+def get_user_string():
+	uname = os.getlogin()
+	hostname = socket.gethostname()
+
+	os_name = "unknown"
+	try:
+		with open("/etc/os-release") as f:
+			for line in f:
+				if line.startswith("NAME="):
+					os_name = line.split("=", 1)[1].strip().strip('"')
+					break
+	except FileNotFoundError:
+		pass
+
+	return f"{uname}@{hostname}@{os_name.replace(' ', '_')}"

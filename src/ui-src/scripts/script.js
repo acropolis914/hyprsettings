@@ -29,6 +29,7 @@ import getDebugStatus from './utils/getDebugStatus.ts'
 import tippy from 'tippy.js'
 import "./utils/zoom.ts"
 import { setZoom, zoom } from './utils/zoom.ts'
+import { shortHash } from '@scripts/utils/utils.ts'
 
 window.Global = GLOBAL
 GLOBAL.setKey('backend', 'flask')
@@ -52,7 +53,7 @@ async function load_config() {
 	// Clean object assignment
 	GLOBAL.config = { ...windowConfig.config }
 	GLOBAL.setKey("persistence" , { ...(windowConfig.persistence) })
-
+	GLOBAL.config_info = { ...windowConfig.file_info}
 	// Onboarding logic
 	const isFirstRun = (GLOBAL.persistence.first_run)
 	document.getElementById('onboarding').classList.toggle('hidden', !isFirstRun)
@@ -62,7 +63,7 @@ async function load_config() {
 	if (!isFirstRun) GLOBAL.persistence.first_run = false
 }
 
-function setupGTAG() {
+async function setupGTAG() {
 	const script = document.createElement('script')
 	script.async = true
 	script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1HDCZV8DTZ'
@@ -73,11 +74,14 @@ function setupGTAG() {
 	function gtag() {
 		dataLayer.push(arguments)
 	}
+	const user_id = await shortHash(GLOBAL.config_info.user)
+	console.log('user_id', user_id)
 	gtag('js', new Date())
 	gtag('config', 'G-1HDCZV8DTZ', {
+		user_id: user_id,
 		cookie_domain: 'none',
 	})
-	console.log('Gtag initialized after DOMContentLoaded.')
+	console.log('Gtag initialized after DOMContentLoaded. Nothing gets recorded but the count of unique users.')
 }
 
 export async function reinitialize() {

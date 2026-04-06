@@ -41,6 +41,7 @@ export class GLOBAL {
 
 	//rendererTemporaryContainer
 	static editorItemTemporaryContainers: Record<string, DocumentFragment> = {}
+	static config_info: any
 
 	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,
