@@ -102,6 +102,7 @@ header#main-header {
 	border-radius: 0;
 	padding: var(--spacing-unit);
 	font-weight: 800;
+	max-height: invert-zoom(5rem);
 
 	//background-color: var(--red);
 
@@ -111,11 +112,13 @@ header#main-header {
 
 	#header-title {
 		align-items: center;
-
 		transition: all 0.1s ease-in-out;
-		padding-left: 1rem;
+		padding-left: invert-zoom(1rem);
 		content: 'Reload Configs';
 		color: var(--accent);
+		display: flex;
+		gap: invert-zoom(1rem);
+		//flex-wrap: nowrap;
 
 		#icon {
 			font-size: 2rem;
@@ -142,6 +145,7 @@ header#main-header {
 
 		&:active {
 			transform: scale(0.95);
+			color: var(--accent-active);
 		}
 	}
 }

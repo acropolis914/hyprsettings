@@ -135,3 +135,9 @@
 	// 'in srgb' is the standard color space for web colors
 	@return color-mix(in srgb, #{$color} #{$percent}, transparent);
 }
+
+@function invert-zoom($value) {
+	@return calc(#{$value} * var(--zoom-factor));
+}
+
+

@@ -27,7 +27,8 @@ export default async function initializeSearchBar() {
 					itemProps.name = 'Wiki Homepage'
 					itemProps.cleanName = 'Wiki Homepage'
 				}
-				let html_string = JSON.parse(itemProps.value).value
+				let html_string = itemProps.value
+				// console.log(html_string)
 				let text_string = new DOMParser().parseFromString(html_string, 'text/html').body.textContent
 				itemProps['value'] = text_string
 			}

@@ -1,4 +1,5 @@
 @use "../variables" as v;
+@use "../mixins" as *;
 footer {
 	transition: height 1kis;
 	display: flex;
@@ -37,14 +38,14 @@ footer {
 	button {
 		transition:
 			transform v.$transition-speed-fast ease,
-			color v.$transition-speed-normal ease;
+			color v.$transition-speed-fast ease;
 
 		cursor: pointer;
 		//margin-left: 2rem;
 		border: none;
 		background: none;
-		color: var(--text-1);
-		font-size:calc( 2rem * var(--zoom-factor)) !important;
+		color: opacity(var(--text-1), 0.2);
+		font-size:invert-zoom(2rem) !important;
 		font-family: v.$font;
 		aspect-ratio: 1/1;
 		height: 100%;
