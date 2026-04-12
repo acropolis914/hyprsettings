@@ -1,25 +1,26 @@
 @use "../variables" as v;
 @use "../mixins" as *;
 footer {
-	transition: height 1kis;
+	transition: height 1s;
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: center;
 	z-index: 10;
 	box-shadow: 10px 10px 10px var(--accent);
-	padding: 0 min(calc(var(--spacing-unit) * var(--zoom-factor)), var(--spacing-unit));
+	padding: 0 10px;
 	//height: 3rem;
-	height: min(calc(3rem * var(--zoom-factor)), 3rem);
+	height: 30px;
+	font-size: 10px;
 
 
-	> * {
-		font-size:calc( 1rem * var(--zoom-factor)) !important;
-		@media (max-width: 768px) and (pointer: coarse) {
-			padding: 0.5rem;
-			font-size: 1.6rem;
-		}
-	}
+	//> * {
+	//	font-size:calc( 1rem * var(--zoom-factor)) !important;
+	//	@media (max-width: 768px) and (pointer: coarse) {
+	//		padding: 0.5rem;
+	//		font-size: 1.6rem;
+	//	}
+	//}
 
 	#shortcuts {
 		display: none;
@@ -31,8 +32,10 @@ footer {
 			font-size: 2rem;
 		}
 	}
-	#theme-toggle {
 
+	p{
+		font-size: min(invert-zoom(14px), 14px);
+		font-weight: bold;
 	}
 
 	button {
@@ -41,34 +44,27 @@ footer {
 			color v.$transition-speed-fast ease;
 
 		cursor: pointer;
-		//margin-left: 2rem;
 		border: none;
-		background: none;
-		color: opacity(var(--text-1), 0.2);
-		font-size:invert-zoom(2rem) !important;
+		background: 20px;
 		font-family: v.$font;
 		aspect-ratio: 1/1;
 		height: 100%;
 		align-items: center;
 		padding: 0;
-		zoom: 1 !important;
-		@media (max-width: 768px) and (pointer: coarse) {
-			font-size: calc( 3rem * var(--zoom-factor)) !important;
-		}
 		&:hover {
 			transform: scale(1.2);
 			color: var(--accent);
 			background-color: transparent;
 		}
-		&.active {
-			transform: scale(0.9);
+		&:active {
+			transform: scale(0.7) !important;
 		}
 	}
 
 	.footer-outdated-text {
 		display: inline-block;
 		transform: translateY(0.05rem);
-		transition: all 1s ease;
+		transition: width 1s ease;
 		width: 0ch;
 		overflow: hidden;
 		line-height: 0.9;

@@ -6,14 +6,14 @@ const html = document.documentElement
 
 export function zoom(amount: number = 0.1) {
 	const current = parseFloat(getComputedStyle(html).getPropertyValue('--zoom-factor')) || 1
-	const next = Math.max(0.5, Math.round((current + amount) * 100) / 100)
+	const next = Math.min(Math.max(0.5, Math.round((current + amount) * 100) / 100), 2)
 	html.style.setProperty('--zoom-factor', String(next))
 	GLOBAL.persistence['zoom_factor'] = next
 	saveWindowConfig_Persistence()
 }
 
 export function setZoom(value: number, save = false) {
-	const clamped = Math.max(0.5, value)
+	const clamped = Math.min(Math.max(0.5, value), 2)
 	html.style.setProperty('--zoom-factor', String(clamped))
 	GLOBAL.persistence['zoom_factor'] = clamped
 	if (save) saveWindowConfig_Persistence()
