@@ -19,6 +19,13 @@ header#main-header {
 		//transform: scale(1.05) translateX(2.5rem);
 	}
 
+	@media (max-width: 768px) {
+		font-size: min(20px, 2rem);
+		#icon{
+			font-size: min(20px, 2rem) !important;
+		}
+	}
+
 	#header-title {
 		align-items: center;
 		transition: all 0.1s ease-in-out;
@@ -27,6 +34,7 @@ header#main-header {
 		color: var(--accent);
 		display: flex;
 		gap: 10px;
+		max-width: 100vw;
 		//flex-wrap: nowrap;
 
 		#icon {
@@ -67,6 +75,9 @@ header#main-header {
 	box-sizing: border-box;
 	margin-left: auto;
 	border-radius: var(--border-rad);
+	@media (max-width: 768px) {
+		max-width: 30ch;
+	}
 
 	&:is(:focus, :focus-visible, :focus-within) {
 		#search-bar {
