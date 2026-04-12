@@ -517,26 +517,28 @@ export class BezierEditor {
 			const rect = svg.getBoundingClientRect()
 
 			// Detect Apple WebKit (Safari, macOS webviews), but exclude Chromium/Blink
-			const isAppleWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)
+			// const isAppleWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)
 
 			let pctX, pctY
+			pctX = (e.clientX - rect.left) / rect.width
+			pctY = (e.clientY - rect.top) / rect.height
 
-			if (isAppleWebKit) {
-				// Apple WebKit: Mouse is zoomed, rect is unzoomed.
-				// We apply your custom zoom variable to the mouse first.
-				const htmlNode = document.documentElement
-				const zoomFactorVar = parseFloat(getComputedStyle(htmlNode).getPropertyValue('--zoom-factor')) || 1
-
-				const unzoomedMouseX = e.clientX * zoomFactorVar
-				const unzoomedMouseY = e.clientY * zoomFactorVar
-
-				pctX = (unzoomedMouseX - rect.left) / rect.width
-				pctY = (unzoomedMouseY - rect.top) / rect.height
-			} else {
-				// Chrome, Firefox, Edge, etc.: Mouse and rect scale proportionally. Simple math.
-				pctX = (e.clientX - rect.left) / rect.width
-				pctY = (e.clientY - rect.top) / rect.height
-			}
+			// if (isAppleWebKit) {
+			// 	// Apple WebKit: Mouse is zoomed, rect is unzoomed.
+			// 	// We apply your custom zoom variable to the mouse first.
+			// 	const htmlNode = document.documentElement
+			// 	const zoomFactorVar = parseFloat(getComputedStyle(htmlNode).getPropertyValue('--zoom-factor')) || 1
+			//
+			// 	const unzoomedMouseX = e.clientX * zoomFactorVar
+			// 	const unzoomedMouseY = e.clientY * zoomFactorVar
+			//
+			// 	pctX = (unzoomedMouseX - rect.left) / rect.width
+			// 	pctY = (unzoomedMouseY - rect.top) / rect.height
+			// } else {
+			// 	// Chrome, Firefox, Edge, etc.: Mouse and rect scale proportionally. Simple math.
+			// 	pctX = (e.clientX - rect.left) / rect.width
+			// 	pctY = (e.clientY - rect.top) / rect.height
+			// }
 
 			// Clamp percentages strictly between 0.0 and 1.0
 			pctX = Math.max(0, Math.min(1, pctX))

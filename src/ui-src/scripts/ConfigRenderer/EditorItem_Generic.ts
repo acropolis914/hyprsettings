@@ -19,9 +19,6 @@ import keyEditor_Bind from '@scripts/ConfigRenderer/keyEditor_Bind.svelte'
 import { findAdjacentConfigKeys, findConfigDescription } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelte'
-// import hljs from 'highlight.js/lib/core'
-// import bash from 'highlight.js/lib/languages/bash.js'
-// hljs.registerLanguage('bash', bash)
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {

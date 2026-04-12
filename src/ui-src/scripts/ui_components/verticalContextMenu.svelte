@@ -11,6 +11,7 @@
 		submenu?: object;
 		icon?: string;
 	}
+	let menuEl: HTMLElement | null = null;
 
 	interface Props {
 		items?: Item[];
@@ -46,10 +47,9 @@
 	// New: adjust position to stay inside viewport
 	async function clampPosition() {
 		await tick(); // wait until the menu is rendered
-		const menuEl = document.querySelector('.context-menu-sv') as HTMLElement;
 		if (!menuEl) return;
 
-		const rect = getNormalizedRect(menuEl)
+		const rect = menuEl.getBoundingClientRect();
 
 		if (rect.right > window.innerWidth) x -= rect.right - window.innerWidth;
 		if (rect.bottom > window.innerHeight) y -= rect.bottom - window.innerHeight;
@@ -65,7 +65,7 @@
 </script>
 
 {#if visible}
-	<ul class="context-menu-sv" style="top:{y}px; left:{x}px;">
+	<ul class="context-menu-sv" bind:this={menuEl} style="top:{y}px; left:{x}px;">
 		{#each items as item}
 			{#if !(item.label === "separator")}
 			<li>
