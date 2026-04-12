@@ -11,6 +11,7 @@ Manually adding tabs might come at a later update.-->
 <!--			content="width=device-width, initial-scale=1.0"-->
 <!--		/>-->
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<meta name="color-scheme" content="light dark">
 
 		<!-- <meta http-equiv="refresh" content="1" /> -->
 		<title>HyprSettings</title>
@@ -67,14 +68,18 @@ Manually adding tabs might come at a later update.-->
 				</button>
 
 			</div>
-			<div id="keys-display"></div>
-			<button type="button" id="theme-toggle">󰔎</button>
-			<p>
+			<p style="margin-right: auto;">
 				<a target="_blank" href="https://github.com/AcroPolis914/hyprsettings"
-					>HyprSettings</a
+				>HyprSettings</a
 				>
 				<span class="footer-outdated-text warn" title="Go to settings tab for more info">Outdated</span>
 			</p>
+			<div id="keys-display"></div>
+			<button onclick="window.zoom(0.1)"></button>
+
+			<button onclick="window.zoom(-0.1)"></button>
+			<button type="button" id="theme-toggle">󰔎</button>
+
 		</footer>
 
 		<div id="onboarding" class="hidden">

@@ -22,10 +22,12 @@ export default async function createWiki() {
 
 async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTMLDivElement) {
 	let objectTree = []
-	objectTree.push(navigationEl)
+	let frag = document.createDocumentFragment()
+	objectTree.push(frag)
+	// objectTree.push(navigationEl)
 
 	let tree: Object = GLOBAL.wikiTree
-	GLOBAL.setKey('wikiEntry', [])
+	GLOBAL.setKey('wikiEntry', {})
 
 	async function setupNavigation(object: object, indentation = 0, path = 'wiki') {
 		let indent = '       '.repeat(indentation)
@@ -58,7 +60,11 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 				el.dataset.value = JSON.stringify(parsed)
 				let uuid = makeUUID() //TODO
 				el.dataset.wikiEntry = uuid
-				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
+				if (parsed) {
+					GLOBAL['wikiEntry'][uuid] = parsed
+				} else {
+					console.warn('Skipping null parse for', key)
+				}
 				el.dataset.weight = parsed.data.matter.weight || -1
 				if (key === 'LICENSE') {
 					el.dataset.weight = 1000
@@ -82,7 +88,11 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 				objectTree.at(-1).dataset.value = JSON.stringify(parsed)
 				let uuid = makeUUID() //TODO
 				el.dataset.wikiEntry = uuid
-				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
+				if (parsed) {
+					GLOBAL['wikiEntry'][uuid] = parsed
+				} else {
+					console.warn('Skipping null parse for', key)
+				}
 				objectTree.at(-1).dataset.wikiEntry = uuid
 				objectTree.at(-1).dataset.weight = parsed.data.matter.weight || -1
 				continue
@@ -100,11 +110,14 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 					</blockquote>
 					${parsed.value}
 					`
-				let markdown_json_parsed = JSON.stringify(parsed)
-				el.dataset.value = markdown_json_parsed
+				let markdown_json_parsed = parsed
 				let uuid = makeUUID() //todo
 				el.dataset.wikiEntry = uuid
-				GLOBAL['wikiEntry'][uuid] = JSON.stringify(parsed)
+				if (parsed) {
+					GLOBAL['wikiEntry'][uuid] = parsed
+				} else {
+					console.warn('Skipping null parse for', key)
+				}
 				setViewElValue(markdown_json_parsed, path, 'Hyprland Wiki')
 			} else {
 				console.warn(`Error parsing "${key}: ${value}"`)
@@ -126,7 +139,6 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 				const isMobile = window.matchMedia('(max-width: 768px)').matches
 				if (isMobile) {
 					navigationEl.classList.add('hidden-wikinav')
-					open = false
 				}
 				console.log({ isMobile, navi: navigationEl.style.display })
 			})
@@ -149,6 +161,7 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 	}
 
 	await setupNavigation(tree, 0, 'Wiki')
+	navigationEl.appendChild(frag)
 }
 
 async function createWikiNavigation() {
@@ -187,15 +200,7 @@ async function createWikiNavigation() {
 	})
 	navigationElToggle.addEventListener('click', (e) => {
 		navigationEl.classList.toggle('hidden-wikinav')
-		open = !open
 	})
-
-	// navigationEl.addEventListener('click', (e) => {
-	// 	if (!open) {
-	// 		navigationElToggle.click()
-	// 	}
-	// 	open = !open
-	// })
 
 	let configSetInfoEl = document.getElementById('config-set-info')
 	configSetInfoEl.appendChild(navigationElToggle)
@@ -239,8 +244,8 @@ async function createWikiNavigation() {
 
 	wikiRoot_el.appendChild(navigationEl)
 	wikiRoot_el.appendChild(viewEl)
-	// viewEl.classList.add("config-set", "editor-item")
 	await createWikiNavi(navigationEl, viewEl_content)
+	// downloadTextFile('wikientries.txt', JSON.stringify(GLOBAL['wikiEntry']))
 	let navigationNode = document.getElementById('wikiNavigation')
 	reorderByWeight(navigationNode)
 }
@@ -634,7 +639,7 @@ export function gotoWiki(wikidir: string) {
 
 async function setViewElValue(value: string, position: string, title = '') {
 	// console.log(value, title, position)
-	const parsed = JSON.parse(value)
+	const parsed = value
 	function replaceImagesWithLocal(viewEl: HTMLElement) {
 		let imageSources = [
 			{ src: 'https://i.ibb.co/7rxTRrw/395854121-47ed1ae0-a660-46f3-9bf5-917da0d3f675.png', alt: 'ml4w.png' },
@@ -775,4 +780,18 @@ export function wrapAllElements(selector: string, wrapper: string) {
 		el.parentNode?.insertBefore(wrapperEl, el)
 		wrapperEl.appendChild(el)
 	})
+}
+
+function downloadTextFile(filename, content) {
+	const blob = new Blob([content], { type: 'text/plain' })
+
+	const a = document.createElement('a')
+	a.href = URL.createObjectURL(blob)
+	a.download = filename
+
+	document.body.appendChild(a)
+	a.click()
+
+	document.body.removeChild(a)
+	URL.revokeObjectURL(a.href)
 }
