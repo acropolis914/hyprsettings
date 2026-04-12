@@ -27,6 +27,8 @@
 	opacity: 1;
 	transition: height 1s ease-in-out;
 	background-color: transparent;
+	//overflow-x: hidden;
+	display: block;
 	@media (max-width: 33rem) {
 		scale: 0.8;
 	}
