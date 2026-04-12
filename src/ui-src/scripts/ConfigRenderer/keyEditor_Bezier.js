@@ -363,7 +363,7 @@ export class BezierEditor {
 
 		// Range
 		this.range = { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }
-		this.extended = false
+		this.extended = true
 
 		this.onchange = null
 
@@ -375,7 +375,7 @@ export class BezierEditor {
 			border: 'var(--surface-1, #ccc)',
 			gridMajor: 'rgba(0,0,0,0.2)',
 			gridMinor: 'rgba(0,0,0,0.1)',
-			unitSquare: 'rgba(0,0,0,0.05)',
+			unitSquare: 'rgba(0,0,0,0.2)',
 		}
 
 		// Create SVG
@@ -392,6 +392,8 @@ export class BezierEditor {
 		// Unit square
 		this.unitSquare = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		this.unitSquare.setAttribute('fill', this.colors.unitSquare)
+		this.unitSquare.setAttribute('stroke', 'rgba(255, 255, 255, 0.1)')
+		this.unitSquare.setAttribute('stroke-width', '1')
 		this.svg.appendChild(this.unitSquare)
 
 		// Path
@@ -442,10 +444,11 @@ export class BezierEditor {
 
 		// Extend range if enabled
 		if (this.extended) {
-			const xMax = Math.max(1, this._cp1.x, this._cp2.x, 1.5)
-			const xMin = Math.min(0, this._cp1.x, this._cp2.x, -0.5)
-			const yMax = Math.max(1, this._cp1.y, this._cp2.y, 1.5)
-			const yMin = Math.min(0, this._cp1.y, this._cp2.y, -0.5)
+			const EXTENSION = 0.25
+			const xMax = Math.max(1, this._cp1.x, this._cp2.x, 1 + EXTENSION)
+			const xMin = Math.min(0, this._cp1.x, this._cp2.x, -EXTENSION)
+			const yMax = Math.max(1, this._cp1.y, this._cp2.y, 1 + EXTENSION)
+			const yMin = Math.min(0, this._cp1.y, this._cp2.y, -EXTENSION)
 			this.range = { xMin, xMax, yMin, yMax }
 		} else {
 			this.range = { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }

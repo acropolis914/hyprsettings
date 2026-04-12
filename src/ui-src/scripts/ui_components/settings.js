@@ -150,6 +150,7 @@ async function createAbout({ compact = false } = {}) {
 	const oudatedText = document.createElement('span')
 	oudatedText.classList.add('outdated-text', 'hidden')
 	oudatedText.textContent = 'Getting update info from Github....'
+	oudatedText.title = 'Update instructions:\nAUR: Rerun installation via AUR.\nElse: Run hyprsettings -up'
 	versionText.addEventListener('click', (e) => {
 		getHyprsettingsGithubVersion()
 	})

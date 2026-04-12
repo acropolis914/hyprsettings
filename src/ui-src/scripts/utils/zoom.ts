@@ -9,6 +9,7 @@ export function zoom(amount: number = 0.1) {
 	const next = Math.max(0.5, Math.round((current + amount) * 100) / 100)
 
 	html.style.zoom = String(next)
+	html.style.transformOrigin = 'top left'
 	html.style.setProperty('--zoom-factor', String(1 / next))
 
 	GLOBAL.persistence['zoom_factor'] = next
@@ -17,8 +18,9 @@ export function zoom(amount: number = 0.1) {
 
 export function setZoom(value: number, save = false) {
 	const clamped = Math.max(0.5, value)
-
+	// let style = document.createElement('style')
 	html.style.zoom = String(clamped)
+	html.style.transformOrigin = 'top left'
 	html.style.setProperty('--zoom-factor', String(1 / clamped))
 
 	GLOBAL.persistence['zoom_factor'] = clamped

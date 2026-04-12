@@ -1,19 +1,13 @@
 import { selectFrom } from '@scripts/ui_components/dmenu.ts'
 import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.ts'
 import { addItem } from '@scripts/utils/utils.ts'
-import { EditorItem_Comments } from '@scripts/ConfigRenderer/EditorItem_Comments'
+import { EditorItem_Comments } from '@scripts/ConfigRenderer/EditorItem_Comments.ts'
 import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 
-export async function newEditorItemGeneric(options: {
-	relatedElement: Element | HTMLElement
-	position: string
-	below: boolean
-}) {
+export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
 	const allowed_dupes = ['animation', 'bezier', 'gesture']
-	const existingSiblingKeys = Array.from(
-		options.relatedElement.parentNode.children,
-	)
+	const existingSiblingKeys = Array.from(options.relatedElement.parentNode.children)
 		.filter((el) => el.classList.contains('editor-item-generic'))
 		.map((el) => el.dataset.name)
 		.filter((i) => !allowed_dupes.includes(i))
@@ -21,10 +15,7 @@ export async function newEditorItemGeneric(options: {
 
 	let availableKeys: any[]
 	try {
-		availableKeys = findAdjacentConfigKeys(
-			options.position,
-			existingSiblingKeys,
-		)
+		availableKeys = findAdjacentConfigKeys(options.position, existingSiblingKeys)
 	} catch (e) {
 		console.error('findAdjacentConfigKeys threw:', e)
 	}
@@ -46,13 +37,9 @@ export async function newEditorItemGeneric(options: {
 		try {
 			if (
 				keyToAdd.type === 'CONFIG_OPTION_INT' ||
-				(typeof keyToAdd.data === 'string' &&
-					keyToAdd.data.includes(',') &&
-					keyToAdd.data.split(',').length === 3)
+				(typeof keyToAdd.data === 'string' && keyToAdd.data.includes(',') && keyToAdd.data.split(',').length === 3)
 			) {
-				value = keyToAdd.data
-					.split(',')[0]
-					.replace(/^\s*"(.*)"\s*$/, '$1')
+				value = keyToAdd.data.split(',')[0].replace(/^\s*"(.*)"\s*$/, '$1')
 			} else {
 				value = keyToAdd.data.replace(/^\s*"(.*)"\s*$/, '$1')
 			}
@@ -70,10 +57,7 @@ export async function newEditorItemGeneric(options: {
 
 	const thisName = options.relatedElement.dataset.name
 	const isAllowedDupe = allowed_dupes.includes(thisName)
-	const isInConfigGroup =
-		options.relatedElement.parentElement?.classList?.contains(
-			'config-group',
-		)
+	const isInConfigGroup = options.relatedElement.parentElement?.classList?.contains('config-group')
 
 	console.debug('Fallback decision inputs:', {
 		nameIsFalsy: !name,
@@ -82,10 +66,7 @@ export async function newEditorItemGeneric(options: {
 		isInConfigGroup,
 	})
 
-	if (
-		(!name || name.toLowerCase().startsWith('custom')) &&
-		(isAllowedDupe || !isInConfigGroup)
-	) {
+	if ((!name || name.toLowerCase().startsWith('custom')) && (isAllowedDupe || !isInConfigGroup)) {
 		name = thisName
 	} else if (!name) {
 		console.warn('Falling back to GENERIC')
@@ -138,15 +119,7 @@ export async function newEditorItemGeneric(options: {
 }
 
 export async function newEditorItemComments() {
-	let newCommentItem = await addItem(
-		'COMMENT',
-		'comment',
-		'',
-		'# New comment',
-		this.el.dataset.position,
-		this.el.dataset.uuid,
-		below,
-	)
+	let newCommentItem = await addItem('COMMENT', 'comment', '', '# New comment', this.el.dataset.position, this.el.dataset.uuid, below)
 	let newCommentElement = new EditorItem_Comments(
 		{
 			name: newCommentItem['comment'],

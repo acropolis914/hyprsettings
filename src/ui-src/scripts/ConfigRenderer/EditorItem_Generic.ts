@@ -93,7 +93,7 @@ void execNames
 export class EditorItem_Generic {
 	tippyTitle: string
 	initial_load: boolean
-	el: Node | HTMLDivElement
+	el: HTMLDivElement
 	preview_el: HTMLDivElement
 	saveDebounced: () => void | any
 	keyEditor: HTMLTextAreaElement
@@ -118,7 +118,7 @@ export class EditorItem_Generic {
 		this.saveDebounced = debounce(() => this.save(), 15)
 		const template = document.createElement('div')
 		render(templateString, template)
-		this.el = template.firstElementChild!.cloneNode(true)
+		this.el = template.firstElementChild!.cloneNode(true) as HTMLDivElement
 
 		if (GLOBAL['config'].compact) {
 			this.el.classList.add('compact')
@@ -210,12 +210,6 @@ export class EditorItem_Generic {
 					},
 				},
 			})
-			// this.keyEditor = document.createElement('textarea')
-			// this.keyEditor.rows = 1
-			// this.keyEditor.id = 'generic-key'
-			// // this.keyEditor.classList.add('')
-			// this.keyEditor.setAttribute('placeholder', 'Input key here...')
-			// this.genericEditor_el.appendChild(this.keyEditor)
 		} else {
 			this.keyEditor = document.createElement('textarea')
 			this.keyEditor.rows = 1
@@ -234,8 +228,8 @@ export class EditorItem_Generic {
 			const editor = new SliderModal(min, max, isFloat)
 			editor.value = value
 			return editor
-		} else if (this.info?.type === 'CONFIG_OPTION_COLOR') {
-			this.el.dataset.infoType = this.info.type
+		} else if (this.info?.type === 'CONFIG_OPTION_COLOR' || this.el.dataset.value.startsWith('rgb')) {
+			this.el.dataset.infoType = this.info?.type ?? 'CONFIG_OPTION_COLOR'
 			try {
 				return new ColorModal(value)
 			} catch {
@@ -282,8 +276,12 @@ export class EditorItem_Generic {
 				},
 			})
 			return null
-		} else if (this.flipValueIfBool(false) || this.el.dataset.name === 'enable' || this.info?.type === 'CONFIG_OPTION_BOOL') {
-			// Extracted and modified logic from the else/reordered block
+		} else if (
+			this.flipValueIfBool(false) ||
+			this.el.dataset.name === 'enable' ||
+			this.el.dataset.name === 'enabled' ||
+			this.info?.type === 'CONFIG_OPTION_BOOL'
+		) {
 			this.isBoolean = true
 			const ta = document.createElement('textarea')
 			ta.id = 'generic-value'
@@ -294,21 +292,12 @@ export class EditorItem_Generic {
 				ta.dataset.defaultData = this.info.data.trim('"')
 			}
 
-			/*
-			const checkbox = document.createElement('input')
-			checkbox.type = 'checkbox'
-			if (this.info && this.info.data.startsWith('"') && this.info.data.endsWith('"'))
-			    checkbox.dataset.defaultData = this.info.data.replace(/^"|"$/g, '')
-			checkbox.checked = this.parseBool(this.el.dataset.value)
-			console.log({ given: this.el.dataset.value, output: this.parseBool(this.el.dataset.value) })
-			checkbox.id = 'generic-value'
-			*/
-
 			const checkboxWrapper = document.createElement('label')
 			checkboxWrapper.classList.add('switch', 'preview-boolean-switch')
 
 			const checkbox2 = document.createElement('input')
 			checkbox2.type = 'checkbox'
+			checkbox2.tabIndex = -1
 			checkbox2.id = 'preview-boolean-switch-box'
 			checkbox2.checked = this.parseBool(this.el.dataset.value)
 

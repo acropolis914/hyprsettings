@@ -6,7 +6,10 @@ import { EditorItem_Generic } from './EditorItem_Generic.ts'
 import { EditorItem_Binds } from './EditorItem_Binds.ts'
 
 export class EditorItem_Comments {
-	constructor(json, hidden = false) {
+	initial_load: boolean
+	el: HTMLDivElement
+	editing: boolean
+	constructor(json: string | JSON, hidden: boolean = false) {
 		let comment = json['comment']
 		let uuid = json['uuid']
 		let position = json['position']
@@ -18,6 +21,8 @@ export class EditorItem_Comments {
 		this.el.dataset.position = position
 		this.el.dataset.type = json['type']
 		this.editing = false
+		this.el.disable = this.disable.bind(this)
+
 		// let [name, value] = this.el.dataset.comment.replace(/^[ #]+/, '').split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
 		// if (name && value){
 		// }
@@ -210,6 +215,11 @@ export class EditorItem_Comments {
 	delete() {
 		deleteKey(this.el.dataset.uuid, this.el.dataset.position)
 		this.el.remove()
+	}
+
+	disable() {
+		// 	this is needed so when calling disable on any editor item
+		// it won't throw any errors
 	}
 
 	save() {

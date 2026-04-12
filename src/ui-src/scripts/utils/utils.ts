@@ -307,3 +307,91 @@ export async function shortHash(str) {
 
 	return hex.slice(0, 8) // 👈 cut to 8 chars
 }
+
+export type NormalizedRect = {
+	left: number
+	top: number
+	width: number
+	height: number
+	right: number
+	bottom: number
+	x: number
+	y: number
+}
+
+export function getNormalizedRect(el: Element): NormalizedRect {
+	const rect = el.getBoundingClientRect()
+
+	const computed = getComputedStyle(document.documentElement)
+
+	const zoom = parseFloat(computed.zoom || '') || parseFloat(computed.getPropertyValue('--zoom-factor')) || 1
+
+	const isWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent)
+
+	let left = rect.left
+	let top = rect.top
+	let width = rect.width
+	let height = rect.height
+
+	// Chrome / Firefox: rect is affected by zoom → normalize it
+	if (!isWebKit && zoom !== 1) {
+		left /= zoom
+		top /= zoom
+		width /= zoom
+		height /= zoom
+	}
+
+	return {
+		left,
+		top,
+		width,
+		height,
+		right: left + width,
+		bottom: top + height,
+		x: left,
+		y: top,
+	}
+}
+
+export function installPointerNormalizer() {
+	const isWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent)
+
+	if (!isWebKit) return
+
+	let inPatch = false
+
+	const zoom =
+		parseFloat(getComputedStyle(document.documentElement).zoom || '') ||
+		parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--zoom-factor')) ||
+		1
+
+	function patch(e) {
+		if (inPatch) return
+
+		// Only fix if zoom is applied
+		if (!zoom || zoom === 1) return
+
+		inPatch = true
+
+		const corrected = new PointerEvent(e.type, {
+			...e,
+			clientX: e.clientX * zoom,
+			clientY: e.clientY * zoom,
+			screenX: e.screenX * zoom,
+			screenY: e.screenY * zoom,
+		})
+
+		// stop original event from propagating to app logic
+		e.stopImmediatePropagation()
+		e.preventDefault?.()
+
+		e.target.dispatchEvent(corrected)
+
+		inPatch = false
+	}
+
+	// capture phase so libs never see raw event first
+	for (const type of ['pointerdown', 'pointermove', 'pointerup']) {
+		document.addEventListener(type, patch, true)
+	}
+}

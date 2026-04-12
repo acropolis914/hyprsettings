@@ -36,15 +36,17 @@
 			<button class="choice {item.name=== state.selected ? 'selected': '' }" title={item.description} onclick={()=> handleChoiceClick(item.name)}>{item.name}</button>
 		{/each}
 	</div>
-	<button type="button" id="cycler">
-		
-	</button>
+<!--	<button type="button" id="cycler">-->
+<!--		-->
+<!--	</button>-->
 
 </div>
 
 
 <style>
 	.chooser-modal {
+		/*flex:100;*/
+		/*flex-basis: 100%;*/
 		display: flex;
 		flex-direction: row;
 		gap: 1rem;

@@ -4,6 +4,7 @@
 
 <script lang="ts">
 	import { tick } from 'svelte';
+	import { getNormalizedRect } from "@scripts/utils/utils.ts"
 	interface item {
 		label: string;
 		action?: ()=> void;
@@ -48,7 +49,7 @@
 		const menuEl = document.querySelector('.context-menu-sv') as HTMLElement;
 		if (!menuEl) return;
 
-		const rect = menuEl.getBoundingClientRect();
+		const rect = getNormalizedRect(menuEl)
 
 		if (rect.right > window.innerWidth) x -= rect.right - window.innerWidth;
 		if (rect.bottom > window.innerHeight) y -= rect.bottom - window.innerHeight;
