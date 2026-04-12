@@ -1,3 +1,4 @@
+@use "../mixins" as *;
 .config-group {
 	//display: flex;
 	position: relative;
@@ -10,13 +11,13 @@
 	margin-bottom: var(--spacing-unit);
 	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
 	//box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
-	border: 3px solid var(--surface-2);
+	border: 3px solid opacity(var(--surface-2), 0.1);
 	border-radius: var(--border-rad);
 	background-color: var(--surface-1);
 	background-blend-mode: multiply;
-	padding: 2rem;
-	padding-top: 2.5rem;
-	padding-bottom: 1rem;
+	padding: 1rem;
+	padding-top: 1.5rem;
+	padding-bottom: 0.5rem;
 	max-width: 100%;
 	//overflow: clip;
 
