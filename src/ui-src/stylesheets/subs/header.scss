@@ -10,7 +10,7 @@ header#main-header {
 	border-radius: 0;
 	padding: 10px;
 	font-weight: 800;
-	font-size: 20px;
+	font-size: 15px;
 	max-height: 50px;
 
 	//background-color: var(--red);
@@ -22,7 +22,7 @@ header#main-header {
 	@media (max-width: 768px) {
 		font-size: min(20px, 2rem);
 		#icon{
-			font-size: min(20px, 2rem) !important;
+			font-size: min(15px, 2rem) !important;
 		}
 	}
 
@@ -38,21 +38,22 @@ header#main-header {
 		//flex-wrap: nowrap;
 
 		#icon {
-			font-size: 20px;
+			font-size: 15px;
 			font-family: 'CommitMonoIconFont', monospace;
 		}
 
 		#debug-indicator {
 			@include text-ellipsis();
-			//content: "fuck";
-			margin-left: 5px;
-			border-radius: var(--border-radius) !important;
-
-			background-color: var(--accent-warning);
+			margin-left: 2px;
+			border-radius: var(--border-rad) !important;
+			//border-radius: var;
+			background-color: opacity(var(--accent-danger),0.5);
 			padding-right: calc(var(--spacing-unit) / 2);
 			padding-left: calc(var(--spacing-unit) / 2);
-			color: var(--text-contrast);
-			@media (max-width: 768px) {
+			color: var(--text-1);
+			overflow: hidden;
+			//border: 1px solid red;
+			@media (max-width: 40rem) {
 				display: none;
 			}
 		}

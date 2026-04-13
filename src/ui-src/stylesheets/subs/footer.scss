@@ -33,8 +33,8 @@ footer {
 		}
 	}
 
-	p{
-		font-size: min(invert-zoom(14px), 14px);
+	p {
+		font-size: min(invert-zoom(10px), 14px);
 		font-weight: bold;
 	}
 
@@ -47,10 +47,12 @@ footer {
 		border: none;
 		background: 20px;
 		font-family: v.$font;
-		aspect-ratio: 1/1;
+		//aspect-ratio: 1/1;
 		height: 100%;
 		align-items: center;
-		padding: 0;
+		padding: 1px 6px;
+		opacity: 50%;
+
 		&:hover {
 			transform: scale(1.2);
 			color: var(--accent);
