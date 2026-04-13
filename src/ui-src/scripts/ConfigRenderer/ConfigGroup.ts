@@ -161,7 +161,7 @@ export class ConfigGroup {
 			this.createContextMenu(e.clientX, e.clientY)
 		})
 		this.group_el.addEventListener('focus', () => {
-			this.createContextMenu()
+			// this.createContextMenu()
 		})
 
 		this.group_el.addEventListener('blur', (e) => {
@@ -176,7 +176,7 @@ export class ConfigGroup {
 				if (active?.closest('.context-menu')) {
 					return
 				}
-				this.contextMenu.hide()
+				this.contextMenu?.hide()
 			}, 20)
 		})
 
