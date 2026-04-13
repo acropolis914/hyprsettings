@@ -1,26 +1,23 @@
 // @ts-check
-import {
-	saveKey,
-	deleteKey,
-	duplicateKey,
-	addChildItem,
-	addItem,
-} from '../utils/utils.js'
+import { saveKey, deleteKey, duplicateKey, addChildItem, addItem } from '../utils/utils.js'
 import { debounce } from '../utils/helpers.js'
 import { ContextMenu } from './contextMenu.js'
 import { dmenuConfirm } from '../ui_components/dmenu.ts'
 import type { ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.ts'
+import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 
 export class ConfigGroup {
 	group_el: HTMLDivElement
 	private document: HTMLDivElement
 	private contextMenu: ContextMenu
 	private saveDebounced: any
-	private title: string
-
-	// private el: any
+	title: string
+	childrenContainer: HTMLDivElement
+	topbar_el: HTMLDivElement
+	group_name_el: HTMLDivElement
+	topbar_tools_el: HTMLDivElement
 
 	constructor(json: JSON) {
 		this.group_el = document.createElement('div')
@@ -34,18 +31,67 @@ export class ConfigGroup {
 		this.group_el.dataset.type = json['type']
 		this.group_el.disable = this.disable.bind(this)
 		this.saveDebounced = debounce(() => this.save(), 15)
-		this.group_el.setAttribute(
-			'title',
-			json['position'].replace('root:', ''),
-		)
+		this.group_el.setAttribute('title', json['position'].replace('root:', ''))
 		this.title = this.group_el.title
+
+		this.topbar_el = document.createElement('div')
+		this.topbar_el.classList.add('topbar')
+		this.group_name_el = document.createElement('div')
+		this.group_name_el.classList.add('group_name')
+		this.group_name_el.innerText = json['name']
+
+		this.topbar_tools_el = document.createElement('div')
+		this.topbar_tools_el.classList.add('topbar-tools')
+
+		const isGroupDisabled = this.group_el.dataset.disabled === 'true'
+		const { wrapper: switchWrapper, checkbox: switchCheckbox } = createSwitchBox(!isGroupDisabled)
+		switchWrapper.title = 'Enable/Disable (d)'
+
+		switchCheckbox.addEventListener('change', (e) => {
+			this.disable(!switchCheckbox.checked)
+		})
+
+		switchWrapper.addEventListener('click', (e) => {
+			// e.stopPropagation()
+		})
+
+		const duplicateBtn = document.createElement('button')
+		duplicateBtn.classList.add('duplicate-btn')
+		duplicateBtn.innerText = ''
+		duplicateBtn.title = 'Duplicate Group'
+		duplicateBtn.style.cursor = 'pointer'
+		duplicateBtn.addEventListener('click', (e) => {
+			e.stopPropagation()
+			this.duplicateKey()
+		})
+
+		const deleteBtn = document.createElement('button')
+		deleteBtn.classList.add('delete-btn')
+		deleteBtn.innerText = '󰆴'
+		deleteBtn.title = 'Delete Group (Del)'
+		deleteBtn.style.cursor = 'pointer'
+		deleteBtn.addEventListener('click', (e) => {
+			e.stopPropagation()
+			this.delete()
+		})
+
+		this.topbar_tools_el.appendChild(duplicateBtn)
+		this.topbar_tools_el.appendChild(deleteBtn)
+		this.topbar_tools_el.appendChild(switchWrapper)
+
+		this.topbar_el.appendChild(this.group_name_el)
+		this.topbar_el.appendChild(this.topbar_tools_el)
+		this.group_el.appendChild(this.topbar_el)
+
+		this.childrenContainer = document.createElement('div')
+		this.childrenContainer.classList.add('children-container')
+		this.group_el.appendChild(this.childrenContainer)
+		this.group_el.appendConfigItems = this.appendConfigItems.bind(this)
+
 		if (json['comment']) {
 			this.group_el.dataset.comment = json['comment']
 		}
-		if (
-			this.group_el.dataset.name === 'windowrule' ||
-			this.group_el.dataset.name === 'layerrule'
-		) {
+		if (['windowrule', 'layerrule'].includes(json['name'])) {
 			this.group_el.classList.add('rule')
 		}
 		this.group_el.addEventListener('keydown', (e) => {
@@ -57,11 +103,7 @@ export class ConfigGroup {
 			// 	console.log(firstChild)
 			// 	console.log("Group is entered");
 			// }
-			if (
-				e.key == 'd' &&
-				e.target.tagName != 'TEXTAREA' &&
-				e.target.tagName != 'INPUT'
-			) {
+			if (e.key == 'd' && e.target.tagName != 'TEXTAREA' && e.target.tagName != 'INPUT') {
 				e.stopPropagation()
 				e.stopImmediatePropagation()
 				this.disable()
@@ -147,13 +189,7 @@ export class ConfigGroup {
 				return
 			}
 
-			if (
-				e.key === 'Delete' &&
-				!(
-					e.target instanceof HTMLTextAreaElement ||
-					e.target instanceof HTMLInputElement
-				)
-			) {
+			if (e.key === 'Delete' && !(e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement)) {
 				e.preventDefault()
 				e.stopPropagation()
 				const confirm = await dmenuConfirm()
@@ -171,10 +207,7 @@ export class ConfigGroup {
 		})
 	}
 	async newKey() {
-		let [itemToAdd, parent_node] = await addChildItem(
-			this.group_el.dataset.position,
-			this.group_el.dataset.uuid,
-		)
+		let [itemToAdd, parent_node] = await addChildItem(this.group_el.dataset.position, this.group_el.dataset.uuid)
 
 		let itemProps: ItemPropsKey = {
 			name: itemToAdd.name,
@@ -205,10 +238,7 @@ export class ConfigGroup {
 			let parent = el.parentElement
 			console.log(parent)
 			while (parent) {
-				if (
-					parent.dataset.type === 'GROUP' &&
-					parent.dataset.disabled === 'true'
-				) {
+				if (parent.dataset.type === 'GROUP' && parent.dataset.disabled === 'true') {
 					return true
 				}
 				parent = parent.parentElement
@@ -224,15 +254,18 @@ export class ConfigGroup {
 		} else {
 			let isParentDisabled = hasDisabledParent(this.group_el)
 			if (isParentDisabled) {
-				console.warn(
-					'Parent is disabled, cannot enable/disable child',
-				)
+				console.warn('Parent is disabled, cannot enable/disable child')
 				return
 			}
-			this.group_el.dataset.disabled =
-				this.group_el.dataset.disabled === 'true' ? 'false' : 'true'
+			this.group_el.dataset.disabled = this.group_el.dataset.disabled === 'true' ? 'false' : 'true'
 			disabled = this.group_el.dataset.disabled === 'true'
 		}
+
+		const switchCheckbox = this.topbar_tools_el.querySelector('input[type="checkbox"]') as HTMLInputElement
+		if (switchCheckbox) {
+			switchCheckbox.checked = !disabled
+		}
+
 		this.save()
 		// GLOBAL['groupsave'] = true
 		// @ts-ignore
@@ -251,17 +284,13 @@ export class ConfigGroup {
 	}
 
 	async delete() {
-		const confirmation = await dmenuConfirm(
-			`Are you sure you want to delete group ${this.group_el.dataset.name} ?`,
-		)
+		const confirmation = await dmenuConfirm(`Are you sure you want to delete group ${this.group_el.dataset.name} ?`)
 		console.log(confirmation)
 		if (!confirmation) {
 			return
 		}
 		this.group_el.style.backgroundColor = 'var(--surface-1)'
-		let before =
-			this.group_el.previousElementSibling ||
-			this.group_el.nextElementSibling
+		let before = this.group_el.previousElementSibling || this.group_el.nextElementSibling
 
 		function collapseElementFull(el, duration = 1000) {
 			const style = getComputedStyle(el)
@@ -295,15 +324,13 @@ export class ConfigGroup {
 				el.style.opacity = startOpacity * invFactor
 
 				el.style.paddingTop = startPaddingTop * invFactor + 'px'
-				el.style.paddingBottom =
-					startPaddingBottom * invFactor + 'px'
+				el.style.paddingBottom = startPaddingBottom * invFactor + 'px'
 
 				el.style.marginTop = startMarginTop * invFactor + 'px'
 				el.style.marginBottom = startMarginBottom * invFactor + 'px'
 
 				el.style.borderTopWidth = startBorderTop * invFactor + 'px'
-				el.style.borderBottomWidth =
-					startBorderBottom * invFactor + 'px'
+				el.style.borderBottomWidth = startBorderBottom * invFactor + 'px'
 
 				if (t < 1) {
 					requestAnimationFrame(animate)
@@ -323,17 +350,15 @@ export class ConfigGroup {
 			requestAnimationFrame(animate)
 		}
 
-		// Usage
 		collapseElementFull(this.group_el, 500)
 	}
 
 	duplicateKey() {
-		duplicateKey(
-			this.group_el.dataset.uuid,
-			this.group_el.dataset.position,
-			true,
-			this.group_el,
-		)
+		duplicateKey(this.group_el.dataset.uuid, this.group_el.dataset.position, true, this.group_el)
+	}
+
+	appendConfigItems(el: HTMLDivElement) {
+		this.childrenContainer.appendChild(el)
 	}
 
 	save() {

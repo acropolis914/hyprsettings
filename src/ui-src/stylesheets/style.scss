@@ -163,6 +163,7 @@ body {
 		animation: quick-flash 1s ease-in-out infinite alternate;
 		animation-delay: 3s;
 		box-shadow: var(--surface-shadow);
+		color:var(--text-contrast);
 		.button-label {
 			padding: 0;
 			margin: 0;
@@ -170,6 +171,7 @@ body {
 			//white-space: nowrap !important;
 			font-size: 1.2rem;
 			font-weight: bold;
+
 		}
 		&:active {
 			transform: scale(0.9);
@@ -207,7 +209,7 @@ body {
 	flex-direction: column;
 	transition: all 200ms ease-in-out;
 	contain: layout style paint;
-	margin-top: 1rem;
+	//margin-top: 1rem;
 	padding-right: 2rem;
 	padding-left: 2rem;
 	width: 100%;
@@ -231,15 +233,16 @@ body {
 	@media (max-height: 300px) {
 		margin: 0;
 	}
-}
-h1#config-set-title {
-	flex: 0 0 auto;
-	//font-size: 2rem !important;
-	color: var(--accent);
-	@media (max-height: 300px) {
-		font-size: 2rem;
+	h1#config-set-title {
+		flex: 0 0 auto;
+		font-size: 2.5rem;
+		color: var(--accent);
+		@media (max-height: 300px) {
+			font-size: 2rem;
+		}
 	}
 }
+
 #config-set-info {
 	display: flex;
 	flex: 1 1 auto;
@@ -283,55 +286,6 @@ button {
 
 
 
-.switch {
-	position: relative;
-	//background-color: var(--accent);
-	//border: 1px solid red;
-	width: 4ch;
-	input[type='checkbox'] {
-		opacity: 0;
-		width: 0;
-		height: 0;
-	}
-	.fake-slider {
-		position: absolute;
-		top: 50%;
-		left: 0;
-		transform: translateY(-50%);
-		cursor: pointer;
-		border-radius: 9999px;
-		//background-color: var(--text-0);
-		background-color: color-mix(in srgb, var(--text-0), transparent 50%);
-
-		width: 100%;
-		height: 50%;
-	}
-	.fake-slider::before {
-		position: absolute;
-		top: 50%;
-		//bottom: 3px;
-		//left: 3px;
-		right: 100%;
-		transform: translateY(-50%) translateX(100%);
-		transition: all 0.2s;
-		border-radius: 50%;
-		background-color: var(--text-2);
-		aspect-ratio: 1/1;
-		//width: 200%;
-		height: 200%;
-		content: '';
-	}
-	input:checked + .fake-slider {
-		//background-color: color-mix(in srgb, var(--accent), transparent 50%);
-		//background-color: var(--accent);
-	}
-	input:checked + .fake-slider::before {
-		right: 0;
-		transform: translateX(0) translateY(-50%);
-		//color: red;
-		background-color: var(--accent);
-	}
-}
 /* --- Drag & Drop ---*/
 .sortable-ghost {
 	scale: 0.8;

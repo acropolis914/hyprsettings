@@ -19,6 +19,7 @@ import keyEditor_Bind from '@scripts/ConfigRenderer/keyEditor_Bind.svelte'
 import { findAdjacentConfigKeys, findConfigDescription } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelte'
+import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -289,17 +290,8 @@ export class EditorItem_Generic {
 				ta.dataset.defaultData = this.info.data.trim('"')
 			}
 
-			const checkboxWrapper = document.createElement('label')
-			checkboxWrapper.classList.add('switch', 'preview-boolean-switch')
-
-			const checkbox2 = document.createElement('input')
-			checkbox2.type = 'checkbox'
-			checkbox2.tabIndex = -1
-			checkbox2.id = 'preview-boolean-switch-box'
-			checkbox2.checked = this.parseBool(this.el.dataset.value)
-
-			const fakeSlider = document.createElement('span')
-			fakeSlider.className = 'fake-slider'
+			const { wrapper: checkboxWrapper, checkbox: checkbox2 } = createSwitchBox(this.parseBool(this.el.dataset.value))
+			checkboxWrapper.classList.add('preview-boolean-switch') // needed for layout
 
 			// Event Listeners
 			checkboxWrapper.addEventListener('click', (e) => {
@@ -327,8 +319,6 @@ export class EditorItem_Generic {
 			})
 
 			// DOM Assembly
-			checkboxWrapper.appendChild(checkbox2)
-			checkboxWrapper.appendChild(fakeSlider)
 			this.el.querySelector('.preview-wrapper').appendChild(checkboxWrapper)
 
 			// console.log(ta.value, this.el.dataset.name)
@@ -682,8 +672,10 @@ export class EditorItem_Generic {
 				// Commit to UI, DOM, and Backend
 				this.valueEditor.value = next
 				this.el.dataset.value = next
-				const previewCheckboxEl = this.el.querySelector('#preview-boolean-switch-box') as HTMLInputElement
-				previewCheckboxEl.checked = ['yes', 'true', 'on', '1'].some((t) => next.startsWith(t))
+				const previewCheckboxEl = this.el.querySelector('.preview-wrapper input[type="checkbox"]') as HTMLInputElement
+				if (previewCheckboxEl) {
+					previewCheckboxEl.checked = ['yes', 'true', 'on', '1'].some((t) => next.startsWith(t))
+				}
 				this.update()
 			}
 			return true
