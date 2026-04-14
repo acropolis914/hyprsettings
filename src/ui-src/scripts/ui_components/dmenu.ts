@@ -103,6 +103,11 @@ class DMenu {
 		li.addEventListener('focus', () => {
 			li.classList.add('selected')
 			li.querySelector('.dmenu-item-description')?.classList.remove('hidden')
+
+			// Wait for the next frame so the height update is "locked in"
+			requestAnimationFrame(() => {
+				li.scrollIntoView({ behavior: 'smooth', block: 'center' })
+			})
 		})
 		li.addEventListener('blur', () => {
 			li.classList.remove('selected')

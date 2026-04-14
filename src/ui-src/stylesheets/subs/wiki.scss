@@ -48,7 +48,8 @@
 	position: relative;
 	flex-direction: row;
 	margin-right: 0;
-	padding-right: 0;
+	//padding-right: 0;
+	padding:0.5rem;
 	width: 100%;
 	max-width: calc(100% - 5 * var(--spacing-unit));
 	height: 100%;
@@ -90,8 +91,10 @@
 			width 0.2s ease;
 		max-width: 30%;
 		max-height: 100%;
+		margin-left: var(--spacing-unit);
 		overflow-x: hidden;
 		overflow-y: scroll;
+		font-size: 1rem;
 		//@media (max-width: 768px) {
 		//	//display: none;
 		//	justify-content: center;
@@ -118,33 +121,54 @@
 		//}
 
 		.config-group {
-			margin-top: calc(2 * var(--spacing-unit));
-			padding: calc(1.5 * var(--spacing-unit));
+			margin-top: calc(1 * var(--spacing-unit));
+			padding-top: calc(3 * var(--spacing-unit));
 			margin-bottom:0;
+			margin-inline: 2px;
+			font-size: 1.2rem;
 			//padding-top:0;
 			//margin-top:0;
 			:last-child{
-				margin-bottom: 0;
+				//margin-bottom: 0;
 			}
 			@media (max-width: 600px) {
 				padding: var(--spacing-unit);
 				min-width: 70%;
 			}
 			&:empty{
-				margin: calc(1.5*var(--spacing-unit));
+				//margin: calc(1.5*var(--spacing-unit));
+				//margin: 0;
 				background-color:var(--surface-0);
 				border:none;
 				min-height: 3rem;
 				&::before{
+					white-space: nowrap;
+					position:absolute;
 					top:50%;
+					left:50%;
+					transform: translate(-50%,-50%);
 					background-color:transparent;
 				}
 			}
+			> .config-group{
+				//outline: red 1px solid;
+				margin-top:0 !important;
+				margin-block: 10px;
+			}
+			&::before{
+				content: attr(data-name);
+				text-transform: uppercase;
+				position: absolute;
+				top:15px;
+				left: 50%;
+				transform: translate(-50%,-50%);
+				//white-space: n
+				max-width: 100%;
+				text-align: justify;
+				display: inline-block;
+			}
 		}
-		.config-group::before {
-			white-space: nowrap;
-		}
-		.config-group::after {
+		.config-group:not(:empty)::before {
 			white-space: nowrap;
 		}
 
@@ -156,6 +180,7 @@
 		}
 		.editor-item:not(.config-group) {
 			overflow: hidden;
+			padding: 5px;
 		}
 		.config-group::before {
 			//top: 10px

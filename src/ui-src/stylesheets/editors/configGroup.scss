@@ -65,10 +65,32 @@
 
 		}
 	}
+
 	&:is(:focus-visible, :focus) {
 		//outline-color: var(--accent) !important;
 		//outline-offset: 2px !important;
-		border: 1px solid var(--accent) !important;
+		//outline: 1px solid var(--accent) !important;
+		>.topbar>.group-name:before{
+			position: absolute;
+			content: "";
+			//color: red;
+			//top: 50%;
+			left:-4px;
+			font-weight: bold;
+			font-size: 1.6rem;
+			color: var(--accent-success);
+		}
+	}
+	&:is(:focus-within) {
+		//outline-color: var(--accent) !important;
+		outline-offset: 0px !important;
+		outline: 1px solid var(--accent-hover) !important;
+		//&:before{
+		//	position: absolute;
+		//	content: "";
+		//	top: 0;
+		//	left:0;
+		//}
 	}
 }
 

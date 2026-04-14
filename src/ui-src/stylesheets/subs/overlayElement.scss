@@ -96,6 +96,8 @@
 			padding-bottom: calc(var(--spacing-unit) * 0.25);
 			padding-left: var(--spacing-unit);
 			max-width: 100% !important;
+			scroll-margin-block: 40px;
+			transition: all 0.2s ease-out; // Smooth height change
 			//overflow-x: h;
 			@media (max-width: 768px) {
 				@media (pointer: coarse) {
@@ -135,13 +137,42 @@
 			}
 
 			.dmenu-item-description {
+				// 1. Grid Logic (The Animation Engine)
+				display: grid;
+				grid-template-rows: 1fr;
+				transition:
+					grid-template-rows 0.2s ease,
+					opacity 0.2s ease,
+					margin 0.2s ease,
+					padding 0.2s ease;
+
+				// 2. Your Original Styling (Preserved)
 				max-width: 100%;
 				color: var(--text-contrast);
 				font-size: 1.2rem;
 				word-wrap: break-word;
+				overflow-wrap: break-word;
 				opacity: 0.9;
 				line-height: 1rem;
-				overflow-wrap: break-word;
+
+				// 3. Safety
+				overflow: hidden;
+
+				&.hidden {
+					// Collapses the grid row to zero
+					grid-template-rows: 0fr;
+
+					// Kills the "blank space" artifacts
+					opacity: 0 !important;
+					margin: 0 !important;
+					padding: 0 !important;
+					line-height: 0 !important; // Kills the text height footprint
+					visibility: hidden;
+				}
+
+				// Required for the grid trick when there's no wrapper div
+				// This tells the text nodes to allow being collapsed to 0
+				min-height: 0;
 			}
 		}
 	}

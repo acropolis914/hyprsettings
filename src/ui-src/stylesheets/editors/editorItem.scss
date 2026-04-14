@@ -20,9 +20,6 @@
 	//overflow: clip;
 	font-size: 1.6rem;
 
-
-
-
 	&::after {
 		font-family: v.$font;
 	}
@@ -30,7 +27,6 @@
 	&.invalid:not(.disabled) {
 		animation: slow-flash 3s ease-in-out;
 		animation-iteration-count: infinite;
-		//border: 1px solid var(--accent-warning);
 	}
 
 	@keyframes slow-flash {
@@ -323,8 +319,8 @@
 	}
 
 	&:is(:focus-visible, :focus) {
-		outline: 2px solid var(--accent-color) !important;
-		outline-offset: 2px !important;
+		outline: 1px solid var(--accent-color) !important;
+		outline-offset: 4px !important;
 	}
 
 	// --- Specific ID overrides ---
@@ -369,7 +365,7 @@
 
 	&:is(:focus-within, :focus-visible, :focus) {
 		opacity: 1 !important;
-		border: 1px solid transparent !important;
+		outline: 1px solid transparent !important;
 		//border-bottom: 1px solid var(--accent-hover) !important;
 		> * {
 			color: var(--text-1);
@@ -424,5 +420,6 @@
 .editor-item-generic+ .editor-item-generic:not(:has(+ .editor-item-generic)){
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
+	margin-bottom: 0.5rem;
 }
 

@@ -1,38 +1,35 @@
 export function implementScrollHints(el: HTMLDivElement | HTMLUListElement) {
-	if (!el || !el.firstElementChild || !el.lastElementChild) {
-		console.error(`${el} has problems.`)
-		return
+	if (!el) return
+
+	el.classList.add('scroll-container')
+
+	const TOP_CLASS = 'scroll-hint-top'
+	const BOTTOM_CLASS = 'scroll-hint-bottom'
+
+	const update = () => {
+		const { scrollTop, scrollHeight, clientHeight } = el
+
+		if (scrollTop > 0) {
+			el.classList.add(TOP_CLASS)
+		} else {
+			el.classList.remove(TOP_CLASS)
+		}
+
+		const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1
+
+		if (isAtBottom) {
+			el.classList.remove(BOTTOM_CLASS)
+		} else {
+			el.classList.add(BOTTOM_CLASS)
+		}
 	}
 
-	const first = el.firstElementChild as HTMLElement
-	const last = el.lastElementChild as HTMLElement
+	// Passive listener for better performance
+	el.addEventListener('scroll', update, { passive: true })
 
-	// classes you can style (e.g. shadows / fades)
-	const FIRST_HIDDEN_CLASS = 'scroll-hint-top'
-	const LAST_HIDDEN_CLASS = 'scroll-hint-bottom'
+	// Initial check (use requestAnimationFrame to ensure layout is ready)
+	window.requestAnimationFrame(update)
 
-	const observer = new IntersectionObserver(
-		(entries) => {
-			for (const entry of entries) {
-				const isFullyVisible = entry.intersectionRatio === 1
-
-				if (entry.target === first) {
-					el.classList.toggle(FIRST_HIDDEN_CLASS, !isFullyVisible)
-				}
-
-				if (entry.target === last) {
-					el.classList.toggle(LAST_HIDDEN_CLASS, !isFullyVisible)
-				}
-			}
-		},
-		{
-			root: el,
-			threshold: [1], // only consider "visible" if fully in view
-		},
-	)
-
-	observer.observe(first)
-	observer.observe(last)
-
-	return () => observer.disconnect() // cleanup helper
+	// Cleanup helper
+	return () => el.removeEventListener('scroll', update)
 }

@@ -1,24 +1,35 @@
-@use "../mixins" as *;
-.scroll-hint-top::before {
-	content: ".";
-	color:transparent;
-	position: sticky;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 16px;
-	pointer-events: none;
-	background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
-}
+.scroll-container {
+	overflow-y: auto;
+	position: relative;
 
-.scroll-hint-bottom::after {
-	content: ".";
-	color:transparent;
-	position: sticky;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 16px;
-	pointer-events: none;
-	background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+	// 1. Define the mask "safe zones"
+	// We use variables so we don't have to rewrite the whole gradient
+	--mask-top: black;
+	--mask-bottom: black;
+
+	mask-image: linear-gradient(
+		to bottom,
+		var(--mask-top) 0%,
+		black 30px,               // Content is fully opaque after 30px
+		black calc(100% - 30px), // Content stays opaque until 30px from bottom
+		var(--mask-bottom) 100%
+	);
+	mask-size: 100% 100%;
+	mask-repeat: no-repeat;
+
+	// 2. Class-based toggles (from your scroll listener)
+	&.scroll-hint-top {
+		--mask-top: transparent;
+	}
+
+	&.scroll-hint-bottom {
+		--mask-bottom: transparent;
+	}
+
+	// 3. Cleanup
+	// Hide scrollbars so they don't get masked/clipped weirdly
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }

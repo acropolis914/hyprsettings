@@ -75,6 +75,7 @@ header#main-header {
 	position: relative;
 	box-sizing: border-box;
 	margin-left: auto;
+	align-items: center;
 	border-radius: var(--border-rad);
 	@media (max-width: 768px) {
 		max-width: 30ch;
@@ -108,7 +109,11 @@ header#main-header {
 		border-radius: var(--border-rad);
 		@include editor-input-reset;
 		padding-left: 0.5rem;
-		font-size: 16px;
+		font-size: 12px;
+		color: var(--text-0);
+		&::placeholder{
+			color: opacity(var(--text-0),0.2);
+		}
 	}
 
 	div#results {
