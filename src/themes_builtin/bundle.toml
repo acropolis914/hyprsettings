@@ -1740,7 +1740,7 @@ text-disabled = "#32302f"
 text-contrast = "#1d2021"
 
 # Accents
-accent = "#0d6678"
+accent = "#11859d"
 accent-hover = "#8ba59b"
 accent-active = "#8f4673"
 accent-success = "#95c085"
@@ -1753,7 +1753,7 @@ orange = "#fe8625"
 yellow = "#fac03b"
 green = "#95c085"
 teal = "#8ba59b"
-blue = "#0d6678"
+blue = "#11859d"
 purple = "#8f4673"
 pink = "#a87322"
 

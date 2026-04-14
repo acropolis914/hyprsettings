@@ -22,6 +22,7 @@
 
 
 
+
 	&::after {
 		font-family: v.$font;
 	}
@@ -54,6 +55,7 @@
 
 	// --- State Handling ---
 	&:is(:focus, :focus-visible, :focus-within) {
+		@include box-shadow;
 		&.config-group:not(:focus-within) {
 			@include config-group-focused('', var(--accent-success));
 			&::after {
@@ -99,7 +101,7 @@
 		}
 
 		i {
-			color: var(--text-2);
+			color: opacity(var(--text-2), 0.5);
 		}
 		span {
 			font-weight: bold;

@@ -1,0 +1,24 @@
+@use "../mixins" as *;
+.scroll-hint-top::before {
+	content: ".";
+	color:transparent;
+	position: sticky;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 16px;
+	pointer-events: none;
+	background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+}
+
+.scroll-hint-bottom::after {
+	content: ".";
+	color:transparent;
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 16px;
+	pointer-events: none;
+	background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+}

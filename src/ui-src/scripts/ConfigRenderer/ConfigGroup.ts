@@ -37,7 +37,8 @@ export class ConfigGroup {
 		this.topbar_el = document.createElement('div')
 		this.topbar_el.classList.add('topbar')
 		this.group_name_el = document.createElement('div')
-		this.group_name_el.classList.add('group_name')
+		// this.group_name_el.classList.add('group_name')
+		this.group_name_el.classList.add('group-name')
 		this.group_name_el.innerText = json['name']
 
 		this.topbar_tools_el = document.createElement('div')
@@ -57,7 +58,7 @@ export class ConfigGroup {
 
 		const duplicateBtn = document.createElement('button')
 		duplicateBtn.classList.add('duplicate-btn')
-		duplicateBtn.innerText = ''
+		duplicateBtn.innerText = '󰆑'
 		duplicateBtn.title = 'Duplicate Group'
 		duplicateBtn.style.cursor = 'pointer'
 		duplicateBtn.addEventListener('click', (e) => {
@@ -67,7 +68,7 @@ export class ConfigGroup {
 
 		const deleteBtn = document.createElement('button')
 		deleteBtn.classList.add('delete-btn')
-		deleteBtn.innerText = '󰆴'
+		deleteBtn.innerText = '󰧧'
 		deleteBtn.title = 'Delete Group (Del)'
 		deleteBtn.style.cursor = 'pointer'
 		deleteBtn.addEventListener('click', (e) => {

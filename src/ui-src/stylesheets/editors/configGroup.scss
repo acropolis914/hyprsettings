@@ -1,6 +1,5 @@
 @use "../mixins" as *;
 .config-group {
-	//display: flex;
 	position: relative;
 	flex-direction: column;
 	opacity: 1;
@@ -9,7 +8,8 @@
 		scale 0.2s ease;
 	margin-top: var(--spacing-unit);
 	margin-bottom: var(--spacing-unit);
-	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
+	//box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
+	@include box-shadow;
 	//box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
 	border: 1px solid opacity(var(--surface-2), 0.5);
 	border-radius: var(--border-rad);
@@ -72,7 +72,7 @@
 	}
 }
 
-.config-group:is(:active, :hover, :focus, :focus-visible, :focus-within) > .topbar > .topbar-tools{
+.config-group:is(:active, :hover, :focus, :focus-visible, :focus-within, [data-disabled="true"]) > .topbar > .topbar-tools{
 	opacity: 1;
 }
 .config-group > .topbar{
@@ -84,6 +84,12 @@
 	align-items: center;
 	flex-direction: row;
 	justify-content: space-between;
+
+	.group-name{
+		&::first-letter{
+			text-transform: uppercase;
+		}
+	}
 
 	.topbar-tools {
 		opacity: 0;

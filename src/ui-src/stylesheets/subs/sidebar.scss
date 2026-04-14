@@ -49,6 +49,7 @@
 
 		> div {
 			@include text-ellipsis;
+			text-transform: uppercase;
 			transition:
 				opacity 0.3s ease-in-out,
 				height 0.2s ease-in-out;

@@ -576,8 +576,8 @@ class _ConfigParser:
 
 			if char == '#' and not in_quote:
 				line, comment = line[:i].strip(), line[i + 1:].strip()
-				if line.startswith("exec"):
-					log(line, comment)
+				# if line.startswith("exec"):
+				# 	log(line, comment)
 				return line, comment
 		return line.strip(), ""
 

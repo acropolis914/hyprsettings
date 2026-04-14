@@ -1,19 +1,15 @@
 // dmenu.js
 import { GLOBAL } from '../GLOBAL.ts'
 import { createOverlay, destroyOverlay } from './darkenOverlay.js'
+import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
 
 /* ============================================================
  * Generic DMenu (reusable, app-agnostic)
  * ============================================================ */
 class DMenu {
-	constructor({
-		items = [],
-		onSelect = () => {},
-		onCancel = () => {},
-		promptText = '',
-		searchbar = true,
-		footer = '↑ ↓ Enter',
-	} = {}) {
+	listEl: HTMLUListElement
+	private root: HTMLDivElement
+	constructor({ items = [], onSelect = () => {}, onCancel = () => {}, promptText = '', searchbar = true, footer = '↑ ↓ Enter' } = {}) {
 		this.items = items
 		this.filteredItems = items
 		this.onSelect = onSelect
@@ -35,13 +31,11 @@ class DMenu {
 			this.inputEl.type = 'text'
 			this.inputEl.className = 'dmenu-search'
 			this.inputEl.placeholder = this.promptText
-			this.inputEl.addEventListener('input', () =>
-				this._filter(this.inputEl.value),
-			)
+			this.inputEl.addEventListener('input', () => this._filter(this.inputEl.value))
 			this.root.appendChild(this.inputEl)
 		}
 
-		this.listEl = document.createElement('ul')
+		this.listEl = document.createElement('ul') as HTMLUListElement
 		this.listEl.className = 'dmenu-list'
 		this.root.appendChild(this.listEl)
 
@@ -78,11 +72,7 @@ class DMenu {
 
 	_filter(query) {
 		const q = query.toLowerCase()
-		this.filteredItems = this.items.filter((item) =>
-			(item.label ?? String(item.value ?? item))
-				.toLowerCase()
-				.includes(q),
-		)
+		this.filteredItems = this.items.filter((item) => (item.label ?? String(item.value ?? item)).toLowerCase().includes(q))
 		this._renderItems(this.filteredItems)
 		this.focusFirst()
 	}
@@ -94,8 +84,7 @@ class DMenu {
 
 		const label = document.createElement('div')
 		label.className = 'dmenu-item-label'
-		label.textContent =
-			item.label ?? item.name ?? String(item.value ?? item)
+		label.textContent = item.label ?? item.name ?? String(item.value ?? item)
 		li.appendChild(label)
 
 		if (item.description) {
@@ -113,15 +102,11 @@ class DMenu {
 		})
 		li.addEventListener('focus', () => {
 			li.classList.add('selected')
-			li.querySelector('.dmenu-item-description')?.classList.remove(
-				'hidden',
-			)
+			li.querySelector('.dmenu-item-description')?.classList.remove('hidden')
 		})
 		li.addEventListener('blur', () => {
 			li.classList.remove('selected')
-			li.querySelector('.dmenu-item-description')?.classList.add(
-				'hidden',
-			)
+			li.querySelector('.dmenu-item-description')?.classList.add('hidden')
 		})
 
 		li.addEventListener('keydown', (e) => {
@@ -129,20 +114,16 @@ class DMenu {
 			if (e.key === 'Escape') this.onCancel()
 			if (e.key === 'ArrowDown') {
 				e.preventDefault()
-				;(
-					li.nextElementSibling ?? this.listEl.firstElementChild
-				)?.focus()
+				;(li.nextElementSibling ?? this.listEl.firstElementChild)?.focus()
 			}
 			if (e.key === 'ArrowUp') {
 				e.preventDefault()
-				;(
-					li.previousElementSibling ??
-					this.listEl.lastElementChild
-				)?.focus()
+				;(li.previousElementSibling ?? this.listEl.lastElementChild)?.focus()
 			}
 		})
 
 		this.listEl.appendChild(li)
+		implementScrollHints(this.listEl)
 	}
 
 	focusFirst() {
@@ -217,12 +198,7 @@ export function selectFrom(options, addCustom = true) {
 				description: 'Enter a custom value',
 			})
 		}
-		runMenu(
-			new DMenu({ items, promptText: 'Type to search' }),
-			resolve,
-			reject,
-			true,
-		)
+		runMenu(new DMenu({ items, promptText: 'Type to search' }), resolve, reject, true)
 	})
 }
 

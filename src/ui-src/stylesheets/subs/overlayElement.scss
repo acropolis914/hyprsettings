@@ -1,4 +1,5 @@
 @use '../_variables' as v;
+@use '../mixins' as *;
 
 %overlay {
 	display: flex;
@@ -16,13 +17,13 @@
 .dmenu-overlay,
 #dmenu-overlay {
 	position: absolute; /* covers the container */
-	opacity: 0.3;
+	opacity: 1;
 	z-index: 8; /* below dmenu */
-	backdrop-filter: blur(1px);
+	backdrop-filter: blur(2px);
 	//backdrop-filter: blur(1px);
 	transition: all 1s ease;
 	inset: 0; /* top:0; right:0; bottom:0; left:0 */
-	background-color: var(--surface-0); /* semi-transparent dim */
+	background-color: opacity(black, 0.3); /* semi-transparent dim */
 }
 
 #dmenu {
@@ -35,22 +36,21 @@
 	z-index: 9;
 	backdrop-filter: blur(10px);
 	transition: height 0.2s ease-in-out;
-	box-shadow: var(--shadow);
-
-	border: 1px solid var(--accent);
+	//border: 1px solid var(--accent);
 	border-radius: var(--border-rad);
 	background-color: var(--surface-0);
 	padding: var(--spacing-unit);
 	width: 30rem;
 	min-width: 30rem;
+	max-height: calc(100vh - 4rem);
+	@include box-shadow;
 	@media (max-width: 768px) {
 		max-width: 80%;
 		min-width: 80%;
 	}
 
 
-	// prevent it from exceeding viewport
-	max-height: calc(100vh - 4rem);
+
 
 	.dmenu-footer {
 		align-items: flex-end;
@@ -79,6 +79,8 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		list-style: none;
+		position: relative;
+		max-width: 100%;
 
 		&:not(:has(:last-child:in-view)) {
 			mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
@@ -93,7 +95,8 @@
 			padding-right: var(--spacing-unit);
 			padding-bottom: calc(var(--spacing-unit) * 0.25);
 			padding-left: var(--spacing-unit);
-			max-width: 100%;
+			max-width: 100% !important;
+			//overflow-x: h;
 			@media (max-width: 768px) {
 				@media (pointer: coarse) {
 					padding-block: 1rem;
