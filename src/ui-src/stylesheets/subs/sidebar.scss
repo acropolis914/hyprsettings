@@ -24,9 +24,11 @@
 		position: relative;
 		flex-direction: column;
 		list-style: none;
+		scroll-margin: 5px;
 
 		li {
 			position: relative;
+			scroll-margin: 5px;
 			//transition: all 1s ease-in-out;
 		}
 

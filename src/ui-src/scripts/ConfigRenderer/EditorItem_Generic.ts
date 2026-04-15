@@ -519,12 +519,7 @@ export class EditorItem_Generic {
 			if (e.key === 'Delete') {
 				e.preventDefault()
 				e.stopPropagation()
-				Array.from(this.contextMenu.el.children).forEach((element) => {
-					let label_el = element.querySelector('.ctx-button-label')
-					if (label_el.textContent.toLowerCase().includes('delete')) {
-						setTimeout(() => element.click(), 0)
-					}
-				})
+				this.delete()
 			}
 			if (e.key === 'd') {
 				if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {

@@ -316,9 +316,7 @@ class _ConfigParser:
 	def load(cls, path: Path | PathLike) -> HyprParser:
 		global node_count
 		node_count = 0
-
 		parser = cls(path)
-
 		return parser.root
 
 	@classmethod

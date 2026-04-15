@@ -1,17 +1,22 @@
+import { addKeys } from '@scripts/HyprlandSpecific/editorItem_newKey.ts'
 export const counter = $state({
 	count: 0,
 })
 
 export const menuState = $state({
 	visible: false,
+	closestConfigSet: null,
 	x: 0,
 	y: 0,
 	items: [
-		// {
-		// 	label: 'Add new item',
-		// 	icon: '',
-		// },
-		// { label: 'separator' },
+		{
+			label: 'Add new item',
+			icon: '',
+			action: async () => {
+				await addKeys('', menuState.closestConfigSet)
+			},
+		},
+		{ label: 'separator' },
 		{
 			label: 'Expand all items',
 			icon: '󰡏',

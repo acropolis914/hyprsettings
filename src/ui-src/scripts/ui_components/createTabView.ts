@@ -4,6 +4,7 @@ import { GLOBAL } from '../GLOBAL.js'
 import ContextMenu from './verticalContextMenu.svelte'
 import { mount, unmount } from 'svelte'
 import { counter, menuState } from './svelteStates.svelte.js'
+import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
 
 let initialLoad = true
 
@@ -144,12 +145,13 @@ class ConfigTab {
 	}
 
 	createContextMenu(el: HTMLDivElement, e: MouseEvent) {
-		console.log(counter.count)
+		let target = e.target as HTMLElement
 		const rect = el.getBoundingClientRect()
 		menuState.x = e.pageX
 		menuState.y = e.pageY
+		menuState.closestConfigSet = target.closest('.config-set')
 		const menu = mount(ContextMenu, {
-			target: document.body,
+			target: document.body as HTMLElement,
 			props: menuState,
 		})
 		return { menu, menuState }
@@ -165,10 +167,14 @@ export default async function createTabView() {
 		})
 		for (let tab of tabs) {
 			if (tab.name === 'debug' && !(GLOBAL['isDebugging'] === true)) {
-				return
+				continue
 			}
 			new ConfigTab(tab)
 		}
+		setTimeout(() => {
+			let scrollContainer = document.querySelector('aside#sidebar') as HTMLDivElement | HTMLUListElement
+			implementScrollHints(scrollContainer)
+		}, 0)
 
 		if (!(GLOBAL['isDebugging'] === true)) {
 			let debugTab = sidebar.querySelector('li#debug')
@@ -186,6 +192,11 @@ export default async function createTabView() {
 			console.log(GLOBAL)
 		}
 		initialLoad = false
+
 		resolve(true)
 	})
+}
+
+export async function focusTab(id: string) {
+	document.querySelector(`aside#sidebar>ul>#${id}`).click()
 }

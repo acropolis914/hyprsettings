@@ -3,13 +3,39 @@ import { GLOBAL } from '../GLOBAL.ts'
 import { createOverlay, destroyOverlay } from './darkenOverlay.js'
 import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
 
+export interface DMenuItem {
+	label?: string
+	name?: string
+	value?: any
+	description?: string
+	originalReference?: any
+}
+
+export interface DMenuOptions {
+	items?: DMenuItem[]
+	onSelect?: (item: DMenuItem) => void
+	onCancel?: () => void
+	promptText?: string
+	searchbar?: boolean
+	footer?: string
+}
+
 /* ============================================================
  * Generic DMenu (reusable, app-agnostic)
  * ============================================================ */
 class DMenu {
 	listEl: HTMLUListElement
 	private root: HTMLDivElement
-	constructor({ items = [], onSelect = () => {}, onCancel = () => {}, promptText = '', searchbar = true, footer = '↑ ↓ Enter' } = {}) {
+	items: DMenuItem[]
+	filteredItems: DMenuItem[]
+	onSelect: (item: DMenuItem) => void
+	onCancel: () => void
+	promptText: string
+	searchbar: boolean
+	footerText: string
+	inputEl?: HTMLInputElement
+
+	constructor({ items = [], onSelect = () => {}, onCancel = () => {}, promptText = '', searchbar = true, footer = '↑ ↓ Enter' }: DMenuOptions = {}) {
 		this.items = items
 		this.filteredItems = items
 		this.onSelect = onSelect
@@ -17,7 +43,7 @@ class DMenu {
 		this.promptText = promptText
 		this.searchbar = searchbar
 		this.footerText = footer
-		this.root = null
+		this.root = null as any
 	}
 
 	render() {
@@ -65,19 +91,19 @@ class DMenu {
 		return this.root
 	}
 
-	_renderItems(items) {
+	_renderItems(items: DMenuItem[]) {
 		this.listEl.innerHTML = ''
 		items.forEach((item) => this._addItem(item))
 	}
 
-	_filter(query) {
+	_filter(query: string) {
 		const q = query.toLowerCase()
 		this.filteredItems = this.items.filter((item) => (item.label ?? String(item.value ?? item)).toLowerCase().includes(q))
 		this._renderItems(this.filteredItems)
 		this.focusFirst()
 	}
 
-	_addItem(item) {
+	_addItem(item: DMenuItem) {
 		const li = document.createElement('li')
 		li.className = 'dmenu-item'
 		li.tabIndex = 0
@@ -90,7 +116,7 @@ class DMenu {
 		if (item.description) {
 			const desc = document.createElement('div')
 			desc.className = 'dmenu-item-description hidden'
-			desc.textContent = item.description
+			desc.innerHTML = item.description
 			li.appendChild(desc)
 		}
 
@@ -144,7 +170,7 @@ class DMenu {
 /* ============================================================
  * Logic Engine
  * ============================================================ */
-function runMenu(menu, resolve, reject, isSelectFrom = false) {
+function runMenu(menu: DMenu, resolve: (val: any) => void, reject: (reason?: any) => void, isSelectFrom = false) {
 	const root = menu.render()
 	const previousView = GLOBAL.currentView ?? 'main'
 	GLOBAL.previousView = previousView
@@ -156,14 +182,14 @@ function runMenu(menu, resolve, reject, isSelectFrom = false) {
 		document.removeEventListener('click', outsideClick)
 	}
 
-	const outsideClick = (e) => {
-		if (root && !root.contains(e.target)) {
+	const outsideClick = (e: MouseEvent) => {
+		if (root && !root.contains(e.target as Node)) {
 			cleanup()
-			isSelectFrom ? reject('selectioncancelled') : resolve(null)
+			isSelectFrom && reject ? reject('selectioncancelled') : resolve(null)
 		}
 	}
 
-	menu.onSelect = (item) => {
+	menu.onSelect = (item: DMenuItem) => {
 		cleanup()
 		// If it's the old selectFrom style, return the whole option object
 		resolve(item.originalReference ?? item.value)
@@ -171,7 +197,7 @@ function runMenu(menu, resolve, reject, isSelectFrom = false) {
 
 	menu.onCancel = () => {
 		cleanup()
-		isSelectFrom ? reject('selectioncancelled') : resolve(null)
+		isSelectFrom && reject ? reject('selectioncancelled') : resolve(null)
 	}
 
 	createOverlay()
@@ -188,9 +214,9 @@ function runMenu(menu, resolve, reject, isSelectFrom = false) {
 /* ============================================================
  * Exports
  * ============================================================ */
-export function selectFrom(options, addCustom = true) {
+export function selectFrom(options: DMenuItem[], addCustom = true): Promise<any> {
 	return new Promise((resolve, reject) => {
-		const items = options.map((o) => ({
+		const items: DMenuItem[] = options.map((o) => ({
 			label: o.name,
 			value: o.value,
 			description: o.description,
@@ -207,7 +233,7 @@ export function selectFrom(options, addCustom = true) {
 	})
 }
 
-export async function dmenuConfirm(message: string = null) {
+export async function dmenuConfirm(message: string | null = null): Promise<boolean> {
 	return new Promise((resolve) => {
 		runMenu(
 			new DMenu({
@@ -217,10 +243,19 @@ export async function dmenuConfirm(message: string = null) {
 					{ label: 'No', value: false },
 				],
 			}),
-			resolve,
-			null,
+			resolve as (val: any) => void,
+			() => {},
 		)
 	})
+}
+
+export interface DMenuWrapperOptions {
+	items?: DMenuItem[]
+	promptText?: string
+	searchbar?: boolean
+	footerText?: string
+	addCustom?: boolean
+	cancelValue?: any
 }
 
 export function dmenuWrapper({
@@ -230,9 +265,9 @@ export function dmenuWrapper({
 	footerText = '↑ ↓ Enter Esc cancel',
 	addCustom = false,
 	cancelValue = null,
-} = {}) {
+}: DMenuWrapperOptions = {}): Promise<any> {
 	return new Promise((resolve) => {
-		const menuItems = items.map((o) => ({
+		const menuItems: DMenuItem[] = items.map((o) => ({
 			label: o.label ?? String(o.value),
 			value: o.value,
 			description: o.description,
@@ -251,7 +286,7 @@ export function dmenuWrapper({
 				items: menuItems,
 			}),
 			resolve,
-			null,
+			() => {},
 		)
 	})
 }

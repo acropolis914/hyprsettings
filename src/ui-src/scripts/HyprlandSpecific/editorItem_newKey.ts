@@ -1,9 +1,17 @@
-import { selectFrom } from '@scripts/ui_components/dmenu.ts'
+// import { selectFrom } from '@scripts/ui_components/dmenu.ts'
 import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.ts'
-import { addItem } from '@scripts/utils/utils.ts'
+import { addItem, handleSave } from '@scripts/utils/utils.ts'
 import { EditorItem_Comments } from '@scripts/ConfigRenderer/EditorItem_Comments.ts'
-import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
+// import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
+
+import { findAdjacentConfigKeys, findAllAdjacentKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
+import { type DMenuItem, selectFrom } from '@scripts/ui_components/dmenu.ts'
+import { Backend } from '@scripts/utils/backendAPI.js'
+import { makeUUID, queueManualSave } from '@scripts/utils/utils.ts'
+import { _configRenderer } from '@scripts/ConfigRenderer/_configRenderer.ts'
+import { GLOBAL } from '@scripts/GLOBAL.ts'
+import type { ItemPropsGroup } from '@scripts/types/editorItemTypes.ts'
 
 export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
 	const allowed_dupes = ['animation', 'bezier', 'gesture']
@@ -137,4 +145,106 @@ export async function newEditorItemComments() {
 	}
 	newCommentElement.el.focus()
 	newCommentElement.save()
+}
+
+export async function addKeys(pathString: string = null, parentElement: HTMLElement = null, parentJSON: ItemPropsGroup = null) {
+	let renderTo = parentElement ?? (document.querySelector('.config-set#permissions') as HTMLElement)
+	let originalPathString = pathString
+	pathString = pathString
+		.replace('root:', '')
+		.split(':')
+		.filter((i) => !i.endsWith('.conf'))
+		.join(':')
+
+	const allowed_dupes = ['animation', 'bezier', 'gesture', 'windowrule', 'bind']
+	const existingSiblingKeys = Array.from(parentElement?.querySelectorAll('.editor-item-generic'))
+		.map((el: HTMLDivElement) => el.dataset.name)
+		.filter((i) => !allowed_dupes.includes(i))
+	//
+	let availableKeys = findAllAdjacentKeys(pathString, existingSiblingKeys)
+	availableKeys.forEach((key) => {
+		if (key['path'].startsWith(`${pathString}:`)) {
+			key['path'] = key['path'].replace(`${pathString}:`, '')
+		} else if (key['path'].startsWith(`${pathString}`)) {
+			key['path'] = key['path'].replace(`${pathString}`, '')
+		}
+		key['description'] = `${key['description']} \n <strong>${key['path']}</strong>`
+		return key
+	})
+
+	let keyToAdd = await selectFrom(availableKeys)
+	console.log(keyToAdd, keyToAdd['path'].startsWith(`${pathString}:`), keyToAdd['path'].startsWith(`${pathString}`))
+
+	console.log(keyToAdd)
+	let pathList = keyToAdd['path'].split(':')
+	if (pathList.length === 1 && pathList[0] === '') {
+		pathList = []
+	}
+	let depth = pathList.length
+	let configString = ''
+	if (keyToAdd['type'] !== 'GROUP') {
+		console.log('Not a group', keyToAdd['type'], pathList)
+		while (pathList.length > 0) {
+			configString += `${pathList[0]} {\n`
+			pathList.shift()
+		}
+		configString += `${keyToAdd['name']} = `
+		if (keyToAdd['type'] === 'CONFIG_OPTION_FLOAT' || keyToAdd['type'] === 'CONFIG_OPTION_INT') {
+			configString += `${keyToAdd['data'].split(',')[0]}\n`
+		} else {
+			let str = `${keyToAdd['data']}`.trim()
+			const first = str[0]
+			const last = str[str.length - 1]
+			if (first === last && `'"\``.includes(first)) {
+				str = str.slice(1, -1)
+			}
+			configString += str + '\n'
+		}
+		while (depth > 0) {
+			configString += `}\n`
+			depth -= 1
+		}
+	} else {
+		console.log('A group')
+		configString += `${keyToAdd['name']}{\n`
+		console.log(keyToAdd['name'])
+		if (keyToAdd['name'] === 'windowrule') {
+			configString += `name = windowrule-${makeUUID()}\n`
+		}
+		if (keyToAdd['name'] === 'device') {
+			configString += `name = device-${makeUUID()}\n`
+		}
+		configString += '}'
+	}
+
+	// console.log(configString)
+	let parsed = await Backend.getHyprlandConfigFromString(configString)
+	let newNode = parsed.children[0]
+	if (!pathString) {
+		const files = Object.keys(GLOBAL.files)
+		const fileList = files.map((file) => {
+			return {
+				name: file.split('/').at(-1),
+				description: file,
+				value: file,
+			}
+		})
+		let path: DMenuItem = await selectFrom(fileList)
+		console.log(path)
+		let position = GLOBAL['files'][path.value]['children'][0]['position']
+		console.log(position)
+		newNode['position'] = position
+		GLOBAL.files[path.value].children.push(newNode)
+		handleSave(path.value.split('/').at(-1), `save ${newNode['uuid']}`, false)
+		new _configRenderer(newNode, renderTo, false, true)
+	} else {
+		newNode['position'] = originalPathString
+		let filepath = originalPathString
+			.split(':')
+			.filter((i) => i.endsWith('.conf'))
+			.at(-1)
+		handleSave(filepath, `save ${newNode['uuid']}`, false)
+		parentJSON.children.push(newNode)
+		new _configRenderer(newNode, renderTo, false, true)
+	}
 }

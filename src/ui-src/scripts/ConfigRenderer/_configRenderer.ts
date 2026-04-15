@@ -8,6 +8,8 @@ import { ConfigGroup } from './ConfigGroup.ts'
 import { GLOBAL } from '../GLOBAL.js'
 import { Backend } from '@scripts/utils/backendAPI.js'
 import { destroyOverlay } from '@scripts/ui_components/darkenOverlay.js'
+import { focusTab } from '@scripts/ui_components/createTabView.ts'
+import type { ItemPropsFile } from '@scripts/types/editorItemTypes.ts'
 
 export default async function getAndRenderConfig() {
 	GLOBAL.onChange('data', (value?: object): Promise<void> => {
@@ -42,24 +44,25 @@ export class _configRenderer {
 	temporaryElement: HTMLDivElement
 	renderTo: HTMLElement
 	renderAfter: boolean
+	renderInside: boolean
 	nodesSinceYield: number
 	readonly yieldEveryNodes: number
 
-	constructor(json: Record<string, any>, renderTo: HTMLElement = null, renderAfter: boolean = true) {
+	constructor(json: Record<string, any>, renderTo: HTMLElement = null, renderAfter: boolean = true, renderInside: boolean = false) {
 		this.renderTo = renderTo
 		this.renderAfter = renderAfter
+		this.renderInside = renderInside
 		this.json = json
 		this.nodesSinceYield = 0
 		this.yieldEveryNodes = 1000
 		this.container_stack = []
-		if (renderTo) {
+		if (renderTo || renderInside) {
 			this.temporaryElement = document.createElement('div')
 			this.temporaryElement.style.display = 'none'
 			this.temporaryElement.id = 'temporary'
 			document.body.appendChild(this.temporaryElement)
 			this.container_stack.push(this.temporaryElement)
 		} else {
-			// this.container_stack.push(document.querySelector('.config-set#general'))//todo docfrags
 			this.container_stack.push(GLOBAL.editorItemTemporaryContainers['general'])
 		}
 
@@ -104,16 +107,25 @@ export class _configRenderer {
 		}
 		console.timeEnd('parseJSON')
 
-		while (this.renderTo && this.temporaryElement.firstChild) {
+		if (this.renderTo && this.temporaryElement) {
 			let el = this.temporaryElement.firstElementChild as HTMLDivElement
-			if (this.renderAfter) {
+			// console.log(this.temporaryElement)
+			if (this.renderAfter && !this.renderInside) {
 				this.renderTo.after(el)
-			} else {
+			} else if (!this.renderAfter && !this.renderInside) {
 				this.renderTo.before(el)
+			} else if (!this.renderAfter && this.renderInside) {
+				this.renderTo.appendChild(el as Node)
 			}
 			el.tabIndex = 0
-			el.focus()
+
+			let configSet = el.closest('.config-set')
+			if (GLOBAL.activeTab === configSet.id) {
+			} else {
+				await focusTab(configSet.id)
+			}
 			el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+			el.focus()
 		}
 
 		document.querySelectorAll('.config-set').forEach((el) => {
@@ -207,7 +219,6 @@ export class _configRenderer {
 
 		//inline comments
 		else if (json['type'] === 'COMMENT' && this.comment_stack.length === 0) {
-			// console.debug({json})
 			this.comment_queue.push(json)
 			if (this.comment_queue.length > 1) {
 				renderCommentQueue()
@@ -224,11 +235,13 @@ export class _configRenderer {
 			// this.current_container.at(-1).appendChild(blankline)
 			///fugly
 		} else if (json['type'] === 'GROUP') {
-			if (json['position'] && json['position'].split(':').length > 1) {
+			if (
+				(json['position'] && json['position'].split(':').length > 1) ||
+				(json['name'] === 'root' && json['children'][0].type !== 'FILE')
+			) {
 				if (this.comment_stack.length > 0) {
 					renderCommentStack()
 				}
-				//
 				if (this.comment_queue.length > 0) {
 					renderCommentQueue(false)
 				}
@@ -285,16 +298,10 @@ export class _configRenderer {
 			this.container_stack.pop()
 		} else if (json['type'] === 'KEY') {
 			try {
-				let genericItem: EditorItem_Binds | EditorItem_Generic
-				if (json['name'].startsWith('bindxxx')) {
-					// Depracation of the separate editor item binds
-					genericItem = new EditorItem_Binds(json, json['disabled'])
-				} else {
-					genericItem = new EditorItem_Generic(json, json['disabled'])
-				}
-
+				renderCommentQueue()
+				renderCommentStack()
+				let genericItem: EditorItem_Generic = new EditorItem_Generic(json, json['disabled'])
 				let tabToAddTo: any
-
 				const foundPair = keyNameStarts.find(([key, value, exclude]) => {
 					// console.log(value, typeof value, GLOBAL.editorItemTemporaryContainers[String(value)])
 					// console.log(this.container_stack.at(-1))
@@ -331,20 +338,20 @@ export class _configRenderer {
 				} else {
 					parentStack.appendChild(elementToAdd)
 				}
-				// genericItem.addToParent(tabToAddTo)
 			} catch (e) {
 				console.log(e, json)
 			}
 		} else if (json['type'] === 'FILE') {
+			GLOBAL.files[json['resolved_path']] = json as ItemPropsFile
 			renderCommentQueue()
 			renderCommentStack()
 			try {
-				if (this.comment_queue.length > 0) {
-					renderCommentQueue(true)
-				}
-				if (this.comment_stack.length > 0) {
-					renderCommentStack()
-				}
+				// if (this.comment_queue.length > 0) {
+				// 	renderCommentQueue(true)
+				// }
+				// if (this.comment_stack.length > 0) {
+				// 	renderCommentStack()
+				// }
 				if (json && typeof json === 'object' && (json as JSON)['children']) {
 					for (const child of (json as JSON)['children']) {
 						// Only proceed if child is a valid object with a name
@@ -399,9 +406,12 @@ export class _configRenderer {
 			} catch (e) {
 				console.warn(e, json)
 			}
-			// console.log()
 		} else {
 			console.log('Failed to render an item: ', json, 'Skipping')
+		}
+
+		if (json['type'] === 'GROUP' && json['name'] === 'root') {
+			console.log('halo', json)
 		}
 
 		//recursive children rendering

@@ -5,7 +5,7 @@
 // import '@stylesheets/style.scss'
 import '@stylesheets/subs/tippy.css'
 
-import './ui_components/documentListeners.js'
+import './ui_components/documentListeners.ts'
 import './ui_components/onboarding.js'
 import './ui_components/testingScreen.js'
 import './ui_components/searchBar.js'

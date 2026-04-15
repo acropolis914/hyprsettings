@@ -1,3 +1,5 @@
+import type { ItemPropsFile } from '@scripts/types/editorItemTypes.ts'
+
 type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem' | 'wiki' | 'wikiContent'
 // type ConfigGlobal = {
 // 	file: string
@@ -42,6 +44,7 @@ export class GLOBAL {
 	//rendererTemporaryContainer
 	static editorItemTemporaryContainers: Record<string, DocumentFragment> = {}
 	static config_info: any
+	static files: Record<string, ItemPropsFile> = {}
 
 	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,

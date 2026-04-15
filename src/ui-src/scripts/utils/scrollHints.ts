@@ -1,4 +1,4 @@
-export function implementScrollHints(el: HTMLDivElement | HTMLUListElement) {
+export function implementScrollHints(el: HTMLDivElement | HTMLUListElement, threshold: number = 1) {
 	if (!el) return
 
 	el.classList.add('scroll-container')

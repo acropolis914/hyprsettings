@@ -26,6 +26,28 @@ export const Backend = {
 		// jsViewerInit()
 		return hyprlandConfig
 	},
+	async getHyprlandConfigFromString(configString) {
+		try {
+			const response = await fetch('/api/load_from_string', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				// Flask's get_json() will parse this directly
+				body: JSON.stringify(configString)
+			});
+
+			if (!response.ok) {
+				throw new Error(`Server responded with ${response.status}`);
+			}
+
+			// Since your static method returns .to_json(),
+			// we parse it here to get a JS object
+			return await response.json();
+		} catch (error) {
+			console.error("Failed to load Hyprland config:", error);
+		}
+	},
 	async debounceGetHyprlandConfig() {
 		debounce(this.getHyprlandConfig(), 2000)
 	},

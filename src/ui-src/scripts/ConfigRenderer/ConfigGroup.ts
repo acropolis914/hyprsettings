@@ -3,10 +3,11 @@ import { saveKey, deleteKey, duplicateKey, addChildItem, addItem } from '../util
 import { debounce } from '../utils/helpers.js'
 import { ContextMenu } from './contextMenu.js'
 import { dmenuConfirm } from '../ui_components/dmenu.ts'
-import type { ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
+import type { ItemPropsGroup, ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.ts'
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
+import { addKeys } from '@scripts/HyprlandSpecific/editorItem_newKey.ts'
 
 export class ConfigGroup {
 	group_el: HTMLDivElement
@@ -18,8 +19,9 @@ export class ConfigGroup {
 	topbar_el: HTMLDivElement
 	group_name_el: HTMLDivElement
 	topbar_tools_el: HTMLDivElement
+	json: ItemPropsGroup
 
-	constructor(json: JSON) {
+	constructor(json: ItemPropsGroup) {
 		this.group_el = document.createElement('div')
 		this.group_el.classList.add('config-group')
 		this.group_el.setAttribute('tabindex', '0')
@@ -33,6 +35,7 @@ export class ConfigGroup {
 		this.saveDebounced = debounce(() => this.save(), 15)
 		this.group_el.setAttribute('title', json['position'].replace('root:', ''))
 		this.title = this.group_el.title
+		this.json = json
 
 		this.topbar_el = document.createElement('div')
 		this.topbar_el.classList.add('topbar')
@@ -56,6 +59,17 @@ export class ConfigGroup {
 			// e.stopPropagation()
 		})
 
+		const addBtn = document.createElement('button')
+		addBtn.classList.add('add-btn')
+		addBtn.innerText = ''
+		addBtn.title = 'Add Key'
+		addBtn.style.cursor = 'pointer'
+		addBtn.addEventListener('click', async (e) => {
+			e.stopPropagation()
+			let pathString = this.group_el.dataset.position + ':' + this.group_el.dataset.name
+			await addKeys(pathString, this.childrenContainer, this.json)
+		})
+
 		const duplicateBtn = document.createElement('button')
 		duplicateBtn.classList.add('duplicate-btn')
 		duplicateBtn.innerText = '󰆑'
@@ -76,6 +90,7 @@ export class ConfigGroup {
 			this.delete()
 		})
 
+		this.topbar_tools_el.appendChild(addBtn)
 		this.topbar_tools_el.appendChild(duplicateBtn)
 		this.topbar_tools_el.appendChild(deleteBtn)
 		this.topbar_tools_el.appendChild(switchWrapper)
@@ -193,10 +208,7 @@ export class ConfigGroup {
 			if (e.key === 'Delete' && !(e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement)) {
 				e.preventDefault()
 				e.stopPropagation()
-				const confirm = await dmenuConfirm()
-				if (confirm) {
-					this.delete()
-				}
+				this.delete()
 			}
 		})
 		this.group_el.addEventListener('mouseover', (e) => {
@@ -286,72 +298,54 @@ export class ConfigGroup {
 
 	async delete() {
 		const confirmation = await dmenuConfirm(`Are you sure you want to delete group ${this.group_el.dataset.name} ?`)
-		console.log(confirmation)
-		if (!confirmation) {
-			return
-		}
-		this.group_el.style.backgroundColor = 'var(--surface-1)'
-		let before = this.group_el.previousElementSibling || this.group_el.nextElementSibling
+		if (confirmation) {
+			let el = this.group_el
+			let before = el.before ?? el.after
 
-		function collapseElementFull(el, duration = 1000) {
-			const style = getComputedStyle(el)
+			// 1. Capture the exact current state
+			const rect = el.getBoundingClientRect()
+			const startHeight = rect.height
 
-			// store initial values
-			const startHeight = el.offsetHeight
-			const startOpacity = parseFloat(style.opacity) || 1
+			// 2. Lock the element's styles rigidly
+			// We use setProperty to ensure these overrides take priority
+			el.style.setProperty('height', `${startHeight}px`, 'important')
+			el.style.setProperty('min-height', `${startHeight}px`, 'important')
+			el.style.setProperty('overflow', 'hidden', 'important')
+			el.style.setProperty('pointer-events', 'none', 'important')
+			el.style.setProperty('transition', 'all 300ms ease-in', 'important')
 
-			const startPaddingTop = parseFloat(style.paddingTop)
-			const startPaddingBottom = parseFloat(style.paddingBottom)
+			// 3. Double-frame technique to guarantee the browser "paints" the locked height
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					el.style.setProperty('height', '0', 'important')
+					el.style.setProperty('min-height', '0', 'important')
+					el.style.setProperty('padding-top', '0', 'important')
+					el.style.setProperty('padding-bottom', '0', 'important')
+					el.style.setProperty('margin-top', '0', 'important')
+					el.style.setProperty('margin-bottom', '0', 'important')
+					el.style.setProperty('opacity', '0', 'important')
+				})
+			})
 
-			const startMarginTop = parseFloat(style.marginTop)
-			const startMarginBottom = parseFloat(style.marginBottom)
-
-			const startBorderTop = parseFloat(style.borderTopWidth)
-			const startBorderBottom = parseFloat(style.borderBottomWidth)
-
-			el.style.overflow = 'hidden'
-			const startTime = performance.now()
-
-			function animate(now) {
-				const elapsed = now - startTime
-				let t = Math.min(elapsed / duration, 1) // progress 0 → 1
-
-				// EASE OUT QUAD
-				const factor = 1 - (1 - t) * (1 - t)
-
-				const invFactor = 1 - factor // for collapsing from full → 0
-
-				el.style.height = startHeight * invFactor + 'px'
-				el.style.opacity = startOpacity * invFactor
-
-				el.style.paddingTop = startPaddingTop * invFactor + 'px'
-				el.style.paddingBottom = startPaddingBottom * invFactor + 'px'
-
-				el.style.marginTop = startMarginTop * invFactor + 'px'
-				el.style.marginBottom = startMarginBottom * invFactor + 'px'
-
-				el.style.borderTopWidth = startBorderTop * invFactor + 'px'
-				el.style.borderBottomWidth = startBorderBottom * invFactor + 'px'
-
-				if (t < 1) {
-					requestAnimationFrame(animate)
-				} else {
-					// animation done
+			// 5. Cleanup
+			el.addEventListener(
+				'transitionend',
+				() => {
 					deleteKey(el.dataset.uuid, el.dataset.position)
 					el.remove()
-					before.click()
-					before.focus()
-					before.scrollIntoView({
-						behavior: 'smooth',
-						block: 'center',
-					})
-				}
-			}
 
-			requestAnimationFrame(animate)
+					if (before) {
+						before.click()
+						before.focus()
+						before.scrollIntoView({
+							behavior: 'smooth',
+							block: 'center',
+						})
+					}
+				},
+				{ once: true },
+			)
 		}
-
-		collapseElementFull(this.group_el, 500)
 	}
 
 	duplicateKey() {

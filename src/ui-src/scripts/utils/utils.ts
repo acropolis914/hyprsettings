@@ -4,7 +4,7 @@ import { _configRenderer } from '../ConfigRenderer/_configRenderer.ts'
 import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import { selectFrom } from '@scripts/ui_components/dmenu.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
-import type { ItemProps, ItemPropsGroup } from '@scripts/types/editorItemTypes.ts'
+import type { ItemProps, ItemPropsGroup, ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
 
 export function hideAllContextMenus() {
 	document.querySelectorAll('.context-menu').forEach((ctx) => {
@@ -13,40 +13,61 @@ export function hideAllContextMenus() {
 	})
 }
 
-/**
- * Description
- * @param {JSON|Array} root
- * @param {String[]} path
- * @returns {Object|null}
- */
-function findParent(root, path, childuuid = null) {
+function findParent(root: ItemPropsGroup, path: string[], childuuid: string | null = null): ItemPropsGroup {
 	// console.log(`Finding parent for path: ${path}`)
 	let node = root
 	for (let i = 1; i < path.length; i++) {
 		const key = path[i]
 		if (!node.children) {
 			// console.log(`Node ${node["name"]} has no children`)
-			return null
+			throw new Error(`Node ${node['name']} has no children`)
 		}
-		parent = node['name']
-		node = node.children.filter((child) => child.name === key)
-		if (node.length > 1) {
+		let parentName = node['name']
+		let matchingChildren = node.children.filter((child) => child.name === key)
+		if (matchingChildren.length > 1) {
 			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
-			if (Array.isArray(node)) {
-				let possibleParents = node.filter((node) => Array.isArray(node.children))
-				let parent = possibleParents.filter((parentNode) => parentNode.children.some((child) => child.uuid === childuuid))
-				return parent[0]
-			}
-		} else if (node.length === 1) {
-			node = node[0]
+			let possibleParents = matchingChildren.filter(
+				(childNode) => 'children' in childNode && Array.isArray((childNode as ItemPropsGroup).children),
+			) as ItemPropsGroup[]
+			let finalParents = possibleParents.filter((parentNode) => parentNode.children.some((child) => child.uuid === childuuid))
+			node = finalParents[0]
+		} else if (matchingChildren.length === 1) {
+			node = matchingChildren[0] as ItemPropsGroup
+		} else {
+			node = undefined as any
 		}
 		// console.log(`Node ${node["name"]} has children. Looking for ${key}`)
 		if (!node) {
 			// console.log(`No parent node ${node} found`)
-			return null
+			throw new Error(`Unable to find ${path.join()}`)
 		}
 	}
 	return node
+}
+
+function getNodeContext(position: string, uuid?: string | null) {
+	let root = GLOBAL['data'] as ItemPropsGroup
+	let path = position.split(':')
+	let file = path
+		.slice(1)
+		.filter((p) => p.includes('.conf'))
+		.at(-1)
+	let parent = findParent(root, path, uuid)
+	let nodeIndex = uuid ? parent.children.findIndex((n) => n.uuid === uuid) : -1
+	let node = nodeIndex !== -1 ? parent.children[nodeIndex] : undefined
+	return { root, path, file, parent, nodeIndex, node }
+}
+
+export function handleSave(file: string | undefined, logAction: string, debounced: boolean) {
+	if (!file) return console.warn(`No .conf file found for action: ${logAction}`)
+	if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave) {
+		console.log(`Saving config (${logAction}):`, file)
+		if (debounced) saveConfigDebounced(JSON.stringify(GLOBAL['data']), [file])
+		else Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
+	} else {
+		queueManualSave(file)
+		console.log(`Dryrun ${logAction}`)
+	}
 }
 
 export function saveKey(
@@ -58,57 +79,25 @@ export function saveKey(
 	comment: string = null,
 	disabled: boolean = false,
 ): any {
-	if (type === 'KEY' && GLOBAL.groupsave === true) {
-		console.log('Group save in progress, skipping key save for ', name)
-		return
-	}
-	// console.log('Saving key:', {
-	// 	type,
-	// 	name,
-	// 	value,
-	// 	uuid,
-	// 	position,
-	// 	comment,
-	// 	disabled,
-	// })
-	let root = GLOBAL['data']
-	let path = position.split(':')
-	let file: string = path
-		.slice(1)
-		.filter((path) => path.includes('.conf'))
-		.at(-1)
+	if (type === 'KEY' && GLOBAL.groupsave === true) return console.log('Group save in progress, skipping key save for ', name)
+
+	let { file, node } = getNodeContext(position, uuid)
+	if (!node) return console.error(`Could not find child node with uuid ${uuid}`)
+
 	console.log('Changed file:', file)
-	let parent = findParent(root, path, uuid)
-	let node = parent.children.find((node) => node.uuid === uuid)
-	node['name'] = name
-	node['type'] = type
-	node['uuid'] = uuid
-	node['position'] = position
-	node['value'] = value
-	node['disabled'] = disabled
+	Object.assign(node, { name, type: type as NodeType, uuid, position, value, disabled })
+
 	if (type === 'GROUP') {
-		node['children'].forEach((child) => {
-			// console.log('Disabling child:', child)
-			child['disabled'] = disabled
-		})
-	}
-	if (comment) {
-		node['comment'] = comment
-	} else if (node.hasOwnProperty('comment')) {
-		delete node['comment']
+		;(node as ItemPropsGroup).children?.forEach((child) => (child.disabled = disabled))
 	}
 
-	if (!GLOBAL['config'].dryrun && GLOBAL['config']['autosave']) {
-		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
-		console.log('Saving config:', { name, value, file })
-		saveConfigDebounced(JSON.stringify(GLOBAL['data']), [file])
-	} else {
-		queueManualSave(file)
-		console.log(`Dryrun save ${uuid}:`, node)
-	}
+	if (comment) node.comment = comment
+	else delete node.comment
+
+	handleSave(file, `save ${uuid}`, true)
 }
 
-function queueManualSave(file: string | undefined) {
+export function queueManualSave(file: string | undefined) {
 	let saveChangedButton = document.getElementById('save-changed')
 	if (!saveChangedButton) {
 		console.warn('Save changed button not found')
@@ -136,58 +125,27 @@ export function saveChanged() {
 	GLOBAL.changedFiles = []
 }
 
-export function deleteKey(uuid, position) {
+export function deleteKey(uuid: string, position: string) {
 	console.log(`Deleting ${position} => with uuid ${uuid}`)
-	let root = GLOBAL['data']
-	let path = position.split(':')
-	let parent = findParent(root, path, uuid)
-	let node = parent.children.find((node) => node.uuid === uuid)
-	let nodeIndex = parent.children.findIndex((node) => node.uuid === uuid)
-	let file = path
-		.slice(1)
-		.filter((path) => path.includes('.conf'))
-		.at(-1)
+	let { file, parent, nodeIndex } = getNodeContext(position, uuid)
+	if (nodeIndex === -1) return console.warn(`Could not find child node with uuid ${uuid} to delete`)
 
 	parent.children.splice(nodeIndex, 1)
-
-	if (!file) {
-		console.warn('No .conf file found in position:', position)
-	} else if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave === true) {
-		console.log(`Node ${uuid} deleted:`, node)
-		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
-	} else {
-		queueManualSave(file)
-		console.log(`Dryrun delete ${uuid}:`, node)
-	}
+	handleSave(file, `delete ${uuid}`, false)
 }
 
-export function duplicateKey(uuid, position, below = true, element: HTMLElement) {
+export function duplicateKey(uuid: string, position: string, below: boolean = true, element: HTMLElement) {
 	console.log(`Duplicating ${position} => with uuid ${uuid}`)
-	let root = GLOBAL['data']
-	let path = position.split(':')
-	let parent = findParent(root, path, uuid)
-	let node = parent.children.find((node) => node.uuid === uuid)
-	let nodeIndex = parent.children.findIndex((node) => node.uuid === uuid)
-	let newuuid = makeUUID(8)
-	let newNode = JSON.parse(JSON.stringify(node))
-	newNode.uuid = newuuid
+	let { file, parent, node, nodeIndex } = getNodeContext(position, uuid)
+	if (!node) return console.warn(`Could not find child node with uuid ${uuid} to duplicate`)
+
+	let newNode = { ...JSON.parse(JSON.stringify(node)), uuid: makeUUID(8) }
 	parent.children.splice(nodeIndex + (below ? 1 : 0), 0, newNode)
+	console.log(newNode)
 	new _configRenderer(newNode, element, below)
 
-	let file = path
-		.slice(1)
-		.filter((path) => path.includes('.conf'))
-		.at(-1)
-	if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave === true) {
-		console.log(`Node ${uuid} duplicated:`, node)
-		Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
-		// window.pywebview.api.save_config(JSON.stringify(GLOBAL['data']))
-		window.jsViewer.data = GLOBAL['data']
-	} else {
-		queueManualSave(file)
-		console.log(`Dryrun duplicate ${uuid}:`, node)
-	}
-	// return newNode
+	handleSave(file, `duplicate ${uuid}`, false)
+	if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave) window.jsViewer.data = GLOBAL['data']
 }
 
 export async function addItem(
@@ -199,33 +157,15 @@ export async function addItem(
 	relative_uuid?: string,
 	below = true,
 ) {
-	let root = GLOBAL['data']
-	let path = position.split(':')
-
-	// Cast to ItemPropsGroup so TypeScript knows .children exists
-	let parent = findParent(root, path, relative_uuid) as ItemPropsGroup
-
-	// Find the index of the relative item
-	let nodeIndex = relative_uuid ? parent.children.findIndex((node) => node.uuid === relative_uuid) : -1
-
-	let newuuid = await Backend.newUUID()
-	let targetIndex: number
-
-	if (nodeIndex === -1) {
-		// DEFAULT LOGIC: If no UUID or not found, add to the very beginning (0)
-		// or the very end (length) based on 'below'
-		targetIndex = below ? parent.children.length : 0
-	} else {
-		// RELATIVE LOGIC: Place it exactly before or after the found node
-		targetIndex = below ? nodeIndex + 1 : nodeIndex
-	}
+	let { parent, nodeIndex } = getNodeContext(position, relative_uuid)
+	let targetIndex = nodeIndex === -1 ? (below ? parent.children.length : 0) : below ? nodeIndex + 1 : nodeIndex
 
 	const newItem: ItemProps = {
 		type: type as any, // Cast to any or specific NodeType if needed
 		name: name,
 		value: value,
 		position: position,
-		uuid: newuuid,
+		uuid: await Backend.newUUID(),
 		comment: comment,
 		line_number: null, // Python parser expectation
 	}
@@ -236,13 +176,12 @@ export async function addItem(
 }
 
 export async function addChildItem(position: string, parent_uuid: string) {
-	let root: ItemProps = GLOBAL['data']
-	let path = position.split(':')
-	let parent_node_of_group = findParent(root, path, parent_uuid) as ItemPropsGroup
-	let parent_node = parent_node_of_group.children.find((node) => node['uuid'] === parent_uuid) as ItemPropsGroup
-	let existingSiblingKeys: string[] = parent_node.children.map((i: { name: any }) => i.name)
+	let { node: parent_node } = getNodeContext(position, parent_uuid)
+	if (!parent_node) throw new Error(`Parent node not found: ${parent_uuid}`)
+
+	let existingSiblingKeys: string[] = (parent_node as ItemPropsGroup).children.map((i: { name: any }) => i.name)
 	let availableKeys: ConfigDescription[] = findAdjacentConfigKeys(parent_node.name, existingSiblingKeys)
-	// console.log(availableKeys)
+
 	let itemToAdd: ConfigDescription = (await selectFrom(availableKeys)) as ConfigDescription
 	itemToAdd['uuid'] = makeUUID()
 	return [itemToAdd as ConfigDescription, parent_node]
@@ -289,18 +228,18 @@ export async function saveWindowConfig_Persistence() {
 	}
 }
 
-export function splitWithRemainder(str: string, sep: string, limit: number): string[] {
+export function splitWithRemainder(str: string, sep: string | RegExp, limit: number): string[] {
 	let parts = str.split(sep)
 	if (parts.length > limit) {
 		let firstParts = parts.slice(0, limit)
-		let remainder = parts.slice(limit).join(sep)
+		let remainder = parts.slice(limit).join(typeof sep === 'string' ? sep : '')
 		firstParts.push(remainder)
 		return firstParts
 	}
 	return parts
 }
 
-export async function shortHash(str) {
+export async function shortHash(str: string): Promise<string> {
 	const data = new TextEncoder().encode(str)
 	const hash = await crypto.subtle.digest('SHA-256', data)
 	const hex = [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')

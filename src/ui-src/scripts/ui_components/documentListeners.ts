@@ -196,7 +196,7 @@ function returnToTabs() {
 /* DOM NAVIGATION LOGIC                            */
 /* -------------------------------------------------------------------------- */
 
-function navigateSidebar(direction) {
+function navigateSidebar(direction: number) {
 	const currentSelected = document.querySelector('.selected')
 	if (!currentSelected || !currentSelected.parentElement) return
 
@@ -210,7 +210,6 @@ function navigateSidebar(direction) {
 
 	// UI Updates
 	currentSelected.classList.remove('selected', 'keyboard-selected')
-
 	const newSelected = children[newIndex]
 	newSelected.classList.add('selected', 'keyboard-selected')
 	newSelected.click()

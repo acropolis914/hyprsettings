@@ -93,16 +93,14 @@ export const configDescriptionsExtra: ConfigDescription[] = [
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_INT',
 		data: '0,0,3',
-		description:
-			'Windows with matching fullscreenstate sent to the client (0:none,1:maximize,2:fullscreen,3:both).',
+		description: 'Windows with matching fullscreenstate sent to the client (0:none,1:maximize,2:fullscreen,3:both).',
 	},
 	{
 		name: 'match:fullscreen_state_internal',
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_INT',
 		data: '0,0,3',
-		description:
-			'Windows with matching internal fullscreenstate (0:none,1:maximize,2:fullscreen,3:both).',
+		description: 'Windows with matching internal fullscreenstate (0:none,1:maximize,2:fullscreen,3:both).',
 	},
 	{
 		name: 'match:workspace',
@@ -116,8 +114,7 @@ export const configDescriptionsExtra: ConfigDescription[] = [
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_INT',
 		data: '0,0,3',
-		description:
-			'Windows with specified content type (none=0, photo=1, video=2, game=3).',
+		description: 'Windows with specified content type (none=0, photo=1, video=2, game=3).',
 	},
 	{
 		name: 'match:xdg_tag',
@@ -254,8 +251,7 @@ export const configDescriptionsExtra: ConfigDescription[] = [
 		path: 'windowrule',
 		type: 'CONFIG_OPTION_FLOAT',
 		data: '1.0,0.0,1.0',
-		description:
-			'Overall window opacity (can include active/inactive/fullscreen).',
+		description: 'Overall window opacity (can include active/inactive/fullscreen).',
 	},
 	{
 		name: 'rounding',
@@ -646,16 +642,14 @@ export const configDescriptionsExtra: ConfigDescription[] = [
 		path: 'animations',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: 'my-bezier, 0, 0, 1, 1',
-		description:
-			'Bezier curve defined by its [name] and two control points for use in animation',
+		description: 'Bezier curve defined by its [name] and two control points for use in animation',
 	},
 	{
 		name: 'animation',
 		path: 'animations',
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: 'global, 0, 10, 1, 1',
-		description:
-			'Animation rule following the syntax: [name], [on/off], [speed], [curve], [style].',
+		description: 'Animation rule following the syntax: [name], [on/off], [speed], [curve], [style].',
 	},
 	{
 		name: 'windowrule',
@@ -663,5 +657,27 @@ export const configDescriptionsExtra: ConfigDescription[] = [
 		type: 'GROUP',
 		data: '',
 		description: 'A rule',
+	},
+	{
+		name: 'device',
+		path: '',
+		type: 'GROUP',
+		data: '',
+		description: 'A device definition',
+	},
+	{
+		name: 'permission',
+		path: '',
+		type: 'CONFIG_OPTION_STRING_SHORT',
+		data: '/usr/(bin|local/bin)/grim, screencopy, allow',
+		description: 'permission',
+	},
+	{
+		name: 'enabled',
+		path: 'device',
+		type: 'CONFIG_OPTION_BOOL',
+		data: 'true',
+		description:
+			'(only for mice / touchpads / touchdevices / keyboards)\nenables / disables the device (connects / disconnects from the on-screen cursor)',
 	},
 ]

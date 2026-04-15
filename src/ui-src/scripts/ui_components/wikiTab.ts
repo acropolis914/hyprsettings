@@ -12,7 +12,7 @@ import 'prismjs/components/prism-bash.min.js'
 import '@stylesheets/subs/prism.css'
 import '@stylesheets/subs/tippy.css'
 import tippy, { followCursor } from 'tippy.js'
-import { attemptSwitchToMain } from '@scripts/ui_components/documentListeners'
+import { attemptSwitchToMain } from '@scripts/ui_components/documentListeners.ts'
 
 export default async function createWiki() {
 	console.log('Creating Wiki...')

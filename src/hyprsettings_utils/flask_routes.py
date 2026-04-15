@@ -45,6 +45,11 @@ def register_routes(app: Flask):
 		except Exception as e:
 			return jsonify({'error': str(e)}), 500
 
+	@app.route('/api/load_from_string', methods=['POST'])
+	def api_get_hypr_from_string():
+		string = request.get_json()
+		return api.parse_hypr_string(string)
+
 	@app.route('/api/get_hyprland_config_texts', methods=['POST'])
 	def api_get_hyprland_config_texts():
 		data = request.get_json()
@@ -107,7 +112,8 @@ def register_routes(app: Flask):
 		text = data['text'].encode('utf-8')  # encode as bytes
 
 		try:
-			req = urllib.request.Request(COPYANDPASTE_LOG_URL, data=text, method='POST', headers={'Content-Type': 'text/plain; charset=utf-8'})
+			req = urllib.request.Request(COPYANDPASTE_LOG_URL, data=text, method='POST',
+			                             headers={'Content-Type': 'text/plain; charset=utf-8'})
 			with urllib.request.urlopen(req) as res:
 				url = res.read().decode('utf-8').strip()
 			return jsonify({'url': url})
