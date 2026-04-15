@@ -89,6 +89,7 @@
 {/if}
 
 <style lang="scss">
+	@import "@stylesheets/mixins.scss" as *;
 	.context-menu-sv {
 		position: absolute;
 		background: var(--surface-0);
@@ -100,11 +101,13 @@
 		list-style: none;
 		margin: 0;
 		/*padding: 0.25rem 0;*/
-		padding-block: 0.1rem;
+		//padding-block: 0.1rem;
+		overflow: hidden;
 		width: 15rem;
 		/*font-family: sans-serif;*/
 		font-size: 1.2rem;
 		z-index: 300;
+		@include box-shadow;
 
 
 	}

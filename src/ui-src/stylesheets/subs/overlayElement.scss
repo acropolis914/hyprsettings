@@ -112,10 +112,12 @@
 				}
 			}
 
-			&:focus {
+			&:is(:focus, .selected) {
+
 				outline: none;
 				background-color: var(--accent);
 				color: var(--text-contrast);
+				border
 
 				&::after {
 					position: absolute;

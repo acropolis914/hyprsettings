@@ -35,7 +35,14 @@ class DMenu {
 	footerText: string
 	inputEl?: HTMLInputElement
 
-	constructor({ items = [], onSelect = () => {}, onCancel = () => {}, promptText = '', searchbar = true, footer = '↑ ↓ Enter' }: DMenuOptions = {}) {
+	constructor({
+		items = [],
+		onSelect = () => {},
+		onCancel = () => {},
+		promptText = '',
+		searchbar = true,
+		footer = '↑ ↓ Enter',
+	}: DMenuOptions = {}) {
 		this.items = items
 		this.filteredItems = items
 		this.onSelect = onSelect
@@ -126,7 +133,7 @@ class DMenu {
 			e.stopPropagation()
 			choose()
 		})
-		li.addEventListener('focus', () => {
+		li.addEventListener('focus', (e) => {
 			li.classList.add('selected')
 			li.querySelector('.dmenu-item-description')?.classList.remove('hidden')
 
@@ -135,10 +142,16 @@ class DMenu {
 				li.scrollIntoView({ behavior: 'smooth', block: 'center' })
 			})
 		})
-		li.addEventListener('blur', () => {
-			li.classList.remove('selected')
-			li.querySelector('.dmenu-item-description')?.classList.add('hidden')
+		li.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+				li.classList.remove('selected')
+				li.querySelector('.dmenu-item-description')?.classList.add('hidden')
+			}
 		})
+		// li.addEventListener('blur', () => {
+		// 	li.classList.remove('selected')
+		// 	li.querySelector('.dmenu-item-description')?.classList.add('hidden')
+		// })
 
 		li.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter') choose()

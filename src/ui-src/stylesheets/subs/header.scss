@@ -100,7 +100,7 @@ header#main-header {
 		transform: translateY(-50%);
 		//display: none;
 		transition: color 0.5s ease;
-		color: var(--text-2);
+		color: opacity(var(--text-2), 0.3);
 		font-size: 25px;
 	}
 
@@ -139,6 +139,7 @@ header#main-header {
 		overflow-y: scroll;
 		font-weight: normal;
 		font-size: 1.6rem;
+		@include box-shadow;
 		//box-shadow: var(--surface);
 		@media (max-width: 768px) {
 			right: 0;
@@ -146,7 +147,7 @@ header#main-header {
 		}
 
 		&:has(> div) {
-			height: 20rem;
+			height: 30rem;
 		}
 
 		.result {
@@ -156,6 +157,8 @@ header#main-header {
 			border-radius: var(--border-rad);
 			background-color: var(--surface-1);
 			padding-left: var(--spacing-unit);
+			padding-block: 5px;
+			@include box-shadow;
 			@media (max-width: 768px) {
 				font-size: 1.8rem;
 			}
