@@ -11,7 +11,7 @@ import { Backend } from '@scripts/utils/backendAPI.js'
 import { makeUUID, queueManualSave } from '@scripts/utils/utils.ts'
 import { _configRenderer } from '@scripts/ConfigRenderer/_configRenderer.ts'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
-import type { ItemPropsGroup } from '@scripts/types/editorItemTypes.ts'
+import type { ItemPropsGroup, ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
 
 export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
 	const allowed_dupes = ['animation', 'bezier', 'gesture']
@@ -147,7 +147,12 @@ export async function newEditorItemComments() {
 	newCommentElement.save()
 }
 
-export async function addKeys(pathString: string = null, parentElement: HTMLElement = null, parentJSON: ItemPropsGroup = null) {
+export async function addKeys(
+	pathString: string = null,
+	parentElement: HTMLElement = null,
+	parentJSON: ItemPropsGroup = null,
+	disabled: boolean = false,
+) {
 	let renderTo = parentElement ?? (document.querySelector('.config-set#permissions') as HTMLElement)
 	let originalPathString = pathString
 	pathString = pathString
@@ -161,19 +166,30 @@ export async function addKeys(pathString: string = null, parentElement: HTMLElem
 		.map((el: HTMLDivElement) => el.dataset.name)
 		.filter((i) => !allowed_dupes.includes(i))
 	//
-	let availableKeys = findAllAdjacentKeys(pathString, existingSiblingKeys)
-	availableKeys.forEach((key) => {
-		if (key['path'].startsWith(`${pathString}:`)) {
-			key['path'] = key['path'].replace(`${pathString}:`, '')
-		} else if (key['path'].startsWith(`${pathString}`)) {
-			key['path'] = key['path'].replace(`${pathString}`, '')
+	let availableKeys = findAllAdjacentKeys(pathString, existingSiblingKeys) // This creates a NEW array and NEW objects
+	const updatedKeys = availableKeys.map((item) => {
+		const key = { ...item } as ItemPropsKey
+		if (key.path.startsWith(`${pathString}:`)) {
+			key.path = key.path.replace(`${pathString}:`, '')
+		} else if (key.path.startsWith(pathString)) {
+			key.path = key.path.replace(pathString, '')
 		}
-		key['description'] = `${key['description']} \n <strong>${key['path']}</strong>`
+
+		key.description = `${key.description} \n <strong>${key.path}</strong>`
 		return key
 	})
 
-	let keyToAdd = await selectFrom(availableKeys)
-	console.log(keyToAdd, keyToAdd['path'].startsWith(`${pathString}:`), keyToAdd['path'].startsWith(`${pathString}`))
+	let keyToAdd: ConfigDescription | String = await selectFrom(updatedKeys)
+	if (keyToAdd === 'custom') {
+		keyToAdd = {
+			name: '',
+			path: '',
+			data: '',
+			type: 'CONFIG_OPTION_STR',
+			description: '',
+		}
+	}
+	console.log(keyToAdd)
 
 	console.log(keyToAdd)
 	let pathList = keyToAdd['path'].split(':')
@@ -218,8 +234,9 @@ export async function addKeys(pathString: string = null, parentElement: HTMLElem
 	}
 
 	// console.log(configString)
-	let parsed = await Backend.getHyprlandConfigFromString(configString)
+	let parsed: ItemPropsGroup = await Backend.getHyprlandConfigFromString(configString)
 	let newNode = parsed.children[0]
+	newNode['disabled'] = disabled
 	if (!pathString) {
 		const files = Object.keys(GLOBAL.files)
 		const fileList = files.map((file) => {

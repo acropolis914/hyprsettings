@@ -29,7 +29,7 @@ export class ConfigGroup {
 		this.group_el.dataset.name = json['name']
 		this.group_el.dataset.uuid = json['uuid']
 		this.group_el.dataset.position = json['position']
-		this.group_el.dataset.disabled = json['disabled']
+		this.group_el.dataset.disabled = String(json['disabled'])
 		this.group_el.dataset.type = json['type']
 		this.group_el.disable = this.disable.bind(this)
 		this.saveDebounced = debounce(() => this.save(), 15)
@@ -37,67 +37,7 @@ export class ConfigGroup {
 		this.title = this.group_el.title
 		this.json = json
 
-		this.topbar_el = document.createElement('div')
-		this.topbar_el.classList.add('topbar')
-		this.group_name_el = document.createElement('div')
-		// this.group_name_el.classList.add('group_name')
-		this.group_name_el.classList.add('group-name')
-		this.group_name_el.innerText = json['name']
-
-		this.topbar_tools_el = document.createElement('div')
-		this.topbar_tools_el.classList.add('topbar-tools')
-
-		const isGroupDisabled = this.group_el.dataset.disabled === 'true'
-		const { wrapper: switchWrapper, checkbox: switchCheckbox } = createSwitchBox(!isGroupDisabled)
-		switchWrapper.title = 'Enable/Disable (d)'
-
-		switchCheckbox.addEventListener('change', (e) => {
-			this.disable(!switchCheckbox.checked)
-		})
-
-		switchWrapper.addEventListener('click', (e) => {
-			// e.stopPropagation()
-		})
-
-		const addBtn = document.createElement('button')
-		addBtn.classList.add('add-btn')
-		addBtn.innerText = ''
-		addBtn.title = 'Add Key'
-		addBtn.style.cursor = 'pointer'
-		addBtn.addEventListener('click', async (e) => {
-			e.stopPropagation()
-			let pathString = this.group_el.dataset.position + ':' + this.group_el.dataset.name
-			await addKeys(pathString, this.childrenContainer, this.json)
-		})
-
-		const duplicateBtn = document.createElement('button')
-		duplicateBtn.classList.add('duplicate-btn')
-		duplicateBtn.innerText = '󰆑'
-		duplicateBtn.title = 'Duplicate Group'
-		duplicateBtn.style.cursor = 'pointer'
-		duplicateBtn.addEventListener('click', (e) => {
-			e.stopPropagation()
-			this.duplicateKey()
-		})
-
-		const deleteBtn = document.createElement('button')
-		deleteBtn.classList.add('delete-btn')
-		deleteBtn.innerText = '󰧧'
-		deleteBtn.title = 'Delete Group (Del)'
-		deleteBtn.style.cursor = 'pointer'
-		deleteBtn.addEventListener('click', (e) => {
-			e.stopPropagation()
-			this.delete()
-		})
-
-		this.topbar_tools_el.appendChild(addBtn)
-		this.topbar_tools_el.appendChild(duplicateBtn)
-		this.topbar_tools_el.appendChild(deleteBtn)
-		this.topbar_tools_el.appendChild(switchWrapper)
-
-		this.topbar_el.appendChild(this.group_name_el)
-		this.topbar_el.appendChild(this.topbar_tools_el)
-		this.group_el.appendChild(this.topbar_el)
+		this.createTopBar(json)
 
 		this.childrenContainer = document.createElement('div')
 		this.childrenContainer.classList.add('children-container')
@@ -128,6 +68,70 @@ export class ConfigGroup {
 
 		this.contextMenu = new ContextMenu([])
 		this.addEventListeners()
+	}
+
+	private createTopBar(json) {
+		this.topbar_el = document.createElement('div')
+		this.topbar_el.classList.add('topbar')
+		this.group_name_el = document.createElement('div')
+		// this.group_name_el.classList.add('group_name')
+		this.group_name_el.classList.add('group-name')
+		this.group_name_el.innerText = json['name']
+
+		this.topbar_tools_el = document.createElement('div')
+		this.topbar_tools_el.classList.add('topbar-tools')
+
+		const isGroupDisabled = this.group_el.dataset.disabled === 'true'
+		const { wrapper: switchWrapper, checkbox: switchCheckbox } = createSwitchBox(!isGroupDisabled)
+		switchWrapper.title = 'Enable/Disable (d)'
+
+		switchCheckbox.addEventListener('change', (e) => {
+			this.disable(!switchCheckbox.checked)
+		})
+
+		switchWrapper.addEventListener('click', (e) => {
+			// e.stopPropagation()
+		})
+
+		const addBtn = document.createElement('button')
+		addBtn.classList.add('add-btn')
+		addBtn.innerText = ''
+		addBtn.title = 'Add Key'
+		addBtn.style.cursor = 'pointer'
+		addBtn.addEventListener('click', async (e) => {
+			e.stopPropagation()
+			let pathString = this.group_el.dataset.position + ':' + this.group_el.dataset.name
+			await addKeys(pathString, this.childrenContainer, this.json, this.group_el.dataset.disabled === 'true')
+		})
+
+		const duplicateBtn = document.createElement('button')
+		duplicateBtn.classList.add('duplicate-btn')
+		duplicateBtn.innerText = '󰆑'
+		duplicateBtn.title = 'Duplicate Group'
+		duplicateBtn.style.cursor = 'pointer'
+		duplicateBtn.addEventListener('click', (e) => {
+			e.stopPropagation()
+			this.duplicateKey()
+		})
+
+		const deleteBtn = document.createElement('button')
+		deleteBtn.classList.add('delete-btn')
+		deleteBtn.innerText = '󰧧'
+		deleteBtn.title = 'Delete Group (Del)'
+		deleteBtn.style.cursor = 'pointer'
+		deleteBtn.addEventListener('click', (e) => {
+			e.stopPropagation()
+			this.delete()
+		})
+
+		this.topbar_tools_el.appendChild(addBtn)
+		this.topbar_tools_el.appendChild(duplicateBtn)
+		this.topbar_tools_el.appendChild(deleteBtn)
+		this.topbar_tools_el.appendChild(switchWrapper)
+
+		this.topbar_el.appendChild(this.group_name_el)
+		this.topbar_el.appendChild(this.topbar_tools_el)
+		this.group_el.appendChild(this.topbar_el)
 	}
 
 	getElementRects(): number[] {

@@ -8,14 +8,13 @@ export function implementScrollHints(el: HTMLDivElement | HTMLUListElement, thre
 
 	const update = () => {
 		const { scrollTop, scrollHeight, clientHeight } = el
-
-		if (scrollTop > 0) {
+		if (scrollTop > threshold) {
 			el.classList.add(TOP_CLASS)
 		} else {
 			el.classList.remove(TOP_CLASS)
 		}
 
-		const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1
+		const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= threshold
 
 		if (isAtBottom) {
 			el.classList.remove(BOTTOM_CLASS)
@@ -24,12 +23,22 @@ export function implementScrollHints(el: HTMLDivElement | HTMLUListElement, thre
 		}
 	}
 
-	// Passive listener for better performance
+	const observer = new MutationObserver(() => {
+		update()
+	})
+
+	observer.observe(el, {
+		childList: true,
+		subtree: false,
+	})
+
+
+	window.addEventListener('resize', update)
 	el.addEventListener('scroll', update, { passive: true })
-
-	// Initial check (use requestAnimationFrame to ensure layout is ready)
 	window.requestAnimationFrame(update)
-
-	// Cleanup helper
-	return () => el.removeEventListener('scroll', update)
+	return () => {
+		observer.disconnect()
+		window.removeEventListener('resize', update)
+		el.removeEventListener('scroll', update)
+	}
 }

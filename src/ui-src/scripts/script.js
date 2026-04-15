@@ -3,7 +3,7 @@
 /* global pywebview, TomSelect */
 // import '@stylesheets/style.scss'
 // import '@stylesheets/style.scss'
-import '@stylesheets/subs/tippy.css'
+import '@stylesheets/subs/tippy.scss'
 
 import './ui_components/documentListeners.ts'
 import './ui_components/onboarding.js'

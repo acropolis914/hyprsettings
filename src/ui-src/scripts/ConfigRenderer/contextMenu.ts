@@ -4,7 +4,7 @@ import tippy, { hideAll } from 'tippy.js'
 import { roundArrow } from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 import 'tippy.js/dist/svg-arrow.css'
-import '@stylesheets/subs/tippy.css'
+import '@stylesheets/subs/tippy.scss'
 import { createOverlay } from '@scripts/ui_components/darkenOverlay.js'
 
 export class ContextMenu {
@@ -13,10 +13,7 @@ export class ContextMenu {
 		this.el.classList.add('context-menu', 'hidden')
 		this.el.setAttribute('contenteditable', 'false')
 		this.el.addEventListener('transitionend', (e) => {
-			if (
-				e.propertyName === 'opacity' &&
-				getComputedStyle(e.target).opacity === '0'
-			) {
+			if (e.propertyName === 'opacity' && getComputedStyle(e.target).opacity === '0') {
 				this.el.classList.add('hidden')
 			}
 		})

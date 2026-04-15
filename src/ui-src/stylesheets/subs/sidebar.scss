@@ -11,12 +11,18 @@
 	background-color: var(--surface-0);
 	min-width: 0;
 	height: 100%;
-	overflow-x: hidden;
-	overflow-y: auto;
-	scrollbar-gutter: stable;
+	max-height: 100%;
+	//overflow-x: hidden;
+	//overflow-y: auto;
+	//scrollbar-gutter: stable;
 	@media (min-width: 1500px) {
 		width: 10%;
 		max-width: 10%;
+	}
+	&::-webkit-scrollbar {
+		display: none !important;
+		width: 0 !important;
+		height: 0 !important;
 	}
 
 	ul {
@@ -25,6 +31,9 @@
 		flex-direction: column;
 		list-style: none;
 		scroll-margin: 5px;
+		//width: calc(100% + 20px);
+		min-width: 100%;
+
 
 		li {
 			position: relative;

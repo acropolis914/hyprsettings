@@ -20,6 +20,7 @@ import { findAdjacentConfigKeys, findConfigDescription } from '@scripts/Hyprland
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelte'
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
+import findParentsUntil from '@scripts/utils/findParents.ts'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -714,6 +715,8 @@ export class EditorItem_Generic {
 			// this.el.classList.toggle('disabled')
 			this.el.dataset.disabled === 'true' ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
 		}
+		// let closestConfigGroup = this.el.closest('.config-group')
+		// closestConfigGroup.disable(false)
 		if (!groupSave) {
 			this.saveDebounced()
 		} else {

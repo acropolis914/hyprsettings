@@ -112,6 +112,7 @@ class ConfigTab {
 			item.classList.remove('hidden')
 			document.getElementById('config-set-title').textContent = this.name
 		}
+		implementScrollHints(item)
 		this.configview.appendChild(item)
 	}
 

@@ -164,7 +164,7 @@ export class _configRenderer {
 
 		function renderCommentQueue(all: boolean = false) {
 			let left = all ? 0 : 1
-			while (self.comment_queue.length > 1) {
+			while (self.comment_queue.length > left) {
 				let comment_item: JSON = self.comment_queue[0]
 				let comment_item_el = new EditorItem_Comments(comment_item, false)
 				if (!GLOBAL['config']['show_line_comments']) {
@@ -224,9 +224,9 @@ export class _configRenderer {
 				renderCommentQueue()
 			}
 		} else if (json['type'] === 'BLANK') {
-			if (this.comment_queue.length > 0) {
-				renderCommentQueue()
-			}
+			// if (this.comment_queue.length > 0) {
+			// 	renderCommentQueue()
+			// }
 			// let blankline = document.createElement('div')
 			// blankline.classList.add('blank-line', 'editor-item')
 			// blankline.dataset.uuid = json['uuid']
@@ -243,7 +243,7 @@ export class _configRenderer {
 					renderCommentStack()
 				}
 				if (this.comment_queue.length > 0) {
-					renderCommentQueue(false)
+					renderCommentQueue(true)
 				}
 				let group_el = new ConfigGroup(json as JSON).return()
 				let matched: boolean
@@ -298,8 +298,8 @@ export class _configRenderer {
 			this.container_stack.pop()
 		} else if (json['type'] === 'KEY') {
 			try {
-				renderCommentQueue()
-				renderCommentStack()
+				// renderCommentQueue(true)
+				// renderCommentStack()
 				let genericItem: EditorItem_Generic = new EditorItem_Generic(json, json['disabled'])
 				let tabToAddTo: any
 				const foundPair = keyNameStarts.find(([key, value, exclude]) => {
@@ -329,7 +329,7 @@ export class _configRenderer {
 					this.container_stack.push(tabToAddTo)
 				}
 				if (this.comment_queue.length > 0) {
-					renderCommentQueue()
+					renderCommentQueue(true)
 				}
 				let parentStack = tabToAddTo
 				let elementToAdd = genericItem.el

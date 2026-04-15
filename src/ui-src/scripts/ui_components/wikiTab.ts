@@ -10,7 +10,7 @@ import 'prismjs/components/prism-bash.min.js'
 // import 'prismjs/plugins/toolbar/prism-toolbar.min.js'
 // import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js'
 import '@stylesheets/subs/prism.css'
-import '@stylesheets/subs/tippy.css'
+import '@stylesheets/subs/tippy.scss'
 import tippy, { followCursor } from 'tippy.js'
 import { attemptSwitchToMain } from '@scripts/ui_components/documentListeners.ts'
 
