@@ -82,9 +82,9 @@
 		position: relative;
 		max-width: 100%;
 
-		&:not(:has(:last-child:in-view)) {
-			mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
-		}
+		//&:not(:has(:last-child:in-view)) {
+		//	mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
+		//}
 
 		li {
 			display: flex;
