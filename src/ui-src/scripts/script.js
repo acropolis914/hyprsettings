@@ -62,7 +62,7 @@ async function load_config() {
 	if (GLOBAL.persistence.zoom_factor){
 		setZoom(GLOBAL.persistence.zoom_factor)
 	} else {
-		html.style.setProperty('--zoom-factor', 1)
+		setZoom(1)
 	}
 	if (!isFirstRun) GLOBAL.persistence.first_run = false
 }

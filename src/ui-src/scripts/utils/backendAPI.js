@@ -14,6 +14,8 @@ export const saveConfigDebounced = debounce((configJSON, changedFiles = []) => {
 
 export const Backend = {
 	async readWindowConfig() {
+		let config = await fetchFlask('read_window_config')
+		console.log(config)
 		return await fetchFlask('read_window_config')
 	},
 
@@ -31,21 +33,21 @@ export const Backend = {
 			const response = await fetch('/api/load_from_string', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
 				},
 				// Flask's get_json() will parse this directly
-				body: JSON.stringify(configString)
-			});
+				body: JSON.stringify(configString),
+			})
 
 			if (!response.ok) {
-				throw new Error(`Server responded with ${response.status}`);
+				throw new Error(`Server responded with ${response.status}`)
 			}
 
 			// Since your static method returns .to_json(),
 			// we parse it here to get a JS object
-			return await response.json();
+			return await response.json()
 		} catch (error) {
-			console.error("Failed to load Hyprland config:", error);
+			console.error('Failed to load Hyprland config:', error)
 		}
 	},
 	async debounceGetHyprlandConfig() {

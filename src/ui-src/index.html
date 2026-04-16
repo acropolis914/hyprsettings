@@ -10,13 +10,31 @@ Manually adding tabs might come at a later update.-->
 <!--			name="viewport"-->
 <!--			content="width=device-width, initial-scale=1.0"-->
 <!--		/>-->
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="color-scheme" content="light dark">
 
 		<!-- <meta http-equiv="refresh" content="1" /> -->
 		<title>HyprSettings</title>
 		<link rel="shortcut icon" href="/icon-48.png" type="image/x-icon">
-		<script src="scripts/utils/patchWebkitRects.js"></script>
+		<style>
+			html, body {
+				touch-action: none;
+			}
+		</style>
+		<script>
+			// Prevent browser trackpad pinch-to-zoom (synthesizes ctrl+wheel)
+			document.addEventListener('wheel', function(e) {
+				if (e.ctrlKey) {
+					e.preventDefault();
+				}
+			}, { passive: false });
+
+			// Prevent touch/gesture pinch-zoom
+			document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+			document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
+			document.addEventListener('gestureend', function(e) { e.preventDefault(); });
+		</script>
+<!--		<script src="scripts/utils/_deprecated.js"></script>-->
 		<script type="module" src="scripts/script.js"></script>
 		<script type="module" src="scripts/jslib/json-viewer.js" defer></script>
 		<!-- <script src="/jslibs/hotkeys.min.js"></script> -->

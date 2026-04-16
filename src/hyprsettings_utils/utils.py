@@ -1,4 +1,6 @@
 import socket
+import subprocess
+
 from .shared import *
 from rich.console import Console
 import os
@@ -55,3 +57,14 @@ def get_user_string():
 		pass
 
 	return f"{uname}@{hostname}@{os_name.replace(' ', '_')}"
+
+
+def list_fonts(mono=False, nerd=False):
+	cmd = "fc-list --format='%{family}\n'"
+	if mono:
+		cmd = "fc-list :spacing=100 --format='%{family}\n'"
+	if nerd:
+		cmd += " | grep -i 'Nerd'"
+	cmd += ' | sort -u'
+	result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+	return [f.strip() for f in result.stdout.splitlines() if f.strip()]

@@ -79,7 +79,7 @@ def handle_interrupt(signum, frame):
 
 
 def kill_hyprsettings():
-	log('Killing all hyprsettings instances')
+	log('Killing all hyprsettings instances, ignoring all other args.')
 	result = subprocess.run(['pkill', '-f', 'hyprsettings'])
 	if (state.vite_process is not None) and (state.vite_process.poll() is None):
 		log('Killing bun vite process')
@@ -105,7 +105,6 @@ def print_title():
    ╹ ╹ ╹ ╹  ╹┗╸┗━┛┗━╸ ╹  ╹ ╹╹ ╹┗━┛┗━┛[/bold][/blue]
       version [green][bold]{hs_globals.CURRENT_VERSION}[/bold][/green]\n [blue][link=https://github.com/acropolis914/hyprsettings] github.com/acropolis914/hyprsettings[/link][/blue]\n"""
 	console.print(art, style='')
-	# return art
 
 
 class LogFilter:
@@ -136,7 +135,7 @@ class LogFilter:
 		if '[pywebview]' in text:
 			log('POLOLOLOLOL')
 			text = f'[green]{text}[/green]'
-			# pass
+		# pass
 		elif 'GET /' in text and 'HTTP' in text and not state.verbose:
 			return
 		elif 'Bottle v' in text and not state.verbose:
@@ -192,187 +191,24 @@ class LogFilter:
 					pass
 
 
-# WINDOW FUNCTIONS
-def on_loaded(window):
-	window.events.loaded -= on_loaded
-
-
-def on_closing(window):
-	disabled_dmabuf = os.environ.get('WEBKIT_DISABLE_DMABUF_RENDERER')
-	if state.daemon:  # and (disabled_dmabuf is None or disabled_dmabuf != '1')
-		state.window_instance.hide()
-		state.window_visible = False
-		log('[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]')
-		return False
-	else:
-		# if disabled_dmabuf == '1':
-		# 	log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
-		# 	log('Restoring from daemon will fail. Daemon setting is dishonored.')
-		log('Window closed. Terminating process.')
-		os._exit(0)
-		# kill_hyprsettings()
-		return None
-	# print("______________________________________________\n")
-	# os._exit(0)
-
-
-# ------------------- Socket toggle functions -------------------
-def handle_client(conn):
-	try:
-		data = conn.recv(1024)
-		if data.decode() == 'TOGGLE' and state.window_instance:
-			activeworkspace = (
-				subprocess.run(
-					"hyprctl monitors -j | jq '.[] | select(.focused==true) | .activeWorkspace.name'",
-					shell=True,
-					capture_output=True,
-					text=True,
-				)
-				.stdout.strip()
-				.strip('"')
-			)
-			log(f"Active workspace from focused monitor: '{activeworkspace}'")
-
-			specialworkspace = (
-				subprocess.run(
-					"hyprctl monitors -j | jq '.[] | select(.focused==true) | .specialWorkspace.name'",
-					shell=True,
-					capture_output=True,
-					text=True,
-				)
-				.stdout.strip()
-				.strip('"')
-			)
-			log(
-				f"Special workspace from focused monitor: '{specialworkspace}'",
-				only_verbose=True,
-			)
-
-			if specialworkspace:
-				log(f'Special workspace {specialworkspace} detected, overriding active workspace')
-				activeworkspace = specialworkspace
-			log(f"Workspace to target: '{activeworkspace}'", only_verbose=True)
-
-			# get hyprsettings window workspace
-			hyprsettings_window_workspace_name = subprocess.run(
-				'hyprctl -j clients | jq -r \'.[] | select(.initialClass=="hyprsettings") | .workspace.name\'',
-				shell=True,
-				capture_output=True,
-				text=True,
-			).stdout.strip()
-			log(
-				f"HyprSettings window currently on workspace: '{hyprsettings_window_workspace_name}'",
-				only_verbose=True,
-			)
-
-			# main toggle logic
-			if state.window_visible and activeworkspace == hyprsettings_window_workspace_name:
-				log(f'Window visible AND on current workspace ({activeworkspace}) → hiding')
-				state.window_instance.hide()
-				state.window_visible = False
-
-			elif state.window_visible and activeworkspace != hyprsettings_window_workspace_name:
-				log(f'Window visible BUT on different workspace ({hyprsettings_window_workspace_name}) → moving')
-				move = subprocess.run(
-					[
-						'hyprctl',
-						'dispatch',
-						'movetoworkspace',
-						f'{activeworkspace},initialclass:hyprsettings',
-					],
-					capture_output=True,
-					text=True,
-				)
-				state.window_instance.restore()  # restore if minimized
-				state.window_instance.show()
-				state.window_visible = True
-
-			else:
-				log('Window not visible → restoring and showing')
-				state.window_instance.restore()  # restore if minimized
-				state.window_instance.show()
-				state.window_visible = True
-
-	except Exception as e:
-		log(e)
-
-	finally:
-		conn.close()
-
-
-def start_window_server():
-	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as window_socket:
-		window_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		window_socket.bind((hs_globals.HOST, state.webview_port))
-		window_socket.listen()
-		while True:
-			conn, addr = window_socket.accept()
-			threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
-
-
 def main():
 	state.flask_thread = threading.Thread(target=start_flask_server, daemon=True)
 	state.flask_thread.start()
 	time.sleep(0.1)
 
-	has_webview = True
-	try:
-		import webview
-	except Exception:
-		has_webview = False
-		log('Webview is not installed. Skipping window and going straight to browser only mode.')
+	ui_link = f'http://localhost:{state.flask_port}/'
+	if state.args.bun_dev:
+		ui_link = 'http://localhost:3000/'
+		log(f'Using bun dev server at {ui_link} as per --bun-dev arg')
 
 	try:
-		if state.args.no_dmabuf:
-			os.environ['WEBKIT_DISABLE_DMABUF_RENDERER'] = '1'
-		ui_link = f'http://localhost:{state.flask_port}/'
-		# log(state.args)
-		if state.args.bun_dev:
-			ui_link = 'http://localhost:3000/'
-			log(f'Using bun dev server at {ui_link} as per --bun-dev arg')
-		os.environ['GTK_OVERLAY_SCROLLING'] = '1'
-
-		if not state.args.no_window and has_webview:
-			if state.args.no_devtools:
-				webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
-			state.window_thread = threading.Thread(target=start_window_server, daemon=state.daemon)
-			state.window_thread.start()
-
-			def start_window():
-				state.window_instance = webview.create_window(
-					'HyprSettings',
-					ui_link,
-					transparent=True,
-					width=800,
-					height=600,
-					easy_drag=True,
-					min_size=(400, 300),
-					hidden=state.args.hidden,
-				)
-				state.window_visible = not state.args.hidden
-				state.window_instance.events.loaded += on_loaded
-				state.window_instance.events.closing += on_closing
-
-				webview.start(
-					gui=state.args.ui[0],
-					debug=state.args.debug,
-					private_mode=True,
-					storage_path=hs_globals.CACHE_PATH,
-					icon='icon-48.png',
-				)
-
-			try:
-				log('', '[red][bold]NVIDIA ONLY USERS:[/red][/bold]: If this fails with error 71, please run with [code]--no-dmabuf[/code]')
-				start_window()
-			except (Exception, SystemError) as e:
-				log(f'Failed to start window:{e}', '[red]GTK ERROR[/red]')
-				log('[red]THIS IS A KNOWN BUG FOR NVIDIA ONLY SETUPS. PLEASE DO NOT CREATE A NEW GITHUB ISSUE FOR IT[/red]')
-				log('Trying to set enviroment fixes. It will cause some graphical issues but will make it open.')
-				os.environ['WEBKIT_DISABLE_DMABUF_RENDERER'] = '1'
-				start_window()
-			finally:
-				log('Done.')
-		else:
+		has_webview = True
+		try:
+			import webview
+		except Exception:
+			has_webview = False
+			log('Webview is not installed. Skipping window and going straight to browser only mode.')
+		if state.args.no_window or not has_webview:
 			log('Opening in browser mode only')
 			log('[red][bold] Warning [/bold][/red] Using firefox-based browsers feel [red]slower[/red]')
 			log('If you experience loading times > 2 seconds, consider using a chromium-based browser.')
@@ -380,9 +216,13 @@ def main():
 			if not state.args.no_browser:
 				log(f'Opening {ui_link} in default browser')
 				subprocess.run(['xdg-open', ui_link])
-			while True:
-				pass
-
+			try:
+				while True:
+					pass
+			except KeyboardInterrupt:
+				sys.exit(0)
+		if not state.args.no_window and has_webview:
+			start_window(ui_link)
 	except Exception as e:
 		log(e)
 		log('I am ded')
@@ -391,15 +231,14 @@ def main():
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(
-		prog='hyprsettings',
-		description='A loyal hyprland parser and gui editor for hyprland.conf',
-		epilog=print_title(),
+		  prog='hyprsettings',
+		  description='A loyal hyprland parser and gui editor for hyprland.conf',
+		  epilog=print_title(),
 	)
 	parser = createArgParse(parser)
-
 	state.args = parser.parse_args()
-
 	signal.signal(signal.SIGINT, handle_interrupt)
+
 	if getattr(state.args, 'uninstall', False):
 		installer = str(thisfile_path.parent / 'hyprsettings_installer.py')
 		# Replace current process with: python3 [installer]
@@ -433,14 +272,16 @@ if __name__ == '__main__':
 	state.daemon = not state.args.no_daemon and state.args.daemon
 	if state.args.debug:
 		log(
-			'[yellow]DEBUG MODE IS TURNED ON[/yellow]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!'
+			  '[yellow]DEBUG MODE IS TURNED ON[/yellow]. It sometimes stutter on my (acropolis) machine. Maybe some pywebview memory leak. I ain`t fixing that!'
 		)
 	if state.args.verbose:
 		state.verbose = state.args.verbose
 
-	def gotoMain():
+
+	def goto_main():
 		with redirect_stderr(LogFilter()), redirect_stdout(LogFilter()):
 			main()
+
 
 	if state.args.no_daemon and state.args.daemon:
 		log('Damn. Running "--no-daemon" and "--daemon" at the same time? Why?')
@@ -448,7 +289,7 @@ if __name__ == '__main__':
 	if state.args.no_daemon:
 		while is_port_open(state.webview_port):
 			log(f'Port {state.webview_port} in use by existing daemon.')
-			log("Run with '-d' to use that exisitng daemon.")
+			log("Run with '-d' to use that existing daemon.")
 			log('Daemon uses RAM but starts faster.')
 			state.webview_port += 1
 		log(f'Using port {state.webview_port} for the no daemon pywebview window.', only_verbose=True)
@@ -457,4 +298,4 @@ if __name__ == '__main__':
 		if send_toggle():
 			sys.exit(0)
 
-	gotoMain()
+	goto_main()
