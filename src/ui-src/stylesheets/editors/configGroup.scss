@@ -5,7 +5,7 @@
 	opacity: 1;
 	transition:
 		margin 0.3s ease,
-		scale 0.2s ease;
+		scale 0.2s ease, grid-template-rows 0.3s ease, height 0.3s ease;
 	margin-top: var(--spacing-unit);
 	margin-bottom: var(--spacing-unit);
 	//box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
@@ -19,9 +19,42 @@
 	padding-top: 0.5rem;
 	padding-bottom: 0.5rem;
 	max-width: 100%;
+	//align-items: center;
 	//overflow: clip;
 	.children-container{
-		//border: 1px solid red;
+		display: grid;
+		grid-template-rows: 1fr;
+		transition: grid-template-rows 0.3s ease,
+		margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease , height 0.3s ease;
+	}
+	&.compact{
+		.topbar{
+			margin-bottom: 0;
+		}
+		.children-container{
+			grid-template-rows: 0fr !important;
+			padding-top: 0 !important;
+			padding-bottom: 0 !important;
+			margin-top: 0 !important;
+			margin-bottom: 0 !important;
+			opacity: 0;
+			min-height: 0;
+			overflow: hidden !important;
+			//height: 0;
+			.editor-item.editor-item {
+				display: grid;
+				grid-template-columns: 0fr;
+				height: 0 !important;
+				max-height: 0 !important;
+				min-height: 0 !important;
+				overflow: hidden;
+				margin: 0 !important;
+				padding: 0 !important;
+				border: none !important;
+
+			}
+		}
+
 	}
 
 	&.rule > .editor-item {
@@ -96,6 +129,11 @@
 
 .config-group:is(:active, :hover, :focus, :focus-visible, :focus-within, [data-disabled="true"]) > .topbar > .topbar-tools{
 	opacity: 1;
+}
+.config-group.compact{
+	.compact-btn{
+		rotate: 180deg;
+	}
 }
 .config-group > .topbar{
 	color: var(--text-1);

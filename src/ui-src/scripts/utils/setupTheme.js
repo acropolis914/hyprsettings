@@ -34,7 +34,7 @@ export async function openThemeSelector() {
 		return {
 			name: label,
 			value: theme.name,
-			description: `<strong>${theme.variant}</strong><br>${theme.description}<br>${theme.author}` || '',
+			description: `<strong>${theme.variant}</strong>${theme.description}<br>${theme.author}` || '',
 		}
 	})
 

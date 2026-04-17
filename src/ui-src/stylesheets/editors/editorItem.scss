@@ -9,7 +9,8 @@
 		margin 0.2s ease,
 		border 100ms ease-in-out,
 		scale 0.2s ease,
-		opacity 0.5s ease, padding 0.1s ease;
+		opacity 0.5s ease,
+		padding 0.1s ease;
 	margin-bottom: var(--spacing-unit);
 	border: 1px solid transparent;
 	box-sizing: border-box;
@@ -47,6 +48,10 @@
 
 	&:focus {
 		outline: none;
+	}
+
+	&:hover {
+		filter: brightness(98%);
 	}
 
 	// --- State Handling ---
@@ -115,7 +120,7 @@
 				margin: -1px;
 				overflow: hidden;
 				clip: rect(0, 0, 0, 0); /* Support for older browsers */
-				clip-path: inset(50%);  /* The modern way to "shrink" it to nothing */
+				clip-path: inset(50%); /* The modern way to "shrink" it to nothing */
 				white-space: nowrap;
 				border: 0;
 			}
@@ -256,7 +261,7 @@
 	}
 
 	// --- Modifiers ---
-	&.compact {
+	&.compact:not(.config-group) {
 		.keybind-editor,
 		.generic-editor,
 		.comment-area {
@@ -264,7 +269,6 @@
 			opacity: 0;
 		}
 		padding: 0.5rem;
-
 	}
 	&.disabled {
 		opacity: 0.5;
@@ -404,7 +408,7 @@
 }
 
 //material/gnome-like rounding and grouping of similar elements
-.editor-item-generic:has(+ .editor-item-generic){
+.editor-item-generic:has(+ .editor-item-generic) {
 	margin-bottom: 0.5px;
 	//border-radius-block-end: 0;
 	border-bottom-left-radius: 0;
@@ -412,14 +416,13 @@
 	//border-bottom: 1px solid opacity(var(--accent), 0.1);
 }
 .editor-item-generic + .editor-item-generic:has(+ .editor-item-generic) {
-	margin-bottom:0.5px;
+	margin-bottom: 0.5px;
 	border-radius: 0;
 	//border-bottom: 1px solid opacity(var(--accent), 0.1);
 }
 
-.editor-item-generic+ .editor-item-generic:not(:has(+ .editor-item-generic)){
+.editor-item-generic + .editor-item-generic:not(:has(+ .editor-item-generic)) {
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	margin-bottom: 0.5rem;
 }
-

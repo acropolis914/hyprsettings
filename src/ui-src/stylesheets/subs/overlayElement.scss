@@ -110,7 +110,7 @@
 		}
 	}
 
-	ul {
+	ul.dmenu-list {
 		display: flex;
 		flex-direction: column;
 		margin: 0;
@@ -122,6 +122,7 @@
 		list-style: none;
 		position: relative;
 		max-width: 100%;
+		scroll-behavior: smooth;
 
 		//&:not(:has(:last-child:in-view)) {
 		//	mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
@@ -148,9 +149,11 @@
 				}
 			}
 
-			&.mousehover:not(.selected) {
+			&:hover:not(.selected) {
+				color: var(--accent);
+				background-color: opacity(var(--accent), 0.1);
 				.dmenu-item-description {
-					color: var(--accent);
+					color: var(--text-0);
 				}
 			}
 
@@ -197,6 +200,7 @@
 				opacity: 0.9;
 				line-height: 1.2rem;
 				margin-top: 5px;
+				font-family: v.$font;
 				small {
 					margin-block: 2px;
 				}
@@ -207,14 +211,11 @@
 				overflow: hidden;
 
 				&.hidden {
-					// Collapses the grid row to zero
 					grid-template-rows: 0fr;
-
-					// Kills the "blank space" artifacts
 					opacity: 0 !important;
 					margin: 0 !important;
 					padding: 0 !important;
-					line-height: 0 !important; // Kills the text height footprint
+					line-height: 0 !important;
 					visibility: hidden;
 				}
 

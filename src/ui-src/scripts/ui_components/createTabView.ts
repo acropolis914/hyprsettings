@@ -7,6 +7,8 @@ import { counter, menuState } from './svelteStates.svelte.js'
 import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
 
 let initialLoad = true
+let activeContextMenus: any[] = []
+
 interface TabProps {
 	id?: string
 	name: string
@@ -88,14 +90,8 @@ class ConfigTab {
 		})
 		item.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
-			if (!this.contextMenu) {
-				let { menu, menuState: contextMenuState } = this.createContextMenu(item, e)
-				this.contextMenu = menu
-				contextMenuState.visible = true
-			} else {
-				menuState.visible = true
-				this.handleTabClick()
-			}
+			this.createContextMenu(item, e)
+			this.handleTabClick()
 		})
 		// item.addEventListener("focus", (e) => {
 		// 	this.handleTabClick(this.id);
@@ -119,18 +115,12 @@ class ConfigTab {
 			console.log('Showing config-set context-menu')
 			e.preventDefault()
 			if (e.target != item) return
-			if (!this.contextMenu) {
-				let { menu, menuState: contextMenuState } = this.createContextMenu(item, e)
-				this.contextMenu = menu
-				contextMenuState.visible = true
-			} else {
-				menuState.visible = true
-			}
+			this.createContextMenu(item, e)
 		})
 
 		item.addEventListener('click', async (e) => {
 			if (this.contextMenu) {
-				await unmount(this.contextMenu)
+				unmount(this.contextMenu)
 				this.contextMenu = undefined
 			}
 		})
@@ -174,17 +164,40 @@ class ConfigTab {
 	}
 
 	createContextMenu(el: HTMLDivElement | HTMLElement, e: MouseEvent) {
+		let noContextMenu = ['settings', 'debug', 'wiki']
+		if (noContextMenu.includes(this.id)) {
+			return
+		}
 		console.log('Opening context menu for the config set')
-		let target = e.target as HTMLElement
-		const rect = el.getBoundingClientRect()
-		menuState.x = e.pageX
-		menuState.y = e.pageY
+
+		// Unmount all currently active context menus first
+		activeContextMenus.forEach((menu) => unmount(menu))
+		activeContextMenus = []
+
+		if (this.contextMenu) {
+			unmount(this.contextMenu)
+			this.contextMenu = undefined
+		}
+
+		// Update global state for action handlers to work correctly
 		menuState.closestConfigSet = document.querySelector(`.config-set#${this.id}`)
+
+		// Avoid reactivity cross-talk by passing a fresh local object instead of the global menuState
+		let localState = {
+			items: menuState.items,
+			visible: true,
+			x: e.pageX,
+			y: e.pageY,
+			closestConfigSet: menuState.closestConfigSet,
+		}
+
 		const menu = mount(ContextMenu, {
 			target: document.body as HTMLElement,
-			props: menuState,
+			props: localState,
 		})
-		return { menu, menuState }
+		this.contextMenu = menu
+		activeContextMenus.push(menu)
+		return { menu, localState }
 	}
 }
 

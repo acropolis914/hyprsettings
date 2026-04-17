@@ -62,11 +62,14 @@ html.no-anim *::after {
 }
 
 html.no-anim {
-	.editor-item {
-		transition: margin 0 ease !important;
+	.config-group.config-group{
+		transition: none !important;
+	}
+	.editor-item.editor-item {
+		transition: none !important;
 	}
 
-	.sidebar-item {
+	.sidebar-item.sidebar-item {
 		transition: none !important;
 	}
 }
@@ -219,6 +222,7 @@ body {
 	height: 100%;
 	min-height: 0;
 	overflow-x: hidden;
+	scroll-behavior: smooth;
 	//border-radius: 50%;
 	@media (max-width: 768px) {
 		padding: 1rem 1rem;

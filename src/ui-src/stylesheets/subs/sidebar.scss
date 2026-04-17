@@ -1,5 +1,5 @@
-@use "../mixins" as *;
-@use "../_variables" as v;
+@use '../mixins' as *;
+@use '../_variables' as v;
 
 #sidebar {
 	flex: 0 0 20%;
@@ -12,6 +12,7 @@
 	min-width: 0;
 	height: 100%;
 	max-height: 100%;
+	scroll-behavior: smooth;
 	//overflow-x: hidden;
 	//overflow-y: auto;
 	//scrollbar-gutter: stable;
@@ -33,7 +34,6 @@
 		scroll-margin: 5px;
 		//width: calc(100% + 20px);
 		min-width: 100%;
-
 
 		li {
 			position: relative;
@@ -123,7 +123,6 @@
 	border-bottom: 3px solid opacity(var(--surface-1), 0.2);
 	border-radius: 0;
 	font-size: 1.2rem;
-
 }
 
 .sidebar-item {
@@ -140,7 +139,7 @@
 	@include text-ellipsis;
 	z-index: 2;
 	outline: none !important;
-	margin-block: calc(var(--spacing-unit)* 0.2);
+	margin-block: calc(var(--spacing-unit) * 0.2);
 
 	&.keyboard-selected {
 		&::after {
@@ -152,8 +151,7 @@
 			font-weight: bold;
 			transition: left 0.2s ease-in-out;
 			@media (max-width: 40rem) {
-				left:0.3rem;
-
+				left: 0.3rem;
 			}
 		}
 	}

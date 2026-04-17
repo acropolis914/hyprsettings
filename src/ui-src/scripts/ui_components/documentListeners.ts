@@ -237,7 +237,9 @@ function navigateEditorItems(direction: number) {
 	const currentIndex = children.indexOf(activeElement)
 
 	let newIndex = getNextValidIndex(children, currentIndex, direction, (item) => {
-		return item.classList.contains('settings-hidden')
+		const isSelfCompact = item.classList.contains('compact')
+		const parentCompact = item.parentElement?.closest('.compact')
+		return item.classList.contains('settings-hidden') || parentCompact
 	})
 
 	const newActiveElement = children[newIndex]

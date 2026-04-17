@@ -158,18 +158,47 @@ class DMenu {
 
 		li.addEventListener('click', (e) => {
 			e.stopPropagation()
-			choose()
+			const isCoarse = window.matchMedia('(pointer: coarse)').matches
+			if (isCoarse) {
+				if (!li.classList.contains('selected')) {
+					li.focus()
+				} else {
+					choose()
+				}
+			} else {
+				choose()
+			}
 		})
-		li.addEventListener('focus', (e) => {
-			li.classList.add('selected')
-			li.querySelector('.dmenu-item-description')?.classList.remove('hidden')
-			this.onFocus(item)
 
-			// Wait for the next frame so the height update is "locked in"
+		li.addEventListener('mouseenter', () => {
+			if (!li.classList.contains('selected')) {
+				li.querySelector('.dmenu-item-description')?.classList.remove('hidden')
+			}
+		})
+
+		li.addEventListener('mouseleave', () => {
+			if (!li.classList.contains('selected')) {
+				li.querySelector('.dmenu-item-description')?.classList.add('hidden')
+			}
+		})
+
+		li.addEventListener('focus', (e) => {
 			requestAnimationFrame(() => {
-				li.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				this.listEl.querySelectorAll('li').forEach((item) => {
+					item.classList.remove('selected')
+					item.querySelector('.dmenu-item-description')?.classList.add('hidden')
+				})
+				li.classList.add('selected')
+				li.querySelector('.dmenu-item-description')?.classList.remove('hidden')
+				this.onFocus(item)
+
+				// Wait for the next frame so the height update is "locked in"
+				requestAnimationFrame(() => {
+					li.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				})
 			})
 		})
+
 		li.addEventListener('keydown', (e) => {
 			if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
 				li.classList.remove('selected')

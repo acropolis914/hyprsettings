@@ -36,7 +36,7 @@ export class ContextMenu {
 			})
 			const iconEl = document.createElement('div')
 			iconEl.classList.add('ctx-button-icon')
-			iconEl.textContent = icon
+			iconEl.innerHTML = icon
 			const labelEl = document.createElement('div')
 			labelEl.classList.add('ctx-button-label')
 			if (GLOBAL.config.show_contextmenu_label === false) {

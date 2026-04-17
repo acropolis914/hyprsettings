@@ -18,22 +18,64 @@ export const menuState = $state({
 		},
 		{ label: 'separator' },
 		{
-			label: 'Expand all items',
+			label: 'Expand',
 			icon: '󰡏',
-			action: () => {
-				document.querySelectorAll('.editor-item').forEach((item) => {
-					item.classList.remove('compact')
-				})
-			},
+			submenu: [
+				{
+					label: 'All Items',
+					action: () => {
+						document.querySelectorAll('.editor-item').forEach((item) => {
+							item.classList.remove('compact')
+						})
+					}
+				},
+				{
+					label: 'Keys Only',
+					action: () => {
+						document.querySelectorAll('.editor-item:not(.config-group)').forEach((item) => {
+							item.classList.remove('compact')
+						})
+					}
+				},
+				{
+					label: 'Groups Only',
+					action: () => {
+						document.querySelectorAll('.config-group').forEach((item) => {
+							item.classList.remove('compact')
+						})
+					}
+				}
+			]
 		},
 		{
-			label: 'Collapse all items',
+			label: 'Collapse',
 			icon: '󰘕',
-			action: () => {
-				document.querySelectorAll('.editor-item').forEach((item) => {
-					item.classList.add('compact')
-				})
-			},
+			submenu: [
+				{
+					label: 'All Items',
+					action: () => {
+						document.querySelectorAll('.editor-item').forEach((item) => {
+							item.classList.add('compact')
+						})
+					}
+				},
+				{
+					label: 'Keys Only',
+					action: () => {
+						document.querySelectorAll('.editor-item:not(.config-group)').forEach((item) => {
+							item.classList.add('compact')
+						})
+					}
+				},
+				{
+					label: 'Groups Only',
+					action: () => {
+						document.querySelectorAll('.config-group').forEach((item) => {
+							item.classList.add('compact')
+						})
+					}
+				}
+			]
 		},
 
 		{

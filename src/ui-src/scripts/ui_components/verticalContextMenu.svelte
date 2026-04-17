@@ -1,7 +1,3 @@
-
-
-
-
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { getNormalizedRect } from "@scripts/utils/utils.ts"
@@ -69,14 +65,14 @@
 		{#each items as item}
 			{#if !(item.label === "separator")}
 			<li>
-				<div on:click={() => item.submenu ? null : select(item)}>
+				<div onclick={() => item.submenu ? null : select(item)}>
 					<span class="icon">{item.icon}</span> {item.label} <span class="submenu-arrow">{item.submenu ? '▶' : ''}</span>
 				</div>
 
 				{#if item.submenu}
 					<ul class="context-menu-sv submenu">
 						{#each item.submenu as sub}
-							<li on:click={() => select(sub)}>{sub.label}</li>
+							<li onclick={() => select(sub)}>{sub.label}</li>
 						{/each}
 					</ul>
 				{/if}
@@ -89,7 +85,8 @@
 {/if}
 
 <style lang="scss">
-	@import "@stylesheets/mixins.scss" as *;
+	@use "../../stylesheets/mixins.scss" as *;
+
 	.context-menu-sv {
 		position: absolute;
 		background: var(--surface-0);
@@ -102,12 +99,22 @@
 		margin: 0;
 		/*padding: 0.25rem 0;*/
 		//padding-block: 0.1rem;
-		overflow: hidden;
+		overflow: visible;
 		width: 15rem;
 		/*font-family: sans-serif;*/
 		font-size: 1.2rem;
 		z-index: 300;
 		@include box-shadow;
+		box-shadow:
+			  inset 0 1px 0 0 rgba(255,255,255,0.08),
+			  inset 0 0 0 1px rgba(255,255,255,0.04),
+			  0 0 0 1px rgba(0,0,0,0.16),
+			  0 1px 1px -0.5px rgba(0,0,0,0.08),
+			  0 3px 3px -1.5px rgba(0,0,0,0.08),
+			  0 6px 6px -3px rgba(0,0,0,0.08),
+			  0 12px 12px -6px rgba(0,0,0,0.08);
+		//mix-blend-mode: multiply;
+
 
 
 	}
@@ -116,7 +123,8 @@
 		margin-inline: 1.5rem;
 		margin-block: .3rem;
 		//border-width: 5px;
-		color: color-mix(in srgb, var(--surface-2) 40%, transparent);
+		opacity: 0.3;
+		color: opacity(var(--surface-0), 0.1);
 	}
 
 	.context-menu-sv li {
@@ -157,12 +165,13 @@
 		display: none;
 		position: absolute;
 		top: 0;
-		left: 101%;
+		left: 99%;
 		list-style: none;
 		margin: 0;
 		padding: 0.25rem 0;
 		width: 150px;
 		z-index: 1000;
+		border-left: none;
 	}
 
 	li:hover > .submenu {

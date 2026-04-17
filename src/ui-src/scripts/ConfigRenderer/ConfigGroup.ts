@@ -37,8 +37,7 @@ export class ConfigGroup {
 		this.title = this.group_el.title
 		this.json = json
 
-		this.createTopBar(json)
-
+		this.createTopBar()
 		this.childrenContainer = document.createElement('div')
 		this.childrenContainer.classList.add('children-container')
 		this.group_el.appendChild(this.childrenContainer)
@@ -70,7 +69,7 @@ export class ConfigGroup {
 		this.addEventListeners()
 	}
 
-	private createTopBar(json) {
+	private createTopBar(json = this.json) {
 		this.topbar_el = document.createElement('div')
 		this.topbar_el.classList.add('topbar')
 		this.group_name_el = document.createElement('div')
@@ -122,6 +121,23 @@ export class ConfigGroup {
 			this.delete()
 		})
 
+		const compactBtn = document.createElement('button')
+		compactBtn.classList.add('compact-btn')
+
+		const compactSpan = document.createElement('span')
+		compactSpan.innerText = ''
+		compactSpan.style.display = 'inline-block'
+		compactSpan.style.transition = 'transform 0.2s ease'
+		compactBtn.appendChild(compactSpan)
+
+		compactBtn.title = 'Compact/Expand'
+		compactBtn.style.cursor = 'pointer'
+		compactBtn.addEventListener('click', (e) => {
+			e.stopPropagation()
+			this.toggleCompact()
+		})
+
+		this.topbar_tools_el.appendChild(compactBtn)
 		this.topbar_tools_el.appendChild(addBtn)
 		this.topbar_tools_el.appendChild(duplicateBtn)
 		this.topbar_tools_el.appendChild(deleteBtn)
@@ -152,7 +168,13 @@ export class ConfigGroup {
 			y = y2
 		}
 
+		let isCompact = this.group_el.classList.contains('compact')
 		this.contextMenu = new ContextMenu([
+			{
+				label: isCompact ? 'Expand' : 'Compact',
+				icon: `<span style="display:inline-block; transition:transform 0.2s ease; transform: ${isCompact ? 'rotate(0)' : 'rotate(180deg)'}"></span>`,
+				action: () => this.toggleCompact(),
+			},
 			{
 				label: 'Add key',
 				icon: '',
@@ -214,6 +236,8 @@ export class ConfigGroup {
 				e.stopPropagation()
 				e.stopImmediatePropagation()
 				this.createContextMenu()
+				// this.contextMenu.show()
+				this.toggleCompact()
 				return
 			}
 
@@ -337,6 +361,10 @@ export class ConfigGroup {
 
 	duplicateKey() {
 		duplicateKey(this.group_el.dataset.uuid, this.group_el.dataset.position, true, this.group_el)
+	}
+
+	toggleCompact() {
+		this.group_el.classList.toggle('compact')
 	}
 
 	appendConfigItems(el: HTMLDivElement) {

@@ -209,9 +209,9 @@ export async function addKeys(
 			description: '',
 		}
 	}
-	console.log(keyToAdd)
+	// console.log(keyToAdd)
 
-	console.log(keyToAdd)
+	// console.log(keyToAdd)
 	let pathList = keyToAdd['path'].split(':')
 	if (pathList.length === 1 && pathList[0] === '') {
 		pathList = []
