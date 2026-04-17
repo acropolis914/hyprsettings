@@ -33,13 +33,19 @@ import "./utils/zoom.ts"
 import { setZoom, zoom } from './utils/zoom.ts'
 import { shortHash } from '@scripts/utils/utils.ts'
 
+declare global {
+	interface Window {
+		dataLayer: any[];
+		Global: typeof GLOBAL;
+		reinitialize: typeof reinitialize;
+		initialize: typeof initialize;
+	}
+}
+
 window.Global = GLOBAL
 GLOBAL.setKey('backend', 'flask')
 
-// @ts-ignore
-export default function loadHyprsettingsConfig() {
-	GLOBAL.onChange()
-}
+
 
 async function load_config() {
 	const windowConfig = await Backend.readWindowConfig()
@@ -72,11 +78,9 @@ async function setupGTAG() {
 	script.async = true
 	script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1HDCZV8DTZ'
 	document.head.appendChild(script)
-
-	// 3. Setup the gtag functions
 	window.dataLayer = window.dataLayer || []
-	function gtag() {
-		dataLayer.push(arguments)
+	function gtag(this: any, ...args: any[]) {
+		window.dataLayer.push(arguments)
 	}
 	const user_id = await shortHash(GLOBAL.config_info.user)
 	console.log('user_id', user_id)
@@ -95,31 +99,24 @@ export async function reinitialize() {
 }
 
 export async function initialize() {
-	// Array.from(document.scripts).forEach(s => console.log(s.src))
 	await createLoadingOverlay()
 	await load_config()
 	await setupTheme()
 	await getDebugStatus()
 	await createTabView()
 	initializeDebugTab()
-	await getAndRenderConfig().then(async () => {
-		console.log('Done rendering received config')
-		// await destroyOverlay(true)
-	})
-
-	renderSettings().then(() => console.log('Done rendering received settings tab'))
+	await getAndRenderConfig()
+	renderSettings().then(() => console.log('Done rendering settings tab'))
 	initializeSearchBar().then(() => console.log('Done initializing search bar'))
 	createWiki().then(() => console.log('Done initializing wikit tab'))
-	// createWiki()
 	tippy.setDefaultProps({ delay: 1000, arrow: true })
-	setupGTAG()
+	await setupGTAG()
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-	initialize()
 	window.reinitialize = reinitialize
-	// refreshAllStylesheets()
 	window.initialize = initialize
+	await initialize()
 })
 
 window.addEventListener('error', (e) => {

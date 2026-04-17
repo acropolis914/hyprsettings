@@ -464,18 +464,13 @@ export class EditorItem_Generic {
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.el.dataset.uuid
 			// GLOBAL.setKey('previousView', GLOBAL.currentView)
 			// GLOBAL.setKey('currentView', 'editorItem')
+			// console.log('clicked editor item')
+			this.contextMenu?.hide()
 			if (this.isBoolean) {
 			} else {
 				this.el.classList.remove('compact')
 			}
-			// this.createContextMenu()
 		})
-		// this.el.addEventListener('contextmenu', (e) => {
-		// 	e.preventDefault()
-		// 	e.stopPropagation()
-		//
-		// 	this.createContextMenu()
-		// })
 
 		this.el.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
@@ -488,9 +483,6 @@ export class EditorItem_Generic {
 			} else {
 				this.createContextMenu()
 			}
-
-			// Optional: prevent default context menu
-			e.preventDefault()
 		})
 		this.el.addEventListener('dblclick', (e) => {
 			if (this.el.dataset.name === 'bezier' && this.valueEditor.contains(e.target)) {

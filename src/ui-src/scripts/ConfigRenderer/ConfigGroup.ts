@@ -180,6 +180,10 @@ export class ConfigGroup {
 			e.stopPropagation()
 			this.createContextMenu(e.clientX, e.clientY)
 		})
+
+		this.group_el.addEventListener('click', () => {
+			this.contextMenu?.hide()
+		})
 		this.group_el.addEventListener('focus', () => {
 			// this.createContextMenu()
 		})
