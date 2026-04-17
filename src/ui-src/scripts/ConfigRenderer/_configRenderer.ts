@@ -2,7 +2,7 @@
 // import { waitFor } from '../utils/helpers'
 import { EditorItem_Generic } from './EditorItem_Generic.ts'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
-import { EditorItem_Binds } from './EditorItem_Binds.ts'
+// import { EditorItem_Binds } from './EditorItem_Binds.ts'
 import { tabids, keyNameStarts, configGroups } from '@scripts/HyprlandSpecific/configMap.js'
 import { ConfigGroup } from './ConfigGroup.ts'
 import { GLOBAL } from '../GLOBAL.js'

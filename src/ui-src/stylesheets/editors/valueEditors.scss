@@ -228,3 +228,9 @@
 		}
 	}
 }
+
+.generic-editor-colormodal {
+	&.active {
+		transform: none !important;
+	}
+}

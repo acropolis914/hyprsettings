@@ -3,6 +3,7 @@ import { GLOBAL } from '../GLOBAL.ts'
 import { selectFrom } from '../ui_components/dmenu.ts'
 
 GLOBAL['currentThemeIndex'] = 0
+GLOBAL['themesByName'] = {}
 let themeButton = document.getElementById('theme-toggle')
 const root = document.querySelector(':root')
 let headers = ['description', 'link', 'author', 'variant']
@@ -11,6 +12,8 @@ export default async function setupTheme() {
 	let currentTheme = GLOBAL['config']['current_theme']
 	document.documentElement.style.opacity = GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
 	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])
+
+	GLOBAL.themesByName = Object.fromEntries(GLOBAL.themes.map((t) => [t.name, t]))
 
 	const index = GLOBAL.themes.findIndex((t) => t.name === currentTheme)
 	if (index !== -1) {
@@ -43,7 +46,7 @@ export async function openThemeSelector() {
 			options,
 			false,
 			(item) => {
-				const themeToPreview = GLOBAL.themes.find((t) => t.name === item.value)
+				const themeToPreview = GLOBAL.themesByName[item.value]
 				if (themeToPreview) applyThemeVarsTemporary(themeToPreview)
 			},
 			currentTheme, // focused value
@@ -52,7 +55,7 @@ export async function openThemeSelector() {
 		if (selected) {
 			removeThemeVarsTemporary()
 			const selectedThemeName = selected.value
-			const selectedTheme = GLOBAL.themes.find((t) => t.name === selectedThemeName)
+			const selectedTheme = GLOBAL.themesByName[selectedThemeName]
 			if (selectedTheme) {
 				GLOBAL.setKey('currentThemeIndex', GLOBAL.themes.indexOf(selectedTheme))
 				changeTheme(selectedTheme)
@@ -142,7 +145,8 @@ function removeThemeVarsTemporary() {
 		styleEl.remove()
 	}
 
-	const currentTheme = GLOBAL.themes.find((t) => t.name === GLOBAL['config']['current_theme'])
+	const currentThemeName = GLOBAL['config']['current_theme']
+	const currentTheme = GLOBAL.themesByName[currentThemeName]
 	if (currentTheme) {
 		root.classList.remove('dark')
 		root.classList.remove('light')
@@ -200,8 +204,7 @@ export function changeTheme(theme) {
 	if (settingsDisplay) settingsDisplay.textContent = theme.name
 
 	const clone = document.body.cloneNode(true)
-
-	// Freeze State
+	clone.id = 'body-clone'
 	const rootStyles = getComputedStyle(document.documentElement)
 	for (const prop of rootStyles) {
 		if (prop.startsWith('--')) {
@@ -225,7 +228,12 @@ export function changeTheme(theme) {
 		transition: 'clip-path 1s ease-in-out',
 		clipPath: 'inset(0 0 0 0)',
 	})
-
+	clone.querySelectorAll('.hidden').forEach((e) => {
+		e.remove()
+	})
+	clone.querySelectorAll('.settings-hidden').forEach((e) => {
+		e.remove()
+	})
 	clone.querySelectorAll('script, input, textarea, select').forEach((e) => {
 		if (e.tagName === 'SCRIPT') e.remove()
 		// else e.setAttribute('readonly', 'true')
@@ -236,7 +244,6 @@ export function changeTheme(theme) {
 			e.value = theme.name
 		}
 	})
-
 	document.documentElement.appendChild(clone)
 
 	// Apply New Theme
@@ -249,7 +256,16 @@ export function changeTheme(theme) {
 	requestAnimationFrame(() => {
 		clone.getBoundingClientRect()
 		clone.style.clipPath = 'inset(0 0 0 100%)'
-		setTimeout(() => clone.remove(), 1000)
+	})
+
+	requestAnimationFrame(() => {
+		// clone.getBoundingClientRect()
+		setTimeout(() => {
+			document.querySelectorAll('#body-clone').forEach((e) => {
+				console.log(e)
+				e.remove()
+			})
+		}, 1000)
 	})
 }
 
@@ -293,7 +309,7 @@ function updateColoris() {
 
 export function getSwatch() {
 	const themeName = GLOBAL.config.current_theme
-	const currentTheme = GLOBAL.themes.find((t) => t.name === themeName)
+	const currentTheme = GLOBAL.themesByName[themeName]
 	if (!currentTheme) return []
 
 	const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/

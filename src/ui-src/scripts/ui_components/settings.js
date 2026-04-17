@@ -9,8 +9,8 @@ let VERSION = '0.9.0'
 export default async function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
 	await createAbout()
-	getHyprsettingsGithubVersion()
-	Backend.getHyprSettingsVersion()
+	getHyprsettingsGithubVersion().then()
+	Backend.getHyprSettingsVersion().then()
 	createAutoSaveSetting()
 	createHeaderCommentsVisibilitySetting()
 	createLineCommentsVisibilitySetting()

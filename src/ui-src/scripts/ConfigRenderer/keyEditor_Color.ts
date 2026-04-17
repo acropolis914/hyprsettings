@@ -1,5 +1,6 @@
 import { parseHyprColor } from '@scripts/HyprlandSpecific/colorparser'
-
+import '@scripts/jslib/coloris.css'
+import '@scripts/jslib/coloris.js'
 export class ColorModal {
 	el: HTMLInputElement
 	constructor(value: string | number | any) {
@@ -8,6 +9,7 @@ export class ColorModal {
 		this.el.setAttribute('type', 'text')
 		// this.el.setAttribute('readonly', 'readonly')
 		// this.el.setAttribute('tabindex', '-1')
+		this.el.classList.add('generic-editor-colormodal')
 		this.el.setAttribute('data-coloris', '')
 		const num = Number(value)
 		this.el.value = Number.isNaN(num) ? parseHyprColor(value) : parseHyprColor(num)

@@ -57,6 +57,7 @@
 	// $: if (visible) clampPosition();
 	$effect(()=>{
 		if (visible) clampPosition();
+		// if (visible) menuEl.focus();
 	})
 </script>
 
@@ -64,7 +65,7 @@
 	<ul class="context-menu-sv" bind:this={menuEl} style="top:{y}px; left:{x}px;">
 		{#each items as item}
 			{#if !(item.label === "separator")}
-			<li>
+			<li tabindex="0">
 				<div onclick={() => item.submenu ? null : select(item)}>
 					<span class="icon">{item.icon}</span> {item.label} <span class="submenu-arrow">{item.submenu ? '▶' : ''}</span>
 				</div>
@@ -140,7 +141,7 @@
 		gap: 0.2rem;
 	}
 
-	.context-menu-sv li:hover > div {
+	.context-menu-sv li:is(:hover, :focus, :focus-visible) > div {
 		color: var(--surface-0);
 		background: var(--accent);
 	}

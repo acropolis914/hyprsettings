@@ -3,7 +3,7 @@ import { addItem, deleteKey, saveKey } from '../utils/utils.ts'
 import { debounce } from '../utils/helpers.js'
 import { GLOBAL } from '../GLOBAL.ts'
 import { EditorItem_Generic } from './EditorItem_Generic.ts'
-import { EditorItem_Binds } from './EditorItem_Binds.ts'
+// import { EditorItem_Binds } from './EditorItem_Binds.ts'
 
 export class EditorItem_Comments {
 	initial_load: boolean

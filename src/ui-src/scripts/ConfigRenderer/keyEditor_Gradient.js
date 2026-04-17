@@ -204,7 +204,7 @@ export class GradientModal {
 
 		// colordiv.dataset.coloris = ''
 		colordiv.value = rgba
-		colordiv.style.outline = `10px solid ${rgba}`
+		colordiv.style.outline = `11px solid ${rgba}`
 		colordiv.size = 1
 		const removeButton = Object.assign(document.createElement('button'), {
 			type: 'button',
@@ -262,10 +262,10 @@ export class GradientModal {
 			}
 		})
 		colordiv.addEventListener('change', () => {
-			colordiv.style.outline = `10px solid ${colordiv.value}`
+			colordiv.style.outline = `11px solid ${colordiv.value}`
 		})
 		colordiv.addEventListener('input', () => {
-			colordiv.style.outline = `10px solid ${colordiv.value}`
+			colordiv.style.outline = `11px solid ${colordiv.value}`
 			this._emit()
 			this._notifyInputListeners()
 		})
