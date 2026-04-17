@@ -1,7 +1,6 @@
 @use '../mixins' as *;
 @use '../_variables' as v;
 
-
 %about-section {
 	display: flex;
 	flex-direction: column;
@@ -143,11 +142,14 @@
 				transform: scale(1.5);
 			}
 		}
-		label{
+		label {
 			margin-left: 1rem;
 		}
 		label:hover {
 			filter: brightness(5);
+		}
+		label + .theme-display {
+			margin-left: auto;
 		}
 	}
 }

@@ -7,12 +7,23 @@ import { counter, menuState } from './svelteStates.svelte.js'
 import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
 
 let initialLoad = true
+interface TabProps {
+	id?: string
+	name: string
+	icon?: string
+	default?: boolean
+}
 
 class ConfigTab {
 	private configview: any
 	sidebar = document.querySelector('aside#sidebar>ul')
+	id: string
+	name: any
+	icon: any
+	shown: boolean
+	contextMenu: any
 
-	constructor(tab) {
+	constructor(tab: TabProps, options = {}) {
 		if (tab.name === 'separator') {
 			this.make_separator(tab)
 			return
@@ -47,6 +58,7 @@ class ConfigTab {
 
 	makeSidebarItem() {
 		let item = document.createElement('li')
+		item.id = this.id
 		item.classList.add('sidebar-item')
 		item.tabIndex = 0
 		let icon = document.createElement('div')
@@ -60,7 +72,7 @@ class ConfigTab {
 		item.appendChild(text)
 		item.setAttribute('title', this.name)
 		// item.textContent = this.name;
-		item.id = this.id
+
 		item.dataset.label = this.name
 		// console.log(item.dataset.label)
 		if (this.shown) {
@@ -68,10 +80,22 @@ class ConfigTab {
 			item.classList.add('selected')
 		}
 		item.addEventListener('click', () => {
-			this.handleTabClick(this.id)
+			this.handleTabClick()
+			if (this.contextMenu) {
+				unmount(this.contextMenu)
+				this.contextMenu = undefined
+			}
 		})
 		item.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
+			if (!this.contextMenu) {
+				let { menu, menuState: contextMenuState } = this.createContextMenu(item, e)
+				this.contextMenu = menu
+				contextMenuState.visible = true
+			} else {
+				menuState.visible = true
+				this.handleTabClick()
+			}
 		})
 		// item.addEventListener("focus", (e) => {
 		// 	this.handleTabClick(this.id);
@@ -90,22 +114,25 @@ class ConfigTab {
 				GLOBAL.setKey('currentView', 'main')
 			}
 		})
-		let contextMenu: any
-		let contextMenuState
+
 		item.addEventListener('contextmenu', (e) => {
 			console.log('Showing config-set context-menu')
 			e.preventDefault()
 			if (e.target != item) return
-			if (!contextMenu) {
-				let { menu: contextMenu, menuState: contextMenuState } = this.createContextMenu(item, e)
+			if (!this.contextMenu) {
+				let { menu, menuState: contextMenuState } = this.createContextMenu(item, e)
+				this.contextMenu = menu
 				contextMenuState.visible = true
 			} else {
-				contextMenuState.visible = true
+				menuState.visible = true
 			}
 		})
 
 		item.addEventListener('click', async (e) => {
-			if (contextMenu) await unmount(contextMenu)
+			if (this.contextMenu) {
+				await unmount(this.contextMenu)
+				this.contextMenu = undefined
+			}
 		})
 
 		if (this.shown) {
@@ -117,42 +144,42 @@ class ConfigTab {
 		this.configview.appendChild(item)
 	}
 
-	makeDocumentFragment(tab) {
-		GLOBAL.editorItemTemporaryContainers[`${tab.id}`] = new DocumentFragment()
+	makeDocumentFragment() {
+		GLOBAL.editorItemTemporaryContainers[`${this.id}`] = new DocumentFragment()
 	}
 
-	handleTabClick(id) {
+	handleTabClick() {
 		document.querySelectorAll('.config-set').forEach((element) => {
-			element.id === id ? element.classList.remove('hidden') : element.classList.add('hidden')
+			element.id === this.id ? element.classList.remove('hidden') : element.classList.add('hidden')
 		})
 		document.querySelectorAll('.sidebar-item').forEach((element) => {
-			element.id === id ? element.classList.add('selected') : element.classList.remove('selected', 'keyboard-selected')
+			element.id === this.id ? element.classList.add('selected') : element.classList.remove('selected', 'keyboard-selected')
 		})
-		const sidebarItem = document.querySelector(`aside#sidebar>ul>#${id}`)
-		const sidebarItemTitle = sidebarItem.dataset.label
+		const sidebarItem = document.querySelector(`aside#sidebar>ul>#${this.id}`)
+		const sidebarItemTitle = this.name
 		const configSetTitle = document.querySelector('#config-set-title')
 		configSetTitle.textContent = sidebarItemTitle
-		if (id === 'settings') {
-			console.log(id)
+		if (this.id === 'settings') {
+			// console.log(id)
 			configSetTitle.classList.add('hidden')
 		} else {
 			configSetTitle.classList.remove('hidden')
 		}
-		GLOBAL['persistence']['last_tab'] = id
+		GLOBAL['persistence']['last_tab'] = this.id
 		GLOBAL.setKey('currentView', 'tabs')
-		GLOBAL.setKey('activeTab', id)
+		GLOBAL.setKey('activeTab', this.id)
 		if (!initialLoad) {
 			saveWindowConfig()
 		}
 	}
 
-	createContextMenu(el: HTMLDivElement, e: MouseEvent) {
+	createContextMenu(el: HTMLDivElement | HTMLElement, e: MouseEvent) {
 		console.log('Opening context menu for the config set')
 		let target = e.target as HTMLElement
 		const rect = el.getBoundingClientRect()
 		menuState.x = e.pageX
 		menuState.y = e.pageY
-		menuState.closestConfigSet = target.closest('.config-set')
+		menuState.closestConfigSet = document.querySelector(`.config-set#${this.id}`)
 		const menu = mount(ContextMenu, {
 			target: document.body as HTMLElement,
 			props: menuState,

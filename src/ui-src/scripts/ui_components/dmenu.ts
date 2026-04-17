@@ -15,9 +15,11 @@ export interface DMenuOptions {
 	items?: DMenuItem[]
 	onSelect?: (item: DMenuItem) => void
 	onCancel?: () => void
+	onFocus?: (item: DMenuItem) => void
 	promptText?: string
 	searchbar?: boolean
 	footer?: string
+	focused?: string | number | Record<string, any> | ((item: DMenuItem) => boolean) | any
 }
 
 /* ============================================================
@@ -30,26 +32,32 @@ class DMenu {
 	filteredItems: DMenuItem[]
 	onSelect: (item: DMenuItem) => void
 	onCancel: () => void
+	onFocus: (item: DMenuItem) => void
 	promptText: string
 	searchbar: boolean
 	footerText: string
-	inputEl?: HTMLInputElement
+	focused?: any
+	inputEl?: HTMLTextAreaElement
 
 	constructor({
 		items = [],
 		onSelect = () => {},
 		onCancel = () => {},
+		onFocus = () => {},
 		promptText = '',
 		searchbar = true,
 		footer = '↑ ↓ Enter',
+		focused = null,
 	}: DMenuOptions = {}) {
 		this.items = items
 		this.filteredItems = items
 		this.onSelect = onSelect
 		this.onCancel = onCancel
+		this.onFocus = onFocus
 		this.promptText = promptText
 		this.searchbar = searchbar
 		this.footerText = footer
+		this.focused = focused
 		this.root = null as any
 	}
 
@@ -60,12 +68,25 @@ class DMenu {
 		this.root.tabIndex = 0
 
 		if (this.searchbar) {
-			this.inputEl = document.createElement('input')
-			this.inputEl.type = 'text'
-			this.inputEl.className = 'dmenu-search'
-			this.inputEl.placeholder = this.promptText
-			this.inputEl.addEventListener('input', () => this._filter(this.inputEl.value))
-			this.root.appendChild(this.inputEl)
+			const searchWrapper = document.createElement('div')
+			searchWrapper.className = 'dmenu-search-wrapper'
+
+			const promptEl = document.createElement('div')
+			promptEl.className = 'dmenu-prompt'
+			promptEl.innerHTML = this.promptText
+
+			this.inputEl = document.createElement('textarea')
+			this.inputEl.className = 'dmenu-search hidden'
+			this.inputEl.placeholder = 'Type to search...'
+
+			this.inputEl.addEventListener('input', () => this._filter(this.inputEl!.value))
+
+			searchWrapper.appendChild(promptEl)
+			searchWrapper.appendChild(this.inputEl)
+			this.root.appendChild(searchWrapper)
+
+			// Show/hide logic is currently handled via user input or searchbar interaction,
+			// let's just make it initially invisible and show when we start typing.
 		}
 
 		this.listEl = document.createElement('ul') as HTMLUListElement
@@ -81,8 +102,10 @@ class DMenu {
 
 		this.root.addEventListener('keydown', (e) => {
 			if (!this.searchbar || !this.inputEl) return
-			if (/^[a-zA-Z_.]$/.test(e.key)) {
+			if (/^[a-zA-Z_. \-0-9]$/.test(e.key)) {
 				e.preventDefault()
+				this.root.querySelector('.dmenu-prompt')?.classList.add('hidden')
+				this.inputEl.classList.remove('hidden')
 				this.inputEl.focus()
 				this.inputEl.value += e.key
 				this._filter(this.inputEl.value)
@@ -92,6 +115,10 @@ class DMenu {
 				this.inputEl.focus()
 				this.inputEl.value = this.inputEl.value.slice(0, -1)
 				this._filter(this.inputEl.value)
+				if (this.inputEl.value.trim() === '') {
+					this.inputEl.classList.add('hidden')
+					this.root.querySelector('.dmenu-prompt')?.classList.remove('hidden')
+				}
 			}
 		})
 
@@ -136,6 +163,7 @@ class DMenu {
 		li.addEventListener('focus', (e) => {
 			li.classList.add('selected')
 			li.querySelector('.dmenu-item-description')?.classList.remove('hidden')
+			this.onFocus(item)
 
 			// Wait for the next frame so the height update is "locked in"
 			requestAnimationFrame(() => {
@@ -171,6 +199,23 @@ class DMenu {
 	}
 
 	focusFirst() {
+		if (this.focused != null) {
+			let index = -1
+			if (typeof this.focused === 'function') {
+				index = this.filteredItems.findIndex(this.focused)
+			} else if (typeof this.focused === 'object') {
+				index = this.filteredItems.findIndex((i) => Object.entries(this.focused).every(([k, v]) => (i as any)[k] === v))
+			} else {
+				index = this.filteredItems.findIndex(
+					(i) => i.value === this.focused || i.label === this.focused || i.name === this.focused,
+				)
+			}
+
+			if (index !== -1 && this.listEl?.children[index]) {
+				;(this.listEl.children[index] as HTMLElement).focus()
+				return
+			}
+		}
 		this.listEl?.firstElementChild?.focus()
 	}
 
@@ -202,14 +247,18 @@ function runMenu(menu: DMenu, resolve: (val: any) => void, reject: (reason?: any
 		}
 	}
 
+	const originalOnSelect = menu.onSelect
 	menu.onSelect = (item: DMenuItem) => {
 		cleanup()
+		originalOnSelect?.(item)
 		// If it's the old selectFrom style, return the whole option object
 		resolve(item.originalReference ?? item.value)
 	}
 
+	const originalOnCancel = menu.onCancel
 	menu.onCancel = () => {
 		cleanup()
+		originalOnCancel?.()
 		isSelectFrom && reject ? reject('selectioncancelled') : resolve(null)
 	}
 
@@ -227,13 +276,13 @@ function runMenu(menu: DMenu, resolve: (val: any) => void, reject: (reason?: any
 /* ============================================================
  * Exports
  * ============================================================ */
-export function selectFrom(options: DMenuItem[], addCustom = true): Promise<any> {
+export function selectFrom(options: DMenuItem[], addCustom = true, onFocus?: (item: any) => void, focused: any = null): Promise<any> {
 	return new Promise((resolve, reject) => {
 		const items: DMenuItem[] = options.map((o) => ({
 			label: o.name,
 			value: o.value,
 			description: o.description,
-			originalReference: o, // Keep the whole object to return it
+			originalReference: o,
 		}))
 		if (addCustom) {
 			items.push({
@@ -242,7 +291,17 @@ export function selectFrom(options: DMenuItem[], addCustom = true): Promise<any>
 				description: 'Enter a custom value',
 			})
 		}
-		runMenu(new DMenu({ items, promptText: 'Type to search' }), resolve, reject, true)
+		runMenu(
+			new DMenu({
+				items,
+				promptText: 'Type to search',
+				onFocus: (item) => onFocus?.(item.originalReference ?? item.value),
+				focused,
+			}),
+			resolve,
+			reject,
+			true,
+		)
 	})
 }
 
@@ -269,6 +328,8 @@ export interface DMenuWrapperOptions {
 	footerText?: string
 	addCustom?: boolean
 	cancelValue?: any
+	onFocus?: (item: DMenuItem) => void
+	focused?: string | number | Record<string, any> | ((item: DMenuItem) => boolean) | any
 }
 
 export function dmenuWrapper({
@@ -278,6 +339,8 @@ export function dmenuWrapper({
 	footerText = '↑ ↓ Enter Esc cancel',
 	addCustom = false,
 	cancelValue = null,
+	onFocus = () => {},
+	focused = null,
 }: DMenuWrapperOptions = {}): Promise<any> {
 	return new Promise((resolve) => {
 		const menuItems: DMenuItem[] = items.map((o) => ({
@@ -297,6 +360,8 @@ export function dmenuWrapper({
 				promptText,
 				footer: footerText,
 				items: menuItems,
+				onFocus,
+				focused,
 			}),
 			resolve,
 			() => {},

@@ -1,5 +1,5 @@
 import { GLOBAL } from '../GLOBAL.ts'
-import { changeTheme, incrementCurrentTheme } from '../utils/setupTheme.js'
+import { changeTheme, incrementCurrentTheme, openThemeSelector } from '../utils/setupTheme.js'
 import { makeUUID, saveChanged, saveWindowConfig } from '../utils/utils.ts'
 import { Backend } from '@scripts/utils/backendAPI.ts'
 
@@ -243,7 +243,6 @@ function createAutoSaveSetting() {
 		let saveChangedButton = document.getElementById('save-changed')
 		saveChangedButton.removeEventListener('click', saveChanged)
 		saveChangedButton.classList.add('btn-hidden')
-		// document.getElementById('global-save-button')?.classList.add('settings-hidden')
 	}
 	function onUncheck() {
 		document.getElementById('global-save-button')?.classList.remove('settings-hidden')
@@ -329,38 +328,26 @@ function createThemeSelectorSetting() {
 	// settingContainer.appendChild(this.checkbox)
 	settingContainer.appendChild(label)
 
-	let selectEl = document.createElement('select')
-	GLOBAL.themes.forEach((theme) => {
-		let optionEl = document.createElement('option')
-		optionEl.value = theme.name
-		let optionName = String(theme.name)
-		optionEl.textContent = optionName.includes('[builtin]') ? theme.name.replace('[builtin]', ' ') : ` ${theme.name}`
-		selectEl.appendChild(optionEl)
-	})
+	let triggerEl = document.createElement('div')
+	triggerEl.classList.add('theme-display')
+	triggerEl.style.cursor = 'pointer'
+	triggerEl.style.color = 'var(--accent)'
+	triggerEl.style.fontWeight = 'bold'
+
 	let currentTheme = GLOBAL['config']['current_theme']
-	settingContainer.appendChild(selectEl)
+	triggerEl.textContent = currentTheme
+
+	settingContainer.appendChild(triggerEl)
 	// this.addListeners()
 	settingsEl.appendChild(settingContainer)
-	selectEl.value = currentTheme
-	selectEl.addEventListener('change', (e) => {
-		let selectedThemeName = e.target.value
-		let selectedTheme = GLOBAL.themes.find((t) => t.name === selectedThemeName)
-		console.log(`Changing theme to ${selectedThemeName} from settings`)
-		if (selectedTheme) {
-			console.log(`Changing theme to ${selectedTheme.name} from settings`)
-			changeTheme(selectedTheme)
-		}
-	})
 
 	settingContainer.addEventListener('keydown', (e) => {
 		if (e.key === 'Enter') {
-			incrementCurrentTheme()
+			openThemeSelector()
 		}
 	})
 	settingContainer.addEventListener('click', (e) => {
-		if (e.target !== selectEl) {
-			incrementCurrentTheme()
-		}
+		openThemeSelector()
 	})
 }
 

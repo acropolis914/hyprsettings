@@ -504,7 +504,7 @@ export class EditorItem_Generic {
 				this.el.classList.toggle('compact')
 				this.createContextMenu()
 			}
-			if (e.key === 'Delete') {
+			if (e.key === 'Delete' || e.key === 'x') {
 				e.preventDefault()
 				e.stopPropagation()
 				this.delete()
@@ -708,7 +708,7 @@ export class EditorItem_Generic {
 
 	async delete() {
 		let nextSibling = this.el.nextElementSibling || this.el.previousElementSibling
-		let confirm = await dmenuConfirm()
+		let confirm = await dmenuConfirm(`Are you sure you want to delete node <span class="strong">${this.el.dataset.name}</span>?`)
 		if (confirm) {
 			deleteKey(this.el.dataset.uuid, this.el.dataset.position)
 			nextSibling.focus()

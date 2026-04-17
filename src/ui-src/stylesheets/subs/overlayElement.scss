@@ -49,8 +49,50 @@
 		min-width: 80%;
 	}
 
+	.dmenu-search-wrapper {
+		display: flex;
+		flex-direction: column;
+		//align-items: center;
+		//justify-content: center;
+		margin-bottom: 10px;
+		min-height: 1.8rem;
+	}
 
+	.dmenu-prompt {
+		font-size: 1.6rem;
+		//text-align: center;
+		color: var(--text-0);
+		line-height: 1.8rem;
+		.strong {
+			color: var(--accent);
+		}
+		&.hidden {
+			display: none;
+		}
+	}
 
+	textarea.dmenu-search {
+		@include editor-input-reset;
+		resize: none;
+		// margin-bottom: 10px;
+		font-size: 1.6rem;
+		height: 1.8rem;
+		line-height: 1.8rem;
+		overflow: hidden;
+		max-height: 1.8rem;
+		background-color: transparent;
+		align-items: center;
+		text-align: center;
+		&.hidden {
+			display: none;
+		}
+		&:placeholder-shown {
+			font-size: 1rem;
+			//max-height: 10rem;
+			height: auto;
+			overflow: visible;
+		}
+	}
 
 	.dmenu-footer {
 		align-items: flex-end;
@@ -65,7 +107,6 @@
 		color: var(--accent);
 		@media (max-width: 768px) {
 			font-size: 1.6rem;
-
 		}
 	}
 
@@ -97,13 +138,14 @@
 			padding-left: var(--spacing-unit);
 			max-width: 100% !important;
 			scroll-margin-block: 40px;
-			transition: all 0.2s ease-out; // Smooth height change
+			transition:
+				all 0.2s ease-out,
+				height 10s; // Smooth height change
 			//overflow-x: h;
 			@media (max-width: 768px) {
 				@media (pointer: coarse) {
 					padding-block: 1rem;
 				}
-
 			}
 
 			&.mousehover:not(.selected) {
@@ -113,12 +155,10 @@
 			}
 
 			&:is(:focus, .selected) {
-
 				outline: none;
 				background-color: var(--accent);
 				color: var(--text-contrast);
-				border
-
+				padding-block: 5px;
 				&::after {
 					position: absolute;
 					top: 50%;
@@ -235,8 +275,9 @@
 			margin-bottom: 0;
 			font-size: 1.5rem;
 			line-height: 1.85rem;
-			text-shadow: 0 5px 20px 10px rgba(0, 0, 0, 1),
-			0 1px 5px rgba(0, 0, 0, 1);
+			text-shadow:
+				0 5px 20px 10px rgba(0, 0, 0, 1),
+				0 1px 5px rgba(0, 0, 0, 1);
 		}
 
 		h1,
@@ -307,7 +348,7 @@
 	color: var(--text-1);
 	@include box-shadow;
 	//height: 100vh;
-	.testing-screen-header{
+	.testing-screen-header {
 		display: flex;
 		font-weight: bold;
 		font-size: 1.2rem;
@@ -340,7 +381,7 @@
 		min-height: 90%;
 		//height: clamp(10rem, 95%, 95%);
 		overflow: hidden;
-		gap:0;
+		gap: 0;
 
 		#config-preview-tabs {
 			//flex: 1;
@@ -406,7 +447,7 @@
 			//max-height: 100%;
 			height: 100%;
 			overflow: scroll;
-			margin-top:0;
+			margin-top: 0;
 
 			* {
 				background-color: transparent !important;

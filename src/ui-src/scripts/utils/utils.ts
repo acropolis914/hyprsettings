@@ -110,7 +110,6 @@ export function queueManualSave(file: string | undefined) {
 	saveChangedButton.classList.remove('btn-hidden')
 
 	if (!file) return
-
 	let changedFiles = Array.isArray(GLOBAL.changedFiles) ? GLOBAL.changedFiles : []
 	if (!changedFiles.includes(file)) {
 		GLOBAL.setKey('changedFiles', [...changedFiles, file])

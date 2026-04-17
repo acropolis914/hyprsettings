@@ -1,5 +1,6 @@
 import { saveWindowConfig } from './utils.ts'
 import { GLOBAL } from '../GLOBAL.ts'
+import { selectFrom } from '../ui_components/dmenu.ts'
 
 GLOBAL['currentThemeIndex'] = 0
 let themeButton = document.getElementById('theme-toggle')
@@ -25,10 +26,50 @@ export default async function setupTheme() {
 	updateColoris()
 }
 
+export async function openThemeSelector() {
+	const currentTheme = GLOBAL.config.current_theme
+	const options = GLOBAL.themes.map((theme) => {
+		const optionName = String(theme.name)
+		const label = optionName.includes('[builtin]') ? theme.name.replace('[builtin]', ' ') : ` ${theme.name}`
+		return {
+			name: label,
+			value: theme.name,
+			description: `<strong>${theme.variant}</strong><br>${theme.description}<br>${theme.author}` || '',
+		}
+	})
+
+	try {
+		const selected = await selectFrom(
+			options,
+			false,
+			(item) => {
+				const themeToPreview = GLOBAL.themes.find((t) => t.name === item.value)
+				if (themeToPreview) applyThemeVarsTemporary(themeToPreview)
+			},
+			currentTheme, // focused value
+		)
+
+		if (selected) {
+			removeThemeVarsTemporary()
+			const selectedThemeName = selected.value
+			const selectedTheme = GLOBAL.themes.find((t) => t.name === selectedThemeName)
+			if (selectedTheme) {
+				GLOBAL.setKey('currentThemeIndex', GLOBAL.themes.indexOf(selectedTheme))
+				changeTheme(selectedTheme)
+			}
+		}
+	} catch (e) {
+		if (e === 'selectioncancelled') {
+			removeThemeVarsTemporary()
+		}
+	}
+}
+
 themeButton.addEventListener('click', (e) => {
 	e.stopPropagation()
 
 	incrementCurrentTheme(!e.shiftKey)
+	// openThemeSelector()
 })
 
 export function incrementCurrentTheme(forward = true) {
@@ -69,6 +110,48 @@ function applyThemeVars(theme) {
 	root.classList.remove('light')
 	root.classList.add(theme.variant.toLowerCase())
 }
+
+function applyThemeVarsTemporary(theme) {
+	let styleEl = document.getElementById('theme-overrides-temp')
+	if (!styleEl) {
+		styleEl = document.createElement('style')
+		styleEl.id = 'theme-overrides-temp'
+		document.head.appendChild(styleEl)
+	}
+
+	let cssText = ':root {\n'
+	Object.entries(theme).forEach(([key, value]) => {
+		if (headers.includes(key)) {
+			return
+		}
+		cssText += `\t--${key}: ${value} !important;\n`
+	})
+	cssText += '}'
+	styleEl.textContent = cssText
+
+	root.classList.remove('dark')
+	root.classList.remove('light')
+	root.classList.add(theme.variant.toLowerCase())
+
+	updateColoris()
+}
+
+function removeThemeVarsTemporary() {
+	let styleEl = document.getElementById('theme-overrides-temp')
+	if (styleEl) {
+		styleEl.remove()
+	}
+
+	const currentTheme = GLOBAL.themes.find((t) => t.name === GLOBAL['config']['current_theme'])
+	if (currentTheme) {
+		root.classList.remove('dark')
+		root.classList.remove('light')
+		root.classList.add(currentTheme.variant.toLowerCase())
+	}
+
+	updateColoris()
+}
+
 //
 // export function changeTheme(theme) {
 // 	document.body.querySelectorAll('*').forEach((e) => {
@@ -96,8 +179,8 @@ export function changeTheme(theme) {
 		document.body.querySelectorAll('*').forEach((e) => {
 			e.classList.add('themeAnimation')
 		})
-		const settingsSelect = document.querySelector('#theme-selector-setting select')
-		if (settingsSelect) settingsSelect.value = theme.name
+		const settingsDisplay = document.querySelector('#theme-selector-setting .theme-display')
+		if (settingsDisplay) settingsDisplay.textContent = theme.name
 
 		applyThemeVars(theme)
 		saveWindowConfig()
@@ -113,8 +196,8 @@ export function changeTheme(theme) {
 	}
 
 	// 2. Snapshot: Clone the body (Animation path)
-	const settingsSelect = document.querySelector('#theme-selector-setting select')
-	if (settingsSelect) settingsSelect.value = theme.name
+	const settingsDisplay = document.querySelector('#theme-selector-setting .theme-display')
+	if (settingsDisplay) settingsDisplay.textContent = theme.name
 
 	const clone = document.body.cloneNode(true)
 
