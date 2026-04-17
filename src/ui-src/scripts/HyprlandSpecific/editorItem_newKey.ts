@@ -11,7 +11,7 @@ import { Backend } from '@scripts/utils/backendAPI.js'
 import { makeUUID, queueManualSave } from '@scripts/utils/utils.ts'
 import { _configRenderer } from '@scripts/ConfigRenderer/_configRenderer.ts'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
-import type { ItemPropsGroup, ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
+import type { ItemProps, ItemPropsGroup, ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
 
 export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
 	const allowed_dupes = ['animation', 'bezier', 'gesture']
@@ -161,21 +161,41 @@ export async function addKeys(
 		.filter((i) => !i.endsWith('.conf'))
 		.join(':')
 
-	const allowed_dupes = ['animation', 'bezier', 'gesture', 'windowrule', 'bind']
+	const allowed_dupes = [
+		'animation',
+		'bezier',
+		'gesture',
+		'windowrule',
+		'bind',
+		'workspace',
+		'monitor',
+		'source',
+		'permission',
+		'device',
+	]
 	const existingSiblingKeys = Array.from(parentElement?.querySelectorAll('.editor-item-generic'))
 		.map((el: HTMLDivElement) => el.dataset.name)
 		.filter((i) => !allowed_dupes.includes(i))
 	//
 	let availableKeys = findAllAdjacentKeys(pathString, existingSiblingKeys) // This creates a NEW array and NEW objects
 	const updatedKeys = availableKeys.map((item) => {
-		const key = { ...item } as ItemPropsKey
+		const key = { ...item } as ConfigDescription
 		if (key.path.startsWith(`${pathString}:`)) {
 			key.path = key.path.replace(`${pathString}:`, '')
 		} else if (key.path.startsWith(pathString)) {
 			key.path = key.path.replace(pathString, '')
 		}
-
-		key.description = `${key.description} \n <strong>${key.path}</strong>`
+		let keyPath = () => {
+			if (key.path) {
+				return `<b>Path:</b> ${key.path}`
+			} else {
+				return '<b>Top level keyword</b>'
+			}
+		}
+		let keyType = () => {
+			return `<b>Type:</b> ${key.type.replace('CONFIG_OPTION_', '').toLowerCase()}`
+		}
+		key.description = `${key.description}<br><small>${keyPath()} | ${keyType()}</small>`
 		return key
 	})
 
@@ -221,9 +241,9 @@ export async function addKeys(
 			depth -= 1
 		}
 	} else {
-		console.log('A group')
+		// console.log('A group')
 		configString += `${keyToAdd['name']}{\n`
-		console.log(keyToAdd['name'])
+		// console.log(keyToAdd['name'])
 		if (keyToAdd['name'] === 'windowrule') {
 			configString += `name = windowrule-${makeUUID()}\n`
 		}

@@ -99,9 +99,7 @@ export class ConfigGroup {
 		addBtn.title = 'Add Key'
 		addBtn.style.cursor = 'pointer'
 		addBtn.addEventListener('click', async (e) => {
-			e.stopPropagation()
-			let pathString = this.group_el.dataset.position + ':' + this.group_el.dataset.name
-			await addKeys(pathString, this.childrenContainer, this.json, this.group_el.dataset.disabled === 'true')
+			await this.addKey(e)
 		})
 
 		const duplicateBtn = document.createElement('button')
@@ -134,6 +132,12 @@ export class ConfigGroup {
 		this.group_el.appendChild(this.topbar_el)
 	}
 
+	private async addKey(e: PointerEvent = null) {
+		e?.stopPropagation()
+		let pathString = this.group_el.dataset.position + ':' + this.group_el.dataset.name
+		await addKeys(pathString, this.childrenContainer, this.json, this.group_el.dataset.disabled === 'true')
+	}
+
 	getElementRects(): number[] {
 		this.group_el.offsetHeight
 		const box = this.group_el.getBoundingClientRect()
@@ -149,11 +153,11 @@ export class ConfigGroup {
 		}
 
 		this.contextMenu = new ContextMenu([
-			// {
-			// 	label: 'Add key',
-			// 	icon: '',
-			// 	action: () => this.newKey(),
-			// },
+			{
+				label: 'Add key',
+				icon: '',
+				action: () => this.addKey(),
+			},
 			{
 				label: 'Duplicate Group',
 				icon: '󰅀',
@@ -226,31 +230,6 @@ export class ConfigGroup {
 				this.group_el.title = this.title
 			}
 		})
-	}
-	async newKey() {
-		let [itemToAdd, parent_node] = await addChildItem(this.group_el.dataset.position, this.group_el.dataset.uuid)
-
-		let itemProps: ItemPropsKey = {
-			name: itemToAdd.name,
-			uuid: itemToAdd.uuid,
-			value: itemToAdd['data'],
-			comment: '',
-			type: 'KEY',
-			position: `${this.group_el.dataset.position}:${this.group_el.dataset.name}`,
-		}
-		console.log(itemProps)
-		let newEditorItem = new EditorItem_Generic({ ...itemProps })
-		let below = false
-		this.group_el.prepend(newEditorItem.el)
-		await addItem(
-			itemProps.type,
-			itemProps.name,
-			itemProps.value,
-			itemProps.comment,
-			itemProps.position,
-			null, // used as relative_uuid
-			false, // below
-		)
 	}
 
 	disable(disable: boolean | null = null) {

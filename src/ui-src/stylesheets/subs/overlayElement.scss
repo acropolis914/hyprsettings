@@ -195,9 +195,15 @@
 				word-wrap: break-word;
 				overflow-wrap: break-word;
 				opacity: 0.9;
-				line-height: 1rem;
+				line-height: 1.2rem;
+				margin-top: 5px;
+				small {
+					margin-block: 2px;
+				}
+				strong {
+					display: inline-block;
+				}
 
-				// 3. Safety
 				overflow: hidden;
 
 				&.hidden {
