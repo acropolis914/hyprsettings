@@ -290,20 +290,14 @@ export class EditorItem_Generic {
 			if (this.info) {
 				ta.dataset.defaultData = this.info.data.trim('"')
 			}
-
 			const { wrapper: checkboxWrapper, checkbox: checkbox2 } = createSwitchBox(this.parseBool(this.el.dataset.value))
 			checkboxWrapper.classList.add('preview-boolean-switch') // needed for layout
-
-			// Event Listeners
 			checkboxWrapper.addEventListener('click', (e) => {
 				// e.stopPropagation()
 			})
-
 			checkbox2.addEventListener('change', (e) => {
 				if (this.initial_load) return
-
 				const val = this.el.dataset.value?.trim()
-
 				if (val === '0' || val === '1') {
 					// Determine the new value (toggle it)
 					const newValue = val === '1' ? '0' : '1'
@@ -318,12 +312,16 @@ export class EditorItem_Generic {
 				}
 				this.update()
 			})
-
-			// DOM Assembly
 			this.el.querySelector('.preview-wrapper').appendChild(checkboxWrapper)
-
-			// console.log(ta.value, this.el.dataset.name)
-
+			return ta
+		} else if (this.info?.type === 'CONFIG_OPTION_VECTOR') {
+			const ta = document.createElement('textarea')
+			ta.rows = 1
+			let [def, min, max] = this.parseVector(this.info?.data)
+			if (this.info) ta.dataset.defaultData = def[0] + ' ' + def[1]
+			let parsed = this.parseVector(value) as any[]
+			ta.value = parsed[0][0] + ' ' + parsed[0][1]
+			ta.id = 'generic-value'
 			return ta
 		} else {
 			const ta = document.createElement('textarea')
@@ -427,10 +425,7 @@ export class EditorItem_Generic {
 		}
 		let formatted = name.replace(/_/g, ' ') || 'Please input a key'
 		const lower = formatted.trim().toLowerCase()
-
-		// Find if the string starts with any of our keys
 		const match = Object.keys(wikiMap).find((key) => lower.startsWith(key))
-
 		if (match) {
 			const path = wikiMap[match]
 			formatted = `<a onclick='window.gotoWiki("wiki:configuring:${path}")' title="Go to ${match} wiki">${formatted}</a>`
@@ -616,14 +611,37 @@ export class EditorItem_Generic {
 	async valueReset() {
 		let confirm = await dmenuConfirm()
 		if (confirm) {
-			if (this.info.type == 'CONFIG_OPTION_INT' || (this.info.data.includes(',') && this.info.data.split(',').length === 3)) {
+			if (
+				this.info.type == 'CONFIG_OPTION_INT' ||
+				this.info.type === 'integer' ||
+				(this.info.data.includes(',') && this.info.data.split(',').length === 3)
+			) {
 				this.valueEditor.value = this.info['data'].split(',')[0].replace(/^\s*"(.*)"\s*$/, '$1')
+			} else if (this.info?.type == 'CONFIG_OPTION_VECTOR') {
+				let [def, min, max] = this.parseVector(this.info.data)
+				this.valueEditor.value = def[0] + ' ' + def[1]
 			} else {
 				this.valueEditor.value = this.info['data'].replace(/^\s*"(.*)"\s*$/, '$1')
 			}
 			this.el.dataset.value = this.valueEditor.value
 			this.update()
 		}
+	}
+
+	parseVector(vectorData: String) {
+		if (!vectorData.trim().startsWith('{')) {
+			// console.log('Parsing vector failed:', vectorData)
+			return vectorData
+		}
+		let newVectorData = `[${vectorData}]`.replaceAll('{', '[').replaceAll('}', ']')
+		let json = JSON.parse(newVectorData)
+		let def = json[0]
+		let min = json[1]
+		let max = json[2]
+		// let def = json[0][0] + ' ' + json[0][1]
+		// let min = json[1][0] + ' ' + json[1][1]
+		// let max = json[2][0] + ' ' + json[2][1]
+		return [def, min, max]
 	}
 
 	flipValueIfBool(save = true) {

@@ -4,10 +4,10 @@ import { debounce, waitFor } from './helpers.js'
 
 async function fetchFlask(path: string, options = {}) {
 	const url = '/api/' + path
-	console.debug(`[Backend API] Fetching: ${url}`, options)
+	// console.debug(`[Backend API] Fetching: ${url}`, options)
 	const resp = await fetch(url, options)
 	const data = await resp.json()
-	console.debug(`[Backend API] Response from ${url}:`, data)
+	// console.debug(`[Backend API] Response from ${url}:`, data)
 	return data
 }
 
@@ -123,9 +123,9 @@ export const Backend = {
 		return data.uuid
 	},
 
-	saveWindowConfig(json: any, label = 'config') {
-		console.debug(`[Backend API] saveWindowConfig called for label: ${label}`)
-		fetchFlask(`save_window_config?label=${label}`, {
+	async saveWindowConfig(json: any, label = 'config') {
+		// console.debug(`[Backend API] saveWindowConfig called for label: ${label}`)
+		await fetchFlask(`save_window_config?label=${label}`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(json),

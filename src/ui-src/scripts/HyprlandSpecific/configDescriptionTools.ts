@@ -17,6 +17,16 @@ const deviceParams: ConfigDescription[] = configDescriptions
 	})
 let config_descriptions: ConfigDescription[] = [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
 
+// const types = {}
+// for (const configDescription of configDescriptions) {
+// 	if (typeof types[configDescription.type] !== 'undefined') {
+// 		types[configDescription.type].push(configDescription.data)
+// 	} else {
+// 		types[configDescription.type] = []
+// 		types[configDescription.type].push(configDescription.data)
+// 	}
+// }
+// console.warn(JSON.stringify(types, null, 2))
 export function findConfigDescription(path: string, name: string, exclude_types: string[]) {
 	return config_descriptions.find((item) => item.path === path && item.name === name && !exclude_types.includes(item.type))
 }
