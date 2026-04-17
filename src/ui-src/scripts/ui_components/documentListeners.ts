@@ -40,10 +40,12 @@ function handleKeyInput(event) {
 			break
 		case 'wikiContent':
 			console.log('Here at wikiContent')
+
 			// attemptSwitchToWikiNavigation()
 			break
-		case 'wiki':
-			returnToTabs()
+		case 'wikiNavigation':
+
+			handleWikiNavigation(event)
 			break
 
 		case 'editorItem':
@@ -96,6 +98,16 @@ function handleMainView(event) {
 	}
 }
 
+function handleWikiNavigation(event) {
+	let key = event.key
+	if (key === 'ArrowUp' || key === 'ArrowDown') {
+		event.preventDefault()
+		navigateEditorItems(key === 'ArrowDown' ? 1 : -1)
+	}
+	if (key === "ArrowLeft") {
+		returnToTabs()
+	}
+}
 /* -------------------------------------------------------------------------- */
 /* GLOBAL HANDLERS                               */
 /* -------------------------------------------------------------------------- */
@@ -218,7 +230,7 @@ function navigateSidebar(direction: number) {
 	GLOBAL['activeTab'] = newSelected.id
 }
 
-function navigateEditorItems(direction) {
+function navigateEditorItems(direction: number) {
 	const currentSet = document.querySelector(`.config-set#${GLOBAL['activeTab']}`)
 	if (!currentSet) return
 

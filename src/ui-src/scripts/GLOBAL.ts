@@ -1,6 +1,6 @@
 import type { ItemPropsFile } from '@scripts/types/editorItemTypes.ts'
 
-type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem' | 'wiki' | 'wikiContent'
+type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem' | 'wikiNavigation' | 'wikiContent'
 // type ConfigGlobal = {
 // 	file: string
 // 	name: string
@@ -62,7 +62,7 @@ export class GLOBAL {
 
 	static setKey<K extends keyof typeof GLOBAL>(key: string, value: string | number | boolean | any[]) {
 		// console.trace(`setkey was called for: ${key}`)
-		if (!value) {
+		if (value === undefined || value === null) {
 			console.trace('GLOBAL setKey()', key, value)
 			return
 		}

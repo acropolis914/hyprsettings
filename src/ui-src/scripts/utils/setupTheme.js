@@ -11,15 +11,15 @@ export default async function setupTheme() {
 	document.documentElement.style.opacity = GLOBAL['config']['transparency'] || '1' // fade in root to prevent FOUC
 	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])
 
-	const index = window.themes.findIndex((t) => t.name === currentTheme)
+	const index = GLOBAL.themes.findIndex((t) => t.name === currentTheme)
 	if (index !== -1) {
-		const theme = window.themes[index]
+		const theme = GLOBAL.themes[index]
 		GLOBAL.currentThemeIndex = index
 		console.log(`Initially setting ${theme.name} as theme from config`)
 		applyThemeVars(theme)
 	} else {
 		console.log(`No theme found matching ${currentTheme}, defaulting to first theme`)
-		applyThemeVars(window.themes[0])
+		applyThemeVars(GLOBAL.themes[0])
 		GLOBAL.currentThemeIndex = 0
 	}
 	updateColoris()
@@ -27,26 +27,42 @@ export default async function setupTheme() {
 
 themeButton.addEventListener('click', (e) => {
 	e.stopPropagation()
-	incrementCurrentTheme()
+
+	incrementCurrentTheme(!e.shiftKey)
 })
 
-export function incrementCurrentTheme() {
-	GLOBAL.setKey('currentThemeIndex', (GLOBAL.currentThemeIndex + 1) % window.themes.length)
+export function incrementCurrentTheme(forward = true) {
+	const length = GLOBAL.themes.length
+	const step = forward ? 1 : -1
+	const nextIndex = (GLOBAL.currentThemeIndex + step + length) % length
+	GLOBAL.setKey('currentThemeIndex', nextIndex)
 	let theme = GLOBAL.themes[GLOBAL['currentThemeIndex']]
+	console.log(GLOBAL['currentThemeIndex'])
 	changeTheme(theme)
 }
 
 function applyThemeVars(theme) {
 	// document.documentElement.removeAttribute('style')
 	// document.documentElement.setAttribute('style', '')
+	let styleEl = document.getElementById('theme-overrides')
+	if (!styleEl) {
+		styleEl = document.createElement('style')
+		styleEl.id = 'theme-overrides'
+		document.head.appendChild(styleEl)
+	}
+
+	let cssText = ':root {\n'
 	Object.entries(theme).forEach(([key, value]) => {
 		if (headers.includes(key)) {
 			return
 		}
-		root.style.setProperty(`--${key}`, value, 'important')
+		cssText += `\t--${key}: ${value} !important;\n`
 	})
+	cssText += '}'
+	styleEl.textContent = cssText
+
 	GLOBAL['config']['current_theme'] = theme.name
-	window.themeVariant = theme.variant.toLowerCase()
+	// window.themeVariant = theme.variant.toLowerCase()
 	GLOBAL.setKey(`themeVariant`, theme.variant)
 
 	root.classList.remove('dark')
@@ -194,7 +210,7 @@ function updateColoris() {
 
 export function getSwatch() {
 	const themeName = GLOBAL.config.current_theme
-	const currentTheme = window.themes.find((t) => t.name === themeName)
+	const currentTheme = GLOBAL.themes.find((t) => t.name === themeName)
 	if (!currentTheme) return []
 
 	const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/

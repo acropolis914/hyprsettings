@@ -13,12 +13,17 @@ import '@stylesheets/subs/prism.css'
 import '@stylesheets/subs/tippy.scss'
 import tippy, { followCursor } from 'tippy.js'
 import { attemptSwitchToMain } from '@scripts/ui_components/documentListeners.ts'
+import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
 
 export default async function createWiki() {
 	console.log('Creating Wiki...')
 	GLOBAL.onChange('wikiTree', createWikiNavigation)
 	await Backend.getHyprlandWikiNavigation()
 }
+
+GLOBAL.onChange('currentView', (value) => {
+	console.log('currentView: ', value)
+})
 
 async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTMLDivElement) {
 	let objectTree = []
@@ -127,7 +132,7 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 					return
 				}
 				// let target = e.target
-				GLOBAL.setKey('currentView', 'main')
+				GLOBAL.setKey('currentView', 'wikiNavigation')
 				// @ts-ignore
 				GLOBAL['mainFocus'][GLOBAL['activeTab']] = el.dataset.uuid
 				if (el.innerText.startsWith('Welcome')) {
@@ -140,7 +145,7 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 				if (isMobile) {
 					navigationEl.classList.add('hidden-wikinav')
 				}
-				console.log({ isMobile, navi: navigationEl.style.display })
+				// console.log({ isMobile, navi: navigationEl.style.display })
 			})
 			el.addEventListener('focus', (e) => {
 				if (e.target != el) {
@@ -149,11 +154,12 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 				let wikiContentUUID = el.dataset.wikiEntry //TODO
 				let wikiContent = GLOBAL['wikiEntry'][wikiContentUUID]
 				setViewElValue(wikiContent, el.dataset.position)
+				navigationEl.classList.remove('hidden-wikinav')
 			})
 			el.addEventListener('keydown', (e) => {
 				if (e.key === 'ArrowRight') {
 					viewEl_content.focus()
-					GLOBAL.setKey('previousView', 'wiki')
+					GLOBAL.setKey('previousView', 'wikiNavigation')
 					GLOBAL.setKey('currentView', 'wikiContent')
 				}
 			})
@@ -186,6 +192,7 @@ async function createWikiNavigation() {
 	}
 
 	GLOBAL.onChange('activeTab', (value) => {
+		console.log({ activetab: value })
 		if (GLOBAL.activeTab !== 'wiki') {
 			navigationElToggle.classList.add('hidden')
 		}
@@ -201,6 +208,7 @@ async function createWikiNavigation() {
 	navigationElToggle.addEventListener('click', (e) => {
 		navigationEl.classList.toggle('hidden-wikinav')
 	})
+	implementScrollHints(navigationEl)
 
 	let configSetInfoEl = document.getElementById('config-set-info')
 	configSetInfoEl.appendChild(navigationElToggle)
@@ -218,6 +226,7 @@ async function createWikiNavigation() {
 	viewEl_content.setAttribute('id', 'wikiView_content')
 	viewEl_content.tabIndex = 0
 	viewEl.appendChild(viewEl_content)
+	implementScrollHints(viewEl_content)
 
 	viewEl_content.addEventListener('keydown', (e) => {
 		if (e.key === 'ArrowDown') {
@@ -235,11 +244,15 @@ async function createWikiNavigation() {
 			toFocus.focus()
 			// GLOBAL.setKey('currentView', 'wiki')
 			setTimeout(() => {
-				GLOBAL.currentView = 'wiki'
+				GLOBAL.currentView = 'wikiNavigation'
 			}, 10)
 
 			// attemptSwitchToMain()
 		}
+	})
+
+	viewEl_content.addEventListener('click', (e) => {
+		GLOBAL.setKey('currentView', 'wikiContent')
 	})
 
 	wikiRoot_el.appendChild(navigationEl)

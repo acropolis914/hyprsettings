@@ -330,7 +330,7 @@ function createThemeSelectorSetting() {
 	settingContainer.appendChild(label)
 
 	let selectEl = document.createElement('select')
-	window.themes.forEach((theme) => {
+	GLOBAL.themes.forEach((theme) => {
 		let optionEl = document.createElement('option')
 		optionEl.value = theme.name
 		let optionName = String(theme.name)
@@ -344,7 +344,7 @@ function createThemeSelectorSetting() {
 	selectEl.value = currentTheme
 	selectEl.addEventListener('change', (e) => {
 		let selectedThemeName = e.target.value
-		let selectedTheme = window.themes.find((t) => t.name === selectedThemeName)
+		let selectedTheme = GLOBAL.themes.find((t) => t.name === selectedThemeName)
 		console.log(`Changing theme to ${selectedThemeName} from settings`)
 		if (selectedTheme) {
 			console.log(`Changing theme to ${selectedTheme.name} from settings`)

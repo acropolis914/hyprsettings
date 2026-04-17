@@ -129,6 +129,9 @@ export class _configRenderer {
 		}
 
 		document.querySelectorAll('.config-set').forEach((el) => {
+			if (el.id === 'wiki') {
+				return
+			}
 			el.addEventListener('click', (e) => {
 				// let target = e.target
 				GLOBAL.setKey('currentView', 'main')

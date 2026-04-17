@@ -49,7 +49,7 @@ async function load_config() {
 		return console.error('Configuration error:', windowConfig['configuration-error'])
 	}
 	const themes = [...windowConfig.theme, ...builtin_themes.map((t) => ({ ...t, name: `[builtin] ${t.name}` }))]
-	window.themes = themes
+	// window.themes = themes
 	GLOBAL.setKey('themes', themes)
 
 	// Clean object assignment

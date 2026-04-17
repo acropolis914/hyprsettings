@@ -202,7 +202,25 @@
 		padding-top: 0;
 		//max-width: 80%;
 		width: clamp(100px, 60%, 400px);
+		&_content{
+			width: 100% !important;
+			&:focus{
+				outline:none;
+			}
+			outline: none;
+		}
 
+		&:has(#wikiView_content:is(:focus,:focus-within)){
+			position: relative;
+			&::before{
+				position: absolute;
+				bottom:0;
+				right:0;
+				content:"Now navigating wiki content ↑ ↓";
+				color: var(--text-2);
+				opacity: 0.5;
+			}
+		}
 		//@media (max-width: 768px) {
 		//	margin-right: 0;
 		//	width: 100%;
@@ -224,6 +242,9 @@
 			margin-bottom: calc(1.5 * var(--spacing-unit));
 			padding-top: 0.5rem;
 			color: var(--text-2);
+		}
+		&:is(:focus, :focus-within, :focus-visible, :focus-visible) {
+			outline: none;
 		}
 	}
 }

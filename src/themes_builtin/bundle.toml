@@ -4695,16 +4695,16 @@ link = "https://github.com/jonleopard/base16-papercolor-scheme"
 
 # Surfaces
 surface-0 = "#1c1c1c"
-surface-1 = "#860044"
-surface-2 = "#5faf00"
-surface-border = "#d7af87"   # slightly lighter for definition
+surface-1 = "#262626"
+surface-2 = "#303030"
+surface-border = "#444444"
 
 # Text hierarchy
 text-0 = "#e0e0e0"           # brighter main text
-text-1 = "#ff87af"           # brighter secondary text
+text-1 = "#d0d0d0"           # brighter secondary text
 text-2 = "#858585"           # muted text
-text-3 = "#87d7ff"           # cool accent text
-text-disabled = "#d78787"    # readable disabled
+text-3 = "#666666"           # cool accent text
+text-disabled = "#555555"    # readable disabled
 text-contrast = "#1c1c1c"
 
 # Accents
@@ -4739,16 +4739,16 @@ link = "https://github.com/jonleopard/base16-papercolor-scheme"
 
 # Surfaces
 surface-0 = "#eeeeee"
-surface-1 = "#af0000"
-surface-2 = "#008700"
-surface-border = "#5f8700"
+surface-1 = "#e4e4e4"
+surface-2 = "#dadada"
+surface-border = "#cccccc"
 
 # Text hierarchy
-text-0 = "#878787"
-text-1 = "#005f87"
-text-2 = "#444444"
-text-3 = "#0087af"
-text-disabled = "#af0000"
+text-0 = "#444444"
+text-1 = "#666666"
+text-2 = "#878787"
+text-3 = "#999999"
+text-disabled = "#b0b0b0"
 text-contrast = "#eeeeee"
 
 # Accents
@@ -6193,7 +6193,7 @@ pink = "#54fc54"
 # Utilities
 overlay = "#e0e0e0"
 shadow = "#fcfcfc"
-#border-rad = 0
+border-rad = 0
 
 [[theme]]
 name = "Windows 95"

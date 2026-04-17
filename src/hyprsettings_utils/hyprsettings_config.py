@@ -32,7 +32,6 @@ def read_window_config():
 		try:
 			log('Configuration found. Reading configuration file')
 			config = read_old_config()
-			# log(config)
 			return config
 		except Exception as e:
 			log(f'Encountered an exception reading your old config: {e}')
@@ -79,6 +78,7 @@ def read_old_config():
 
 
 def create_new_config():
+	log('Creating new configuration', only_verbose=True)
 	template = Path(thisfile_path_parent / 'default_config.toml')
 	if not template:
 		log('Template not found in the directory')
@@ -94,8 +94,10 @@ def create_new_config():
 		  template,
 		  'r',
 	) as default_config:
+		log('Reading default config template', only_verbose=True)
 		default_config_text = default_config.read()
 	global window_config
+	log('Applying default config to window_config', only_verbose=True)
 	window_config = toml.parse(default_config_text)
 	window_config['config'].setdefault('font', temporary_font if temporary_font else 'monospace')
 	add_missing_keys()
@@ -109,12 +111,15 @@ def create_new_config():
 		state.daemon = True
 	hyprsettings_config_path_parent = hs_globals.HYPRSETTINGS_CONFIG_PATH.parent
 	hyprsettings_config_path_parent.mkdir(parents=True, exist_ok=True)
+	log('Writing new config to file', only_verbose=True)
 	with hs_globals.HYPRSETTINGS_CONFIG_PATH.open('w') as config_file:
 		config_file.write(default_config_text)
+	log('New configuration created successfully', only_verbose=True)
 	return window_config
 
 
 def version_migration():
+	log('Starting version migration check', only_verbose=True)
 	file_info = window_config.get("file_info", toml.table())
 	persistence = window_config.setdefault('persistence', toml.table())
 
@@ -127,6 +132,7 @@ def version_migration():
 
 	def move_key(k, v, d):
 		try:
+			log(f'Attempting to move key {k} from {v} to {d}', only_verbose=True)
 			global window_config
 			if k in window_config.get(v, toml.table()):
 				window_config.get(d).add(k, window_config.get(v).get(k))
@@ -140,42 +146,48 @@ def version_migration():
 	current_v = Version('.'.join(hs_globals.CURRENT_VERSION.split('.')[:3]))
 	if Version(file_info.get("version", "")) < current_v:
 		log(f'Config version {file_info["version"]} older than {hs_globals.CURRENT_VERSION}. Migrating...')
-		file_info.setdefault("version", hs_globals.CURRENT_VERSION)
-		log("pakyu")
+		file_info["version"] = hs_globals.CURRENT_VERSION
 		for key, src, dest in migrations[:2]:  # Handles last_tab and first_run
 			try:
 				move_key(key, src, dest)
 			except Exception as e:
-				log(e)
+				log(f'Error migrating key {key}: {e}')
+		log('Migration complete', only_verbose=True)
 		return
 
 	if persistence.get('onboarding_version', "") != hs_globals.ONBOARDING_VERSION:
+		log(f'Onboarding version mismatch, moving onboarding_version key', only_verbose=True)
 		if move_key('onboarding_version', 'file_info', 'persistence'):
 			# persistence['onboarding_version'] = hs_globals.ONBOARDING_VERSION
 			persistence.setdefault('onboarding_version', hs_globals.ONBOARDING_VERSION)
 
 
 def add_missing_keys():
+	log('Checking for missing keys in config', only_verbose=True)
 	defaults = {'daemon': False}
 	persistence_keys = {'onboarding_version': 0.8}
 	config_lines = window_config['config']
 
 	for key, val in defaults.items():
 		if key not in config_lines:
+			log(f'Adding missing config key: {key} = {val}', only_verbose=True)
 			config_lines[key] = val
 
 	persistence = window_config.get('persistence', toml.table())
 	for key, val in persistence_keys.items():
 		if key not in persistence:
+			log(f'Adding missing persistence key: {key} = {val}', only_verbose=True)
 			persistence[key] = val
 
 
 def save_window_config(json_fromjs, part='config'):
-	log('Saving window config')
+	log(f'Saving window config for part: {part}')
 	config_from_json = json.loads(json_fromjs)
 	for key in config_from_json:
 		window_config[part][key] = config_from_json[key]
 	hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
+	log(f'Writing updated config to {hs_globals.HYPRSETTINGS_CONFIG_PATH}', only_verbose=True)
 	with open(hs_globals.HYPRSETTINGS_CONFIG_PATH, 'w', encoding='utf-8') as config_file:
 		config_tosave = toml.dumps(window_config)
 		config_file.write(config_tosave)
+	log('Window config saved successfully', only_verbose=True)

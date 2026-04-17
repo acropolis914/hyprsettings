@@ -85,7 +85,7 @@ class ConfigTab {
 		item.id = this.id
 		item.classList.add('hidden', 'scrollable')
 		item.addEventListener('click', (e) => {
-			if (GLOBAL.currentView !== 'main') {
+			if (GLOBAL.currentView !== 'main' && item.id !== 'wiki') {
 				GLOBAL.setKey('previousView', GLOBAL.currentView)
 				GLOBAL.setKey('currentView', 'main')
 			}
