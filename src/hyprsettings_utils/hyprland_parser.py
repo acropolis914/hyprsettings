@@ -83,8 +83,12 @@ _DEBOUNCE_SECONDS = 0.2
 def debounced_write(path: Path, contents: str):
 	def _write():
 		with _write_lock:
-			with open(path, 'w', encoding='UTF-8') as f:
+			temp_path = path.with_suffix('.tmp')
+			with open(temp_path, 'w', encoding='UTF-8') as f:
 				f.write(contents)
+				f.flush()
+				os.fsync(f.fileno())
+			os.replace(temp_path, path)
 
 	with _write_lock:
 		if path in _timers:

@@ -21,6 +21,7 @@ import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts
 import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelte'
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import findParentsUntil from '@scripts/utils/findParents.ts'
+import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -104,6 +105,7 @@ export class EditorItem_Generic {
 	config_position: any
 	private value: any
 	private isBoolean: boolean = false
+	isSvelte: boolean = false
 
 	constructor(json: string | object, disabled = false) {
 		this.initial_load = true
@@ -114,7 +116,7 @@ export class EditorItem_Generic {
 		let comment = json['comment']
 		let position = json['position']
 
-		this.saveDebounced = debounce(() => this.save(), 15)
+		this.saveDebounced = debounce(() => this.save(), 50)
 		const template = document.createElement('div')
 		render(templateString, template)
 		this.el = template.firstElementChild!.cloneNode(true) as HTMLDivElement
@@ -149,7 +151,13 @@ export class EditorItem_Generic {
 		this.info = findConfigDescription(this.config_position, name, ['GROUP'])
 
 		this.valueEditor = this.createValueEditor(value)
-		if (!this.valueEditor && this.el.dataset.name !== 'animation' && !this.el.dataset.name.startsWith('bind')) {
+		if (
+			!this.valueEditor &&
+			this.el.dataset.name !== 'animation' &&
+			!this.el.dataset.name.startsWith('bind') &&
+			this.el.dataset.infoType !== 'CONFIG_OPTION_COLOR' &&
+			!this.isSvelte
+		) {
 			// console.log(this.el.dataset, 'has no value editor')
 			this.valueEditor = document.createElement('textarea')
 			this.valueEditor.rows = 1
@@ -158,7 +166,7 @@ export class EditorItem_Generic {
 			this.valueEditor.id = 'generic-value'
 		}
 
-		if (this.valueEditor && name != 'animation') {
+		if (this.valueEditor && name != 'animation' && !this.isSvelte) {
 			//todo add a svelte flag
 			try {
 				this.genericEditor_el.appendChild(this.valueEditor)
@@ -175,7 +183,7 @@ export class EditorItem_Generic {
 			this.keyEditor.classList.remove('hidden')
 			this.keyEditor.value = name
 		} else if (name.startsWith('exec')) {
-			this.genericEditor_el.style.flex
+			// this.genericEditor_el.style.flex
 		} else {
 			this.keyEditor.value = name
 		}
@@ -202,7 +210,7 @@ export class EditorItem_Generic {
 				props: {
 					value: name,
 					items: execNames,
-					orientation: 'horizontal',
+					orientation: 'vertical',
 					onChange: (value) => {
 						this.el.dataset.name = value
 						this.update()
@@ -229,11 +237,18 @@ export class EditorItem_Generic {
 			return editor
 		} else if (this.info?.type === 'CONFIG_OPTION_COLOR' || this.el.dataset.value.startsWith('rgb')) {
 			this.el.dataset.infoType = this.info?.type ?? 'CONFIG_OPTION_COLOR'
-			try {
-				return new ColorModal(value)
-			} catch {
-				return null
-			}
+			this.isSvelte = true
+			mount(keyEditor_Color, {
+				target: this.genericEditor_el,
+				props: {
+					initial_value: value,
+					onChange: (value) => {
+						this.value = value
+						this.el.dataset.value = value
+						this.update()
+					},
+				},
+			})
 		} else if (this.info?.type === 'CONFIG_OPTION_GRADIENT') {
 			this.el.dataset.infoType = this.info.type
 			try {
@@ -257,6 +272,7 @@ export class EditorItem_Generic {
 			})
 			return null
 		} else if (this.el.dataset.name.startsWith('bind')) {
+			this.isSvelte = true
 			mount(keyEditor_Bind, {
 				target: this.genericEditor_el,
 				props: {
@@ -301,12 +317,9 @@ export class EditorItem_Generic {
 				if (val === '0' || val === '1') {
 					// Determine the new value (toggle it)
 					const newValue = val === '1' ? '0' : '1'
-
-					// Update the DOM and your editor state
 					this.el.dataset.value = newValue
 					this.valueEditor.value = newValue
-
-					console.log(`Changed value from ${val} to ${newValue}`)
+					// console.log(`Changed value from ${val} to ${newValue}`)
 				} else {
 					this.flipValueIfBool(true)
 				}
@@ -323,6 +336,35 @@ export class EditorItem_Generic {
 			ta.value = parsed[0][0] + ' ' + parsed[0][1]
 			ta.id = 'generic-value'
 			return ta
+		} else if (this.el.dataset.position.endsWith('general') && this.el.dataset.name === 'layout') {
+			this.isSvelte = true
+			mount(nameEditor_Chooser, {
+				target: this.genericEditor_el,
+				props: {
+					value: value,
+					onChange: (v) => {
+						this.value = v
+						this.el.dataset.value = v
+						this.update()
+					},
+					orientation: 'horizontal',
+					items: [
+						{
+							name: 'dwindle',
+							description: 'dwindle',
+						},
+						{
+							name: 'master',
+							description: 'master',
+						},
+						{
+							name: 'scrolling',
+							description: 'scrolling',
+						},
+					],
+				},
+			})
+			return null
 		} else {
 			const ta = document.createElement('textarea')
 			ta.rows = 1

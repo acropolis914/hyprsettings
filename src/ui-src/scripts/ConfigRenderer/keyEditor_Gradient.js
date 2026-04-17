@@ -114,7 +114,6 @@ export class GradientModal {
 	parseValue(value) {
 		const parts = value.trim().split(' ')
 		if (parts.length < 2) return { colors: parts, angle: 0 }
-
 		const anglePart = parts[parts.length - 1]
 		const angle = parseInt(anglePart.replace('deg', ''))
 		const colors = parts.slice(0, parts.length - 1)

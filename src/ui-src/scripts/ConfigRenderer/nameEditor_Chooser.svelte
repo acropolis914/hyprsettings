@@ -6,14 +6,12 @@
 	}
 
 	type orientation = "horizontal" | "vertical"
-
 	interface Props {
 		value: string,
 		onChange: (value: string) => void
 		orientation?: orientation
 		items: item[]
 	}
-
 
 	let { value, items, orientation, onChange } = $props() as Props
 	let state = $state({ selected: value })
@@ -22,7 +20,6 @@
 	function handleChoiceClick(name: string) {
 		state.selected = name
 	}
-
 	$effect(()=>{
 		onChange(state.selected)
 	})
@@ -50,13 +47,16 @@
 		display: flex;
 		flex-direction: row;
 		gap: 1rem;
+		margin-inline: auto;
 	}
 
 	#choices {
 		display: flex;
 		border-radius: var(--border-rad);
 		overflow: hidden;
-		flex-direction: column !important;
+		flex-direction: column;
+		background-color: var(--surface-0);
+
 		/*flex-direction here is temporary;*/
 	}
 	.choice {
@@ -66,9 +66,15 @@
 		border-radius: 0;
 		background-color: var(--surface-1);
 		font-size: 1.3rem;
-		color:var(--text-0);
+		color: var(--text-0);
+		border: 1px solid transparent;
+		&:is(:focus, :focus-visible) {
+			outline: none;
+			border: 1px solid var(--surface-0);
+		}
 		&.selected{
 			background-color: var(--accent);
+			color:var(--text-contrast);
 		}
 	}
 </style>

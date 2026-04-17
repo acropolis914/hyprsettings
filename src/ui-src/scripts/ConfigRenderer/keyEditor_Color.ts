@@ -7,8 +7,6 @@ export class ColorModal {
 		let initialized = false
 		this.el = document.createElement('input')
 		this.el.setAttribute('type', 'text')
-		// this.el.setAttribute('readonly', 'readonly')
-		// this.el.setAttribute('tabindex', '-1')
 		this.el.classList.add('generic-editor-colormodal')
 		this.el.setAttribute('data-coloris', '')
 		const num = Number(value)
