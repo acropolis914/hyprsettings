@@ -16,21 +16,21 @@ Manually adding tabs might come at a later update.-->
 		<!-- <meta http-equiv="refresh" content="1" /> -->
 		<title>HyprSettings</title>
 		<link rel="shortcut icon" href="/icon-48.png" type="image/x-icon">
-		<script>
-			// Prevent browser trackpad pinch-to-zoom (synthesizes ctrl+wheel)
-			document.addEventListener('wheel', function(e) {
-				if (e.ctrlKey) {
-					e.preventDefault();
-				}
-			}, { passive: false });
+<!--		<script>-->
+<!--			// Prevent browser trackpad pinch-to-zoom (synthesizes ctrl+wheel)-->
+<!--			document.addEventListener('wheel', function(e) {-->
+<!--				if (e.ctrlKey) {-->
+<!--					e.preventDefault();-->
+<!--				}-->
+<!--			}, { passive: false });-->
 
-			// Prevent touch/gesture pinch-zoom
-			document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
-			document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
-			document.addEventListener('gestureend', function(e) { e.preventDefault(); });
-		</script>
+<!--			// Prevent touch/gesture pinch-zoom-->
+<!--			document.addEventListener('gesturestart', function(e) { e.preventDefault(); });-->
+<!--			document.addEventListener('gesturechange', function(e) { e.preventDefault(); });-->
+<!--			document.addEventListener('gestureend', function(e) { e.preventDefault(); });-->
+<!--		</script>-->
 <!--		<script src="scripts/utils/_deprecated.js"></script>-->
-		<script type="module" src="scripts/script.js"></script>
+		<script type="module" src="scripts/script.ts"></script>
 		<script type="module" src="scripts/jslib/json-viewer.js" defer></script>
 		<!-- <script src="/jslibs/hotkeys.min.js"></script> -->
 		<script type="module" src="scripts/jslib/coloris.js" defer></script>
@@ -40,9 +40,6 @@ Manually adding tabs might come at a later update.-->
 		<link rel="stylesheet" href="scripts/jslib/tom-select.css"/>
 		<link rel="stylesheet" href="scripts/jslib/nouislider.css">
 		<link rel="stylesheet" href="scripts/jslib/coloris.css">
-
-<!--		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.css"/>-->
-<!--		<script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>-->
 		 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/eruda/3.4.3/eruda.min.js" integrity="sha512-cDmB70h28kl47NuDUcO3/hqJ29T+Gxue9DA6hoENF9RPGN/AZuyI94ATk5MN9VXTiuTHw2v3iVT9sXLzMMF1sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>eruda.init();</script> -->
 	</head>

@@ -13,13 +13,13 @@ import './ConfigRenderer/keyEditor_Slider.js'
 import './ui_components/shareConfig.ts'
 
 import { GLOBAL } from './GLOBAL.ts'
-import { Backend } from './utils/backendAPI.js'
+import { Backend } from './utils/backendAPI.ts'
 import setupTheme from './utils/setupTheme.js'
 
 import initializeDebugTab from './ui_components/debugTab.ts'
 import initializeSearchBar from './ui_components/searchBar.js'
 import createTabView from './ui_components/createTabView.ts'
-import createLoadingOverlay, { destroyOverlay } from './ui_components/darkenOverlay.js'
+import createLoadingOverlay, { destroyOverlay } from './ui_components/darkenOverlay.ts'
 import createWiki from './ui_components/wikiTab.ts'
 
 import getAndRenderConfig, { clearConfigItems } from './ConfigRenderer/_configRenderer.ts'

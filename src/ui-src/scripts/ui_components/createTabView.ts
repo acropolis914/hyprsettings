@@ -93,6 +93,7 @@ class ConfigTab {
 		let contextMenu: any
 		let contextMenuState
 		item.addEventListener('contextmenu', (e) => {
+			console.log('Showing config-set context-menu')
 			e.preventDefault()
 			if (e.target != item) return
 			if (!contextMenu) {
@@ -146,6 +147,7 @@ class ConfigTab {
 	}
 
 	createContextMenu(el: HTMLDivElement, e: MouseEvent) {
+		console.log('Opening context menu for the config set')
 		let target = e.target as HTMLElement
 		const rect = el.getBoundingClientRect()
 		menuState.x = e.pageX

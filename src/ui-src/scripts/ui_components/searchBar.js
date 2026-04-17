@@ -1,6 +1,6 @@
 import Fuse from '../jslib/fuse.basic.min.mjs'
 import { GLOBAL } from '../GLOBAL.ts'
-import { createOverlay, destroyOverlay } from './darkenOverlay.js'
+import { createOverlay, destroyOverlay } from './darkenOverlay.ts'
 import hotkeys from 'hotkeys-js'
 
 let searchBar

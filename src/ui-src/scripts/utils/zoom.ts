@@ -1,5 +1,5 @@
 import { GLOBAL } from '@scripts/GLOBAL.ts'
-import { saveConfigDebounced } from '@scripts/utils/backendAPI'
+import { saveConfigDebounced } from '@scripts/utils/backendAPI.ts'
 import { saveWindowConfig_Persistence } from '@scripts/utils/utils.ts'
 const html = document.documentElement
 // html.style.setProperty('--zoom-factor', 1)

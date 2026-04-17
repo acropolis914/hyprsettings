@@ -137,6 +137,9 @@ body {
 	right: 1rem;
 	bottom: 1rem;
 	pointer-events: none;
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
 	//border: 1px solid red;
 	* {
 		pointer-events: auto;

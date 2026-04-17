@@ -1,5 +1,5 @@
 import { GLOBAL } from '../GLOBAL.ts'
-import { Backend } from '../utils/backendAPI'
+import { Backend } from '../utils/backendAPI.ts'
 // import * as util from 'node:util'
 import { makeUUID } from '../utils/utils.ts'
 import parseMarkdown from '../wiki/parseMarkdown.ts'

@@ -12,13 +12,6 @@ import hotkeys from 'hotkeys-js'
 initializeState()
 initializeGlobalListeners()
 
-/* -------------------------------------------------------------------------- */
-/* MAIN LOGIC                                 */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Main Entry Point for Keyboard Events
- */
 function handleKeyInput(event) {
 	const key = event.key
 
@@ -44,7 +37,6 @@ function handleKeyInput(event) {
 			// attemptSwitchToWikiNavigation()
 			break
 		case 'wikiNavigation':
-
 			handleWikiNavigation(event)
 			break
 
@@ -104,7 +96,7 @@ function handleWikiNavigation(event) {
 		event.preventDefault()
 		navigateEditorItems(key === 'ArrowDown' ? 1 : -1)
 	}
-	if (key === "ArrowLeft") {
+	if (key === 'ArrowLeft') {
 		returnToTabs()
 	}
 }
@@ -139,10 +131,6 @@ function handleGlobalShortcuts(event) {
 
 	return false
 }
-
-/* -------------------------------------------------------------------------- */
-/* VIEW TRANSITIONS                               */
-/* -------------------------------------------------------------------------- */
 
 export function attemptSwitchToMain() {
 	const currentTabId = GLOBAL['activeTab']
@@ -181,8 +169,6 @@ export function attemptSwitchToMain() {
 	}
 }
 
-function attemptSwitchToWikiNavigation() {}
-
 function returnToTabs() {
 	console.log('Returning to tabs')
 	GLOBAL.setKey('currentView', 'tabs')
@@ -191,7 +177,6 @@ function returnToTabs() {
 		GLOBAL['mainFocus'][GLOBAL['activeTab']] = activeElem.dataset.uuid
 	}
 
-	// Blur Main
 	if (window.currentFocus) window.currentFocus.blur()
 
 	// Switch State
@@ -366,7 +351,7 @@ function handleKeyVisualizer(event, pressedSet) {
 	if (event.type === 'keyup') {
 		setTimeout(() => {
 			pressedSet.delete(event.key)
-		}, 200)
+		}, 500)
 	}
 
 	const display = document.querySelector('#keys-display')

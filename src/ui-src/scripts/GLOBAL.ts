@@ -60,7 +60,7 @@ export class GLOBAL {
 		this._listeners.get(key).push(callback)
 	}
 
-	static setKey<K extends keyof typeof GLOBAL>(key: string, value: string | number | boolean | any[]) {
+	static setKey<K extends keyof typeof GLOBAL>(key: string, value: string | number | boolean | any[] | Record<string, any>) {
 		// console.trace(`setkey was called for: ${key}`)
 		if (value === undefined || value === null) {
 			console.trace('GLOBAL setKey()', key, value)

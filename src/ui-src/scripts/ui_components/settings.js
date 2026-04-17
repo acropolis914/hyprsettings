@@ -1,7 +1,7 @@
 import { GLOBAL } from '../GLOBAL.ts'
 import { changeTheme, incrementCurrentTheme } from '../utils/setupTheme.js'
 import { makeUUID, saveChanged, saveWindowConfig } from '../utils/utils.ts'
-import { Backend } from '@scripts/utils/backendAPI.js'
+import { Backend } from '@scripts/utils/backendAPI.ts'
 
 let settingsEl = document.querySelector('.config-set#settings')
 let VERSION = '0.9.0'
