@@ -655,7 +655,7 @@ export const configDescriptionsExtra: ConfigDescription[] = [
 		name: 'windowrule',
 		path: '',
 		type: 'CONFIG_OPTION_STRING_SHORT',
-		data: 'float, class:^(kitty)$, title:^(kitty)$',
+		data: 'float on, class:^(kitty)$, title:^(kitty)$',
 		description: 'Defines a rule for window behavior matching properties like class or title.',
 	},
 	{

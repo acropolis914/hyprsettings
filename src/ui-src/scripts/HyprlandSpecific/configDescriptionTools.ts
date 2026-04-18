@@ -27,6 +27,7 @@ let config_descriptions: ConfigDescription[] = [...configDescriptions, ...device
 // 	}
 // }
 // console.warn(JSON.stringify(types, null, 2))
+
 export function findConfigDescription(path: string, name: string, exclude_types: string[]) {
 	return config_descriptions.find((item) => item.path === path && item.name === name && !exclude_types.includes(item.type))
 }
@@ -37,4 +38,9 @@ export function findAdjacentConfigKeys(path: string, exclude: string[] = []): Co
 
 export function findAllAdjacentKeys(path: string = '', exclude: string[] = []): object[] {
 	return config_descriptions.filter((item) => !path || item.path.startsWith(path)).filter((item) => !exclude.includes(item.name))
+}
+
+if (import.meta.main) {
+	let itemsConfig = configDescriptions.filter((i) => i.type === 'CONFIG_OPTION_VECTOR')
+	console.log(itemsConfig)
 }
