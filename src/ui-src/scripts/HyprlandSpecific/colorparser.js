@@ -55,9 +55,7 @@ function parseRGBFunc(rgbStr) {
 
 function parseRGBAFunc(rgbaStr) {
 	// match rgba(r,g,b,a) with optional spaces, a = 0-1
-	const m = rgbaStr.match(
-		/^rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(0|1|0?\.\d+)\s*\)$/i,
-	)
+	const m = rgbaStr.match(/^rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(0|1|0?\.\d+)\s*\)$/i)
 	if (!m) throw new Error('Invalid rgba(r,g,b,a)')
 	return `rgba(${m[1]},${m[2]},${m[3]},${m[4]})`
 }
@@ -68,14 +66,8 @@ export function parseHyprColor(val) {
 	if (/^0x[0-9a-fA-F]{8}$/.test(val)) return parseHex8(val)
 	if (/^rgb\([0-9a-fA-F]{6}\)$/i.test(val)) return parseRGBHex(val)
 	if (/^rgba\([0-9a-fA-F]{8}\)$/i.test(val)) return parseRGBAHex(val)
-	if (/^rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)$/i.test(val))
-		return parseRGBFunc(val)
-	if (
-		/^rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*(0|1|0?\.\d+)\s*\)$/i.test(
-			val,
-		)
-	)
-		return parseRGBAFunc(val)
+	if (/^rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)$/i.test(val)) return parseRGBFunc(val)
+	if (/^rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*(0|1|0?\.\d+)\s*\)$/i.test(val)) return parseRGBAFunc(val)
 	throw new Error('Unsupported color format: ' + val)
 }
 
