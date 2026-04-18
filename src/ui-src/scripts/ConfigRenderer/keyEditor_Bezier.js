@@ -403,6 +403,19 @@ export class BezierEditor {
 		this.path.setAttribute('stroke-width', '2')
 		this.svg.appendChild(this.path)
 
+		// Connecting lines
+		this.line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+		this.line1.setAttribute('stroke', this.colors.handle1)
+		this.line1.setAttribute('stroke-width', '2')
+		this.line1.setAttribute('stroke-dasharray', '4,4')
+		this.svg.appendChild(this.line1)
+
+		this.line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+		this.line2.setAttribute('stroke', this.colors.handle2)
+		this.line2.setAttribute('stroke-width', '2')
+		this.line2.setAttribute('stroke-dasharray', '4,4')
+		this.svg.appendChild(this.line2)
+
 		// Handles
 		this.handle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
 		this.handle1.setAttribute('r', 8)
@@ -477,7 +490,7 @@ export class BezierEditor {
 			l.setAttribute('stroke-width', width)
 			// l.setAttribute('fill', 'white')
 			if (dash) l.setAttribute('stroke-dasharray', dash)
-			this.svg.appendChild(l)
+			this.svg.insertBefore(l, this.path)
 			this.gridLines.push(l)
 		}
 
@@ -492,6 +505,17 @@ export class BezierEditor {
 			const color = Math.abs(gy % this.gridMajor) < 1e-6 ? this.colors.gridMajor : this.colors.gridMinor
 			addLine(0, H - (gy - this.range.yMin) * scaleY, W, H - (gy - this.range.yMin) * scaleY, color)
 		}
+
+		// Draw connecting lines
+		this.line1.setAttribute('x1', (0 - this.range.xMin) * scaleX)
+		this.line1.setAttribute('y1', H - (0 - this.range.yMin) * scaleY)
+		this.line1.setAttribute('x2', (this._cp1.x - this.range.xMin) * scaleX)
+		this.line1.setAttribute('y2', H - (this._cp1.y - this.range.yMin) * scaleY)
+
+		this.line2.setAttribute('x1', (1 - this.range.xMin) * scaleX)
+		this.line2.setAttribute('y1', H - (1 - this.range.yMin) * scaleY)
+		this.line2.setAttribute('x2', (this._cp2.x - this.range.xMin) * scaleX)
+		this.line2.setAttribute('y2', H - (this._cp2.y - this.range.yMin) * scaleY)
 
 		// Draw Bézier curve
 		this.path.setAttribute(

@@ -90,7 +90,7 @@ class ConfigTab {
 		})
 		item.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
-			this.createContextMenu(item, e)
+			this.createContextMenu(document.querySelector(`.config-set${item.id}`), e)
 			this.handleTabClick()
 		})
 		// item.addEventListener("focus", (e) => {

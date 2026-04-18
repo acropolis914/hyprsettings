@@ -8,7 +8,7 @@ let VERSION = '0.9.0'
 
 export default async function renderSettings() {
 	settingsEl = document.querySelector('.config-set#settings')
-	await createAbout()
+	createAbout().then()
 	getHyprsettingsGithubVersion().then()
 	Backend.getHyprSettingsVersion().then()
 	createAutoSaveSetting()
@@ -179,7 +179,7 @@ async function createAbout({ compact = false } = {}) {
 	langsEl.classList.add('tech-group')
 	const langsTitle = document.createElement('div')
 	langsTitle.classList.add('tech-title')
-	langsTitle.textContent = ' Python'
+	langsTitle.textContent = ' Backend'
 	const langsList = document.createElement('div')
 	langsList.classList.add('tech-list')
 	langsList.textContent = 'Pywebview • Flask • Rich'
@@ -189,10 +189,10 @@ async function createAbout({ compact = false } = {}) {
 	libsEl.classList.add('tech-group')
 	const libsTitle = document.createElement('div')
 	libsTitle.classList.add('tech-title')
-	libsTitle.textContent = ' Javascript and Web'
+	libsTitle.textContent = ' Frontend'
 	const libsList = document.createElement('div')
 	libsList.classList.add('tech-list')
-	libsList.textContent = 'TomSelect, Coloris, Fuse.js, Eruda, Sortable, noUISlider'
+	libsList.textContent = 'Vite, Scss, Svelte, Coloris, Fuse.js, Sortable, noUISlider'
 	libsList.textContent = libsList.textContent.replaceAll(',', ' •')
 	libsEl.append(libsTitle, libsList)
 
@@ -335,7 +335,7 @@ function createThemeSelectorSetting() {
 	triggerEl.style.fontWeight = 'bold'
 
 	let currentTheme = GLOBAL['config']['current_theme']
-	triggerEl.textContent = currentTheme
+	triggerEl.textContent = currentTheme.replace('[builtin]', '').trim()
 
 	settingContainer.appendChild(triggerEl)
 	// this.addListeners()

@@ -21,9 +21,9 @@ export default async function createWiki() {
 	await Backend.getHyprlandWikiNavigation()
 }
 
-GLOBAL.onChange('currentView', (value) => {
-	console.log('currentView: ', value)
-})
+// GLOBAL.onChange('currentView', (value) => {
+// 	console.log('currentView: ', value)
+// })
 
 async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTMLDivElement) {
 	let objectTree = []

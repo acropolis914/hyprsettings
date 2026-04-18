@@ -19,6 +19,12 @@
 	width: 15rem;
 	overflow: hidden;
 
+	hr {
+		margin-inline: 20px;
+		color: var(--text-0);
+		opacity: 0.3;
+	}
+
 	.ctx-button {
 		@include text-ellipsis;
 		display: flex;

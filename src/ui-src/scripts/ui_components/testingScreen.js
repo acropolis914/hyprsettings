@@ -8,8 +8,6 @@ const testingScreen = document.querySelector('.testing-screen')
 const testingScreenHeader = document.getElementById('testing-screen-header')
 let open = false
 
-GLOBAL.onChange('themeVariant', () => {})
-
 document.addEventListener('keydown', (event) => {
 	if (event.key === 'F3') {
 		event.preventDefault()

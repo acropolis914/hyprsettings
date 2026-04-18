@@ -7,7 +7,7 @@ export default function createToolTippy(options: { target: HTMLElement; content:
 		followCursor: false,
 		plugins: [followCursor],
 		delay: [500, 200],
-		interactive: true,
+		interactive: false,
 		animation: 'fade',
 		arrow: roundArrow,
 		onShow(instance) {

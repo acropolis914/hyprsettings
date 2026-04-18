@@ -201,7 +201,7 @@ export function changeTheme(theme) {
 
 	// 2. Snapshot: Clone the body (Animation path)
 	const settingsDisplay = document.querySelector('#theme-selector-setting .theme-display')
-	if (settingsDisplay) settingsDisplay.textContent = theme.name
+	if (settingsDisplay) settingsDisplay.textContent = theme.name.replace('[builtin]', '').trim()
 
 	const clone = document.body.cloneNode(true)
 	clone.id = 'body-clone'
