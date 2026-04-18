@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { getNormalizedRect } from "@scripts/utils/utils.ts"
 	interface item {
 		label: string;
 		action?: ()=> void;
-		submenu?: object;
+		submenu?: item[];
 		icon?: string;
 	}
 	let menuEl: HTMLElement | null = null;
@@ -19,6 +18,11 @@
 
 	let {items, visible, x, y, submenu} = $props() as Props;
 
+	items.forEach((item) => {
+		if (typeof item.action === "function" && item.submenu) {
+			console.log(`${item.label}  both has an action and a submenu. It is recommended to not have both at the same time`);
+		}
+	})
 
 	function select(item:item) {
 		item.action?.();

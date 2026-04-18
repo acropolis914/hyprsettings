@@ -13,8 +13,8 @@ import { _configRenderer } from '@scripts/ConfigRenderer/_configRenderer.ts'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
 import type { ItemProps, ItemPropsGroup, ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
 
+const allowed_dupes = ['animation', 'bezier', 'gesture', 'windowrule', 'bind', 'workspace', 'monitor', 'source', 'permission', 'device']
 export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
-	const allowed_dupes = ['animation', 'bezier', 'gesture']
 	const existingSiblingKeys = Array.from(options.relatedElement.parentNode.children)
 		.filter((el) => el.classList.contains('editor-item-generic'))
 		.map((el) => el.dataset.name)
@@ -152,6 +152,7 @@ export async function addKeys(
 	parentElement: HTMLElement = null,
 	parentJSON: ItemPropsGroup = null,
 	disabled: boolean = false,
+	relativeElementUUID: string = '',
 ) {
 	let renderTo = parentElement ?? (document.querySelector('.config-set#permissions') as HTMLElement)
 	let originalPathString = pathString
@@ -161,18 +162,6 @@ export async function addKeys(
 		.filter((i) => !i.endsWith('.conf'))
 		.join(':')
 
-	const allowed_dupes = [
-		'animation',
-		'bezier',
-		'gesture',
-		'windowrule',
-		'bind',
-		'workspace',
-		'monitor',
-		'source',
-		'permission',
-		'device',
-	]
 	const existingSiblingKeys = Array.from(parentElement?.querySelectorAll('.editor-item-generic'))
 		.map((el: HTMLDivElement) => el.dataset.name)
 		.filter((i) => !allowed_dupes.includes(i))

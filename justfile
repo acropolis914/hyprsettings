@@ -5,10 +5,10 @@ set unstable := true
 
 # Full development setup (Python backend + Vite dev server)
 dev:
-    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --verbose" "vite --host"
+    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser" "vite --host"
 
 dev-noui:
-    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --no-window --verbose" "vite --host"
+    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --no-window" "vite --host"
 
 setup_dev:
     uv sync

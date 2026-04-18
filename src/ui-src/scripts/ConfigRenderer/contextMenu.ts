@@ -8,12 +8,13 @@ import '@stylesheets/subs/tippy.scss'
 import { createOverlay } from '@scripts/ui_components/darkenOverlay.js'
 
 export class ContextMenu {
+	private el: HTMLDivElement
 	constructor(items = []) {
 		this.el = document.createElement('div')
 		this.el.classList.add('context-menu', 'hidden')
 		this.el.setAttribute('contenteditable', 'false')
 		this.el.addEventListener('transitionend', (e) => {
-			if (e.propertyName === 'opacity' && getComputedStyle(e.target).opacity === '0') {
+			if (e.propertyName === 'opacity' && getComputedStyle(e.target as Element).opacity === '0') {
 				this.el.classList.add('hidden')
 			}
 		})
@@ -23,38 +24,42 @@ export class ContextMenu {
 		})
 
 		for (const { label, icon, action, title } of items) {
-			const btnEl = document.createElement('div')
-			btnEl.classList.add('ctx-button')
-			btnEl.tabIndex = 0
-			tippy(btnEl, {
-				content: `${icon} ${label}`,
-				triggerTarget: btnEl,
-				theme: 'pol',
-				onShow(instance) {
-					hideAll({ exclude: instance })
-				},
-			})
-			const iconEl = document.createElement('div')
-			iconEl.classList.add('ctx-button-icon')
-			iconEl.innerHTML = icon
-			const labelEl = document.createElement('div')
-			labelEl.classList.add('ctx-button-label')
-			if (GLOBAL.config.show_contextmenu_label === false) {
-				console.log(GLOBAL['config']['show_contextmenu_label'])
-				labelEl.classList.add('hidden')
-			}
-			labelEl.textContent = label
-			const self = this
-			btnEl.addEventListener('click', (e) => {
-				e.stopPropagation()
-				console.log(`clicked: ${label}, running ${action}`)
-				self.hide()
-				action?.()
-			})
+			if (label !== 'separator') {
+				const btnEl = document.createElement('div')
+				btnEl.classList.add('ctx-button')
+				btnEl.tabIndex = 0
+				tippy(btnEl, {
+					content: `${icon} ${label}`,
+					triggerTarget: btnEl,
+					theme: 'pol',
+					onShow(instance) {
+						hideAll({ exclude: instance })
+					},
+				})
+				const iconEl = document.createElement('div')
+				iconEl.classList.add('ctx-button-icon')
+				iconEl.innerHTML = icon
+				const labelEl = document.createElement('div')
+				labelEl.classList.add('ctx-button-label')
+				if (GLOBAL.config.show_contextmenu_label === false) {
+					console.log(GLOBAL['config']['show_contextmenu_label'])
+					labelEl.classList.add('hidden')
+				}
+				labelEl.textContent = label
+				const self = this
+				btnEl.addEventListener('click', (e) => {
+					e.stopPropagation()
+					console.log(`clicked: ${label}, running ${action}`)
+					self.hide()
+					action?.()
+				})
 
-			btnEl.appendChild(iconEl)
-			btnEl.appendChild(labelEl)
-			this.el.appendChild(btnEl)
+				btnEl.appendChild(iconEl)
+				btnEl.appendChild(labelEl)
+				this.el.appendChild(btnEl)
+			} else {
+				this.el.appendChild(document.createElement('hr'))
+			}
 		}
 	}
 	toggle() {
@@ -93,6 +98,5 @@ export class ContextMenu {
 	}
 	hide() {
 		this.el.remove()
-		// destroyOverlay()
 	}
 }

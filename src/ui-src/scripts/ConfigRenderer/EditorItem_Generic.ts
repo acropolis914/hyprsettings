@@ -22,6 +22,7 @@ import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelt
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import findParentsUntil from '@scripts/utils/findParents.ts'
 import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
+import type { ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -49,7 +50,9 @@ const templateString = html`
 		<!--		<div class="editor-item-preview"></div>-->
 		<div class="preview-wrapper">
 			<div class="editor-item-preview"></div>
-			<div class="save-editor-item-wrapper hidden"><button id="save-editor-item">Save</button></div>
+			<div class="save-editor-item-wrapper hidden">
+				<button id="save-editor-item">Save</button>
+			</div>
 		</div>
 		<div class="generic-editor">
 			<!-- <textarea name="key" id="generic-key"></textarea>
@@ -106,8 +109,9 @@ export class EditorItem_Generic {
 	private value: any
 	private isBoolean: boolean = false
 	isSvelte: boolean = false
+	private json: ItemPropsKey
 
-	constructor(json: string | object, disabled = false) {
+	constructor(json: ItemPropsKey, disabled = false) {
 		this.initial_load = true
 
 		let name = json['name']
@@ -133,6 +137,7 @@ export class EditorItem_Generic {
 		this.el.dataset.disabled = disabled ? 'true' : 'false'
 		this.el.dataset.type = 'KEY'
 		this.el.disable = this.disable.bind(this)
+		this.json = json
 
 		if (disabled === true) {
 			this.el.classList.add('disabled')
@@ -410,15 +415,16 @@ export class EditorItem_Generic {
 		// console.log({ x, y })
 		let contextMenuItems = [
 			{
-				label: 'Comment Above',
-				icon: '',
-				action: () => this.add('COMMENT', false),
+				label: `${this.keyEditor?.classList.contains('hidden') ? 'Edit Name' : 'Hide name'}`,
+				icon: '󰙂',
+				action: () => this.editName(),
 			},
 			{
-				label: 'Comment Below',
-				icon: '',
-				action: () => this.add('COMMENT', true),
+				label: `${this.el.dataset.disabled === 'true' ? 'Enable' : 'Disable'}`,
+				icon: '󰈉',
+				action: () => this.disable(),
 			},
+			{ label: 'separator' },
 			{
 				label: 'Add Above',
 				icon: '󰅃',
@@ -429,16 +435,17 @@ export class EditorItem_Generic {
 				icon: '󰅀',
 				action: () => this.add('KEY', true),
 			},
-			{
-				label: `${this.keyEditor?.classList.contains('hidden') ? 'Edit Name' : 'Hide name'}`,
-				icon: '󰙂',
-				action: () => this.editName(),
-			},
-			{
-				label: `${this.el.dataset.disabled === 'true' ? 'Enable' : 'Disable'}`,
-				icon: '󰈉',
-				action: () => this.disable(),
-			},
+			// {
+			// 	label: 'Comment Above',
+			// 	icon: '',
+			// 	action: () => this.add('COMMENT', false),
+			// },
+			// {
+			// 	label: 'Comment Below',
+			// 	icon: '',
+			// 	action: () => this.add('COMMENT', true),
+			// },
+			{ label: 'separator' },
 			{
 				label: 'Delete Key',
 				icon: '󰗩',
@@ -451,9 +458,15 @@ export class EditorItem_Generic {
 			icon: '',
 			action: () => this.valueReset(),
 		}
-		if (this.info) {
-			contextMenuItems.splice(4, 0, contextMenuItem_reset)
+
+		if (this.info && !this.json.name.startsWith('bind')) {
+			contextMenuItems.splice(1, 0, contextMenuItem_reset)
 		}
+		// remove the edit name entry
+		if (this.json.name.startsWith('bind')) {
+			contextMenuItems.splice(0, 1)
+		}
+
 		this.contextMenu = new ContextMenu(contextMenuItems)
 		if (show) {
 			this.contextMenu.show(x, y)
@@ -622,7 +635,7 @@ export class EditorItem_Generic {
 		})
 	}
 
-	addToParent(parent) {
+	addToParent(parent: HTMLDivElement) {
 		parent.appendChild(this.el)
 	}
 
@@ -730,6 +743,7 @@ export class EditorItem_Generic {
 		}
 		return false
 	}
+
 	parseBool(str: string): boolean {
 		if (typeof str !== 'string') return null
 

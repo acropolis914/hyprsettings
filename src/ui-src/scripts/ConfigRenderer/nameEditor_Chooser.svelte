@@ -1,5 +1,7 @@
 <!--A selector for when there are only few choices-->
 <script lang="ts">
+	import type { ComponentProps } from "svelte"
+
 	interface item {
 		name: string,
 		description: string,
@@ -13,7 +15,7 @@
 		items: item[]
 	}
 
-	let { value, items, orientation, onChange } = $props() as Props
+	let { value, items, orientation, onChange }: Props = $props()
 	let state = $state({ selected: value })
 
 
