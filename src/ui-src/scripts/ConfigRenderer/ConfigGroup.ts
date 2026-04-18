@@ -311,7 +311,8 @@ export class ConfigGroup {
 		const confirmation = await dmenuConfirm(`Are you sure you want to delete group ${this.group_el.dataset.name} ?`)
 		if (confirmation) {
 			let el = this.group_el
-			let before = el.before ?? el.after
+			let before = el.previousElementSibling ?? el.nextElementSibling ?? el.closest('.config-group') ?? el.closest('.config-set')
+			console.log('Deleting config group, focusing: ', before)
 
 			// 1. Capture the exact current state
 			const rect = el.getBoundingClientRect()
