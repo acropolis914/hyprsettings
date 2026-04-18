@@ -72,6 +72,11 @@ html.no-anim {
 	.sidebar-item.sidebar-item {
 		transition: none !important;
 	}
+
+	.invalid:not(.disabled) {
+		animation: none;
+		border: 1px dashed opacity(var(--accent-warning), 0.7);
+	}
 }
 
 body {

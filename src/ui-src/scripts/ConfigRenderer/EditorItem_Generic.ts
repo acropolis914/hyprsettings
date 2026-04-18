@@ -23,6 +23,7 @@ import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import findParentsUntil from '@scripts/utils/findParents.ts'
 import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
 import type { ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
+import { stopPropagation } from 'svelte/legacy'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -110,6 +111,7 @@ export class EditorItem_Generic {
 	private isBoolean: boolean = false
 	isSvelte: boolean = false
 	private json: ItemPropsKey
+	private hasInvalidData: boolean
 
 	constructor(json: ItemPropsKey, disabled = false) {
 		this.initial_load = true
@@ -335,10 +337,30 @@ export class EditorItem_Generic {
 		} else if (this.info?.type === 'CONFIG_OPTION_VECTOR') {
 			const ta = document.createElement('textarea')
 			ta.rows = 1
-			let [def, min, max] = this.parseVector(this.info?.data)
+			ta.addEventListener('input', (e) => {
+				e.stopPropagation()
+				ta.value = ta.value.replace('\n', '')
+				// console.log({ vector: this.parseVector(ta.value) })
+				this.hasInvalidData = !this.parseVector(ta.value)
+			})
+			ta.addEventListener('change', (e) => {
+				e.stopPropagation()
+				ta.value = ta.value.replace('\n', '')
+				// console.log({ vector: this.parseVector(ta.value) })
+				this.hasInvalidData = !this.parseVector(ta.value)
+			})
+			let [def, min, max] = this.parseVector(this.info?.data) as any[]
 			if (this.info) ta.dataset.defaultData = def[0] + ' ' + def[1]
-			let parsed = this.parseVector(value) as any[]
-			ta.value = parsed[0][0] + ' ' + parsed[0][1]
+			let parsed = this.parseVector(value) ?? [[], [], []]
+			// console.warn(parsed)
+			if ((!parsed[0][0] || !parsed[0][1]) && (!parseInt(parsed[0]) || !parseInt(parsed[1]))) {
+				this.el.classList.add('invalid')
+				this.hasInvalidData = true
+			}
+			let x = parsed[0][0] ?? parseInt(parsed[0]) ?? 'x'
+			let y = parsed[0][1] ?? parseInt(parsed[1]) ?? 'y'
+
+			ta.value = x + ' ' + y
 			ta.id = 'generic-value'
 			return ta
 		} else if (this.el.dataset.position.endsWith('general') && this.el.dataset.name === 'layout') {
@@ -488,7 +510,7 @@ export class EditorItem_Generic {
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
 
 		let value = this.valueEditor?.value ?? this.value ?? 'Please input a value'
-		if (name === '' || value === null) {
+		if (name === '' || value === null || this.hasInvalidData) {
 			this.keyEditor.classList.remove('hidden')
 			this.el.classList.add('invalid')
 		} else {
@@ -603,12 +625,21 @@ export class EditorItem_Generic {
 		})
 		this.keyEditor?.addEventListener('change', () => {
 			this.el.dataset.name = this.keyEditor.value
-			this.update()
+			requestAnimationFrame(() => {
+				this.update()
+			})
 		})
 
-		this.valueEditor?.addEventListener('input', () => {
+		this.valueEditor?.addEventListener('input', (e) => {
+			if (e.key === 'Enter') {
+				e.preventDefault()
+				e.stopPropagation()
+				e.stopImmediatePropagation()
+			}
 			this.el.dataset.value = this.valueEditor.value
-			this.update()
+			requestAnimationFrame(() => {
+				this.update()
+			})
 		})
 
 		this.valueEditor?.addEventListener('click', (e) => {
@@ -619,11 +650,14 @@ export class EditorItem_Generic {
 
 		this.valueEditor?.addEventListener('change', () => {
 			this.el.dataset.value = this.valueEditor.value
-			this.update()
+			requestAnimationFrame(() => {
+				this.update()
+			})
 		})
 
 		this.valueEditor?.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter') {
+				e.preventDefault()
 				e.stopPropagation()
 				e.stopImmediatePropagation()
 			}
@@ -635,13 +669,9 @@ export class EditorItem_Generic {
 		})
 	}
 
-	addToParent(parent: HTMLDivElement) {
-		parent.appendChild(this.el)
-	}
-
 	editName() {
 		if (this.keyEditor && this.keyEditor.classList.contains('hidden')) {
-			this.keyEditor.classList.remove('hidden')
+			this.keyEditor?.classList.remove('hidden')
 			this.el.classList.remove('compact')
 		} else {
 			this.keyEditor?.classList.add('hidden')
@@ -685,18 +715,26 @@ export class EditorItem_Generic {
 
 	parseVector(vectorData: String) {
 		if (!vectorData.trim().startsWith('{')) {
-			// console.log('Parsing vector failed:', vectorData)
-			return vectorData
+			vectorData = vectorData.trim().replaceAll('  ', ' ')
+			if (vectorData.includes(' ')) {
+				let vector2d = vectorData.split(' ').map((i) => parseInt(i))
+				if (vector2d.some((i) => i === NaN)) {
+					return false
+				}
+				return vector2d
+			}
+		} else {
+			// console.log(vectorData)
+			let newVectorData = `[${vectorData}]`.replaceAll('{', '[').replaceAll('}', ']')
+			let json = JSON.parse(newVectorData)
+			let def = json[0]
+			let min = json[1]
+			let max = json[2]
+			// let def = json[0][0] + ' ' + json[0][1]
+			// let min = json[1][0] + ' ' + json[1][1]
+			// let max = json[2][0] + ' ' + json[2][1]
+			return [def, min, max]
 		}
-		let newVectorData = `[${vectorData}]`.replaceAll('{', '[').replaceAll('}', ']')
-		let json = JSON.parse(newVectorData)
-		let def = json[0]
-		let min = json[1]
-		let max = json[2]
-		// let def = json[0][0] + ' ' + json[0][1]
-		// let min = json[1][0] + ' ' + json[1][1]
-		// let max = json[2][0] + ' ' + json[2][1]
-		return [def, min, max]
 	}
 
 	flipValueIfBool(save = true) {
@@ -763,11 +801,11 @@ export class EditorItem_Generic {
 	}
 
 	async delete() {
-		let nextSibling = this.el.nextElementSibling || this.el.previousElementSibling
+		let nextSibling = this.el.nextElementSibling || this.el.previousElementSibling || this.el.closest('.config-group')
 		let confirm = await dmenuConfirm(`Are you sure you want to delete node <span class="strong">${this.el.dataset.name}</span>?`)
 		if (confirm) {
 			deleteKey(this.el.dataset.uuid, this.el.dataset.position)
-			nextSibling.focus()
+			nextSibling?.focus()
 			this.el.remove()
 		}
 	}
@@ -792,6 +830,10 @@ export class EditorItem_Generic {
 
 	return() {
 		return this.el
+	}
+
+	addToParent(parent: HTMLDivElement) {
+		parent.appendChild(this.el)
 	}
 
 	save() {

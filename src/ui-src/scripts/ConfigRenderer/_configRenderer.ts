@@ -109,7 +109,6 @@ export class _configRenderer {
 
 		if (this.renderTo && this.temporaryElement) {
 			let el = this.temporaryElement.firstElementChild as HTMLDivElement
-			// console.log(this.temporaryElement)
 			if (this.renderAfter && !this.renderInside) {
 				this.renderTo.after(el)
 			} else if (!this.renderAfter && !this.renderInside) {

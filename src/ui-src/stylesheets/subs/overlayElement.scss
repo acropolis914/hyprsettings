@@ -26,6 +26,13 @@
 	background-color: opacity(black, 0.3); /* semi-transparent dim */
 }
 
+#loading-overlay {
+	&.darken-overlay {
+		.loading-text {
+			font-size: 1.6rem;
+		}
+	}
+}
 #dmenu {
 	display: flex;
 	position: absolute;
@@ -354,6 +361,8 @@
 	//backdrop-filter: blur(10px) brightness(0.4);
 	color: var(--text-1);
 	@include box-shadow;
+	contain: paint;
+	will-change: contents;
 	//height: 100vh;
 	.testing-screen-header {
 		display: flex;

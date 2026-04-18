@@ -99,18 +99,40 @@ export async function reinitialize() {
 }
 
 export async function initialize() {
+	console.log('%c🚀 Starting initialization...', 'color: #00bfff; font-weight: bold; font-size: 14px;')
+
+	console.log('%c⏳ Creating loading overlay...', 'color: #ff9900; font-weight: bold;')
 	await createLoadingOverlay()
+
+	console.log('%c📂 Loading config...', 'color: #ff9900; font-weight: bold;')
 	await load_config()
+
+	console.log('%c🎨 Setting up theme...', 'color: #ff9900; font-weight: bold;')
 	await setupTheme()
+
+	console.log('%c🐛 Getting debug status...', 'color: #ff9900; font-weight: bold;')
 	await getDebugStatus()
+
+	console.log('%c📑 Creating tab view...', 'color: #ff9900; font-weight: bold;')
 	await createTabView()
+
+	console.log('%c🛠️ Initializing debug tab...', 'color: #ff9900; font-weight: bold;')
 	initializeDebugTab()
+
+	console.log('%c📝 Getting and rendering config...', 'color: #ff9900; font-weight: bold;')
 	await getAndRenderConfig()
-	renderSettings().then(() => console.log('Done rendering settings tab'))
-	initializeSearchBar().then(() => console.log('Done initializing search bar'))
-	createWiki().then(() => console.log('Done initializing wikit tab'))
+
+	renderSettings().then(() => console.log('%c⚙️ Done rendering settings tab', 'color: #ff00ff; font-weight: bold;'))
+	initializeSearchBar().then(() => console.log('%c🔍 Done initializing search bar', 'color: #00ff00; font-weight: bold;'))
+	createWiki().then(() => console.log('%c📚 Done initializing wiki tab', 'color: #ffff00; font-weight: bold;'))
+
+	console.log('%c💭 Setting tippy default props...', 'color: #ff9900; font-weight: bold;')
 	tippy.setDefaultProps({ delay: 1000, arrow: true })
-	await setupGTAG()
+
+	console.log('%c📊 Setting up GTAG...', 'color: #ff9900; font-weight: bold;')
+	setupGTAG()
+
+	console.log('%c✅ Initialization complete!', 'color: #00ff00; font-weight: bold; font-size: 14px;')
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

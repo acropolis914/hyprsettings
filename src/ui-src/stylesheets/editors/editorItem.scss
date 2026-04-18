@@ -26,19 +26,17 @@
 	}
 
 	&.invalid:not(.disabled) {
-		animation: slow-flash 3s ease-in-out;
-		animation-iteration-count: infinite;
+		animation: slow-flash 1s ease-in-out infinite alternate;
+		//animation-iteration-count: infinite;
 	}
+
 
 	@keyframes slow-flash {
 		0% {
-			background-color: var(--surface-0);
+			border: 1px transparent dashed;
 		}
-		50% {
-			background-color: var(--accent-warning);
-		}
-		0% {
-			background-color: var(--surface-0);
+		100% {
+			border: 2px var(--accent-warning) dashed;
 		}
 	}
 

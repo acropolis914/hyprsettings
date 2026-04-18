@@ -3,13 +3,14 @@ import { addItem, deleteKey, saveKey } from '../utils/utils.ts'
 import { debounce } from '../utils/helpers.js'
 import { GLOBAL } from '../GLOBAL.ts'
 import { EditorItem_Generic } from './EditorItem_Generic.ts'
+import type { ItemPropsKey, ItemPropsMisc } from '@scripts/types/editorItemTypes.ts'
 // import { EditorItem_Binds } from './EditorItem_Binds.ts'
 
 export class EditorItem_Comments {
 	initial_load: boolean
 	el: HTMLDivElement
 	editing: boolean
-	constructor(json: string | JSON, hidden: boolean = false) {
+	constructor(json: ItemPropsMisc, hidden: boolean = false) {
 		let comment = json['comment']
 		let uuid = json['uuid']
 		let position = json['position']
@@ -193,6 +194,7 @@ export class EditorItem_Comments {
 				value: newCommentItem['value'],
 				comment: newCommentItem['comment'],
 				position: this.el.dataset.position,
+				type: 'COMMENT',
 			},
 			false,
 		)

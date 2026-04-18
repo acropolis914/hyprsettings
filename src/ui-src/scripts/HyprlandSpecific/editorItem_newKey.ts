@@ -11,7 +11,7 @@ import { Backend } from '@scripts/utils/backendAPI.js'
 import { makeUUID, queueManualSave } from '@scripts/utils/utils.ts'
 import { _configRenderer } from '@scripts/ConfigRenderer/_configRenderer.ts'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
-import type { ItemProps, ItemPropsGroup, ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
+import type { ItemProps, ItemPropsGroup, ItemPropsKey, ItemPropsMisc } from '@scripts/types/editorItemTypes.ts'
 
 const allowed_dupes = ['animation', 'bezier', 'gesture', 'windowrule', 'bind', 'workspace', 'monitor', 'source', 'permission', 'device']
 export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
@@ -126,8 +126,8 @@ export async function newEditorItemGeneric(options: { relatedElement: Element | 
 	newGenericElement.el.click()
 }
 
-export async function newEditorItemComments() {
-	let newCommentItem = await addItem('COMMENT', 'comment', '', '# New comment', this.el.dataset.position, this.el.dataset.uuid, below)
+export async function newEditorItemComments(el, below: boolean = true) {
+	let newCommentItem = await addItem('COMMENT', 'comment', '', '# New comment', el.dataset.position, el.dataset.uuid, below)
 	let newCommentElement = new EditorItem_Comments(
 		{
 			name: newCommentItem['comment'],
@@ -135,6 +135,7 @@ export async function newEditorItemComments() {
 			value: newCommentItem['value'],
 			comment: newCommentItem['comment'],
 			position: this.el.dataset.position,
+			type: 'COMMENT',
 		},
 		false,
 	)
@@ -155,12 +156,14 @@ export async function addKeys(
 	relativeElementUUID: string = '',
 ) {
 	let renderTo = parentElement ?? (document.querySelector('.config-set#permissions') as HTMLElement)
-	let originalPathString = pathString
+	const originalPathString = pathString
 	pathString = pathString
 		.replace('root:', '')
 		.split(':')
 		.filter((i) => !i.endsWith('.conf'))
 		.join(':')
+
+	console.info({ pathString, originalPathString })
 
 	const existingSiblingKeys = Array.from(parentElement?.querySelectorAll('.editor-item-generic'))
 		.map((el: HTMLDivElement) => el.dataset.name)
@@ -234,7 +237,12 @@ export async function addKeys(
 		configString += `${keyToAdd['name']}{\n`
 		// console.log(keyToAdd['name'])
 		if (keyToAdd['name'] === 'windowrule') {
-			configString += `name = windowrule-${makeUUID()}\n`
+			configString += `name = windowrule-${makeUUID(4)}\n`
+			configString += `match:class = #^(exactly)$, ^(startswith), (endswith)$\n`
+		}
+		if (keyToAdd['name'] === 'layerrule') {
+			configString += `name = layerrule-${makeUUID(4)}\n`
+			configString += `match:namespace = #^(exactly)$, ^(startswith), (endswith)$\n`
 		}
 		if (keyToAdd['name'] === 'device') {
 			configString += `name = device-${makeUUID()}\n`
@@ -265,12 +273,31 @@ export async function addKeys(
 		new _configRenderer(newNode, renderTo, false, true)
 	} else {
 		newNode['position'] = originalPathString
+
+		let nodeTree = [newNode]
+		function fixPositionNames() {
+			if (!nodeTree.at(-1)['children']) {
+				return
+			}
+			nodeTree.at(-1)['children'].forEach((child: ItemPropsKey | ItemPropsMisc | ItemPropsGroup) => {
+				child.position = [nodeTree.at(-1)['position'], child['position'].replace('root:', '')].join(':')
+				if ((child as ItemPropsGroup).children) {
+					nodeTree.push(child)
+				}
+			})
+			nodeTree.pop()
+		}
+		fixPositionNames()
+
 		let filepath = originalPathString
 			.split(':')
 			.filter((i) => i.endsWith('.conf'))
 			.at(-1)
+
+		let endIndex = parentJSON.children.indexOf(parentJSON.children.find((i) => i.type === 'GROUPEND')) ?? parentJSON.children.length
+		parentJSON.children.splice(endIndex, 0, newNode)
+		// parentJSON.children.push(newNode)
 		handleSave(filepath, `save ${newNode['uuid']}`, false)
-		parentJSON.children.push(newNode)
 		new _configRenderer(newNode, renderTo, false, true)
 	}
 }
