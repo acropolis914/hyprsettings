@@ -21,7 +21,7 @@ export default async function getAndRenderConfig() {
 	await Backend.getHyprlandConfig()
 	setTimeout(async () => {
 		Backend.getHyprlandConfigTexts()
-	}, 1000)
+	}, 2000)
 }
 
 export function clearConfigItems() {
@@ -45,16 +45,14 @@ export class _configRenderer {
 	renderTo: HTMLElement
 	renderAfter: boolean
 	renderInside: boolean
-	nodesSinceYield: number
-	readonly yieldEveryNodes: number
+	private lastYieldTime: number
 
 	constructor(json: Record<string, any>, renderTo: HTMLElement = null, renderAfter: boolean = true, renderInside: boolean = false) {
 		this.renderTo = renderTo
 		this.renderAfter = renderAfter
 		this.renderInside = renderInside
 		this.json = json
-		this.nodesSinceYield = 0
-		this.yieldEveryNodes = 30
+		this.lastYieldTime = performance.now()
 		this.container_stack = []
 		if (renderTo || renderInside) {
 			this.temporaryElement = document.createElement('div')
@@ -90,11 +88,11 @@ export class _configRenderer {
 	}
 
 	private async maybeYieldToUI() {
-		this.nodesSinceYield++
-		if (this.nodesSinceYield < this.yieldEveryNodes) {
+		const now = performance.now()
+		if (now - this.lastYieldTime < 16) {
 			return
 		}
-		this.nodesSinceYield = 0
+		this.lastYieldTime = performance.now()
 		await this.nextFrame()
 	}
 
@@ -147,7 +145,7 @@ export class _configRenderer {
 	}
 
 	async parse(json: string | Record<string, any> | JSON) {
-		await this.maybeYieldToUI()
+		// await this.maybeYieldToUI()
 		//Comment Stacking for three line label comments from default hyprland.conf
 		const self = this
 
@@ -170,9 +168,9 @@ export class _configRenderer {
 		}
 
 		function renderCommentQueue(all: boolean = false) {
-			let left = all ? 0 : 1
-			while (self.comment_queue.length > left) {
-				let comment_item: JSON = self.comment_queue[0]
+			let limit = all ? self.comment_queue.length : self.comment_queue.length - 1;
+			let itemsToProcess = self.comment_queue.splice(0, limit);
+			for (let comment_item of itemsToProcess) {
 				let comment_item_el = new EditorItem_Comments(comment_item, false)
 				if (!GLOBAL['config']['show_line_comments']) {
 					comment_item_el.el.classList.add('settings-hidden')
@@ -184,8 +182,6 @@ export class _configRenderer {
 				} else {
 					parentStack.appendChild(elementToAdd)
 				}
-				// comment_item_el.addToParent(parentStack)
-				self.comment_queue.shift()
 			}
 		}
 
@@ -243,7 +239,7 @@ export class _configRenderer {
 			///fugly
 		} else if (json['type'] === 'GROUP') {
 			if (
-				(json['position'] && json['position'].split(':').length > 1) ||
+				(json['position'] && json['position'].indexOf(':') > -1) ||
 				(json['name'] === 'root' && json['children'][0].type !== 'FILE')
 			) {
 				if (this.comment_stack.length > 0) {
@@ -292,13 +288,15 @@ export class _configRenderer {
 							//Todo hmmm should this be -1?
 							renderCommentQueue(true)
 						}
+						// Periodically yield to prevent main thread blocking for deep UI nesting
+						await this.maybeYieldToUI()
 						await this.parse(child)
 					}
 				} catch (e) {
 					console.error(e, json)
 				}
 			}
-		} else if (json['position'] && json['type'] === 'GROUPEND' && json['position'].split(':').length > 1) {
+		} else if (json['position'] && json['type'] === 'GROUPEND' && json['position'].indexOf(':') > -1) {
 			if (this.comment_queue.length > 0) {
 				renderCommentQueue(false)
 			}

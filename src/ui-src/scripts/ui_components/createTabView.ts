@@ -7,7 +7,6 @@ import { counter, menuState } from './svelteStates.svelte.js'
 import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
 
 let initialLoad = true
-let activeContextMenus: any[] = []
 
 interface TabProps {
 	id?: string
@@ -171,8 +170,8 @@ class ConfigTab {
 		console.log('Opening context menu for the config set')
 
 		// Unmount all currently active context menus first
-		activeContextMenus.forEach((menu) => unmount(menu))
-		activeContextMenus = []
+		GLOBAL.activeContextMenus.forEach((menu) => unmount(menu))
+		GLOBAL.activeContextMenus = []
 
 		if (this.contextMenu) {
 			unmount(this.contextMenu)
@@ -196,7 +195,7 @@ class ConfigTab {
 			props: localState,
 		})
 		this.contextMenu = menu
-		activeContextMenus.push(menu)
+		GLOBAL.activeContextMenus.push(menu)
 		return { menu, localState }
 	}
 }

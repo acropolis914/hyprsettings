@@ -16,7 +16,7 @@
 		submenu?: Item[];
 	}
 
-	let {items, visible, x, y, submenu} = $props() as Props;
+	let {items, visible, x, y, submenu}: Props = $props()
 
 	items.forEach((item) => {
 		if (typeof item.action === "function" && item.submenu) {

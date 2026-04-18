@@ -27,6 +27,9 @@
 }
 
 #loading-overlay {
+	will-change: transform, opacity;
+	opacity: 1;
+
 	&.darken-overlay {
 		.loading-text {
 			font-size: 1.6rem;

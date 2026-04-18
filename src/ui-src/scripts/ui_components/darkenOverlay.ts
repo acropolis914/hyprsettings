@@ -34,6 +34,7 @@ export function logSize(el: Element, label = 'Element') {
 	})
 }
 
+const splashMessages = ['Loading your Hyprland config', "I don't wanna wai-ait, I don't wanna wait"]
 export default async function createLoadingOverlay(message = 'Loading your Hyprland config') {
 	performance.mark('overlay:start')
 
@@ -43,12 +44,12 @@ export default async function createLoadingOverlay(message = 'Loading your Hyprl
 	performance.measure('destroyOverlay', 'destroyOverlay:start', 'destroyOverlay:end')
 
 	performance.mark('after-destroy:rAF-wait:start')
-	await new Promise((resolve) => requestAnimationFrame(resolve))
+	// await new Promise((resolve) => requestAnimationFrame(resolve))
 	performance.mark('after-destroy:rAF-wait:end')
 	performance.measure('rAF-after-destroy', 'after-destroy:rAF-wait:start', 'after-destroy:rAF-wait:end')
 
 	const contentArea = document.getElementById('content-area')
-	logSize(contentArea, 'contentArea (Start)')
+	// logSize(contentArea, 'contentArea (Start)')
 
 	performance.mark('overlay:create:start')
 
@@ -61,8 +62,35 @@ export default async function createLoadingOverlay(message = 'Loading your Hyprl
 	loadingText.textContent = message
 	overlay.appendChild(loadingText)
 
-	const spinner = `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>*{fill:var(--text-0) !important}.spinner_nOfF{animation:spinner_qtyZ 2s cubic-bezier(0.36,.6,.31,1) infinite}.spinner_fVhf{animation-delay:-.5s}.spinner_piVe{animation-delay:-1s}.spinner_MSNs{animation-delay:-1.5s}@keyframes spinner_qtyZ{0%{r:0}25%{r:3px;cx:4px}50%{r:3px;cx:12px}75%{r:3px;cx:20px}100%{r:0;cx:20px}}</style><circle class="spinner_nOfF" cx="4" cy="12" r="3"/><circle class="spinner_nOfF spinner_fVhf" cx="4" cy="12" r="3"/><circle class="spinner_nOfF spinner_piVe" cx="4" cy="12" r="3"/><circle class="spinner_nOfF spinner_MSNs" cx="4" cy="12" r="3"/></svg>`
-	// const spinner = '<img src="/assets/loading.gif" alt="loading-animation"/>'
+	const spinner = `
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<style>
+  circle {
+    fill: var(--text-0) !important;
+    /* Use will-change to promote each dot to its own GPU layer */
+    will-change: transform, opacity;
+  }
+  .dot {
+    animation: moveAndSize 2s cubic-bezier(0.36,.6,.31,1) infinite;
+    transform-origin: center;
+  }
+  .d2 { animation-delay: -.5s; }
+  .d3 { animation-delay: -1s; }
+  .d4 { animation-delay: -1.5s; }
+
+  @keyframes moveAndSize {
+    0%   { transform: translateX(-8px) scale(0); opacity: 0; }
+    25%  { transform: translateX(-8px) scale(1); opacity: 1; }
+    50%  { transform: translateX(0px)  scale(1); opacity: 1; }
+    75%  { transform: translateX(8px)  scale(1); opacity: 1; }
+    100% { transform: translateX(8px)  scale(0); opacity: 0; }
+  }
+</style>
+  <circle class="dot d1" cx="12" cy="12" r="3"/>
+  <circle class="dot d2" cx="12" cy="12" r="3"/>
+  <circle class="dot d3" cx="12" cy="12" r="3"/>
+  <circle class="dot d4" cx="12" cy="12" r="3"/>
+</svg>` // const spinner = '<img src="/assets/loading.gif" alt="loading-animation"/>'
 	const wrapper = document.createElement('div')
 	wrapper.innerHTML = spinner.trim()
 	overlay.appendChild(wrapper.firstChild)
@@ -71,7 +99,7 @@ export default async function createLoadingOverlay(message = 'Loading your Hyprl
 	performance.measure('overlay-create', 'overlay:create:start', 'overlay:create:end')
 
 	performance.mark('before-append:rAF:start')
-	await new Promise((resolve) => requestAnimationFrame(resolve))
+	// await new Promise((resolve) => requestAnimationFrame(resolve))
 	performance.mark('before-append:rAF:end')
 	performance.measure('rAF-before-append', 'before-append:rAF:start', 'before-append:rAF:end')
 
@@ -81,15 +109,15 @@ export default async function createLoadingOverlay(message = 'Loading your Hyprl
 	performance.mark('overlay:append:end')
 	performance.measure('overlay-append', 'overlay:append:start', 'overlay:append:end')
 
-	logSize(overlay, 'overlay (After Append)')
-	logSize(loadingText, 'loadingText (After Append)')
+	// logSize(overlay, 'overlay (After Append)')
+	// logSize(loadingText, 'loadingText (After Append)')
 
 	performance.mark('after-append:rAF:start')
-	await new Promise(requestAnimationFrame)
+	// await new Promise(requestAnimationFrame)
 	performance.mark('after-append:rAF:end')
 	performance.measure('rAF-after-append', 'after-append:rAF:start', 'after-append:rAF:end')
 
-	logSize(overlay, 'overlay (End - after animation frame)')
+	// logSize(overlay, 'overlay (End - after animation frame)')
 
 	performance.mark('overlay:end')
 	performance.measure('overlay-total', 'overlay:start', 'overlay:end')

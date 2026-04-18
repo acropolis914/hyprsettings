@@ -10,7 +10,7 @@ import { dmenuConfirm, selectFrom } from '../ui_components/dmenu.js'
 import { BezierModal } from './keyEditor_Bezier.js'
 import { html, render } from 'lit'
 import { gotoWiki } from '../ui_components/wikiTab.ts'
-import { mount } from 'svelte'
+import { mount, unmount } from 'svelte'
 import keyEditor_Animation from '@scripts/ConfigRenderer/keyEditor_Animation.svelte'
 import createToolTippy from '@scripts/ui_components/toolTippy.ts'
 import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
@@ -161,32 +161,7 @@ export class EditorItem_Generic {
 
 		this.info = findConfigDescription(this.config_position, name, ['GROUP'])
 
-		this.valueEditor = this.createValueEditor(value)
-		if (
-			!this.valueEditor &&
-			this.el.dataset.name !== 'animation' &&
-			!this.el.dataset.name.startsWith('bind') &&
-			this.el.dataset.infoType !== 'CONFIG_OPTION_COLOR' &&
-			!this.isSvelte
-		) {
-			// console.log(this.el.dataset, 'has no value editor')
-			this.valueEditor = document.createElement('textarea')
-			this.valueEditor.rows = 1
-			if (this.info) this.valueEditor.dataset.defaultData = this.info.data.trim('"')
-			this.valueEditor.value = value
-			this.valueEditor.id = 'generic-value'
-		}
-
-		if (this.valueEditor && name != 'animation' && !this.isSvelte) {
-			//todo add a svelte flag
-			try {
-				this.genericEditor_el.appendChild(this.valueEditor)
-			} catch (e) {
-				// this.genericEditor_el.appendChild(this.valueEditor.el)
-				console.log(this.valueEditor, this.el.dataset)
-				console.error(e)
-			}
-		}
+		this.value = value
 
 		if (name === 'generic' || name.startsWith('Custom') || !name) {
 			this.keyEditor.classList.remove('hidden')
@@ -206,38 +181,41 @@ export class EditorItem_Generic {
 		this.commentArea = this.el.querySelector('.comment')
 		this.commentArea.value = this.el.dataset.comment
 
-		const t0 = performance.now();
+		const t0 = performance.now()
 		this.createTooltip(json)
-		const t1 = performance.now();
+		const t1 = performance.now()
 
 		this.addListeners()
-		const t2 = performance.now();
+		const t2 = performance.now()
 
 		this.update()
-		const t3 = performance.now();
+		const t3 = performance.now()
 
 		setTimeout(() => {
 			this.initial_load = false
 		}, 0)
 
-		const endMark = performance.now();
-		const total = endMark - startMark;
+		const endMark = performance.now()
+		const total = endMark - startMark
 
 		// Only log items that take unusually long (e.g. > 1ms)
 		if (total > 1) {
-			if (!window['profilerTotals']) window['profilerTotals'] = { createTooltip: 0, addListeners: 0, update: 0, total: 0, count: 0 };
-			window['profilerTotals'].createTooltip += (t1 - t0);
-			window['profilerTotals'].addListeners += (t2 - t1);
-			window['profilerTotals'].update += (t3 - t2);
-			window['profilerTotals'].total += total;
-			window['profilerTotals'].count++;
+			if (!window['profilerTotals'])
+				window['profilerTotals'] = { createTooltip: 0, addListeners: 0, update: 0, total: 0, count: 0 }
+			window['profilerTotals'].createTooltip += t1 - t0
+			window['profilerTotals'].addListeners += t2 - t1
+			window['profilerTotals'].update += t3 - t2
+			window['profilerTotals'].total += total
+			window['profilerTotals'].count++
 
 			// Schedule a delayed log of the totals once rendering settles
-			clearTimeout(window['profilerTimer']);
+			clearTimeout(window['profilerTimer'])
 			window['profilerTimer'] = setTimeout(() => {
-				const p = window['profilerTotals'];
-				console.log(`=== PROFILER TOTALS ===\nItems profiled: ${p.count}\ncreateTooltip total: ${p.createTooltip.toFixed(2)} ms\naddListeners total: ${p.addListeners.toFixed(2)} ms\nupdate total: ${p.update.toFixed(2)} ms\nTotal constructor lag: ${p.total.toFixed(2)} ms\n=======================`);
-			}, 1000);
+				const p = window['profilerTotals']
+				console.log(
+					`=== PROFILER TOTALS ===\nItems profiled: ${p.count}\ncreateTooltip total: ${p.createTooltip.toFixed(2)} ms\naddListeners total: ${p.addListeners.toFixed(2)} ms\nupdate total: ${p.update.toFixed(2)} ms\nTotal constructor lag: ${p.total.toFixed(2)} ms\n=======================`,
+				)
+			}, 1000)
 		}
 	}
 
@@ -435,7 +413,7 @@ export class EditorItem_Generic {
 
 	private createTooltip(json: string | object) {
 		const initTooltip = () => {
-			this.el.removeEventListener('mouseenter', initTooltip);
+			this.el.removeEventListener('mouseenter', initTooltip)
 			let position_title = (json as any)['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
 			this.tippyTitle = `<strong>  Location:</strong> ${position_title}`
 
@@ -459,8 +437,8 @@ export class EditorItem_Generic {
 			}
 
 			createToolTippy({ target: this.el, content: this.tippyTitle })
-		};
-		this.el.addEventListener('mouseenter', initTooltip);
+		}
+		this.el.addEventListener('mouseenter', initTooltip)
 	}
 
 	createContextMenu(x = 0, y = 0, show = true) {
@@ -526,6 +504,10 @@ export class EditorItem_Generic {
 
 		this.contextMenu = new ContextMenu(contextMenuItems)
 		if (show) {
+			GLOBAL.activeContextMenus.forEach((item) => {
+				unmount(item)
+				GLOBAL.activeContextMenus.splice(0, 1)
+			})
 			this.contextMenu.show(x, y)
 		}
 	}
@@ -543,8 +525,7 @@ export class EditorItem_Generic {
 			formatted = `<a onclick='window.gotoWiki("wiki:configuring:${path}")' title="Go to ${match} wiki">${formatted}</a>`
 		}
 		formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1)
-
-		let value = this.valueEditor?.value ?? this.value ?? 'Please input a value'
+		let value = this.valueEditor?.value ?? this.value ?? this.json.value ?? 'Please input a value'
 		if (name === '' || value === null || this.hasInvalidData) {
 			this.keyEditor.classList.remove('hidden')
 			this.el.classList.add('invalid')
@@ -568,9 +549,9 @@ export class EditorItem_Generic {
 
 	addListeners() {
 		this.el.addEventListener('click', (e) => {
+			this.initValueEditor()
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.el.dataset.uuid
 			// GLOBAL.setKey('previousView', GLOBAL.currentView)
-			// GLOBAL.setKey('currentView', 'editorItem')
 			// console.log('clicked editor item')
 			this.contextMenu?.hide()
 			if (this.isBoolean) {
@@ -592,7 +573,8 @@ export class EditorItem_Generic {
 			}
 		})
 		this.el.addEventListener('dblclick', (e) => {
-			if (this.el.dataset.name === 'bezier' && this.valueEditor.contains(e.target)) {
+			this.initValueEditor()
+			if (this.el.dataset.name === 'bezier' && this.valueEditor?.contains(e.target as Node)) {
 				// this.el.classList.toggle('compact')
 				// this.contextMenu.hide()
 			} else if (this.flipValueIfBool()) {
@@ -603,6 +585,7 @@ export class EditorItem_Generic {
 			}
 		})
 		this.el.addEventListener('keydown', (e) => {
+			this.initValueEditor()
 			if (e.key === 'Enter' || e.key === 'Space') {
 				if (e.target != this.el) return
 				// GLOBAL.setKey('currentView', 'editorItem')
@@ -631,6 +614,7 @@ export class EditorItem_Generic {
 			}
 		})
 		this.el.addEventListener('focus', (e) => {
+			this.initValueEditor()
 			// this.createContextMenu()
 		})
 		this.el.addEventListener('blur', (e) => {
@@ -665,7 +649,46 @@ export class EditorItem_Generic {
 			})
 		})
 
-		this.valueEditor?.addEventListener('input', (e) => {
+		this.commentArea.addEventListener('input', () => {
+			this.el.dataset.comment = this.commentArea.value
+			this.update()
+		})
+	}
+
+	private valueEditorInitialized = false
+
+	initValueEditor() {
+		if (this.valueEditorInitialized) return
+		this.valueEditorInitialized = true
+
+		let value = this.el.dataset.value || this.value || ''
+		let name = this.el.dataset.name
+
+		this.valueEditor = this.createValueEditor(value)
+		if (
+			!this.valueEditor &&
+			this.el.dataset.name !== 'animation' &&
+			!this.el.dataset.name.startsWith('bind') &&
+			this.el.dataset.infoType !== 'CONFIG_OPTION_COLOR' &&
+			!this.isSvelte
+		) {
+			this.valueEditor = document.createElement('textarea')
+			this.valueEditor.rows = 1
+			if (this.info) this.valueEditor.dataset.defaultData = this.info.data.trim('"')
+			this.valueEditor.value = value
+			this.valueEditor.id = 'generic-value'
+		}
+
+		if (this.valueEditor && name != 'animation' && !this.isSvelte) {
+			try {
+				this.genericEditor_el.appendChild(this.valueEditor)
+			} catch (e) {
+				console.log(this.valueEditor, this.el.dataset)
+				console.error(e)
+			}
+		}
+
+		this.valueEditor?.addEventListener('input', (e: any) => {
 			if (e.key === 'Enter') {
 				e.preventDefault()
 				e.stopPropagation()
@@ -677,7 +700,7 @@ export class EditorItem_Generic {
 			})
 		})
 
-		this.valueEditor?.addEventListener('click', (e) => {
+		this.valueEditor?.addEventListener('click', (e: any) => {
 			if (this.flipValueIfBool()) {
 				e.preventDefault()
 			}
@@ -690,17 +713,12 @@ export class EditorItem_Generic {
 			})
 		})
 
-		this.valueEditor?.addEventListener('keydown', (e) => {
+		this.valueEditor?.addEventListener('keydown', (e: any) => {
 			if (e.key === 'Enter') {
 				e.preventDefault()
 				e.stopPropagation()
 				e.stopImmediatePropagation()
 			}
-		})
-
-		this.commentArea.addEventListener('input', () => {
-			this.el.dataset.comment = this.commentArea.value
-			this.update()
 		})
 	}
 
@@ -731,6 +749,7 @@ export class EditorItem_Generic {
 	async valueReset() {
 		let confirm = await dmenuConfirm()
 		if (confirm) {
+			this.initValueEditor()
 			if (
 				this.info.type == 'CONFIG_OPTION_INT' ||
 				this.info.type === 'integer' ||
@@ -773,9 +792,10 @@ export class EditorItem_Generic {
 	}
 
 	flipValueIfBool(save = true) {
+		this.initValueEditor()
 		let val
 		try {
-			val = this.valueEditor.value.toLowerCase().trim()
+			val = this.valueEditor?.value?.toLowerCase().trim() ?? this.value?.toString().toLowerCase().trim() ?? ''
 		} catch (e) {
 			// console.error(e)
 			return false
@@ -839,8 +859,7 @@ export class EditorItem_Generic {
 		let nextSibling = this.el.nextElementSibling || this.el.previousElementSibling || this.el.closest('.config-group')
 		let confirm = await dmenuConfirm(`Are you sure you want to delete node <span class="strong">${this.el.dataset.name}</span>?`)
 		if (confirm) {
-			deleteKey(this.el.dataset.uuid, this.el.dataset.position)
-			(nextSibling as HTMLElement)?.focus()
+			deleteKey(this.el.dataset.uuid, this.el.dataset.position)(nextSibling as HTMLElement)?.focus()
 			this.el.remove()
 		}
 	}

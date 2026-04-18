@@ -1,6 +1,15 @@
 import type { ItemPropsFile } from '@scripts/types/editorItemTypes.ts'
 
-type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem' | 'wikiNavigation' | 'wikiContent'
+type ViewType =
+	'tabs'
+	| 'main'
+	| 'search'
+	| 'dmenu'
+	| 'overlay'
+	| 'colorSelect'
+	| 'editorItem'
+	| 'wikiNavigation'
+	| 'wikiContent'
 // type ConfigGlobal = {
 // 	file: string
 // 	name: string
@@ -45,6 +54,7 @@ export class GLOBAL {
 	static editorItemTemporaryContainers: Record<string, DocumentFragment> = {}
 	static config_info: any
 	static files: Record<string, ItemPropsFile> = {}
+	static activeContextMenus: any[] = []
 
 	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,
@@ -52,7 +62,7 @@ export class GLOBAL {
 			(): Promise<void>
 			(value: any): void
 			(): void
-		},
+		}
 	) {
 		if (!this._listeners.has(key)) {
 			this._listeners.set(key, [])

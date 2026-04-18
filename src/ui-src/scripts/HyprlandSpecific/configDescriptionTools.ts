@@ -17,6 +17,12 @@ const deviceParams: ConfigDescription[] = configDescriptions
 	})
 let config_descriptions: ConfigDescription[] = [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
 
+const configMap = new Map<string, ConfigDescription>();
+for (const desc of config_descriptions) {
+        const key = `${desc.path}|${desc.name}`;
+        configMap.set(key, desc);
+}
+
 // const types = {}
 // for (const configDescription of configDescriptions) {
 // 	if (typeof types[configDescription.type] !== 'undefined') {
@@ -29,7 +35,11 @@ let config_descriptions: ConfigDescription[] = [...configDescriptions, ...device
 // console.warn(JSON.stringify(types, null, 2))
 
 export function findConfigDescription(path: string, name: string, exclude_types: string[]) {
-	return config_descriptions.find((item) => item.path === path && item.name === name && !exclude_types.includes(item.type))
+        const desc = configMap.get(`${path}|${name}`);
+        if (desc && !exclude_types.includes(desc.type)) {
+                return desc;
+        }
+        return undefined;
 }
 
 export function findAdjacentConfigKeys(path: string, exclude: string[] = []): ConfigDescription[] {

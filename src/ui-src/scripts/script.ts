@@ -1,8 +1,6 @@
 //@ts-check
 /* eslint-env browser */
 /* global pywebview, TomSelect */
-// import '@stylesheets/style.scss'
-// import '@stylesheets/style.scss'
 import '@stylesheets/subs/tippy.scss'
 
 import './ui_components/documentListeners.ts'
@@ -45,8 +43,6 @@ declare global {
 window.Global = GLOBAL
 GLOBAL.setKey('backend', 'flask')
 
-
-
 async function load_config() {
 	const windowConfig = await Backend.readWindowConfig()
 	const builtin_themes = await Backend.getBuiltinThemes()
@@ -55,10 +51,8 @@ async function load_config() {
 		return console.error('Configuration error:', windowConfig['configuration-error'])
 	}
 	const themes = [...windowConfig.theme, ...builtin_themes.map((t) => ({ ...t, name: `[builtin] ${t.name}` }))]
-	// window.themes = themes
 	GLOBAL.setKey('themes', themes)
 
-	// Clean object assignment
 	GLOBAL.config = { ...windowConfig.config }
 	GLOBAL.setKey("persistence" , { ...(windowConfig.persistence) })
 	GLOBAL.config_info = { ...windowConfig.file_info}
@@ -138,7 +132,7 @@ export async function initialize() {
 document.addEventListener('DOMContentLoaded', async () => {
 	window.reinitialize = reinitialize
 	window.initialize = initialize
-	await initialize()
+	initialize()
 })
 
 window.addEventListener('error', (e) => {

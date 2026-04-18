@@ -15,7 +15,7 @@
 html {
 	opacity: 0;
 	transition:
-		opacity 0.2s ease-in-out,
+		opacity 0.1s ease-in-out,
 		width 0s;
 	will-change: flex-basis, transform, width, height;
 	box-sizing: border-box;
