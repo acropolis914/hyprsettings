@@ -1439,7 +1439,7 @@ text-disabled = "#1c3657"
 text-contrast = "#232c31"
 
 # Accents
-accent = "#484d79"
+accent = "#6d74b7"
 accent-hover = "#b02f30"
 accent-active = "#c59820"
 accent-success = "#237986"
