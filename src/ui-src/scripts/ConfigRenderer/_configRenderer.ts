@@ -20,8 +20,8 @@ export default async function getAndRenderConfig() {
 	})
 	await Backend.getHyprlandConfig()
 	setTimeout(async () => {
-		await Backend.getHyprlandConfigTexts()
-	}, 3000)
+		Backend.getHyprlandConfigTexts()
+	}, 1000)
 }
 
 export function clearConfigItems() {
@@ -54,7 +54,7 @@ export class _configRenderer {
 		this.renderInside = renderInside
 		this.json = json
 		this.nodesSinceYield = 0
-		this.yieldEveryNodes = 1000
+		this.yieldEveryNodes = 30
 		this.container_stack = []
 		if (renderTo || renderInside) {
 			this.temporaryElement = document.createElement('div')
@@ -101,11 +101,16 @@ export class _configRenderer {
 	async invokeParser() {
 		console.time('parseJSON')
 		await this.parse(this.json)
+		console.timeEnd('parseJSON')
+
+		console.time('appendNodes')
 		for (const [key, val] of Object.entries(GLOBAL.editorItemTemporaryContainers)) {
 			let set = document.querySelector(`.config-set#${key}`)
-			set.appendChild(val)
+			if (set && val) {
+				set.appendChild(val)
+			}
 		}
-		console.timeEnd('parseJSON')
+		console.timeEnd('appendNodes')
 
 		if (this.renderTo && this.temporaryElement) {
 			let el = this.temporaryElement.firstElementChild as HTMLDivElement
@@ -411,10 +416,10 @@ export class _configRenderer {
 		} else {
 			console.log('Failed to render an item: ', json, 'Skipping')
 		}
-
-		if (json['type'] === 'GROUP' && json['name'] === 'root') {
-			console.log('halo', json)
-		}
+		//
+		// if (json['type'] === 'GROUP' && json['name'] === 'root') {
+		// 	console.log('halo', json)
+		// }
 
 		//recursive children rendering
 		if (json['children'] && json['name'] === 'root') {

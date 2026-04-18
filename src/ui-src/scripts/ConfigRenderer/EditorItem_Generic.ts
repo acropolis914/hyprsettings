@@ -66,6 +66,10 @@ const templateString = html`
 	</div>
 `
 
+const sharedTemplateContainer = document.createElement('div')
+render(templateString, sharedTemplateContainer)
+const sharedTemplateNode = sharedTemplateContainer.firstElementChild
+
 const wikiMap = {
 	animation: 'animations',
 	bind: 'binds:#basic',
@@ -114,6 +118,8 @@ export class EditorItem_Generic {
 	private hasInvalidData: boolean
 
 	constructor(json: ItemPropsKey, disabled = false) {
+		const startMark = performance.now()
+
 		this.initial_load = true
 
 		let name = json['name']
@@ -123,9 +129,7 @@ export class EditorItem_Generic {
 		let position = json['position']
 
 		this.saveDebounced = debounce(() => this.save(), 50)
-		const template = document.createElement('div')
-		render(templateString, template)
-		this.el = template.firstElementChild!.cloneNode(true) as HTMLDivElement
+		this.el = sharedTemplateNode!.cloneNode(true) as HTMLDivElement
 
 		if (GLOBAL['config'].compact) {
 			this.el.classList.add('compact')
@@ -202,12 +206,39 @@ export class EditorItem_Generic {
 		this.commentArea = this.el.querySelector('.comment')
 		this.commentArea.value = this.el.dataset.comment
 
+		const t0 = performance.now();
 		this.createTooltip(json)
+		const t1 = performance.now();
+
 		this.addListeners()
+		const t2 = performance.now();
+
 		this.update()
+		const t3 = performance.now();
+
 		setTimeout(() => {
 			this.initial_load = false
-		}, 20)
+		}, 0)
+
+		const endMark = performance.now();
+		const total = endMark - startMark;
+
+		// Only log items that take unusually long (e.g. > 1ms)
+		if (total > 1) {
+			if (!window['profilerTotals']) window['profilerTotals'] = { createTooltip: 0, addListeners: 0, update: 0, total: 0, count: 0 };
+			window['profilerTotals'].createTooltip += (t1 - t0);
+			window['profilerTotals'].addListeners += (t2 - t1);
+			window['profilerTotals'].update += (t3 - t2);
+			window['profilerTotals'].total += total;
+			window['profilerTotals'].count++;
+
+			// Schedule a delayed log of the totals once rendering settles
+			clearTimeout(window['profilerTimer']);
+			window['profilerTimer'] = setTimeout(() => {
+				const p = window['profilerTotals'];
+				console.log(`=== PROFILER TOTALS ===\nItems profiled: ${p.count}\ncreateTooltip total: ${p.createTooltip.toFixed(2)} ms\naddListeners total: ${p.addListeners.toFixed(2)} ms\nupdate total: ${p.update.toFixed(2)} ms\nTotal constructor lag: ${p.total.toFixed(2)} ms\n=======================`);
+			}, 1000);
+		}
 	}
 
 	private createNameEditor(name) {
@@ -403,29 +434,33 @@ export class EditorItem_Generic {
 	}
 
 	private createTooltip(json: string | object) {
-		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
-		this.tippyTitle = `<strong>  Location:</strong> ${position_title}`
+		const initTooltip = () => {
+			this.el.removeEventListener('mouseenter', initTooltip);
+			let position_title = (json as any)['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
+			this.tippyTitle = `<strong>  Location:</strong> ${position_title}`
 
-		if (this.info) {
-			let description = JSON.stringify(this.info['description'])
-			let type = JSON.stringify(this.info['type'])
-			let description_title = `${JSON.parse(description)}\n\n<strong> Type:</strong> ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
-			description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
-			if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
-				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
-				const [defaultValue, min, max] = this.info['data']
-					.split(',')
-					.map((item) => item.trim())
-					.map(Number)
-				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue} • Min: ${min} • Max: ${max}`
-			} else {
-				this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
-				let defaultValue = this.info['data']?.replace(/^\s*"(.*)"\s*$/, '$1')
-				this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
+			if (this.info) {
+				let description = JSON.stringify(this.info['description'])
+				let type = JSON.stringify(this.info['type'])
+				let description_title = `${JSON.parse(description)}\n\n<strong> Type:</strong> ${JSON.parse(type).replace('CONFIG_OPTION_', '')}`
+				description_title = description_title.charAt(0).toUpperCase() + description_title.slice(1)
+				if (JSON.parse(type) === 'CONFIG_OPTION_INT' || JSON.parse(type) === 'CONFIG_OPTION_FLOAT') {
+					this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
+					const [defaultValue, min, max] = this.info['data']
+						.split(',')
+						.map((item) => item.trim())
+						.map(Number)
+					this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue} • Min: ${min} • Max: ${max}`
+				} else {
+					this.tippyTitle += `\n\n<strong>󱎸  Description:</strong> ${description_title}`
+					let defaultValue = this.info['data']?.replace(/^\s*"(.*)"\s*$/, '$1')
+					this.tippyTitle += `\n<strong>Default:</strong> ${defaultValue}`
+				}
 			}
-		}
 
-		createToolTippy({ target: this.el, content: this.tippyTitle })
+			createToolTippy({ target: this.el, content: this.tippyTitle })
+		};
+		this.el.addEventListener('mouseenter', initTooltip);
 	}
 
 	createContextMenu(x = 0, y = 0, show = true) {
@@ -797,7 +832,7 @@ export class EditorItem_Generic {
 		// check falsy
 		if (falsy.some((k) => val.startsWith(k))) return false
 
-		return null // not a boolean-like string
+		return null // not a boolean-like str
 	}
 
 	async delete() {
@@ -805,7 +840,7 @@ export class EditorItem_Generic {
 		let confirm = await dmenuConfirm(`Are you sure you want to delete node <span class="strong">${this.el.dataset.name}</span>?`)
 		if (confirm) {
 			deleteKey(this.el.dataset.uuid, this.el.dataset.position)
-			nextSibling?.focus()
+			(nextSibling as HTMLElement)?.focus()
 			this.el.remove()
 		}
 	}
