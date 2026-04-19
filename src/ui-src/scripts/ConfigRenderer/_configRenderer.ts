@@ -317,15 +317,9 @@ export class _configRenderer {
 				let genericItem: EditorItem_Generic = new EditorItem_Generic(json, json['disabled'])
 				let tabToAddTo: any
 				const foundPair = keyNameStarts.find(([key, value, exclude]) => {
-					// console.log(value, typeof value, GLOBAL.editorItemTemporaryContainers[String(value)])
-					// console.log(this.container_stack.at(-1))
-
-					// skip if the last container is a config-group
 					if (this.container_stack.at(-1)?.classList?.contains('config-group')) {
-						// console.log(this.container_stack.at(-1).classList.contains('config-group'))
-						return false // don't consider this pair
+						return false
 					}
-
 					let excluded = exclude ? exclude : []
 					return json['name'].trim().startsWith(key) && !excluded.includes(json['name'].trim())
 				})

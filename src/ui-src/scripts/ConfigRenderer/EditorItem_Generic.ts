@@ -183,42 +183,18 @@ export class EditorItem_Generic {
 		this.commentArea = this.el.querySelector('.comment')
 		this.commentArea.value = this.el.dataset.comment
 
-		const t0 = performance.now()
+		// const t0 = performance.now()
 		this.createTooltip(json)
-		const t1 = performance.now()
+		// const t1 = performance.now()
 
 		this.addListeners()
-		const t2 = performance.now()
+		// const t2 = performance.now()
 
 		this.update()
-		const t3 = performance.now()
 
 		setTimeout(() => {
 			this.initial_load = false
 		}, 0)
-
-		const endMark = performance.now()
-		const total = endMark - startMark
-
-		// Only log items that take unusually long (e.g. > 1ms)
-		if (total > 1) {
-			if (!window['profilerTotals'])
-				window['profilerTotals'] = { createTooltip: 0, addListeners: 0, update: 0, total: 0, count: 0 }
-			window['profilerTotals'].createTooltip += t1 - t0
-			window['profilerTotals'].addListeners += t2 - t1
-			window['profilerTotals'].update += t3 - t2
-			window['profilerTotals'].total += total
-			window['profilerTotals'].count++
-
-			// Schedule a delayed log of the totals once rendering settles
-			clearTimeout(window['profilerTimer'])
-			window['profilerTimer'] = setTimeout(() => {
-				const p = window['profilerTotals']
-				console.log(
-					`=== PROFILER TOTALS ===\nItems profiled: ${p.count}\ncreateTooltip total: ${p.createTooltip.toFixed(2)} ms\naddListeners total: ${p.addListeners.toFixed(2)} ms\nupdate total: ${p.update.toFixed(2)} ms\nTotal constructor lag: ${p.total.toFixed(2)} ms\n=======================`,
-				)
-			}, 1000)
-		}
 	}
 
 	private createNameEditor(name) {
