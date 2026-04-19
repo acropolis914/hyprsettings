@@ -191,7 +191,6 @@ export class EditorItem_Generic {
 		// const t2 = performance.now()
 
 		this.update()
-
 		setTimeout(() => {
 			this.initial_load = false
 		}, 0)
