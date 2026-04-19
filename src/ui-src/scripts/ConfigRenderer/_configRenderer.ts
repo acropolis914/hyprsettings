@@ -77,24 +77,33 @@ export class _configRenderer {
 		})
 	}
 
-	private nextFrame(): Promise<void> {
-		return new Promise((resolve) => {
-			if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
-				window.requestAnimationFrame(() => resolve())
-				return
-			}
-			setTimeout(resolve, 0)
-		})
-	}
+	// private nextFrame(): Promise<void> {
+	// 	return new Promise((resolve) => {
+	// 		if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+	// 			window.requestAnimationFrame(() => resolve())
+	// 			return
+	// 		}
+	// 		setTimeout(resolve, 0)
+	// 	})
+	// }
+	// private nextFrame(): Promise<void> {
+	// 	return new Promise((resolve) => {
+	// 		if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+	// 			window.requestAnimationFrame(() => resolve())
+	// 			return
+	// 		}
+	// 		setTimeout(resolve, 0)
+	// 	})
+	// }
 
-	private async maybeYieldToUI() {
-		const now = performance.now()
-		if (now - this.lastYieldTime < 16) {
-			return
-		}
-		this.lastYieldTime = performance.now()
-		await this.nextFrame()
-	}
+	// private async maybeYieldToUI() {
+	// 	const now = performance.now()
+	// 	if (now - this.lastYieldTime < 16) {
+	// 		return
+	// 	}
+	// 	this.lastYieldTime = performance.now()
+	// 	await this.nextFrame()
+	// }
 
 	async invokeParser() {
 		console.time('parseJSON')
@@ -168,8 +177,8 @@ export class _configRenderer {
 		}
 
 		function renderCommentQueue(all: boolean = false) {
-			let limit = all ? self.comment_queue.length : self.comment_queue.length - 1;
-			let itemsToProcess = self.comment_queue.splice(0, limit);
+			let limit = all ? self.comment_queue.length : self.comment_queue.length - 1
+			let itemsToProcess = self.comment_queue.splice(0, limit)
 			for (let comment_item of itemsToProcess) {
 				let comment_item_el = new EditorItem_Comments(comment_item, false)
 				if (!GLOBAL['config']['show_line_comments']) {
@@ -289,7 +298,7 @@ export class _configRenderer {
 							renderCommentQueue(true)
 						}
 						// Periodically yield to prevent main thread blocking for deep UI nesting
-						await this.maybeYieldToUI()
+						// await this.maybeYieldToUI()
 						await this.parse(child)
 					}
 				} catch (e) {

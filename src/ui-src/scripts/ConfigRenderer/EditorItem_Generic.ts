@@ -163,6 +163,8 @@ export class EditorItem_Generic {
 
 		this.value = value
 
+		this.initValueEditor()
+
 		if (name === 'generic' || name.startsWith('Custom') || !name) {
 			this.keyEditor.classList.remove('hidden')
 		} else if (name.startsWith('$')) {
@@ -549,7 +551,6 @@ export class EditorItem_Generic {
 
 	addListeners() {
 		this.el.addEventListener('click', (e) => {
-			this.initValueEditor()
 			GLOBAL['mainFocus'][GLOBAL['activeTab']] = this.el.dataset.uuid
 			// GLOBAL.setKey('previousView', GLOBAL.currentView)
 			// console.log('clicked editor item')
@@ -573,7 +574,6 @@ export class EditorItem_Generic {
 			}
 		})
 		this.el.addEventListener('dblclick', (e) => {
-			this.initValueEditor()
 			if (this.el.dataset.name === 'bezier' && this.valueEditor?.contains(e.target as Node)) {
 				// this.el.classList.toggle('compact')
 				// this.contextMenu.hide()
@@ -585,7 +585,6 @@ export class EditorItem_Generic {
 			}
 		})
 		this.el.addEventListener('keydown', (e) => {
-			this.initValueEditor()
 			if (e.key === 'Enter' || e.key === 'Space') {
 				if (e.target != this.el) return
 				// GLOBAL.setKey('currentView', 'editorItem')
@@ -614,7 +613,6 @@ export class EditorItem_Generic {
 			}
 		})
 		this.el.addEventListener('focus', (e) => {
-			this.initValueEditor()
 			// this.createContextMenu()
 		})
 		this.el.addEventListener('blur', (e) => {
@@ -655,12 +653,7 @@ export class EditorItem_Generic {
 		})
 	}
 
-	private valueEditorInitialized = false
-
 	initValueEditor() {
-		if (this.valueEditorInitialized) return
-		this.valueEditorInitialized = true
-
 		let value = this.el.dataset.value || this.value || ''
 		let name = this.el.dataset.name
 
@@ -749,7 +742,6 @@ export class EditorItem_Generic {
 	async valueReset() {
 		let confirm = await dmenuConfirm()
 		if (confirm) {
-			this.initValueEditor()
 			if (
 				this.info.type == 'CONFIG_OPTION_INT' ||
 				this.info.type === 'integer' ||
@@ -792,7 +784,6 @@ export class EditorItem_Generic {
 	}
 
 	flipValueIfBool(save = true) {
-		this.initValueEditor()
 		let val
 		try {
 			val = this.valueEditor?.value?.toLowerCase().trim() ?? this.value?.toString().toLowerCase().trim() ?? ''
