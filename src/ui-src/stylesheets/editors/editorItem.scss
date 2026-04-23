@@ -30,7 +30,6 @@
 		//animation-iteration-count: infinite;
 	}
 
-
 	@keyframes slow-flash {
 		0% {
 			border: 1px transparent dashed;
@@ -100,7 +99,7 @@
 		}
 
 		i {
-			color: opacity(var(--text-2), 0.5);
+			color: transparentize(var(--text-2), 0.5);
 		}
 		span {
 			font-weight: bold;

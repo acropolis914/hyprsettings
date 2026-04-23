@@ -74,13 +74,13 @@ def register_routes(app: Flask):
 
 	@app.route('/api/save_config', methods=['POST'])
 	def api_save_config():
-		log('Saving Hyprland config')
+		# log('Saving Hyprland config')
 		data = request.get_json()
 		config, changedFiles = data['config'], data['changedFiles']
-		log(f'Files changed: {changedFiles}', only_verbose=True)
+		log(f'Files changed: {changedFiles}. Saving config.', only_verbose=False)
 		#     log(data)
 		preview = api.save_config(config, changedFiles)
-		log('Hyprland config saved successfully')
+		# log('Hyprland config saved successfully')
 		return jsonify({'status': 'ok', 'preview': preview}), 200
 
 	@app.route('/api/get_hyprsettings_version', methods=['GET'])
@@ -96,7 +96,7 @@ def register_routes(app: Flask):
 
 	@app.route('/api/read_window_config', methods=['GET'])
 	def api_read_window_config():
-		log("Hyprsettings config requested")
+		# log("Hyprsettings config requested")
 		config = read_window_config()
 		# log(config)
 		jsonified = jsonify(config)
@@ -107,9 +107,9 @@ def register_routes(app: Flask):
 	def api_save_window_config():
 		data = request.get_json()
 		label = request.args.get('label', 'config')
-		log(f'Saving application window config (label: {label})')
+		# log(f'Saving application window config (label: {label})')
 		save_window_config(data, part=label)
-		log('Window config saved')
+		# log('Window config saved')
 		return jsonify({'status': 'ok'})
 
 	@app.route('/api/get_builtin_themes', methods=['GET'])

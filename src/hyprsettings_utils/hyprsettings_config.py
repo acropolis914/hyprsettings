@@ -45,7 +45,7 @@ def read_window_config():
 
 def read_old_config():
 	log('Opening old config file', only_verbose=True)
-	config_file = open(hs_globals.HYPRSETTINGS_CONFIG_PATH, encoding="utf-8")
+	config_file = open(hs_globals.HYPRSETTINGS_CONFIG_PATH, encoding='utf-8')
 	config: TOMLDocument
 	try:
 		log('Parsing old config', only_verbose=True)
@@ -59,14 +59,14 @@ def read_old_config():
 	log('Adding missing keys', only_verbose=True)
 	add_missing_keys()
 	log('Checking onboarding version', only_verbose=True)
-	if window_config.get("persistence")['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
+	if window_config.get('persistence')['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 		log('Updating onboarding version and setting first_run', only_verbose=True)
 		window_config['persistence']['first_run'] = True
 		window_config['persistence']['onboarding_version'] = hs_globals.ONBOARDING_VERSION
 	log('Checking user info', only_verbose=True)
-	if str(window_config['file_info']["user"]).lower() == "hyprsettings":
+	if str(window_config['file_info']['user']).lower() == 'hyprsettings':
 		log('Updating user info', only_verbose=True)
-		window_config['file_info']["user"] = get_user_string()
+		window_config['file_info']['user'] = get_user_string()
 	log('Running version migration', only_verbose=True)
 	version_migration()
 	log('Checking daemon setting', only_verbose=True)
@@ -91,8 +91,8 @@ def create_new_config():
 		temporary_font = None
 
 	with open(
-		  template,
-		  'r',
+		template,
+		'r',
 	) as default_config:
 		log('Reading default config template', only_verbose=True)
 		default_config_text = default_config.read()
@@ -104,10 +104,10 @@ def create_new_config():
 	if window_config['persistence']['onboarding_version'] != hs_globals.ONBOARDING_VERSION:
 		window_config['persistence']['fist_run'] = True
 		window_config['persistence']['onboarding_version'] = hs_globals.ONBOARDING_VERSION
-	if str(window_config['file_info']["user"]).lower() == "hyprsettings":
-		window_config['file_info']["user"] = get_user_string()
+	if str(window_config['file_info']['user']).lower() == 'hyprsettings':
+		window_config['file_info']['user'] = get_user_string()
 	version_migration()
-	if window_config.get("config", toml.table())['daemon']:
+	if window_config.get('config', toml.table())['daemon']:
 		state.daemon = True
 	hyprsettings_config_path_parent = hs_globals.HYPRSETTINGS_CONFIG_PATH.parent
 	hyprsettings_config_path_parent.mkdir(parents=True, exist_ok=True)
@@ -120,14 +120,14 @@ def create_new_config():
 
 def version_migration():
 	log('Starting version migration check', only_verbose=True)
-	file_info = window_config.get("file_info", toml.table())
+	file_info = window_config.get('file_info', toml.table())
 	persistence = window_config.setdefault('persistence', toml.table())
 
 	# Define the migration map: (key, from_table, to_table)
 	migrations = [
-		  ('last_tab', 'config', 'persistence'),
-		  ('first_run', 'config', 'persistence'),
-		  ('onboarding_version', 'file_info', 'persistence'),
+		('last_tab', 'config', 'persistence'),
+		('first_run', 'config', 'persistence'),
+		('onboarding_version', 'file_info', 'persistence'),
 	]
 
 	def move_key(k, v, d):
@@ -144,9 +144,9 @@ def version_migration():
 
 	# Check version and migrate
 	current_v = Version('.'.join(hs_globals.CURRENT_VERSION.split('.')[:3]))
-	if Version(file_info.get("version", "")) < current_v:
+	if Version(file_info.get('version', '')) < current_v:
 		log(f'Config version {file_info["version"]} older than {hs_globals.CURRENT_VERSION}. Migrating...')
-		file_info["version"] = hs_globals.CURRENT_VERSION
+		file_info['version'] = hs_globals.CURRENT_VERSION
 		for key, src, dest in migrations[:2]:  # Handles last_tab and first_run
 			try:
 				move_key(key, src, dest)
@@ -155,7 +155,7 @@ def version_migration():
 		log('Migration complete', only_verbose=True)
 		return
 
-	if persistence.get('onboarding_version', "") != hs_globals.ONBOARDING_VERSION:
+	if persistence.get('onboarding_version', '') != hs_globals.ONBOARDING_VERSION:
 		log(f'Onboarding version mismatch, moving onboarding_version key', only_verbose=True)
 		if move_key('onboarding_version', 'file_info', 'persistence'):
 			# persistence['onboarding_version'] = hs_globals.ONBOARDING_VERSION
@@ -181,7 +181,7 @@ def add_missing_keys():
 
 
 def save_window_config(json_fromjs, part='config'):
-	log(f'Saving window config for part: {part}')
+	# log(f'Saving window config for part: {part}')
 	config_from_json = json.loads(json_fromjs)
 	for key in config_from_json:
 		window_config[part][key] = config_from_json[key]

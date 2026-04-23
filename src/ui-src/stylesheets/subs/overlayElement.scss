@@ -23,7 +23,7 @@
 	//backdrop-filter: blur(1px);
 	transition: all 1s ease;
 	inset: 0; /* top:0; right:0; bottom:0; left:0 */
-	background-color: opacity(black, 0.3); /* semi-transparent dim */
+	background-color: transparentize(black, 0.3); /* semi-transparent dim */
 }
 
 #loading-overlay {
@@ -161,7 +161,7 @@
 
 			&:hover:not(.selected) {
 				color: var(--accent);
-				background-color: opacity(var(--accent), 0.1);
+				background-color: transparentize(var(--accent), 0.1);
 				.dmenu-item-description {
 					color: var(--text-0);
 				}

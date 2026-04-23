@@ -11,7 +11,7 @@
 	//box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
 	@include box-shadow;
 	//box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
-	border: 1px solid opacity(var(--surface-2), 0.5);
+	border: 1px solid transparentize(var(--surface-2), 0.5);
 	border-radius: var(--border-rad);
 	background-color: var(--surface-1);
 	background-blend-mode: multiply;

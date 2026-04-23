@@ -120,7 +120,7 @@
 	margin-top: calc(var(--spacing-unit) * 2);
 	margin-left: var(--spacing-unit);
 	margin-right: var(--spacing-unit);
-	border-bottom: 3px solid opacity(var(--surface-1), 0.2);
+	border-bottom: 3px solid transparentize(var(--surface-1), 0.2);
 	border-radius: 0;
 	font-size: 1.2rem;
 }

@@ -75,7 +75,7 @@ html.no-anim {
 
 	.invalid:not(.disabled) {
 		animation: none;
-		border: 1px dashed opacity(var(--accent-warning), 0.7);
+		border: 1px dashed transparentize(var(--accent-warning), 0.7);
 	}
 }
 
