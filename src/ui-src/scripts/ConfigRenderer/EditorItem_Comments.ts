@@ -10,6 +10,9 @@ export class EditorItem_Comments {
 	initial_load: boolean
 	el: HTMLDivElement
 	editing: boolean
+	private textarea: any
+	saveDebounced: ((...args) => void) | any
+	contextMenu: ContextMenu
 	constructor(json: ItemPropsMisc, hidden: boolean = false) {
 		let comment = json['comment']
 		let uuid = json['uuid']
@@ -87,7 +90,7 @@ export class EditorItem_Comments {
 
 	addListeners() {
 		this.el.addEventListener('click', () => {
-			this.createContextMenu()
+			// this.createContextMenu()
 		})
 		this.el.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
@@ -104,7 +107,7 @@ export class EditorItem_Comments {
 			}
 		})
 		this.el.addEventListener('blur', (e) => {
-			const nextTarget = e.relatedTarget
+			const nextTarget = e.relatedTarget as HTMLDivElement
 			if (nextTarget?.closest?.('.context-menu')) {
 				return
 			}
@@ -139,7 +142,7 @@ export class EditorItem_Comments {
 				this.textarea.blur()
 			}
 		})
-		this.textarea.addEventListener('keydown', (e) => {
+		this.textarea.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (e.key === 'Enter') {
 				e.stopPropagation()
 				// this.editing = false
@@ -159,7 +162,7 @@ export class EditorItem_Comments {
 				this.gotoNext(false)
 			}
 		})
-		this.textarea.addEventListener('focus', (e) => {
+		this.textarea.addEventListener('focus', (ee: FocusEvent) => {
 			this.editing = true
 		})
 	}

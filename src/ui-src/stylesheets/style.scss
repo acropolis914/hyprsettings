@@ -125,6 +125,7 @@ body {
 	border-radius: calc(var(--border-rad) * 1) !important;
 	margin-inline: var(--spacing-unit);
 	margin-block:0 !important;
+	@include win7bg;
 	@media (max-width: 768px) {
 		flex: 0 0 86%;
 	}

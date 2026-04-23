@@ -103,12 +103,9 @@ export function queueManualSave(file: string | undefined) {
 		console.warn('Save changed button not found')
 		return
 	}
-
-	// Rebind to avoid stacking listeners across multiple edits.
-	saveChangedButton.removeEventListener('click', saveChanged)
 	saveChangedButton.addEventListener('click', saveChanged)
 	saveChangedButton.classList.remove('btn-hidden')
-
+	document.addEventListener('keydown', (e) => handleCtrlS(e))
 	if (!file) return
 	let changedFiles = Array.isArray(GLOBAL.changedFiles) ? GLOBAL.changedFiles : []
 	if (!changedFiles.includes(file)) {
@@ -116,7 +113,14 @@ export function queueManualSave(file: string | undefined) {
 	}
 }
 
+function handleCtrlS(e: KeyboardEvent) {
+	if (e.key.toLowerCase() === 's' && e.ctrlKey) {
+		saveChanged()
+	}
+}
+
 export function saveChanged() {
+	document.removeEventListener('keydown', (e) => handleCtrlS(e))
 	let saveChangedButton = document.getElementById('save-changed')
 	saveChangedButton.removeEventListener('click', saveChanged)
 	saveChangedButton.classList.add('btn-hidden')
@@ -177,10 +181,8 @@ export async function addItem(
 export async function addChildItem(position: string, parent_uuid: string) {
 	let { node: parent_node } = getNodeContext(position, parent_uuid)
 	if (!parent_node) throw new Error(`Parent node not found: ${parent_uuid}`)
-
 	let existingSiblingKeys: string[] = (parent_node as ItemPropsGroup).children.map((i: { name: any }) => i.name)
 	let availableKeys: ConfigDescription[] = findAdjacentConfigKeys(parent_node.name, existingSiblingKeys)
-
 	let itemToAdd: ConfigDescription = (await selectFrom(availableKeys)) as ConfigDescription
 	itemToAdd['uuid'] = makeUUID()
 	return [itemToAdd as ConfigDescription, parent_node]
@@ -188,7 +190,6 @@ export async function addChildItem(position: string, parent_uuid: string) {
 
 export function makeUUID(length = 8) {
 	let full = ''
-
 	if (crypto?.randomUUID) {
 		full = crypto.randomUUID().replace(/-/g, '')
 	} else {
@@ -198,7 +199,6 @@ export function makeUUID(length = 8) {
 			full += Math.floor(Math.random() * 16).toString(16)
 		}
 	}
-
 	return full.slice(0, length)
 }
 
@@ -242,7 +242,6 @@ export async function shortHash(str: string): Promise<string> {
 	const data = new TextEncoder().encode(str)
 	const hash = await crypto.subtle.digest('SHA-256', data)
 	const hex = [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')
-
 	return hex.slice(0, 8) // 👈 cut to 8 chars
 }
 

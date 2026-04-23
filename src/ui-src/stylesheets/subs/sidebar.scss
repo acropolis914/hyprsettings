@@ -1,6 +1,14 @@
 @use '../mixins' as *;
 @use '../_variables' as v;
 
+html.glossy #sidebar {
+	//@include box-shadow;
+	@include win7bg;
+	.sidebar-item.selected {
+		@include box-shadow;
+		@include win7bg;
+	}
+}
 #sidebar {
 	flex: 0 0 20%;
 	transition:
@@ -13,6 +21,7 @@
 	height: 100%;
 	max-height: 100%;
 	scroll-behavior: smooth;
+	//@include win7bg;
 	//overflow-x: hidden;
 	//overflow-y: auto;
 	//scrollbar-gutter: stable;

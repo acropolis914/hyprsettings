@@ -7,8 +7,19 @@
 
 @mixin sidebar-item-active {
 	background-color: var(--accent);
+	//background-color: var(--accent);
 	color: var(--text-contrast);
 	font-weight: 600;
+}
+
+@mixin win7bg {
+	background-image: linear-gradient(
+		to bottom,
+		rgba(255, 255, 255, 0.01) -5%,
+		/* top highlight */ rgba(255, 255, 255, 0.05) 45%,
+		rgba(255, 255, 255, 0) 55%,
+		/* hard stop */ rgba(0, 0, 0, 0.15) 100% /* bottom darkening */
+	);
 }
 
 // Mixin for standard editor input reset

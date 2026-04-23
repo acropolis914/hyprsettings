@@ -6237,6 +6237,7 @@ pink = "#00a800"
 # Utilities
 overlay = "#1c1c1c"
 shadow = "#000000"
+border-rad = 0
 
 [[theme]]
 name = "Windows High Contrast Light"
@@ -6280,6 +6281,7 @@ pink = "#54fc54"
 # Utilities
 overlay = "#e8e8e8"
 shadow = "#fcfcfc"
+border-rad = 0
 
 [[theme]]
 name = "Windows High Contrast"

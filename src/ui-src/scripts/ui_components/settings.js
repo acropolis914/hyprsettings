@@ -17,6 +17,7 @@ export default async function renderSettings() {
 	createItemPreviewCommentVisibilitySetting()
 	createSidebarIconsVisibilitySetting()
 	createAnimationsToggleSetting()
+	createFlatUISetting()
 	createThemeSelectorSetting()
 }
 
@@ -251,6 +252,16 @@ function createAutoSaveSetting() {
 	const item = new CheckBoxItem('Autosave', 'autosave', true, { onCheck, onUncheck }, tooltipText)
 }
 
+function createFlatUISetting() {
+	function onCheck() {
+		document.documentElement.classList.add('glossy')
+	}
+	function onUncheck() {
+		document.documentElement.classList.remove('glossy')
+	}
+	let tooltipText = 'Windows 7-like glossy look'
+	const item = new CheckBoxItem('Glossy UI', 'ui_glossy', false, { onCheck, onUncheck }, tooltipText)
+}
 function createHeaderCommentsVisibilitySetting() {
 	function onCheck() {
 		document.querySelectorAll('.block-comment').forEach((i) => i.classList.remove('settings-hidden'))

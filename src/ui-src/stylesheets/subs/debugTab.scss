@@ -14,7 +14,7 @@
 				cursor: pointer;
 				border: none;
 				border-radius: 0.4rem;
-				background-color: var(--text-2);
+				//background-color: var(--text-2);
 				padding: 0.35rem 0.6rem;
 				font-weight: 700;
 				font-size: 1.4rem;
@@ -151,11 +151,7 @@
 		font-size: 1.2rem;
 
 		&.is-match {
-			background-color: color-mix(
-				in srgb,
-				var(--accent) 18%,
-				transparent
-			);
+			background-color: color-mix(in srgb, var(--accent) 18%, transparent);
 		}
 	}
 

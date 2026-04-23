@@ -1,6 +1,11 @@
 @use '../mixins' as *;
 @use '../_variables' as v;
 
+html.glossy .editor-item:not([data-name='comment']) {
+	@include box-shadow;
+	@include win7bg;
+}
+
 .editor-item {
 	display: flex;
 	position: relative;
