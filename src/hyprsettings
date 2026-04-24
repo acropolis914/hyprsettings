@@ -205,7 +205,7 @@ def main():
 		has_webview = True
 		try:
 			import webview
-		except Exception:
+		except ImportError:
 			has_webview = False
 			log('Webview is not installed. Skipping window and going straight to browser only mode.')
 		if state.args.no_window or not has_webview:
@@ -267,8 +267,10 @@ if __name__ == '__main__':
 		log(f'Given custom config path: {state.args.config}')
 		if str(state.args.config).endswith('.conf'):
 			state.hyprland_config_path = Path(str(state.args.config).strip('"').strip("'"))
+		elif str(state.args.config).endswith('.kdl'):
+			state.hyprland_config_path = Path(str(state.args.config).strip('"').strip("'"))
 		else:
-			warn(f'Given config file is not a ".conf file". Using default config path {state.hyprland_config_path}')
+			warn(f'Given config file is not a ".conf" or ".kdl" file. Using default config path {state.hyprland_config_path}')
 	state.daemon = not state.args.no_daemon and state.args.daemon
 	if state.args.debug:
 		log(

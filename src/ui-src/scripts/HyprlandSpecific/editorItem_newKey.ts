@@ -14,12 +14,12 @@ import { GLOBAL } from '@scripts/GLOBAL.ts'
 import type { ItemProps, ItemPropsGroup, ItemPropsKey, ItemPropsMisc } from '@scripts/types/editorItemTypes.ts'
 
 const allowed_dupes = ['animation', 'bezier', 'gesture', 'windowrule', 'bind', 'workspace', 'monitor', 'source', 'permission', 'device']
+
 export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
 	const existingSiblingKeys = Array.from(options.relatedElement.parentNode.children)
 		.filter((el) => el.classList.contains('editor-item-generic'))
 		.map((el) => el.dataset.name)
 		.filter((i) => !allowed_dupes.includes(i))
-	// console.log(existingSiblingKeys)
 
 	let availableKeys: any[]
 	try {
@@ -163,13 +163,12 @@ export async function addKeys(
 		.filter((i) => !i.endsWith('.conf'))
 		.join(':')
 
-	console.info({ pathString, originalPathString })
+	// console.info({ pathString, originalPathString })
 
 	const existingSiblingKeys = Array.from(parentElement?.querySelectorAll('.editor-item-generic'))
 		.map((el: HTMLDivElement) => el.dataset.name)
 		.filter((i) => !allowed_dupes.includes(i))
-	//
-	let availableKeys = findAllAdjacentKeys(pathString, existingSiblingKeys) // This creates a NEW array and NEW objects
+	let availableKeys = findAllAdjacentKeys(pathString, existingSiblingKeys)
 	const updatedKeys = availableKeys.map((item) => {
 		const key = { ...item } as ConfigDescription
 		if (key.path.startsWith(`${pathString}:`)) {
@@ -201,9 +200,7 @@ export async function addKeys(
 			description: '',
 		}
 	}
-	// console.log(keyToAdd)
 
-	// console.log(keyToAdd)
 	let pathList = keyToAdd['path'].split(':')
 	if (pathList.length === 1 && pathList[0] === '') {
 		pathList = []

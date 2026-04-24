@@ -92,41 +92,58 @@ export async function reinitialize() {
 	await Backend.debounceGetHyprlandConfig()
 }
 
-export async function initialize() {
-	console.log('%c🚀 Starting initialization...', 'color: #00bfff; font-weight: bold; font-size: 14px;')
+// Catppuccin Macchiato palette
+const colors = {
+	info: '#8aadf4',     // blue
+	warn: '#eed49f',     // yellow
+	success: '#a6da95',  // green
+	accent: '#c6a0f6',   // mauve
+	highlight: '#f5bde6' // pink
+}
 
-	console.log('%c⏳ Creating loading overlay...', 'color: #ff9900; font-weight: bold;')
+export async function initialize() {
+	console.log('%cStarting initialization...', `color: ${colors.info}`)
+
+	console.log('%cCreating loading overlay...', `color: ${colors.warn}`)
 	await createLoadingOverlay()
 
-	console.log('%c📂 Loading config...', 'color: #ff9900; font-weight: bold;')
+	console.log('%cLoading config...', `color: ${colors.warn}`)
 	await load_config()
 
-	console.log('%c🎨 Setting up theme...', 'color: #ff9900; font-weight: bold;')
+	console.log('%cSetting up theme...', `color: ${colors.warn}`)
 	await setupTheme()
 
-	console.log('%c🐛 Getting debug status...', 'color: #ff9900; font-weight: bold;')
+	console.log('%cGetting debug status...', `color: ${colors.warn}`)
 	await getDebugStatus()
 
-	console.log('%c📑 Creating tab view...', 'color: #ff9900; font-weight: bold;')
+	console.log('%cCreating tab view...', `color: ${colors.warn}`)
 	await createTabView()
 
-	console.log('%c🛠️ Initializing debug tab...', 'color: #ff9900; font-weight: bold;')
+	console.log('%cInitializing debug tab...', `color: ${colors.warn}`)
 	initializeDebugTab()
 
-	console.log('%c📝 Getting and rendering config...', 'color: #ff9900; font-weight: bold;')
+	console.log('%cGetting and rendering config...', `color: ${colors.warn}`)
 	await getAndRenderConfig()
 
-	renderSettings().then(() => console.log('%c⚙️ Done rendering settings tab', 'color: #ff00ff; font-weight: bold;'))
-	initializeSearchBar().then(() => console.log('%c🔍 Done initializing search bar', 'color: #00ff00; font-weight: bold;'))
-	createWiki().then(() => console.log('%c📚 Done initializing wiki tab', 'color: #ffff00; font-weight: bold;'))
+	renderSettings().then(() =>
+		console.log('%cDone rendering settings tab', `color: ${colors.accent}`)
+	)
 
-	console.log('%c💭 Setting tippy default props...', 'color: #ff9900; font-weight: bold;')
+	initializeSearchBar().then(() =>
+		console.log('%cDone initializing search bar', `color: ${colors.success}`)
+	)
+
+	createWiki().then(() =>
+		console.log('%cDone initializing wiki tab', `color: ${colors.highlight}`)
+	)
+
+	console.log('%cSetting tippy default props...', `color: ${colors.warn}`)
 	tippy.setDefaultProps({ delay: 1000, arrow: true })
 
-	console.log('%c📊 Setting up GTAG...', 'color: #ff9900; font-weight: bold;')
+	console.log('%cSetting up GTAG...', `color: ${colors.warn}`)
 	setupGTAG()
 
-	console.log('%c✅ Initialization complete!', 'color: #00ff00; font-weight: bold; font-size: 14px;')
+	console.log('%cInitialization complete!', `color: ${colors.success}`)
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

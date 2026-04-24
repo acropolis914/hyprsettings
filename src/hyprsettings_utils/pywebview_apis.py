@@ -1,9 +1,7 @@
-import json
 import os
 from os import PathLike
 import subprocess
 from pathlib import Path
-from packaging.version import Version
 import rich
 import rich.traceback
 from rich.console import Console
@@ -12,7 +10,7 @@ import tomlkit as toml
 
 from .shared import hs_globals, state
 from .hyprland_parser import HyprParser, makeUUID
-from .utils import log, ui_print, get_user_string
+from .utils import log, ui_print
 
 thisfile_path = Path(__file__).parent.resolve()
 thisfile_path_parent = thisfile_path.parent.resolve()
@@ -30,6 +28,7 @@ class Api:
 	def get_hyprland_config(path: PathLike | None = None):
 		global current_config
 		path = path if path else state.hyprland_config_path
+		log(f'Loading {path}')
 		config_node = HyprParser.load(path)
 		# log(f'Config loaded from {path},{config_node}')
 		config = config_node.to_json()
@@ -87,8 +86,7 @@ class Api:
 	def open_file(file_path: str):
 		ui_print(f'Opening {file_path}')
 		try:
-			subprocess.Popen(['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-			                 stdin=subprocess.DEVNULL, close_fds=True)
+			subprocess.Popen(['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL, close_fds=True)
 			return True
 		except Exception as e:
 			ui_print(f'Failed to open {file_path}: {e}')
