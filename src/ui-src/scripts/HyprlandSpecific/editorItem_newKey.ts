@@ -155,7 +155,6 @@ export async function addKeys(
 	disabled: boolean = false,
 	relativeElementUUID: string = '',
 ) {
-	let renderTo = parentElement ?? (document.querySelector('.config-set#permissions') as HTMLElement)
 	const originalPathString = pathString
 	pathString = pathString
 		.replace('root:', '')
@@ -251,6 +250,7 @@ export async function addKeys(
 	let parsed: ItemPropsGroup = await Backend.getHyprlandConfigFromString(configString)
 	let newNode = parsed.children[0]
 	newNode['disabled'] = disabled
+	let renderTo = parentElement ?? (document.querySelector('.config-set#miscellaneous') as HTMLElement)
 	if (!pathString) {
 		const files = Object.keys(GLOBAL.files)
 		const fileList = files.map((file) => {

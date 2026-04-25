@@ -108,12 +108,13 @@ body {
 	transition: width 0s ease;
 	max-width: 100%;
 	min-height: 0;
+	//background-color: red;
 }
 
 
 #content-area {
 	display: flex;
-	flex: 0 0 78%;
+	flex: 0 0 80%;
 	flex-direction: column;
 	transition: none !important;
 	will-change: flex-basis, transform, width, height;
@@ -123,11 +124,11 @@ body {
 	min-height: 0;
 	overflow-y: hidden;
 	border-radius: calc(var(--border-rad) * 1) !important;
-	margin-inline: var(--spacing-unit);
+	//margin-inline: var(--spacing-unit);
 	margin-block:0 !important;
-	@include win7bg;
+	//@include win7bg;
 	@media (max-width: 768px) {
-		flex: 0 0 86%;
+		flex: 0 0 90%;
 	}
 	@media (max-height: 30rem) {
 		//padding: 0;

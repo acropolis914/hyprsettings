@@ -2,6 +2,7 @@
 @use '../_variables' as v;
 
 %about-section {
+	//display: block;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -27,9 +28,9 @@
 	transition: height 1s ease-in-out;
 	background-color: transparent;
 	//overflow-x: hidden;
-	display: block;
+	//display: block;
 	@media (max-width: 33rem) {
-		scale: 0.8;
+		//scale: 0.8;
 	}
 
 	.title {
@@ -39,6 +40,8 @@
 		line-height: 2rem;
 		text-align: center;
 		white-space: pre;
+		max-width: 100%;
+		//@include text-ellipsis;
 	}
 
 	.info {
