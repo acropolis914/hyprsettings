@@ -31,59 +31,65 @@ def start_window_server():
 			threading.Thread(target=handle_client, args=(conn,), daemon=True).start()
 
 
+def start_webview_window(frontend_link):
+	webview = __import__("webview")
+	if state.args.no_dmabuf:
+		os.environ['WEBKIT_DISABLE_DMABUF_RENDERER'] = '1'
+		os.environ['GTK_OVERLAY_SCROLLING'] = '1'
+	if state.args.no_devtools:
+		webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
+	state.window_thread = threading.Thread(target=start_window_server, daemon=state.daemon)
+	state.window_thread.start()
+	state.window_instance = webview.create_window(
+		  'HyprSettings',
+		  frontend_link,
+		  transparent=True,
+		  width=800,
+		  height=600,
+		  easy_drag=True,
+		  min_size=(400, 300),
+		  hidden=state.args.hidden,
+	)
+	state.window_visible = not state.args.hidden
+
+	def on_loaded(window):
+		window.events.loaded -= on_loaded
+
+	def on_closing(window):
+		disabled_dmabuf = os.environ.get('WEBKIT_DISABLE_DMABUF_RENDERER')
+		if state.daemon:  # and (disabled_dmabuf is None or disabled_dmabuf != '1')
+			if state.window_instance:
+				state.window_instance.hide()
+			state.window_visible = False
+			log('[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]')
+			return False
+		else:
+			# if disabled_dmabuf == '1':
+			# 	log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
+			# 	log('Restoring from daemon will fail. Daemon setting is dishonored.')
+			log('Window closed. Terminating process.')
+			os._exit(0)
+			# kill_hyprsettings()
+			return None
+
+	state.window_instance.events.loaded += on_loaded
+	state.window_instance.events.closing += on_closing
+
+	webview.start(
+		  gui=state.args.ui,
+		  debug=state.args.debug,
+		  private_mode=True,
+		  storage_path=hs_globals.CACHE_PATH,
+		  icon='icon-48.png',
+	)
+
+
 def start_window(frontend_link):
-	import webview
-	def start_webview_window():
-		if state.args.no_dmabuf:
-			os.environ['WEBKIT_DISABLE_DMABUF_RENDERER'] = '1'
-			os.environ['GTK_OVERLAY_SCROLLING'] = '1'
-		if state.args.no_devtools:
-			webview.settings['OPEN_DEVTOOLS_IN_DEBUG'] = False
-		state.window_thread = threading.Thread(target=start_window_server, daemon=state.daemon)
-		state.window_thread.start()
-		state.window_instance = webview.create_window(
-			  'HyprSettings',
-			  frontend_link,
-			  transparent=True,
-			  width=800,
-			  height=600,
-			  easy_drag=True,
-			  min_size=(400, 300),
-			  hidden=state.args.hidden,
-		)
-		state.window_visible = not state.args.hidden
-
-		def on_loaded(window):
-			window.events.loaded -= on_loaded
-
-		def on_closing(window):
-			disabled_dmabuf = os.environ.get('WEBKIT_DISABLE_DMABUF_RENDERER')
-			if state.daemon:  # and (disabled_dmabuf is None or disabled_dmabuf != '1')
-				if state.window_instance:
-					state.window_instance.hide()
-				state.window_visible = False
-				log('[yellow]Called close window. Window is hidden since daemon is enabled[/yellow]')
-				return False
-			else:
-				# if disabled_dmabuf == '1':
-				# 	log('Environment variable "WEBKIT_DISABLE_DMABUF_RENDERER" is set to 1.')
-				# 	log('Restoring from daemon will fail. Daemon setting is dishonored.')
-				log('Window closed. Terminating process.')
-				os._exit(0)
-				# kill_hyprsettings()
-				return None
-
-		state.window_instance.events.loaded += on_loaded
-		state.window_instance.events.closing += on_closing
-
-		webview.start(
-			  gui=state.args.ui[0],
-			  debug=state.args.debug,
-			  private_mode=True,
-			  storage_path=hs_globals.CACHE_PATH,
-			  icon='icon-48.png',
-		)
-
+	try:
+		import webview
+	except ImportError as e:
+		log(f"Error importing webview")
+	start_webview_window(frontend_link)
 	try:
 		log('',
 		    '[red][bold]NVIDIA ONLY USERS:[/red][/bold]: If this fails with error 71, please run with [code]--no-dmabuf[/code]')

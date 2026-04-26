@@ -194,7 +194,7 @@ class LogFilter:
 def main():
 	state.flask_thread = threading.Thread(target=start_flask_server, daemon=True)
 	state.flask_thread.start()
-	time.sleep(0.1)
+	# time.sleep(0.1)
 
 	ui_link = f'http://localhost:{state.flask_port}/'
 	if state.args.bun_dev:
@@ -221,8 +221,12 @@ def main():
 					pass
 			except KeyboardInterrupt:
 				sys.exit(0)
-		if not state.args.no_window and has_webview:
+		if not state.args.no_window and has_webview and (state.args.ui == "gtk" or state.args.ui == "qt"):
 			start_window(ui_link)
+		if not state.args.no_window and has_webview and (state.args.ui == "electron"):
+			electron = subprocess.run(["electron42", ui_link, "--inspect"], capture_output=True)
+			if electron.stdout or electron.stderr:
+				log(electron.stdout + electron.stderr)
 	except Exception as e:
 		log(e)
 		log('I am ded')
