@@ -1,0 +1,348 @@
+// NIRI EXHAUSTIVE PARSER & CAPABILITY TEST CONFIGURATION
+// Covers v0.1.x/v0.2.x+ spec, KDL syntax edge-cases, and undocumented permutations.
+
+// ---------------------------------------------------------
+// Environment & Global State
+// ---------------------------------------------------------
+environment {
+    // Standard string values
+    DISPLAY ":0"
+    QT_QPA_PLATFORM "wayland;xcb"
+    // Testing numeric-looking strings
+    GDK_SCALE "2"
+}
+
+cursor {
+    // Testing Catppuccin theme integration
+    xcursor-theme "catppuccin-mocha-dark-cursors"
+    xcursor-size 24
+    hide-when-typing
+    hide-after-inactive-ms 5000
+}
+
+screenshot-path "~/Pictures/Screenshots/niri_%Y-%m-%d_%H-%M-%S.png"
+hotkey-overlay { skip-at-startup; }
+prefer-no-csd
+
+// ---------------------------------------------------------
+// Input Peripherals
+// ---------------------------------------------------------
+input {
+    keyboard {
+        xkb {
+            rules "evdev"
+            model "pc105"
+            layout "us,ph"
+            variant ",dvorak"
+            options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+        }
+        repeat-delay 250
+        repeat-rate 60
+        numlock
+        trackpoint-scroll-button 273
+    }
+
+    touchpad {
+        off // Node negation test
+        tap
+        dwt
+        dwtp
+        natural-scroll
+        accel-speed 0.35
+        accel-profile "adaptive"
+        scroll-method "two-finger"
+        tap-button-map "left-right-middle"
+        click-method "clickfinger"
+        left-handed false
+    }
+
+    mouse {
+        natural-scroll true
+        accel-speed -0.5
+        accel-profile "flat"
+        scroll-method "no-scroll"
+        middle-emulation
+    }
+
+    trackpoint {
+        accel-speed 0.0
+        scroll-method "on-button-down"
+        scroll-button 273
+        scroll-button-lock
+    }
+
+    tablet {
+        map-to-output "eDP-1"
+        // left-handed
+    }
+
+    touch {
+        map-to-output "eDP-1"
+    }
+
+    warp-mouse-to-focus
+    focus-follows-mouse max-scroll-amount="20%"
+}
+
+// ---------------------------------------------------------
+// Outputs (Monitors)
+// ---------------------------------------------------------
+output "eDP-1" {
+    mode "2560x1600@165.001"
+    scale 1.5
+    transform "normal" // Valid: normal, 90, 180, 270, flipped, flipped-90, flipped-180, flipped-270
+    position x=0 y=0
+    variable-refresh-rate true
+    background-color "#1e1e2e" // Catppuccin Mocha base
+}
+
+/-output "DP-1" { // Slash-dash commented node block
+    off
+    mode "1920x1080"
+    position x=-1920 y=0
+}
+
+// ---------------------------------------------------------
+// Layout & Geometry
+// ---------------------------------------------------------
+layout {
+    gaps 12
+    center-focused-column "always"
+    empty-workspace-above-first
+    
+    preset-column-widths {
+        proportion 0.25
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 0.75
+        fixed 1000
+    }
+
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        fixed 800
+    }
+
+    default-column-width { proportion 0.5; }
+
+    focus-ring {
+        width 3
+        active-color "#cba6f7" // Mauve
+        inactive-color "#313244" // Surface0
+        // active-gradient from="#89b4fa" to="#cba6f7" angle=135 relative-to="workspace-view"
+    }
+
+    border {
+        off
+        width 2
+        active-color "#f38ba8" // Red
+        inactive-color "#585b70" // Surface2
+        urgent-color "#fab387" // Peach
+    }
+
+    insert-hint {
+        color "#a6e3a180" // Green with 50% alpha
+        // gradient from="#a6e3a1" to="#94e2d5" angle=90
+    }
+
+    shadow {
+        on
+        softness 25
+        spread 3
+        offset x=0 y=8
+        color "#11111b99" // Crust with alpha
+        draw-behind-window true
+    }
+
+    struts {
+        left 0
+        right 0
+        top 32
+        bottom 0
+    }
+}
+
+// ---------------------------------------------------------
+// Animations (Physics & Beziers)
+// ---------------------------------------------------------
+animations {
+    slowdown 1.0
+
+    workspace-switch {
+        // Spring physics parameters
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    window-open {
+        // Fallback to standard duration/easing
+        duration-ms 200
+        curve "ease-out-expo"
+    }
+
+    window-close {
+        duration-ms 150
+        curve "ease-in-out-cubic"
+    }
+
+    window-resize {
+        // Custom bezier curve test
+        custom-easing-curve 0.25 0.1 0.25 1.0
+    }
+
+    horizontal-view-movement {
+        spring damping-ratio=0.8 stiffness=800 epsilon=0.0001
+    }
+
+    config-notification-open {
+        spring damping-ratio=0.6 stiffness=1200
+    }
+    
+    config-notification-close {
+        duration-ms 250
+        curve "ease-in-back"
+    }
+}
+
+// ---------------------------------------------------------
+// Startup Execution
+// ---------------------------------------------------------
+spawn-at-startup "waybar"
+spawn-sh-at-startup "mako &"
+// Testing single quotes inside double quotes for sh parsing
+spawn-sh-at-startup "swaybg -m fill -i '$HOME/wallpapers/catppuccin.jpg'"
+
+// ---------------------------------------------------------
+// Window & Workspace Rules
+// ---------------------------------------------------------
+
+// Target by regex, apply max constraints
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    default-column-width {}
+    max-width 1200
+    max-height 900
+}
+
+// Multi-match condition: must match all to trigger
+window-rule {
+    match app-id="firefox" title="^Picture-in-Picture$"
+    match app-id="mpv"
+    open-floating true
+    exclude-from-tabs true
+    opacity 0.95
+}
+
+// Draw border with background (handling CSD transparency issues)
+window-rule {
+    match app-id="Alacritty"
+    draw-border-with-background false
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
+
+// Boolean/State matchers
+window-rule {
+    match is-active=true
+    match is-focused=false // Testing contradiction parsers
+    block-out-from "screen-capture"
+    block-out-from "screencast"
+}
+
+window-rule {
+    match is-window-cast-target=true
+    opacity 1.0
+}
+
+// Workspace specific routing
+workspace-rule {
+    match app-id="discord"
+    match app-id="WebCord"
+    open-on-workspace "social"
+}
+
+// ---------------------------------------------------------
+// Binds & Keymaps
+// ---------------------------------------------------------
+binds {
+    // 1. App Spawning
+    Mod+Return { spawn "alacritty"; }
+    Mod+Space { spawn "fuzzel"; }
+    Mod+Shift+L allow-when-locked=true { spawn "swaylock" "-f" "-c" "1e1e2e"; }
+
+    // 2. Hardware / Media Keys (spawn-sh)
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "+5%"; }
+
+    // 3. Niri Window Lifecycle
+    Mod+Q { close-window; }
+    Mod+Shift+E { quit skip-confirmation=true; } // Testing flag passing to commands
+    Mod+Ctrl+Shift+E { power-off-monitors; }
+
+    // 4. Directional Focus
+    Mod+H { focus-column-left; }
+    Mod+L { focus-column-right; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    
+    // 5. Directional Movement
+    Mod+Ctrl+H { move-column-left; }
+    Mod+Ctrl+L { move-column-right; }
+    Mod+Ctrl+J { move-window-down; }
+    Mod+Ctrl+K { move-window-up; }
+
+    // 6. Monitor Focus/Movement
+    Mod+Shift+H { focus-monitor-left; }
+    Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
+    // Undocumented / Alternative movement variations
+    Mod+Alt+H { move-window-to-monitor-left; }
+    Mod+Alt+Shift+H { move-workspace-to-monitor-left; }
+
+    // 7. Workspace Navigation
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up { focus-workspace-up; }
+    Mod+1 { focus-workspace 1; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Alt+1 { move-window-to-workspace 1; } // Window vs Column
+
+    // 8. Scrolling (with cooldowns)
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+TouchpadScrollUp { focus-workspace-up; }
+
+    // 9. Window Management / Modes
+    Mod+BracketLeft { consume-or-expel-window-left; }
+    Mod+Comma { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+    
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R { reset-window-height; }
+    
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+Ctrl+F { expand-column-to-available-width; }
+    Mod+C { center-column; }
+    Mod+Ctrl+C { center-visible-columns; }
+
+    // 10. Layout Toggles
+    Mod+V { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    Mod+W { toggle-column-tabbed-display; }
+
+    // 11. Precise Sizing
+    Mod+Minus { set-column-width "-5%"; }
+    Mod+Equal { set-column-width "+5%"; }
+    Mod+Shift+Minus { set-window-height "-5%"; }
+    Mod+Shift+Equal { set-window-height "+5%"; }
+
+    // 12. Screenshots
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+    // 13. Overlays & Inhibitors
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    Mod+O { toggle-overview; }
+}

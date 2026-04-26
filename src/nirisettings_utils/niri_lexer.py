@@ -20,7 +20,7 @@ try:
 except ImportError:
 
 	class _State:
-		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config.kdl'
+		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config_niri_short.kdl'
 		verbose = False
 
 	state = _State()

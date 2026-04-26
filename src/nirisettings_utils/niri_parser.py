@@ -21,7 +21,7 @@ try:
 except ImportError:
 
 	class _State:
-		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config.kdl'
+		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config_niri_short.kdl'
 		verbose = False
 
 	state = _State()
@@ -160,12 +160,17 @@ class Parser:
 				self.parentStack.append(newNode)
 				continue
 			# Handle key-value pairs where both key and value are WORD tokens
-			elif self.current_token.type == 'WORD' and self.peek(ignore_ws=True).type == 'WORD':
+			elif self.current_token.type == 'WORD' and self.peek(ignore_ws=True).type in ['FLOAT', 'INT', 'STRING']:
 				key_token = self.current_token
-				value_token = self.peek(1, ignore_ws=True)
-				newNode = NiriNodeTree(name=key_token.value, type_='KEY', value=value_token.value, token_number=self.position)
+				value_token = self.peek(ignore_ws=True)
+				newNode = NiriNodeTree(
+					name=key_token.value,
+					type_='KEY',
+					value=value_token.value if value_token.type != 'STRING' else f'"{value_token.value}"',
+					token_number=self.position,
+				)
 				self.parentStack[-1].children.append(newNode)
-				self.consume()  # consume key
+				self.consume()  # consume keys
 				self.consume(ignore_ws=True)  # consume value
 				continue
 
@@ -181,10 +186,10 @@ class Parser:
 				self.parentStack[-1].children.append(NiriNodeTree(name=self.current_token.value, type_='KEY', token_number=self.position))
 				self.consume()
 				continue
-			elif self.current_token.type not in ['BR', 'WS']:
-				self.parentStack[-1].children.append(NiriNodeTree(name=self.current_token.value or '', type_=self.current_token.type))
-				self.consume()
-				continue
+			# elif self.current_token.type not in ['BR', 'WS']:
+			# 	self.parentStack[-1].children.append(NiriNodeTree(name=self.current_token.value or '', type_=self.current_token.type))
+			# 	self.consume()
+			# 	continue
 			else:
 				if self.current_token.type not in [
 					'BR',
