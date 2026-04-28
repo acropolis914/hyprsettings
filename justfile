@@ -5,10 +5,10 @@ set unstable
 
 # Full development setup (Python backend + Vite dev server)
 dev:
-    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser" "vite --host"
+    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --ui electron --no-browser" "vite --host"
 
 dev-niri:
-    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --config config_niri_short.kdl" "vite --host"
+    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --ui electron --config config_niri_short.kdl" "vite --host"
 
 dev-noui:
     cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --no-window" "vite --host"

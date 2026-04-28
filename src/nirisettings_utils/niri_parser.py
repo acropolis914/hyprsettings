@@ -134,7 +134,7 @@ class Parser:
 				  and self.peek().type in ['OPERATION', 'WORD', 'INT']
 			):
 				newNodeName: str = self.current_token.value or ''
-				while self.peek().type in ['OPERATION', 'WORD', 'INT', 'WS']:
+				while self.peek().type in ['OPERATION', 'WORD', 'INT', 'WS', "BOOL"]:
 					newNodeName += self.peek().value
 					self.consume()
 				self.consume_until('LBRACE')
@@ -154,11 +154,14 @@ class Parser:
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName, type='GROUP', token_number=self.position,
 				                         resolver='group_word_lbrace')
+				self.parentStack[-1].children.append(newNode)
+				self.parentStack.append(newNode)
 				left_tokens = self.peek_until("BR")
 				last_tokens = []
 				for token in left_tokens:
 					if token.type == "RBRACE":
 						newNode.one_line = True
+						self.parentStack.pop()
 					elif token.type == "COMMENT":
 						newNode.comment = token.value
 					else:
@@ -168,8 +171,6 @@ class Parser:
 					  f"[blue bold][GROUP_LBRACE:[/blue bold]{self.position}{newNode} Last Left Tokens:] {last_tokens}") if len(
 					  last_tokens) > 0 else None
 
-				self.parentStack[-1].children.append(newNode)
-				self.parentStack.append(newNode)
 				continue
 
 
@@ -281,7 +282,7 @@ class Parser:
 				lastNodeGroup = self.parentStack[-1]
 				# mark the group that is being closed by a RBRACE
 				lastNodeGroup.resolver += "+rbrace"
-				if len(self.parentStack) > 1:
+				if len(self.parentStack) > 0:
 					self.parentStack.pop()
 				else:
 					console.print(

@@ -170,11 +170,54 @@ export class _configRenderer {
 			for (const child of json['children']) {
 				await this.parse(child)
 			}
-			if (this.comment_queue.length > 0) {
-				renderCommentQueue()
-			}
-			if (this.comment_stack.length > 0) {
+			renderCommentQueue()
+			renderCommentStack()
+		} else if (json['type'] === 'FILE') {
+			GLOBAL.files[json['resolved_path']] = json as ItemPropsFile
+			renderCommentQueue()
+			renderCommentStack()
+			try {
+				if (json && json['children']) {
+					for (const child of json['children']) {
+						if (child && typeof child.name === 'string') {
+							if (child.name.startsWith('$')) {
+								const key = json['resolved_path']
+
+								// Make sure GLOBAL.configGlobals exists
+								if (!GLOBAL.configGlobals || typeof GLOBAL.configGlobals !== 'object') {
+									GLOBAL.configGlobals = {}
+									//	console.log(GLOBAL.configGlobals)
+								}
+
+								// Ensure the object for this key exists
+								if (!GLOBAL.configGlobals[key] || typeof GLOBAL.configGlobals[key] !== 'object') {
+									GLOBAL.configGlobals[key] = {}
+									//	console.log(GLOBAL.configGlobals)
+								}
+
+								// Only add child.value if it’s defined
+								if (child['value'] !== undefined) {
+									GLOBAL.configGlobals[key] = {
+										...(GLOBAL.configGlobals[key] || {}), // default to empty object
+										[child.name]: child['value'],
+									}
+
+									//	console.log(GLOBAL.configGlobals)
+								} else {
+									console.warn(`Child ${child.name} has undefined value, skipping`)
+								}
+							}
+						} else {
+							console.warn('Invalid child object:', child)
+						}
+
+						await this.parse(child)
+					}
+				}
+				renderCommentQueue(true)
 				renderCommentStack()
+			} catch (e) {
+				console.warn(e, json)
 			}
 		} else if (
 			// is a comment that looks like the start of a comment block
@@ -226,110 +269,56 @@ export class _configRenderer {
 			// blankline.textContent = 'THIS IS A BLANK LINE'
 			// this.container_stack.at(-1).appendChild(blankline)
 			// //fugly
-		} else if (json['type'] === 'GROUP') {
-			if (
-				(json['position'] && json['position'].indexOf(':') > -1) ||
-				(json['name'] === 'root' && json['children'][0].type !== 'FILE')
-			) {
-				// console.log(json)
-				renderCommentStack()
-				renderCommentQueue(true)
-				let group_el = new ConfigGroup(json as ItemPropsGroup).return()
-				let matched: boolean
-				if (!this.renderTo) {
-					for (const [key, value] of configGroups) {
-						if (json['name'].trim().startsWith(key)) {
-							const container = GLOBAL.editorItemTemporaryContainers[value]
-							if (container) {
-								container.appendChild(group_el)
-							} else {
-								console.warn(`No container for value: ${value}`, GLOBAL.editorItemTemporaryContainers)
-							}
-							matched = true
-							break
+		} else if (json['type'] === 'GROUP' && json['name'] != 'root') {
+			// console.log(json)
+			renderCommentStack()
+			renderCommentQueue(true)
+			let group_el = new ConfigGroup(json as ItemPropsGroup).return()
+			let matched: boolean
+			if (!this.renderTo) {
+				for (const [key, value] of configGroups) {
+					if (json['name'].trim().startsWith(key)) {
+						const container = GLOBAL.editorItemTemporaryContainers[value]
+						if (container) {
+							container.appendChild(group_el)
+						} else {
+							console.warn(`No container for value: ${value}`, GLOBAL.editorItemTemporaryContainers)
 						}
+						matched = true
+						break
 					}
-				}
-
-				if (!matched) {
-					let parentStack = self.container_stack.at(-1)
-					let elementToAdd = group_el
-					if (parentStack?.classList?.contains('config-group')) {
-						parentStack.appendConfigItems(elementToAdd)
-					} else {
-						parentStack.appendChild(elementToAdd)
-					}
-				}
-				this.container_stack.push(group_el)
-				try {
-					for (const [index, child] of Array.from(json['children']).entries()) {
-						if (index === json['children'].length - 1) {
-							//Todo hmmm should this be -1?
-							renderCommentQueue(true)
-						}
-						await this.parse(child)
-					}
-					this.container_stack.pop()
-				} catch (e) {
-					console.error(e, json)
-				}
-			} else {
-				console.log(json)
-				renderCommentStack()
-				renderCommentQueue(true)
-				let group_el = new ConfigGroup(json as ItemPropsGroup).return()
-				let matched: boolean
-				if (!this.renderTo) {
-					for (const [key, value] of configGroups) {
-						if (json['name'].trim().startsWith(key)) {
-							const container = GLOBAL.editorItemTemporaryContainers[value]
-							if (container) {
-								container.appendChild(group_el)
-							} else {
-								console.warn(`No container for value: ${value}`, GLOBAL.editorItemTemporaryContainers)
-							}
-							matched = true
-							break
-						}
-					}
-				}
-
-				if (!matched) {
-					// console.warn(
-					// 	`Config group ${json['name']} has no specified tab. Rendering to the last container `,
-					// 	this.container_stack.at(-1),
-					// )
-					// this.container_stack.at(-1).appendChild(group_el)
-
-					let parentStack = self.container_stack.at(-1)
-					let elementToAdd = group_el
-					if (parentStack?.classList?.contains('config-group')) {
-						parentStack.appendConfigItems(elementToAdd)
-					} else {
-						parentStack.appendChild(elementToAdd)
-					}
-				}
-				this.container_stack.push(group_el)
-				try {
-					for (const [index, child] of Array.from(json['children']).entries()) {
-						if (index === json['children'].length - 1) {
-							//Todo hmmm should this be -1?
-							renderCommentQueue(true)
-						}
-						// Periodically yield to prevent main thread blocking for deep UI nesting
-						// await this.maybeYieldToUI()
-						await this.parse(child)
-					}
-					this.container_stack.pop()
-				} catch (e) {
-					console.error(e, json)
 				}
 			}
-		} else if (json['position'] && json['type'] === 'GROUPEND' && json['position'].indexOf(':') > -1) {
-			if (this.comment_queue.length > 0) {
-				renderCommentQueue(false)
+
+			if (!matched) {
+				let parentStack = self.container_stack.at(-1)
+				console.log(self.container_stack)
+				let elementToAdd = group_el
+				if (parentStack?.classList?.contains('config-group')) {
+					parentStack.appendConfigItems(elementToAdd)
+				} else {
+					parentStack.appendChild(elementToAdd)
+				}
 			}
-			this.container_stack.pop()
+			this.container_stack.push(group_el)
+			try {
+				for (const [index, child] of Array.from(json['children']).entries()) {
+					await this.parse(child)
+					if (child['type'] === 'GROUPEND' && child['comment']) {
+						let lastOfStack = this.container_stack.at(-1) as HTMLDivElement
+						// lastOfStack.style.backgroundColor = 'red' //TODO add a groupend comment
+					}
+				}
+				renderCommentQueue(true)
+				this.container_stack.pop()
+			} catch (e) {
+				console.error(e, json)
+			}
+			// } else if (json['position'] && json['type'] === 'GROUPEND' && json['position'].indexOf(':') > -1) {
+			// 	if (this.comment_queue.length > 0) {
+			// 		renderCommentQueue(false)
+			// 	}
+			// 	this.container_stack.pop()
 		} else if (json['type'] === 'KEY') {
 			// console.log(json)
 			try {
@@ -368,57 +357,6 @@ export class _configRenderer {
 				}
 			} catch (e) {
 				console.log(e, json)
-			}
-		} else if (json['type'] === 'FILE') {
-			GLOBAL.files[json['resolved_path']] = json as ItemPropsFile
-			renderCommentQueue()
-			renderCommentStack()
-			try {
-				if (json && json['children']) {
-					for (const child of json['children']) {
-						if (child && typeof child.name === 'string') {
-							if (child.name.startsWith('$')) {
-								const key = json['resolved_path']
-
-								// Make sure GLOBAL.configGlobals exists
-								if (!GLOBAL.configGlobals || typeof GLOBAL.configGlobals !== 'object') {
-									GLOBAL.configGlobals = {}
-									//	console.log(GLOBAL.configGlobals)
-								}
-
-								// Ensure the object for this key exists
-								if (!GLOBAL.configGlobals[key] || typeof GLOBAL.configGlobals[key] !== 'object') {
-									GLOBAL.configGlobals[key] = {}
-									//	console.log(GLOBAL.configGlobals)
-								}
-
-								// Only add child.value if it’s defined
-								if (child['value'] !== undefined) {
-									GLOBAL.configGlobals[key] = {
-										...(GLOBAL.configGlobals[key] || {}), // default to empty object
-										[child.name]: child['value'],
-									}
-
-									//	console.log(GLOBAL.configGlobals)
-								} else {
-									console.warn(`Child ${child.name} has undefined value, skipping`)
-								}
-							}
-						} else {
-							console.warn('Invalid child object:', child)
-						}
-
-						await this.parse(child)
-					}
-				}
-				if (this.comment_queue.length > 0) {
-					renderCommentQueue(true)
-				}
-				if (this.comment_stack.length > 0) {
-					renderCommentStack()
-				}
-			} catch (e) {
-				console.warn(e, json)
 			}
 		} else if ((json as ItemProps).type) {
 			console.log(json)
