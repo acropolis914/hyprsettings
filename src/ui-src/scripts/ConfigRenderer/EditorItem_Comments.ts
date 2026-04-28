@@ -30,7 +30,7 @@ export class EditorItem_Comments {
 		// let [name, value] = this.el.dataset.comment.replace(/^[ #]+/, '').split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
 		// if (name && value){
 		// }
-		let position_title = json['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
+		let position_title = json['position']?.replace('root:', '').replaceAll(':', ' 󰄾 ')
 		this.el.title = `  Location: ${position_title}`
 		this.el.classList.add('editor-item')
 		this.el.setAttribute('tabindex', 0)

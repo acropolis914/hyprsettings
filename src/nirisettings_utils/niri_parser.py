@@ -3,14 +3,24 @@ from pathlib import Path
 from typing import cast
 from unittest import result
 
-from node_types import (
-	NodeType,
-	ItemProps,
-	ItemPropsKey,
-	ItemPropsGroup,
-	ItemPropsFile,
-	ItemPropsMisc,
-)
+try:
+	from node_types import (
+		NodeType,
+		ItemProps,
+		ItemPropsKey,
+		ItemPropsGroup,
+		ItemPropsFile,
+		ItemPropsMisc,
+	)
+except Exception:
+	from .node_types import (
+		NodeType,
+		ItemProps,
+		ItemPropsKey,
+		ItemPropsGroup,
+		ItemPropsFile,
+		ItemPropsMisc,
+	)
 
 from rich.console import Console
 from rich.panel import Panel
@@ -19,7 +29,11 @@ from rich.table import Table
 from rich import print_json
 from rich.json import JSON
 import json
-from niri_lexer import KDLToken, Lexer
+
+try:
+	from niri_lexer import KDLToken, Lexer
+except Exception:
+	from .niri_lexer import KDLToken, Lexer
 
 console = Console()
 
@@ -97,7 +111,8 @@ class Parser:
 		while self.current_token.type != 'EOF':
 			# resolver: comment
 			if self.current_token.type in ['COMMENT']:
-				newNode = ItemPropsMisc(name=None, value=self.current_token.value or '', type='COMMENT',
+				newNode = ItemPropsMisc(name=None, comment=self.current_token.value or '',
+				                        value=self.current_token.value or '', type='COMMENT',
 				                        token_number=self.position, resolver='comment')
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
@@ -105,7 +120,8 @@ class Parser:
 				continue
 			# resolver: comment_block
 			elif self.current_token.type in ['COMMENTBL']:
-				newNode = ItemPropsMisc(name=None, value=self.current_token.value or '', type='COMMENT_BLOCK',
+				newNode = ItemPropsMisc(name=None, comment=self.current_token.value or "",
+				                        value=self.current_token.value or '', type='COMMENT',
 				                        token_number=self.position, resolver='comment_block')
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
@@ -123,8 +139,8 @@ class Parser:
 					self.consume()
 				self.consume_until('LBRACE')
 				self.consume()  # consume '{'
-				newNode = ItemPropsGroup(name=newNodeName.strip(), type='KEYBIND_GROUP', token_number=self.position,
-				                         resolver='keybind_group')
+				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP', token_number=self.position,
+				                         resolver='keybind_group')  # Todo Return to KEYBIND_GROUP
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				continue

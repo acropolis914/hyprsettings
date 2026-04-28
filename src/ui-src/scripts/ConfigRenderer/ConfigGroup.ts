@@ -33,7 +33,7 @@ export class ConfigGroup {
 		this.group_el.dataset.type = json['type']
 		this.group_el.disable = this.disable.bind(this)
 		this.saveDebounced = debounce(() => this.save(), 15)
-		this.group_el.setAttribute('title', json['position'].replace('root:', ''))
+		this.group_el.setAttribute('title', json['position']?.replace('root:', ''))
 		this.title = this.group_el.title
 		this.json = json
 
