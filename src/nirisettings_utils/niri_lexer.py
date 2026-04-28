@@ -4,7 +4,6 @@ from pathlib import Path
 from turtle import pos
 from typing import Literal, cast
 
-from pygments.lexers.webassembly import builtins
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -22,6 +21,7 @@ except ImportError:
 	class _State:
 		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config_niri_short.kdl'
 		verbose = False
+
 
 	state = _State()
 
@@ -69,17 +69,17 @@ class KDLToken:
 		DIM = '\x1b[2m'
 
 		COLORS = {
-			'COMMENT': '\x1b[90m',
-			'WORD': '\x1b[32m',
-			'OPERATION': '\x1b[33m',
-			'STRING': '\x1b[35m',
-			'LBRACE': '\x1b[36m',
-			'RBRACE': '\x1b[36m',
-			'WS': '\x1b[37m',
-			'BR': '\x1b[34m',
-			'SEMIC': '\x1b[31m',
-			'EOF': '\x1b[90m',
-			'UNKNOWN': '\x1b[41m',
+			  'COMMENT': '\x1b[90m',
+			  'WORD': '\x1b[32m',
+			  'OPERATION': '\x1b[33m',
+			  'STRING': '\x1b[35m',
+			  'LBRACE': '\x1b[36m',
+			  'RBRACE': '\x1b[36m',
+			  'WS': '\x1b[37m',
+			  'BR': '\x1b[34m',
+			  'SEMIC': '\x1b[31m',
+			  'EOF': '\x1b[90m',
+			  'UNKNOWN': '\x1b[41m',
 		}
 
 		color = COLORS.get(t, '\x1b[37m')
@@ -91,7 +91,7 @@ class KDLToken:
 			value_str = f"{DIM}'{RESET}{raw}{DIM}'{RESET}"
 		if __name__ == '__main__':
 			return f'{DIM}{self.position} {RESET}{BOLD}{color}{t:<10}{RESET} {value_str}'
-		return f'{t:<5} : {raw}'
+		return f'{t:<5} : {repr(raw)}'
 
 
 class Lexer:
@@ -213,14 +213,14 @@ class Lexer:
 		start_pos = self.pos
 		while (self.pos < len(self.text)) and (self.text[self.pos].isalpha() or self.text[self.pos] in ['-', '_']):
 			self.advance()
-		return self.text[start_pos : self.pos]
+		return self.text[start_pos: self.pos]
 
 	def gather_regx(self) -> str:
 		start_pos = self.pos
 		while not (self.peek(1) == '"' and self.peek(2) == '#'):
 			self.advance()
 		self.advance(3)
-		return self.text[start_pos : self.pos]
+		return self.text[start_pos: self.pos]
 
 	def gather_num(self):
 		start_pos = self.pos
@@ -229,7 +229,7 @@ class Lexer:
 			if self.char == '.':
 				isFloat = True
 			self.advance()
-		return self.text[start_pos : self.pos], isFloat
+		return self.text[start_pos: self.pos], isFloat
 
 	def gather_string(self):
 		self.advance()
@@ -238,7 +238,7 @@ class Lexer:
 			if self.char == '"' and self.text[self.pos - 1] != '\\':
 				break
 			self.advance()
-		return self.text[start_pos : self.pos]
+		return self.text[start_pos: self.pos]
 
 	def gather_comment(self) -> str:
 		self.advance(2)
@@ -250,8 +250,8 @@ class Lexer:
 				# self.advance()
 				break
 			self.advance()
-		comment = self.text[start_pos : self.pos]
-		self.advance()
+		comment = self.text[start_pos: self.pos]
+		# self.advance() #removes newline token
 		return comment
 
 	def gather_comment_block(self):
@@ -261,7 +261,7 @@ class Lexer:
 			if self.char == '*' and self.peek() == '/':
 				break
 			self.advance()
-		block_comment = self.text[start_pos : self.pos]
+		block_comment = self.text[start_pos: self.pos]
 		# self.advance(2)
 		return block_comment
 
@@ -270,27 +270,27 @@ def test_lexer_permutations():
 	unknown = []
 	# These are the "Permutations" to test your loyalty and logic
 	test_cases = [
-		'xkb { //booot',  # Comment immediately after brace
-		'touchpad//comment {',  # Comment touching ID and Brace
-		'// Line 1\n// Line 2\ninput {',  # Stacked line comments
-		'/* Block\n   Comment */ node',  # Multi-line block comment
-		'urgent-color "#9b0000" //dasdas',  # Inline comment after string
-		# --- 2. KDL SPECIAL TOKENS ---
-		'/-output "eDP-1" { mode "1920" }',  # The "Slash-Dash" (Node Comment)
-		'default-column-width { proportion 0.5; }',  # Semicolon terminator
-		'window-rule { match app-id=r#"wez"# }',  # Raw string (r#"..."#)
-		'position x=1280 y=0',  # Properties (ID=VALUE)
-		'()"typed-string"',  # Type annotation (empty parens)
-		# --- 3. NIRI-SPECIFIC QUIRKS ---
-		'Mod+Shift+Slash { show-hotkey; }',  # Complex IDs with '+' and '-'
-		'match app-id=r#"firefox$"# title="^P"',  # Multiple props/args no spaces
-		'scale 2.0',  # Floats
-		'open-floating true',  # Booleans
-		'screenshot-path "~/Pictures/%Y-%m.png"',  # Strings with symbols
-		# --- 4. STRUCTURAL COMPRESSION ---
-		'node{key=1;key=2};next-node;third{}',  # Maximum density
-		'layout { gaps 16 } // end of layout',  # Trailing comments
-		'window-rule { match app-id=r#"^org\\.wezfurlong\\.wezterm$"# }',  # Escaped regex
+		  'xkb { //booot',  # Comment immediately after brace
+		  'touchpad//comment {',  # Comment touching ID and Brace
+		  '// Line 1\n// Line 2\ninput {',  # Stacked line comments
+		  '/* Block\n   Comment */ node',  # Multi-line block comment
+		  'urgent-color "#9b0000" //dasdas',  # Inline comment after string
+		  # --- 2. KDL SPECIAL TOKENS ---
+		  '/-output "eDP-1" { mode "1920" }',  # The "Slash-Dash" (Node Comment)
+		  'default-column-width { proportion 0.5; }',  # Semicolon terminator
+		  'window-rule { match app-id=r#"wez"# }',  # Raw string (r#"..."#)
+		  'position x=1280 y=0',  # Properties (ID=VALUE)
+		  '()"typed-string"',  # Type annotation (empty parens)
+		  # --- 3. NIRI-SPECIFIC QUIRKS ---
+		  'Mod+Shift+Slash { show-hotkey; }',  # Complex IDs with '+' and '-'
+		  'match app-id=r#"firefox$"# title="^P"',  # Multiple props/args no spaces
+		  'scale 2.0',  # Floats
+		  'open-floating true',  # Booleans
+		  'screenshot-path "~/Pictures/%Y-%m.png"',  # Strings with symbols
+		  # --- 4. STRUCTURAL COMPRESSION ---
+		  'node{key=1;key=2};next-node;third{}',  # Maximum density
+		  'layout { gaps 16 } // end of layout',  # Trailing comments
+		  'window-rule { match app-id=r#"^org\\.wezfurlong\\.wezterm$"# }',  # Escaped regex
 	]
 
 	for i, code in enumerate(test_cases):
@@ -335,6 +335,6 @@ if __name__ == '__main__':
 	console.clear()
 	# test_lexer_permutations()
 	tokens = Lexer(open(state.hyprland_config_path).read()).tokenize()
-	print('\n'.join(repr(t) for t in tokens))
+	print('\n'.join(f"{i} {repr(t)}" for i, t in enumerate(tokens)))
 # print(json.dumps([t.to_dict() for t in tokens], indent=2))
 # console.clear()
