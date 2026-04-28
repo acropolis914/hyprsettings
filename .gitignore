@@ -73,4 +73,5 @@ htmlcov/
 stats.html
 AUR/
 /localhost_3000-20260418T030344.json
-config.kdl
+#config.kdl
+/src/nirisettings_utils/ouput.json

@@ -9,7 +9,7 @@ import { GLOBAL } from '../GLOBAL.js'
 import { Backend } from '@scripts/utils/backendAPI.js'
 import { destroyOverlay } from '@scripts/ui_components/darkenOverlay.js'
 import { focusTab } from '@scripts/ui_components/createTabView.ts'
-import type { ItemProps, ItemPropsFile, ItemPropsMisc } from '@scripts/types/editorItemTypes.ts'
+import type { ItemProps, ItemPropsFile, ItemPropsGroup, ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
 
 export default async function getAndRenderConfig() {
 	GLOBAL.onChange('data', (value?: object): Promise<void> => {
@@ -164,13 +164,22 @@ export class _configRenderer {
 			}
 		}
 
-		/**
-		 * CommentBlock rendering
-		 */
-		if (
+		//recursive children rendering
+		if (json['children'] && json['name'] === 'root') {
+			console.log(json)
+			for (const child of json['children']) {
+				await this.parse(child)
+			}
+			if (this.comment_queue.length > 0) {
+				renderCommentQueue()
+			}
+			if (this.comment_stack.length > 0) {
+				renderCommentStack()
+			}
+		} else if (
 			// is a comment that looks like the start of a comment block
 			json['type'] === 'COMMENT' &&
-			(json['comment'].startsWith('####') || json['comment'].startsWith('# =====')) &&
+			(json['comment']?.startsWith('####') || json['comment']?.startsWith('# =====')) &&
 			(this.comment_stack.length === 0 || this.comment_stack.length === 2)
 		) {
 			this.comment_stack.push(json)
@@ -210,23 +219,22 @@ export class _configRenderer {
 			// if (this.comment_queue.length > 0) {
 			// 	renderCommentQueue()
 			// }
-			// let blankLine = document.createElement('div')
-			// blankLine.classList.add('blank-line', 'editor-item')
-			// blankLine.style.height = 0
-			// blankLine.style.overflow = 'hidden'
-			// blankLine.dataset.uuid = json['uuid']
-			// blankLine.tabIndex = 0
-			// blankLine.textContent = 'THIS IS A BLANK LINE'
-			// this.container_stack.at(-1).appendChild(blankLine)
-			// /fugly
+			// let blankline = document.createElement('div')
+			// blankline.classList.add('blank-line', 'editor-item')
+			// blankline.dataset.uuid = json['uuid']
+			// blankline.tabIndex = 0
+			// blankline.textContent = 'THIS IS A BLANK LINE'
+			// this.container_stack.at(-1).appendChild(blankline)
+			// //fugly
 		} else if (json['type'] === 'GROUP') {
 			if (
 				(json['position'] && json['position'].indexOf(':') > -1) ||
 				(json['name'] === 'root' && json['children'][0].type !== 'FILE')
 			) {
+				// console.log(json)
 				renderCommentStack()
 				renderCommentQueue(true)
-				let group_el = new ConfigGroup(json).return()
+				let group_el = new ConfigGroup(json as ItemPropsGroup).return()
 				let matched: boolean
 				if (!this.renderTo) {
 					for (const [key, value] of configGroups) {
@@ -261,6 +269,58 @@ export class _configRenderer {
 						}
 						await this.parse(child)
 					}
+					this.container_stack.pop()
+				} catch (e) {
+					console.error(e, json)
+				}
+			} else {
+				console.log(json)
+				renderCommentStack()
+				renderCommentQueue(true)
+				let group_el = new ConfigGroup(json as ItemPropsGroup).return()
+				let matched: boolean
+				if (!this.renderTo) {
+					for (const [key, value] of configGroups) {
+						if (json['name'].trim().startsWith(key)) {
+							const container = GLOBAL.editorItemTemporaryContainers[value]
+							if (container) {
+								container.appendChild(group_el)
+							} else {
+								console.warn(`No container for value: ${value}`, GLOBAL.editorItemTemporaryContainers)
+							}
+							matched = true
+							break
+						}
+					}
+				}
+
+				if (!matched) {
+					// console.warn(
+					// 	`Config group ${json['name']} has no specified tab. Rendering to the last container `,
+					// 	this.container_stack.at(-1),
+					// )
+					// this.container_stack.at(-1).appendChild(group_el)
+
+					let parentStack = self.container_stack.at(-1)
+					let elementToAdd = group_el
+					if (parentStack?.classList?.contains('config-group')) {
+						parentStack.appendConfigItems(elementToAdd)
+					} else {
+						parentStack.appendChild(elementToAdd)
+					}
+				}
+				this.container_stack.push(group_el)
+				try {
+					for (const [index, child] of Array.from(json['children']).entries()) {
+						if (index === json['children'].length - 1) {
+							//Todo hmmm should this be -1?
+							renderCommentQueue(true)
+						}
+						// Periodically yield to prevent main thread blocking for deep UI nesting
+						// await this.maybeYieldToUI()
+						await this.parse(child)
+					}
+					this.container_stack.pop()
 				} catch (e) {
 					console.error(e, json)
 				}
@@ -271,8 +331,11 @@ export class _configRenderer {
 			}
 			this.container_stack.pop()
 		} else if (json['type'] === 'KEY') {
+			// console.log(json)
 			try {
-				let genericItem: EditorItem_Generic = new EditorItem_Generic(json, json['disabled'])
+				// renderCommentQueue(true)
+				// renderCommentStack()
+				let genericItem: EditorItem_Generic = new EditorItem_Generic(json as ItemPropsKey, json['disabled'])
 				let tabToAddTo: any
 				const foundPair = keyNameStarts.find(([key, value, exclude]) => {
 					if (this.container_stack.at(-1)?.classList?.contains('config-group')) {
@@ -357,21 +420,14 @@ export class _configRenderer {
 			} catch (e) {
 				console.warn(e, json)
 			}
+		} else if ((json as ItemProps).type) {
+			console.log(json)
 		} else {
 			console.log('Failed to render an item: ', json, 'Skipping')
 		}
-
-		if (json['children'] && json['name'] === 'root') {
-			for (const child of json['children']) {
-				await this.parse(child)
-			}
-
-			if (this.comment_queue.length > 0) {
-				renderCommentQueue()
-			}
-			if (this.comment_stack.length > 0) {
-				renderCommentStack()
-			}
-		}
+		//
+		// if (json['type'] === 'GROUP' && json['name'] === 'root') {
+		// 	console.log('halo', json)
+		// }
 	}
 }

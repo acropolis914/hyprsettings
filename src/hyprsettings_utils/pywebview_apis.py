@@ -10,7 +10,10 @@ import tomlkit as toml
 
 from .shared import hs_globals, state
 from .hyprland_parser import HyprParser, makeUUID
+
 from .utils import log, ui_print
+import nirisettings_utils.niri_parser as niri_parser
+import nirisettings_utils.niri_lexer as niri_lexer
 
 thisfile_path = Path(__file__).parent.resolve()
 thisfile_path_parent = thisfile_path.parent.resolve()
@@ -25,13 +28,22 @@ class Api:
 		self.window_config = None
 
 	@staticmethod
-	def get_hyprland_config(path: PathLike | None = None):
+	def get_hyprland_config(path: str | None = None):
 		global current_config
-		path = path if path else state.hyprland_config_path
-		log(f'Loading {path}')
-		config_node = HyprParser.load(path)
-		# log(f'Config loaded from {path},{config_node}')
-		config = config_node.to_json()
+		path = Path(path) if path else state.hyprland_config_path
+		if str(path).endswith("conf"):
+			log(f'Loading Hyprland Conf {path}')
+			config_node = HyprParser.load(path)
+			log(f'Config loaded from {path},{config_node}')
+			config = config_node.to_json()
+		else:
+			file_contents = open(path).read()
+			# console.print(file_contents)
+			tokens = niri_lexer.Lexer(file_contents).tokenize()
+			# console.print(tokens)
+			config_node = niri_parser.Parser(tokens).parse()
+			# console.print(config_node)
+			config = config_node.to_json()
 		# current_config = config
 		return config
 
@@ -41,9 +53,11 @@ class Api:
 
 	@staticmethod
 	def get_hyprland_config_texts(json_string: str):
-		node = HyprParser.from_json(json_string)
-		files = node.to_hyprland(indent_level=0, save=False)
-		return files
+		if str(state.hyprland_config_path).endswith("conf"):
+			node = HyprParser.from_json(json_string)
+			files = node.to_hyprland(indent_level=0, save=False)
+			return files
+		return ""
 
 	@staticmethod
 	def save_config(json_string: str, changedFiles=None):
@@ -86,7 +100,8 @@ class Api:
 	def open_file(file_path: str):
 		ui_print(f'Opening {file_path}')
 		try:
-			subprocess.Popen(['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL, close_fds=True)
+			subprocess.Popen(['code', file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+			                 stdin=subprocess.DEVNULL, close_fds=True)
 			return True
 		except Exception as e:
 			ui_print(f'Failed to open {file_path}: {e}')

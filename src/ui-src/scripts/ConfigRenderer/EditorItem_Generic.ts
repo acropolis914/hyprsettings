@@ -152,7 +152,7 @@ export class EditorItem_Generic {
 		this.preview_el = this.el.querySelector('.editor-item-preview')
 		this.genericEditor_el = this.el.querySelector('.generic-editor')
 		this.createNameEditor(name)
-		this.config_position = position
+		this.config_position = (position ?? '')
 			.split(':')
 			.slice(1) // Remove 'root'
 			.map((s: string) => s.trim())
@@ -391,7 +391,7 @@ export class EditorItem_Generic {
 	private createTooltip(json: string | object) {
 		const initTooltip = () => {
 			this.el.removeEventListener('mouseenter', initTooltip)
-			let position_title = (json as any)['position'].replace('root:', '').replaceAll(':', ' 󰄾 ')
+			let position_title = (json as any)['position']?.replace('root:', '').replaceAll(':', ' 󰄾 ')
 			this.tippyTitle = `<strong>  Location:</strong> ${position_title}`
 
 			if (this.info) {

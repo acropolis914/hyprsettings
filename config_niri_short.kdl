@@ -1,0 +1,163 @@
+// NIRI PARSER TEST SUITE
+// Focus: KDL Structural Exhaustion (Zero functional redundancy)
+
+/* * Multi-line comment test block.{
+ * Ensures the parser handles block comments correctly.
+ */
+
+// 1. Root Level Flags & Nulls
+prefer-no-csd
+screenshot-path null //hmmm
+
+// 2. Node Erasure (KDL slash-dash comment)
+/-spawn-at-startup "waybar"
+
+// 3. Environment/Simple Key-Values (Node with String Args)
+environment {
+    DISPLAY ":0"
+    GDK_SCALE "2" // String that looks like an int
+}
+
+// 4. Mixed Data Types & Nested Blocks
+input {
+    keyboard {
+    // Empty block test
+        xkb {
+
+        }
+
+    // Integer arguments
+        repeat-delay 250
+
+    // Flag node inside a block
+        numlock
+    }
+
+    touchpad {
+    // Float argument
+        accel-speed 0.35
+
+    // Boolean argument
+        left-handed false
+    }
+
+// Node with a string property
+    focus-follows-mouse max-scroll-amount="20%"
+}
+
+// 5. Node with String Argument AND Properties
+output "eDP-1" {
+// Float argument
+    scale 1.5
+
+// Multiple properties of the same type
+    position x=0 y=0
+
+// Boolean property
+    variable-refresh-rate true
+}
+
+// 5.5. Node with String Argument AND Properties
+/-output "DP-1" {
+// Float argument
+    scale 1.5
+
+// Multiple properties of the same type
+    position x=0 y=0
+
+// Boolean property
+    variable-refresh-rate true
+}
+
+// 6. Deep Nesting & CSS-like String Structures
+layout {
+    focus-ring {
+    // Hex color string
+        active-color "#cba6f7"
+
+    // Properties mixing strings and integers
+        active-gradient from="#89b4fa" to="#cba6f7" angle=135 relative-to="workspace-view"
+
+    // Functional string notation (CSS-like)
+        inactive-color "rgb(49, 50, 68)"
+    }
+
+    shadow {
+    // Node flag inside deep nesting
+        on
+    }
+}
+
+// 7. Regex, Raw Strings, and Multi-Condition Matches
+window-rule {
+// KDL Raw String literal (r#"..."#) as a property value
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+
+// Node with an empty block
+    default-column-width {}
+}
+
+window-rule {
+// Multiple properties on a single node
+    match app-id="firefox" title="^Picture-in-Picture$"
+
+// Boolean arguments
+    open-floating true
+}
+
+window-rule {
+// Boolean property
+    match is-active=true
+}
+
+// 8. Multiple Floats and Mixed Property Types
+animations {
+    window-resize {
+    // Node with 4 consecutive float arguments
+        custom-easing-curve 0.25 0.1 0.25 1.0
+    }
+
+    horizontal-view-movement {
+    // Properties mixing floats, integers, and high-precision floats
+        spring damping-ratio=0.8 stiffness=800 epsilon=0.0001
+    }
+}
+
+// 9. Binds (Action & Event Permutations)
+binds {
+// Inner action with no arguments
+    Mod+Q {
+        close-window ; } //what if this has comment here
+
+// Inner action with a single string argument
+    Mod+Return {
+        spawn "alacritty"; }
+
+// Inner action with multiple string arguments
+    Mod+Space {
+        spawn "fuzzel" "--icon-theme=Papirus"; }
+
+// Inner action testing single quotes inside double quotes / shell logic
+    Mod+S {
+        spawn-sh "sh -c 'echo hello | wl-copy'"; }
+
+// Inner action with an integer argument
+    Mod+1 {
+        focus-workspace 1; }
+
+// Inner action with a special character string argument
+    Mod+Minus {
+        set-column-width "-10%"; }
+
+// Outer node with a boolean property
+    Mod+Escape allow-inhibiting=false {
+        toggle-keyboard-shortcuts-inhibit ; }
+
+// Outer node with an integer property
+    Mod+WheelScrollDown cooldown-ms=150 {
+        focus-workspace-down ; }
+
+// Inner action with a boolean property
+    Mod+Shift+E {
+        quit skip-confirmation=true; }
+}
