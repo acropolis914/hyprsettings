@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 from unittest import result
+from textwrap import dedent
 
 try:
 	from node_types import (
@@ -10,7 +11,7 @@ try:
 		ItemPropsKey,
 		ItemPropsGroup,
 		ItemPropsFile,
-		ItemPropsMisc,
+		ItemPropsMisc, BaseNode
 	)
 except Exception:
 	from .node_types import (
@@ -19,7 +20,7 @@ except Exception:
 		ItemPropsKey,
 		ItemPropsGroup,
 		ItemPropsFile,
-		ItemPropsMisc,
+		ItemPropsMisc, BaseNode,
 	)
 
 from rich.console import Console
@@ -42,7 +43,7 @@ try:
 except ImportError:
 
 	class _State:
-		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config_niri_short.kdl'
+		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config.kdl'
 		verbose = False
 
 
@@ -73,17 +74,17 @@ class Parser:
 			return KDLToken(type='EOF', value=None)
 
 	def peek_until(self, token_type: str) -> list[KDLToken]:
-		result = []
+		result_ = []
 		pos = self.position
 		while pos < len(self.tokens) and self.tokens[pos].type != token_type:
-			result.append(self.tokens[pos])
+			result_.append(self.tokens[pos])
 			pos += 1
-		return result
+		return result_
 
 	def peek_back_until(self, token_type: str) -> list[KDLToken]:
 		result_ = []
 		pos = self.position - 1
-		while self.tokens[pos].type != token_type:
+		while self.position > 0 and self.tokens[pos].type != token_type:
 			result_.insert(0, self.tokens[pos])
 			pos -= 1
 		# console.print(f"puta {result_}")
@@ -111,18 +112,20 @@ class Parser:
 		while self.current_token.type != 'EOF':
 			# resolver: comment
 			if self.current_token.type in ['COMMENT']:
+				resolver_ = 'comment'
 				newNode = ItemPropsMisc(name=None, comment=self.current_token.value or '',
 				                        value=self.current_token.value or '', type='COMMENT',
-				                        token_number=self.position, resolver='comment')
+				                        token_number=self.position, resolver=resolver_)
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
 				self.consume()  # comments always has a \n at the end and were gonna eat that up
 				continue
 			# resolver: comment_block
 			elif self.current_token.type in ['COMMENTBL']:
+				resolver_ = 'comment_block'
 				newNode = ItemPropsMisc(name=None, comment=self.current_token.value or "",
 				                        value=self.current_token.value or '', type='COMMENT',
-				                        token_number=self.position, resolver='comment_block')
+				                        token_number=self.position, resolver=resolver_)
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
 				continue
@@ -133,6 +136,7 @@ class Parser:
 				  and self.is_modifier(cast(str, self.current_token.value))
 				  and self.peek().type in ['OPERATION', 'WORD', 'INT']
 			):
+				resolver_ = 'keybind_group'
 				newNodeName: str = self.current_token.value or ''
 				while self.peek().type in ['OPERATION', 'WORD', 'INT', 'WS', "BOOL"]:
 					newNodeName += self.peek().value
@@ -140,7 +144,7 @@ class Parser:
 				self.consume_until('LBRACE')
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP', token_number=self.position,
-				                         resolver='keybind_group')  # Todo Return to KEYBIND_GROUP
+				                         resolver=resolver_)  # Todo Return to KEYBIND_GROUP
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				continue
@@ -149,11 +153,12 @@ class Parser:
 			# These are groups uwu
 			# resolver: group_word_lbrace
 			elif self.current_token.type == 'WORD' and self.peek(ignore_ws=True).type == 'LBRACE':
+				resolver_ = 'group_word_lbrace'
 				newNodeName = self.current_token.value or ''
 				self.consume_until('LBRACE')
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName, type='GROUP', token_number=self.position,
-				                         resolver='group_word_lbrace')
+				                         resolver=resolver_)
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				left_tokens = self.peek_until("BR")
@@ -161,7 +166,7 @@ class Parser:
 				for token in left_tokens:
 					if token.type == "RBRACE":
 						newNode.one_line = True
-						self.parentStack.pop()
+						self.pop_parentstack(resolver_)
 					elif token.type == "COMMENT":
 						newNode.comment = token.value
 					else:
@@ -200,6 +205,7 @@ class Parser:
 			# resolver: key_value
 			elif self.current_token.type == 'WORD' and self.peek(ignore_ws=True).type in ['FLOAT', 'INT', 'STRING',
 			                                                                              "REGX", "BOOL", "WORD"]:
+				resolver_ = 'key_value'
 				key_token = self.current_token
 				is_disabled = self.peek(-1).type == "SLASHDASH"
 				self.consume()
@@ -222,11 +228,14 @@ class Parser:
 					  value=value_string.strip(),
 					  token_number=self.position,
 					  disabled=is_disabled,
-					  resolver='key_value',
+					  resolver=resolver_,
 					  comment=comment_
 				)
-
-				self.parentStack[-1].children.append(newNode)
+				try:
+					self.parentStack[-1].children.append(newNode)
+				except Exception as e:
+					console.print(
+						  f"\nEncountered an error: {e}\n for node [blue bold]{key_token.value}[/blue bold], token number {self.position}, Left Tokens {left_tokens}, {self.parentStack}")
 				last_tokens = []
 				# if any(tok.type == "RBRACE" for tok in left_tokens):
 				# 	console.print(self.peek_back_until("BR"))
@@ -235,11 +244,11 @@ class Parser:
 						  any(tok.type == "LBRACE" for tok in self.peek_back_until("BR"))):
 						self.parentStack[-1].one_line = True
 						# console.print(f"{repr(newNode).strip()} is a one liner")
-						self.parentStack.pop()
+						self.pop_parentstack(resolver_)
 
 					elif token.type == "RBRACE":
 						self.parentStack[-1].last_one_line = True
-						self.parentStack.pop()
+						self.pop_parentstack(resolver_)
 
 					elif token.type == "COMMENT":
 						setattr(newNode, 'comment', token.value)
@@ -252,24 +261,26 @@ class Parser:
 
 			# resolver: lbrace
 			elif self.current_token.type == 'LBRACE':
+				resolver_ = "lbrace"
 				group_name = self.peek(-1, ignore_ws=True).value if self.peek(-1,
 				                                                              ignore_ws=True).type == 'WORD' else ''
-				new_group = ItemPropsGroup(name=group_name, type='GROUP', resolver='lbrace')
+				new_group = ItemPropsGroup(name=group_name, type='GROUP', resolver=resolver_)
 				self.parentStack[-1].children.append(new_group)
 				self.parentStack.append(new_group)
 				self.consume()  # consume '{'
 				continue
 			# resolver: word_key
 			elif self.current_token.type == 'WORD':
+				resolver_ = "word_key"
 				newNode = ItemPropsKey(name=self.current_token.value, type='KEY', token_number=self.position,
-				                       resolver='word_key')
+				                       resolver=resolver_)
 				self.parentStack[-1].children.append(newNode)
 				left_tokens = self.consume_until("BR")
 				for token in left_tokens:
 					if token.type == "COMMENT":
 						setattr(newNode, 'comment', token.value)
 					elif token.type == "RBRACE":
-						self.parentStack.pop()
+						self.pop_parentstack(resolver_)
 				self.consume()
 				continue
 			# elif self.current_token.type not in ['BR', 'WS']:
@@ -279,20 +290,11 @@ class Parser:
 
 			# resolver: rbrace
 			elif self.current_token.type == 'RBRACE':
+				resolver_ = "rbrace"
 				lastNodeGroup = self.parentStack[-1]
 				# mark the group that is being closed by a RBRACE
 				lastNodeGroup.resolver += "+rbrace"
-				if len(self.parentStack) > 0:
-					self.parentStack.pop()
-				else:
-					console.print(
-						  f'\
-[red]Warning: Unmatched closing brace at token {self.position}: [/red]\n\
-{self.tokens[(self.position - 15): (self.position - 1)]}\n\
-----> [red]{self.current_token}[/red]\
-{self.tokens[(self.position + 1): (self.position + 5)]}\
-					'
-					)
+				self.pop_parentstack(resolver_)
 				self.consume()
 				left_tokens = self.consume_until("BR")
 				last_tokens = []
@@ -348,9 +350,26 @@ class Parser:
 			  'Mod5',
 			  'ISO_Level5_Shift',
 			  'Mod',
+			  "XF"
 		}
 
 		return k in modifiers
+
+	def pop_parentstack(self, resolver=""):
+		if len(self.parentStack) > 1:
+			self.parentStack.pop()
+		else:
+			self.throw_parentstack_error(resolver)
+
+	def throw_parentstack_error(self, current_resolver: str = ""):
+		resolver_text = f"while resolving {current_resolver}" if current_resolver else ""
+		console.print(dedent(f"""
+	        [red]Warning: Unmatched closing brace at token {self.position} {resolver_text}:[/red]
+	        {self.tokens[(self.position - 20):(self.position - 1)]}
+	        ----> [red]{self.current_token}[/red]
+	        {self.tokens[(self.position + 1):(self.position + 5)]}
+	    """))
+		return
 
 
 if __name__ == '__main__':
@@ -359,6 +378,8 @@ if __name__ == '__main__':
 	# test_lexer_permutations()
 	tokens = Lexer(open(state.hyprland_config_path).read()).tokenize()
 	parsed = Parser(tokens).parse()
+	string = BaseNode(type="GROUP").from_json(json.dumps(parsed.to_json()))
+	console.print(string)
 	with open("ouput.json", "w+") as file:
 		file.write(parsed.to_json())
 # console.print_json(parsed.to_json())

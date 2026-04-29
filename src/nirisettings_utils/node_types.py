@@ -2,6 +2,10 @@ import json
 from dataclasses import dataclass, field, asdict
 from typing import Literal, Union, Optional
 
+from rich.console import Console
+
+console = Console()
+
 # Strict type definitions
 NodeType = Literal[
 	'KEY', 'GROUP', 'COMMENT', 'COMMENT_BLOCK', 'BLANK', 'FILE',
@@ -58,6 +62,20 @@ class BaseNode:
 	def to_json(self, indent: int = 5):
 		"""Returns a JSON string representation of the node."""
 		return json.dumps(self.to_dict(), indent=indent)
+
+	def from_json(self, json_string: str, indent=0):
+		data = json.loads(json_string)
+		# self.type = data
+		console.print(data)
+
+	# newNode = BaseNode(type=data[])
+	# for k, v in asdict(data):
+	# 	if isinstance(k, dict):
+	# 		newNode[k] = v
+
+	# return newNode
+
+	# console.print(data)
 
 	def __repr__(self, indent: int = 0) -> str:
 		"""Recursive, clean tree representation with icons."""

@@ -19,7 +19,7 @@ try:
 except ImportError:
 
 	class _State:
-		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config_niri_short.kdl'
+		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config.kdl'
 		verbose = False
 
 
@@ -91,7 +91,7 @@ class KDLToken:
 			value_str = f"{DIM}'{RESET}{raw}{DIM}'{RESET}"
 		if __name__ == '__main__':
 			return f'{DIM}{self.position} {RESET}{BOLD}{color}{t:<10}{RESET} {value_str}'
-		return f'{t:<5} : {repr(raw)}'
+		return f'{t:<5}: {repr(raw)}'
 
 
 class Lexer:

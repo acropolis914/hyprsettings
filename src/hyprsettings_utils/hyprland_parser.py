@@ -149,7 +149,8 @@ class HyprParser:
 	def to_json(self) -> str:
 		return json.dumps(self.to_dict(), indent=4)
 
-	def to_hyprland(self, indent_level: int = 0, save=False, changedFiles=None, disabled=False) -> list | str | dict:
+	def to_hyprland(self, indent_level: int = 0, save=False, changedFiles: list[str] = [],
+	                disabled=False) -> list | str | dict:
 		if changedFiles is None:
 			changedFiles = []
 		global changedFileList, files
@@ -296,10 +297,6 @@ def print_hyprland(config_list, print: bool = False, save: bool = False):
 			rich.print(file['content'])
 
 
-# if save:
-# 	with open(f"test_{file["name"]}", "w", encoding="UTF-8") as file:
-# 		file.write(file["content"])
-
 node_count = 0
 
 
@@ -307,7 +304,6 @@ class _ConfigParser:
 	def __init__(self, path: Path | PathLike = None, verbose=state.verbose):
 		global global_verbose
 		global_verbose = verbose
-
 		self.root = HyprParser('root', 'GROUP')
 		self.stack: list[HyprParser] = [self.root]
 		if path:

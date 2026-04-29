@@ -36,13 +36,17 @@ class Api:
 			config_node = HyprParser.load(path)
 			log(f'Config loaded from {path},{config_node}')
 			config = config_node.to_json()
-		else:
+		elif str(path).endswith("kdl"):
+			log(f'Loading Niri Configuration: {str(path.resolve()).strip()}')
 			file_contents = open(path).read()
 			# console.print(file_contents)
 			tokens = niri_lexer.Lexer(file_contents).tokenize()
 			# console.print(tokens)
-			config_node = niri_parser.Parser(tokens).parse()
-			# console.print(config_node)
+			try:
+				config_node = niri_parser.Parser(tokens).parse()
+			except Exception as e:
+				raise Exception(e)
+			console.print(config_node)
 			config = config_node.to_json()
 		# current_config = config
 		return config
