@@ -1,5 +1,5 @@
 import { ContextMenu } from './contextMenu.js'
-import { addItem, deleteKey, saveKey } from '../utils/utils.js'
+import { addItem, deleteKey, makeUUID, saveKey } from '../utils/utils.js'
 import { debounce } from '../utils/helpers.js'
 import { GLOBAL } from '../GLOBAL.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
@@ -118,6 +118,7 @@ export class EditorItem_Generic {
 	private hasInvalidData: boolean
 
 	constructor(json: ItemPropsKey, disabled = false) {
+		json['uuid'] = json['uuid'] ?? makeUUID()
 		const startMark = performance.now()
 
 		this.initial_load = true
@@ -214,7 +215,10 @@ export class EditorItem_Generic {
 			this.keyEditor = document.createElement('textarea')
 			this.keyEditor.rows = 1
 			this.keyEditor.id = 'generic-key'
-			this.keyEditor.classList.add('hidden')
+			if (GLOBAL.mode !== 'niri') {
+				this.keyEditor.classList.add('hidden')
+			}
+
 			this.keyEditor.setAttribute('placeholder', 'Input key here...')
 			this.genericEditor_el.appendChild(this.keyEditor)
 		}

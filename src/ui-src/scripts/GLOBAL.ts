@@ -1,21 +1,14 @@
-import type { ItemPropsFile } from '@scripts/types/editorItemTypes.ts'
+import type { ItemPropsFile, ItemPropsGroup } from '@scripts/types/editorItemTypes.ts'
 
-type ViewType =
-	'tabs'
-	| 'main'
-	| 'search'
-	| 'dmenu'
-	| 'overlay'
-	| 'colorSelect'
-	| 'editorItem'
-	| 'wikiNavigation'
-	| 'wikiContent'
+type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem' | 'wikiNavigation' | 'wikiContent'
 // type ConfigGlobal = {
 // 	file: string
 // 	name: string
 // 	value: string | number | any
 // 	uuid: string
 // }
+
+type ConfigMode = 'niri' | 'hyprland' | 'mango'
 
 export class GLOBAL {
 	// Map of key → array of callbacks
@@ -31,7 +24,7 @@ export class GLOBAL {
 	static compact: boolean = false
 
 	// Arbitrary data storage
-	static data?: any
+	static data?: ItemPropsGroup
 
 	// Versions
 	static wikiVersion?: string
@@ -55,6 +48,8 @@ export class GLOBAL {
 	static config_info: any
 	static files: Record<string, ItemPropsFile> = {}
 	static activeContextMenus: any[] = []
+	static mode: ConfigMode = null
+	static themeVariant: 'dark' | 'light' = 'dark'
 
 	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,
@@ -62,7 +57,7 @@ export class GLOBAL {
 			(): Promise<void>
 			(value: any): void
 			(): void
-		}
+		},
 	) {
 		if (!this._listeners.has(key)) {
 			this._listeners.set(key, [])

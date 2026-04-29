@@ -1,9 +1,9 @@
 import { ContextMenu } from './contextMenu.js'
-import { addItem, deleteKey, saveKey } from '../utils/utils.ts'
+import { addItem, deleteKey, makeUUID, saveKey } from '../utils/utils.ts'
 import { debounce } from '../utils/helpers.js'
 import { GLOBAL } from '../GLOBAL.ts'
 import { EditorItem_Generic } from './EditorItem_Generic.ts'
-import type { ItemPropsKey, ItemPropsMisc } from '@scripts/types/editorItemTypes.ts'
+import type { ItemProps, ItemPropsKey, ItemPropsMisc } from '@scripts/types/editorItemTypes.ts'
 // import { EditorItem_Binds } from './EditorItem_Binds.ts'
 
 export class EditorItem_Comments {
@@ -13,7 +13,9 @@ export class EditorItem_Comments {
 	private textarea: any
 	saveDebounced: ((...args) => void) | any
 	contextMenu: ContextMenu
+	json: ItemProps
 	constructor(json: ItemPropsMisc, hidden: boolean = false) {
+		json['uuid'] = json['uuid'] ?? makeUUID()
 		let comment = json['comment']
 		let uuid = json['uuid']
 		let position = json['position']
@@ -26,6 +28,7 @@ export class EditorItem_Comments {
 		this.el.dataset.type = json['type']
 		this.editing = false
 		this.el.disable = this.disable.bind(this)
+		this.json = json
 
 		// let [name, value] = this.el.dataset.comment.replace(/^[ #]+/, '').split(/=(.*)/).slice(0, 2).map(p => (p.trim()))
 		// if (name && value){
@@ -228,7 +231,11 @@ export class EditorItem_Comments {
 	}
 
 	save() {
-		if (!this.el.dataset.comment.trim().startsWith('#') && this.el.dataset.comment.split('=').length > 1) {
+		if (
+			!this.el.dataset.comment.trim().startsWith('#') &&
+			this.el.dataset.comment.split('=').length > 1 &&
+			(GLOBAL.mode === 'hyprland' || GLOBAL.mode === 'mango' || GLOBAL.mode === null)
+		) {
 			console.log('detected comment to key transformation')
 			let [name, value] = this.el.dataset.comment
 				.split(/=(.*)/)
@@ -242,7 +249,7 @@ export class EditorItem_Comments {
 			let type = 'KEY'
 			let position = this.el.dataset.position
 			if (name && value) {
-				saveKey(type, name, uuid, position, value, (comment = comment), false)
+				saveKey(type, name, uuid, position, value, comment, false)
 				let json = {
 					name: name,
 					uuid: uuid,
@@ -251,11 +258,41 @@ export class EditorItem_Comments {
 					position: position,
 					type: type,
 				}
-				if (name.startsWith('bind')) {
-					this.el.replaceWith(new EditorItem_Binds(json).return())
-				} else {
-					this.el.replaceWith(new EditorItem_Generic(json).return())
+				this.el.replaceWith(new EditorItem_Generic(json).return())
+			}
+			// niri-specific: treat first whitespace token as key name, rest until '//' as value, '//' rest as comment
+		} else if (
+			GLOBAL.mode === 'niri' &&
+			!this.el.dataset.comment.trim().startsWith('/') &&
+			this.el.dataset.comment.trim().split(/\s+/).length > 0
+		) {
+			console.log('detected niri-style comment to key transformation')
+			const raw = this.el.dataset.comment.trim()
+			const [name] = raw.split(/\s+/)
+			const rest = raw.slice(name.length).trim()
+			const originalValue = rest
+			const [valuePart, commentPart] = rest
+				.split(/\/\/(.*)/)
+				.slice(0, 2)
+				.map((p) => (p ? p.trim() : ''))
+
+			let uuid = this.el.dataset.uuid
+			let type = 'KEY'
+			let position = this.el.dataset.position
+			if (name && valuePart !== undefined) {
+				saveKey(type, name, uuid, position, originalValue, commentPart, false)
+				let json = {
+					name: name,
+					uuid: uuid,
+					value: valuePart,
+					comment: commentPart ? `// ${commentPart}` : '',
+					position: position,
+					type: type,
 				}
+				const newEl = new EditorItem_Generic(json)
+				this.el.replaceWith(newEl.el)
+				newEl.el.focus()
+				newEl.el.click()
 			}
 		} else {
 			let type = 'COMMENT'
@@ -264,10 +301,23 @@ export class EditorItem_Comments {
 			let position = this.el.dataset.position
 			let value = null
 			let comment
-			if (!this.el.dataset.comment.trim().startsWith('#')) {
-				comment = `# ${this.el.dataset.comment}`
+			if (GLOBAL.mode === 'niri') {
+				// In niri mode use '//' comment delimiter. If user typed '#' or plain text, convert to '// ...'
+				const raw = this.el.dataset.comment.trim()
+				if (raw.startsWith('//')) {
+					comment = raw
+				} else {
+					// strip any leading '#' or '/' and whitespace, then prefix with '// '
+					const stripped = raw.replace(/^[#\/\s]+/, '').trim()
+					comment = `// ${stripped}`
+				}
 			} else {
-				comment = this.el.dataset.comment
+				// Default behavior (hyprland/mango/etc.) uses '#'
+				if (!this.el.dataset.comment.trim().startsWith('#')) {
+					comment = `# ${this.el.dataset.comment}`
+				} else {
+					comment = this.el.dataset.comment
+				}
 			}
 			saveKey(type, name, uuid, position, value, comment, false)
 		}

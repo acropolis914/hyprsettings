@@ -1,5 +1,6 @@
 //tabids for comment stacks so configRenderer() knows where to put them
 //[HeaderCommentBlockName(case insensitive),tabID
+import { GLOBAL } from '@scripts/GLOBAL.ts'
 export let tabids = [
 	['general layout', 'looknfeel'], //dank
 	['layouts', 'looknfeel'], //dank
@@ -56,14 +57,18 @@ export const keyNameStarts = [
 
 	// workspaces
 	['workspace', 'workspaces', ['workspace_wraparound']],
+	//niri
+	['spawn-at-startup', 'autostart'],
+	['spawn-sh-at-startup', 'autostart'],
+	['prefer-no-csd', 'looknfeel'],
 ]
 
-export const configGroups = [
+export const baseConfigGroups = [
 	// animations
 	['animations', 'animations'],
 
 	// input
-	['binds', 'input'],
+	// ['binds', 'input'],
 	['cursor', 'input'],
 	['device', 'input'],
 	['input', 'input'],
@@ -89,9 +94,24 @@ export const configGroups = [
 	// window rules
 	['group', 'win-rules'],
 	['windowrule', 'win-rules'],
+
 	['xwayland', 'win-rules'],
 ]
-
+export function getConfigGroups() {
+	const modeGroupsMap = {
+		hyprland: [['binds', 'input']],
+		niri: [
+			['binds', 'keybinds'],
+			['output', 'monitor'],
+			['window-rule', 'win-rules'],
+			['switch-events', 'input'],
+			['gestures', 'input'],
+			['layout', 'looknfeel'],
+			['recent-windows', 'looknfeel'],
+		],
+	}
+	return [...baseConfigGroups, ...(modeGroupsMap[GLOBAL.mode] ?? modeGroupsMap['hyprland'])]
+}
 export let tabs = [
 	{ name: 'General', id: 'general', default: true, icon: '' }, // nf-md-settings
 	{ name: 'Keybinds', id: 'keybinds', icon: '󰌌' }, // nf-md-key

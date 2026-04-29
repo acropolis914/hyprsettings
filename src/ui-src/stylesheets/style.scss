@@ -230,6 +230,7 @@ body {
 	min-height: 0;
 	overflow-x: hidden;
 	scroll-behavior: smooth;
+	scroll-padding-block: 20px;
 	//border-radius: 50%;
 	@media (max-width: 768px) {
 		padding: 1rem 1rem;

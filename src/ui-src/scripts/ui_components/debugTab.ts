@@ -2,6 +2,10 @@ import { GLOBAL } from '../GLOBAL.ts'
 import { updateJsonViewerTheme } from '../utils/setupTheme.js'
 let debugWindow = document.querySelector('.config-set#debug')
 
+import Prism from 'prismjs'
+import 'prismjs/components/prism-typescript.js'
+import '@stylesheets/subs/prism.css'
+
 export default function initializeDebugTab() {
 	debugWindow = document.querySelector('.config-set#debug')
 	debugWindow.innerHTML = ''
@@ -17,19 +21,16 @@ export default function initializeDebugTab() {
 	GLOBAL.onChange('persistence', () => {
 		initGlobalDebugger()
 	})
-	initRE2Tester()
+	setTimeout(() => {
+		initRE2Tester()
+	}, 10)
 }
 
 export function jsViewerInit() {
 	let label = document.createElement('p')
 	label.innerHTML = 'Data rendered by the UI'
-
-	// Try to find existing viewer
 	let viewer = debugWindow.querySelector('andypf-json-viewer')
-	let viewerContainer = document.querySelector(
-		'.config-set#debug>#json-viewer',
-	)
-
+	let viewerContainer = document.querySelector('.config-set#debug>#json-viewer')
 	if (!viewer) {
 		viewer = document.createElement('andypf-json-viewer')
 		viewer.setAttribute('show-toolbar', 'true')
@@ -41,14 +42,9 @@ export function jsViewerInit() {
 		viewerContainer.appendChild(viewer)
 		debugWindow.appendChild(viewerContainer)
 	}
-
-	// Always update data
 	viewer.data = GLOBAL.data
-
-	// Keep global reference in sync
 	window.jsViewer = viewer
-
-	updateJsonViewerTheme(window.themeVariant)
+	updateJsonViewerTheme(GLOBAL.themeVariant ?? 'dark')
 }
 
 function initGlobalDebugger() {
@@ -85,15 +81,7 @@ function initGlobalDebugger() {
 		const globalKeys = Object.getOwnPropertyNames(GLOBAL)
 
 		globalKeys.forEach((key) => {
-			let hiddenkeys = [
-				'length',
-				'name',
-				'prototype',
-				'onChange',
-				'setKey',
-				'configText',
-				'wikiEntry',
-			]
+			let hiddenkeys = ['length', 'name', 'prototype', 'onChange', 'setKey', 'configText', 'wikiEntry']
 			if (hiddenkeys.includes(key)) return
 			const button = document.createElement('button')
 			button.classList.add('debug-key-btn')
@@ -105,25 +93,14 @@ function initGlobalDebugger() {
 				// Clear previous viewer content
 				viewer.innerHTML = ''
 
-				if (
-					typeof value === 'object' &&
-					value !== null &&
-					key !== '_listeners'
-				) {
-					let jsonviewer =
-						document.createElement('andypf-json-viewer')
+				if (typeof value === 'object' && value !== null && key !== '_listeners') {
+					let jsonviewer = document.createElement('andypf-json-viewer')
 					jsonviewer.setAttribute('show-toolbar', 'true')
-					jsonviewer.setAttribute(
-						'theme',
-						`default-${GLOBAL.themeVariant.toLowerCase()}`,
-					)
+					jsonviewer.setAttribute('theme', `default-${GLOBAL.themeVariant.toLowerCase()}`)
 					jsonviewer.data = JSON.stringify(value, null, 2)
 					viewer.appendChild(jsonviewer)
 				} else if (key === '_listeners') {
-					for (const [
-						listenerKey,
-						callbacks,
-					] of GLOBAL._listeners) {
+					for (const [listenerKey, callbacks] of GLOBAL._listeners) {
 						const section = document.createElement('div')
 						section.style.marginBottom = '0.5rem'
 
@@ -132,24 +109,33 @@ function initGlobalDebugger() {
 						section.appendChild(header)
 
 						callbacks.forEach((cb, i) => {
-							const cbButton =
-								document.createElement('button')
-							cbButton.textContent = `Callback ${i + 1}`
+							const cbButton = document.createElement('button')
+							cbButton.textContent = `Cb ${i + 1}`
 							cbButton.style.marginLeft = '0.5rem'
+							cbButton.title = cb.toString()
 
 							// Create dialog
-							const dialog =
-								document.createElement('dialog')
-							dialog.style.width = '400px'
+							const dialog = document.createElement('dialog')
+							dialog.style.position = 'absolute'
+							dialog.style.top = '50%'
+							dialog.style.left = '50%'
+							dialog.style.transform = 'translate(-50%, -50%)'
+							dialog.style.width = '90%'
 							dialog.style.padding = '1rem'
 							dialog.style.borderRadius = '0.4rem'
 							dialog.style.border = '1px solid #666'
-							dialog.style.whiteSpace = 'pre-wrap'
-							dialog.textContent = cb.toString()
+
+							const code = document.createElement('code')
+							code.style.fontSize = '1.2rem'
+							code.style.whiteSpace = 'pre-wrap'
+							code.textContent = cb.toString()
+							code.classList.add('language-js')
+							Prism.highlightElement(code)
+
+							dialog.appendChild(code)
 
 							// Add a close button inside dialog
-							const closeBtn =
-								document.createElement('button')
+							const closeBtn = document.createElement('button')
 							closeBtn.textContent = 'Close'
 							closeBtn.style.display = 'block'
 							closeBtn.style.marginTop = '0.5rem'
@@ -194,8 +180,7 @@ function initGlobalDebugger() {
 }
 
 function initRE2Tester() {
-	const debugRoot =
-		document.querySelector<HTMLDivElement>('.config-set#debug')
+	const debugRoot = document.querySelector<HTMLDivElement>('.config-set#debug')
 	if (!debugRoot) {
 		console.log('Debug Window not found')
 		return
@@ -257,7 +242,6 @@ function initRE2Tester() {
 	highlightLabel.append(highlightToggle, highlightText)
 	optionsRow.appendChild(highlightLabel)
 
-
 	const results = document.createElement('div')
 	results.classList.add('re2-results')
 
@@ -275,16 +259,7 @@ function initRE2Tester() {
 
 	copyRow.append(copyButton, copyFeedback)
 
-	re2Tab.append(
-		title,
-		patternLabel,
-		patternInput,
-		status,
-		textLabel,
-		textInput,
-		optionsRow,
-		results,
-	)
+	re2Tab.append(title, patternLabel, patternInput, status, textLabel, textInput, optionsRow, results)
 	debugRoot.appendChild(re2Tab)
 
 	let re2Promise: Promise<any> | null = null
@@ -308,10 +283,7 @@ function initRE2Tester() {
 		return RE2JS.matches(pattern, text)
 	}
 
-	function setStatus(
-		kind: 'idle' | 'valid' | 'invalid' | 'working',
-		message: string,
-	) {
+	function setStatus(kind: 'idle' | 'valid' | 'invalid' | 'working', message: string) {
 		status.classList.remove('is-valid', 'is-invalid', 'is-working')
 		if (kind === 'valid') status.classList.add('is-valid')
 		if (kind === 'invalid') status.classList.add('is-invalid')
@@ -339,11 +311,7 @@ function initRE2Tester() {
 			return `${String(index + 1).padStart(3, '0')} | ${state.padEnd(8, ' ')} | ${printableLine}`
 		})
 
-		const patternState = pattern.trim()
-			? patternIsValid
-				? 'valid'
-				: `invalid (${patternError || 'compile error'})`
-			: 'empty'
+		const patternState = pattern.trim() ? (patternIsValid ? 'valid' : `invalid (${patternError || 'compile error'})`) : 'empty'
 
 		lastReportText = [
 			'RE2 Pattern Matching Report',
@@ -379,11 +347,7 @@ function initRE2Tester() {
 			const matchEnd = matchStart + matchText.length
 
 			if (matchStart > cursor) {
-				target.appendChild(
-					document.createTextNode(
-						lineText.slice(cursor, matchStart),
-					),
-				)
+				target.appendChild(document.createTextNode(lineText.slice(cursor, matchStart)))
 			}
 
 			const mark = document.createElement('mark')
@@ -406,9 +370,7 @@ function initRE2Tester() {
 		}
 
 		if (cursor < lineText.length) {
-			target.appendChild(
-				document.createTextNode(lineText.slice(cursor)),
-			)
+			target.appendChild(document.createTextNode(lineText.slice(cursor)))
 		}
 	}
 
@@ -427,7 +389,11 @@ function initRE2Tester() {
 			placeholder.classList.add('re2-results-meta')
 			placeholder.textContent = 'Add a pattern to evaluate lines.'
 			results.appendChild(placeholder)
-			setReport(pattern, lines, lines.map(() => false))
+			setReport(
+				pattern,
+				lines,
+				lines.map(() => false),
+			)
 			return
 		}
 
@@ -436,7 +402,11 @@ function initRE2Tester() {
 			placeholder.classList.add('re2-results-meta')
 			placeholder.textContent = patternError || 'Pattern is invalid.'
 			results.appendChild(placeholder)
-			setReport(pattern, lines, lines.map(() => false))
+			setReport(
+				pattern,
+				lines,
+				lines.map(() => false),
+			)
 			return
 		}
 
@@ -556,8 +526,7 @@ function initRE2Tester() {
 			}
 
 			patternIsValid = false
-			patternError =
-				error instanceof Error ? error.message : String(error)
+			patternError = error instanceof Error ? error.message : String(error)
 			nativeHighlightRegex = null
 			setStatus('invalid', `Pattern error: ${patternError}`)
 		}

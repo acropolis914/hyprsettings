@@ -1,5 +1,5 @@
 // @ts-check
-import { saveKey, deleteKey, duplicateKey, addChildItem, addItem } from '../utils/utils.js'
+import { saveKey, deleteKey, duplicateKey, addChildItem, addItem, handleSave } from '../utils/utils.js'
 import { debounce } from '../utils/helpers.js'
 import { ContextMenu } from './contextMenu.js'
 import { dmenuConfirm } from '../ui_components/dmenu.ts'
@@ -374,7 +374,23 @@ export class ConfigGroup {
 
 	save() {
 		const disabled = this.group_el.dataset.disabled === 'true'
-		// console.log("Saving group:", this.group_el.dataset.name, "Disabled:", disabled)
+		console.log('Saving group:', this.group_el.dataset.name, 'Disabled:', disabled)
+		this.json['name'] = this.group_el.dataset.name
+		this.json['position'] = this.group_el.dataset.position
+		this.json['value'] = this.group_el.dataset.value
+		this.json['comment'] = this.group_el.dataset.comment
+		this.json['disabled'] = this.group_el.dataset.disabled === 'true'
+		if (disabled) {
+			this.childrenContainer.querySelectorAll('.editor-item').forEach((element: HTMLDivElement) => {
+				element.disable()
+			})
+		}
+		let path = this.group_el.dataset.position.split(':')
+		let file = path
+			.slice(1)
+			.filter((p) => p.includes('.conf'))
+			.at(-1)
+		handleSave(file, `SaveGroup ${this.group_el.dataset.uuid}`, true)
 		saveKey(
 			'GROUP',
 			this.group_el.dataset.name,

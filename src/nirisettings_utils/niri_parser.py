@@ -113,7 +113,7 @@ class Parser:
 			# resolver: comment
 			if self.current_token.type in ['COMMENT']:
 				resolver_ = 'comment'
-				newNode = ItemPropsMisc(name=None, comment=self.current_token.value or '',
+				newNode = ItemPropsMisc(name=None, comment=f"// {self.current_token.value}" or '',
 				                        value=self.current_token.value or '', type='COMMENT',
 				                        token_number=self.position, resolver=resolver_)
 				self.parentStack[-1].children.append(newNode)
@@ -138,12 +138,15 @@ class Parser:
 			):
 				resolver_ = 'keybind_group'
 				newNodeName: str = self.current_token.value or ''
-				while self.peek().type in ['OPERATION', 'WORD', 'INT', 'WS', "BOOL"]:
-					newNodeName += self.peek().value
+				while self.peek().type in ['OPERATION', 'WORD', 'INT', 'WS', "BOOL", "STRING"]:
+					if self.peek().type == "STRING":
+						newNodeName += f"\"{self.peek().value}\""
+					else:
+						newNodeName += self.peek().value
 					self.consume()
 				self.consume_until('LBRACE')
 				self.consume()  # consume '{'
-				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP', token_number=self.position,
+				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP_KB', token_number=self.position,
 				                         resolver=resolver_)  # Todo Return to KEYBIND_GROUP
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)

@@ -111,10 +111,12 @@ class ItemPropsKey(BaseNode):
 @dataclass(slots=True, repr=False)
 class ItemPropsGroup(BaseNode):
 	type: NodeType = 'GROUP'
-	children: list['ItemProps'] = field(default_factory=list)
+
 	one_line: bool = None
 	last_one_line: bool = None
 	comment: Optional[str] = None
+	mode: str = "niri"
+	children: list['ItemProps'] = field(default_factory=list)
 
 
 @dataclass(slots=True, repr=False)

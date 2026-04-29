@@ -3,17 +3,21 @@
 import { EditorItem_Generic } from './EditorItem_Generic.ts'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 // import { EditorItem_Binds } from './EditorItem_Binds.ts'
-import { tabids, keyNameStarts, configGroups } from '@scripts/HyprlandSpecific/configMap.js'
+import { tabids, keyNameStarts, getConfigGroups } from '@scripts/HyprlandSpecific/configMap.js'
 import { ConfigGroup } from './ConfigGroup.ts'
 import { GLOBAL } from '../GLOBAL.js'
 import { Backend } from '@scripts/utils/backendAPI.js'
 import { destroyOverlay } from '@scripts/ui_components/darkenOverlay.js'
 import { focusTab } from '@scripts/ui_components/createTabView.ts'
-import type { ItemProps, ItemPropsFile, ItemPropsGroup, ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
-
+import type { ItemProps, ItemPropsFile, ItemPropsGroup, ItemPropsKey, ItemPropsMisc } from '@scripts/types/editorItemTypes.ts'
+let configGroups
 export default async function getAndRenderConfig() {
-	GLOBAL.onChange('data', (value?: object): Promise<void> => {
+	GLOBAL.onChange('data', async (value?: object): Promise<void> => {
 		if (typeof value === 'object') {
+			if (GLOBAL.data['mode']) {
+				GLOBAL.mode = GLOBAL.data['mode']
+			}
+			configGroups = getConfigGroups()
 			new _configRenderer(GLOBAL.data)
 		}
 		return
@@ -125,100 +129,88 @@ export class _configRenderer {
 		destroyOverlay().then()
 	}
 
+	renderCommentStack() {
+		const self = this
+		for (let i = 0; i < self.comment_stack.length; i++) {
+			let comment_element = new EditorItem_Comments(self.comment_stack[i] as ItemPropsMisc)
+			comment_element.el.classList.add('block-comment')
+			if (!GLOBAL['config']['show_header_comments']) {
+				comment_element.el.classList.add('settings-hidden')
+			}
+			const parentStack = self.container_stack?.at(-1)
+			const elementToAdd: HTMLDivElement = comment_element.el
+			if (parentStack?.classList?.contains('config-group')) {
+				parentStack.appendConfigItems(elementToAdd)
+			} else {
+				parentStack.appendChild(elementToAdd)
+			}
+		}
+		self.comment_stack = []
+	}
+
+	renderCommentQueue(all: boolean = false) {
+		const self = this
+		let limit = all ? self.comment_queue.length : self.comment_queue.length - 1
+		let itemsToProcess = self.comment_queue.splice(0, limit)
+		for (let comment_item of itemsToProcess) {
+			let comment_item_el = new EditorItem_Comments(comment_item, false)
+			if (!GLOBAL['config']['show_line_comments']) {
+				comment_item_el.el.classList.add('settings-hidden')
+			}
+			let parentStack = self.container_stack.at(-1)
+			let elementToAdd = comment_item_el.el
+			if (parentStack?.classList?.contains('config-group')) {
+				parentStack.appendConfigItems(elementToAdd)
+			} else {
+				parentStack.appendChild(elementToAdd)
+			}
+		}
+	}
+
 	async parse(json: ItemProps) {
 		const self = this
-
-		function renderCommentStack() {
-			for (let i = 0; i < self.comment_stack.length; i++) {
-				let comment_element = new EditorItem_Comments(self.comment_stack[i] as ItemPropsMisc)
-				comment_element.el.classList.add('block-comment')
-				if (!GLOBAL['config']['show_header_comments']) {
-					comment_element.el.classList.add('settings-hidden')
-				}
-				const parentStack = self.container_stack?.at(-1)
-				const elementToAdd: HTMLDivElement = comment_element.el
-				if (parentStack?.classList?.contains('config-group')) {
-					parentStack.appendConfigItems(elementToAdd)
-				} else {
-					parentStack.appendChild(elementToAdd)
-				}
-			}
-			self.comment_stack = []
-		}
-
-		function renderCommentQueue(all: boolean = false) {
-			let limit = all ? self.comment_queue.length : self.comment_queue.length - 1
-			let itemsToProcess = self.comment_queue.splice(0, limit)
-			for (let comment_item of itemsToProcess) {
-				let comment_item_el = new EditorItem_Comments(comment_item, false)
-				if (!GLOBAL['config']['show_line_comments']) {
-					comment_item_el.el.classList.add('settings-hidden')
-				}
-				let parentStack = self.container_stack.at(-1)
-				let elementToAdd = comment_item_el.el
-				if (parentStack?.classList?.contains('config-group')) {
-					parentStack.appendConfigItems(elementToAdd)
-				} else {
-					parentStack.appendChild(elementToAdd)
-				}
-			}
-		}
-
 		//recursive children rendering
 		if (json['children'] && json['name'] === 'root') {
-			console.log(json)
+			// console.log(json)
 			for (const child of json['children']) {
 				await this.parse(child)
 			}
-			renderCommentQueue()
-			renderCommentStack()
+			this.renderCommentQueue(true)
+			this.renderCommentStack()
 		} else if (json['type'] === 'FILE') {
 			GLOBAL.files[json['resolved_path']] = json as ItemPropsFile
-			renderCommentQueue()
-			renderCommentStack()
+			this.renderCommentQueue(true)
+			this.renderCommentStack()
 			try {
-				if (json && json['children']) {
+				if (json['children']) {
 					for (const child of json['children']) {
-						if (child && typeof child.name === 'string') {
-							if (child.name.startsWith('$')) {
-								const key = json['resolved_path']
-
-								// Make sure GLOBAL.configGlobals exists
-								if (!GLOBAL.configGlobals || typeof GLOBAL.configGlobals !== 'object') {
-									GLOBAL.configGlobals = {}
-									//	console.log(GLOBAL.configGlobals)
-								}
-
-								// Ensure the object for this key exists
-								if (!GLOBAL.configGlobals[key] || typeof GLOBAL.configGlobals[key] !== 'object') {
-									GLOBAL.configGlobals[key] = {}
-									//	console.log(GLOBAL.configGlobals)
-								}
-
-								// Only add child.value if it’s defined
-								if (child['value'] !== undefined) {
-									GLOBAL.configGlobals[key] = {
-										...(GLOBAL.configGlobals[key] || {}), // default to empty object
-										[child.name]: child['value'],
-									}
-
-									//	console.log(GLOBAL.configGlobals)
-								} else {
-									console.warn(`Child ${child.name} has undefined value, skipping`)
-								}
-							}
-						} else {
-							console.warn('Invalid child object:', child)
-						}
-
 						await this.parse(child)
+						if (child && typeof child.name === 'string' && child.name.startsWith('$')) {
+							const key = json['resolved_path']
+							if (!GLOBAL.configGlobals || typeof GLOBAL.configGlobals !== 'object') {
+								GLOBAL.configGlobals = {}
+							}
+
+							if (!GLOBAL.configGlobals[key] || typeof GLOBAL.configGlobals[key] !== 'object') {
+								GLOBAL.configGlobals[key] = {}
+							}
+
+							if (child['value'] !== undefined) {
+								GLOBAL.configGlobals[key] = {
+									...(GLOBAL.configGlobals[key] || {}), // default to empty object
+									[child.name]: child['value'],
+								}
+							} else {
+								console.warn('Invalid child object:', child)
+							}
+						}
 					}
 				}
-				renderCommentQueue(true)
-				renderCommentStack()
 			} catch (e) {
 				console.warn(e, json)
 			}
+			this.renderCommentQueue(true)
+			this.renderCommentStack()
 		} else if (
 			// is a comment that looks like the start of a comment block
 			json['type'] === 'COMMENT' &&
@@ -227,7 +219,7 @@ export class _configRenderer {
 		) {
 			this.comment_stack.push(json)
 			if (this.comment_stack.length > 2) {
-				renderCommentStack()
+				this.renderCommentStack()
 			}
 		} else if (
 			//if there is a comment block start and there is another comment
@@ -256,7 +248,7 @@ export class _configRenderer {
 		else if (json['type'] === 'COMMENT' && this.comment_stack.length === 0) {
 			this.comment_queue.push(json)
 			if (this.comment_queue.length > 1) {
-				renderCommentQueue()
+				this.renderCommentQueue()
 			}
 		} else if (json['type'] === 'BLANK') {
 			// if (this.comment_queue.length > 0) {
@@ -269,10 +261,10 @@ export class _configRenderer {
 			// blankline.textContent = 'THIS IS A BLANK LINE'
 			// this.container_stack.at(-1).appendChild(blankline)
 			// //fugly
-		} else if (json['type'] === 'GROUP' && json['name'] != 'root') {
+		} else if (json['type'].startsWith('GROUP') && json['type'] !== 'GROUPEND' && json['name'] != 'root') {
 			// console.log(json)
-			renderCommentStack()
-			renderCommentQueue(true)
+			this.renderCommentStack()
+			this.renderCommentQueue(true)
 			let group_el = new ConfigGroup(json as ItemPropsGroup).return()
 			let matched: boolean
 			if (!this.renderTo) {
@@ -292,7 +284,7 @@ export class _configRenderer {
 
 			if (!matched) {
 				let parentStack = self.container_stack.at(-1)
-				console.log(self.container_stack)
+				// console.log(self.container_stack)
 				let elementToAdd = group_el
 				if (parentStack?.classList?.contains('config-group')) {
 					parentStack.appendConfigItems(elementToAdd)
@@ -303,13 +295,13 @@ export class _configRenderer {
 			this.container_stack.push(group_el)
 			try {
 				for (const [index, child] of Array.from(json['children']).entries()) {
-					await this.parse(child)
+					await this.parse(child as ItemProps)
 					if (child['type'] === 'GROUPEND' && child['comment']) {
 						let lastOfStack = this.container_stack.at(-1) as HTMLDivElement
 						// lastOfStack.style.backgroundColor = 'red' //TODO add a groupend comment
 					}
 				}
-				renderCommentQueue(true)
+				this.renderCommentQueue(true)
 				this.container_stack.pop()
 			} catch (e) {
 				console.error(e, json)
@@ -320,7 +312,6 @@ export class _configRenderer {
 			// 	}
 			// 	this.container_stack.pop()
 		} else if (json['type'] === 'KEY') {
-			// console.log(json)
 			try {
 				// renderCommentQueue(true)
 				// renderCommentStack()
@@ -345,10 +336,9 @@ export class _configRenderer {
 					this.container_stack.pop()
 					this.container_stack.push(tabToAddTo)
 				}
-				if (this.comment_queue.length > 0) {
-					renderCommentQueue(true)
-				}
-				let parentStack = tabToAddTo
+
+				this.renderCommentQueue(true)
+				let parentStack = tabToAddTo //huh?
 				let elementToAdd = genericItem.el
 				if (parentStack?.classList?.contains('config-group')) {
 					parentStack.appendConfigItems(elementToAdd)
@@ -358,14 +348,8 @@ export class _configRenderer {
 			} catch (e) {
 				console.log(e, json)
 			}
-		} else if ((json as ItemProps).type) {
-			console.log(json)
 		} else {
 			console.log('Failed to render an item: ', json, 'Skipping')
 		}
-		//
-		// if (json['type'] === 'GROUP' && json['name'] === 'root') {
-		// 	console.log('halo', json)
-		// }
 	}
 }

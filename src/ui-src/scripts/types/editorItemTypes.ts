@@ -1,11 +1,4 @@
-export type NodeType =
-	| 'KEY'
-	| 'GROUP'
-	| 'COMMENT'
-	| 'BLANK'
-	| 'FILE'
-	| 'GROUPEND'
-	| 'UNKNOWN'
+export type NodeType = 'KEY' | 'GROUP' | 'COMMENT' | 'BLANK' | 'FILE' | 'GROUPEND' | 'UNKNOWN'
 
 /**
  * Common properties shared across all configuration nodes.
@@ -34,6 +27,7 @@ export interface ItemPropsKey extends BaseNode {
 export interface ItemPropsGroup extends BaseNode {
 	type: 'GROUP'
 	children: ItemProps[]
+	mode?: 'niri' | 'hyprland' | 'mango'
 }
 
 /**
@@ -57,8 +51,4 @@ export interface ItemPropsMisc extends BaseNode {
 /**
  * Unified type for handling any node in the Hyprland configuration tree.
  */
-export type ItemProps =
-	| ItemPropsKey
-	| ItemPropsGroup
-	| ItemPropsFile
-	| ItemPropsMisc
+export type ItemProps = ItemPropsKey | ItemPropsGroup | ItemPropsFile | ItemPropsMisc

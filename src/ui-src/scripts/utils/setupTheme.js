@@ -14,19 +14,23 @@ export default async function setupTheme() {
 	root.style.setProperty(`--font-primary`, GLOBAL['config']['font'])
 
 	GLOBAL.themesByName = Object.fromEntries(GLOBAL.themes.map((t) => [t.name, t]))
-
 	const index = GLOBAL.themes.findIndex((t) => t.name === currentTheme)
+	let theme
 	if (index !== -1) {
-		const theme = GLOBAL.themes[index]
+		theme = GLOBAL.themes[index]
 		GLOBAL.currentThemeIndex = index
 		console.log(`Initially setting ${theme.name} as theme from config`)
+
 		applyThemeVars(theme)
+		// changeTheme(theme)
 	} else {
 		console.log(`No theme found matching ${currentTheme}, defaulting to first theme`)
-		applyThemeVars(GLOBAL.themes[0])
+		theme = GLOBAL.themes[0]
+		applyThemeVars()
 		GLOBAL.currentThemeIndex = 0
 	}
 	updateColoris()
+	updateJsonViewerTheme(theme.variant.toLowerCase())
 }
 
 export async function openThemeSelector() {
@@ -86,8 +90,6 @@ export function incrementCurrentTheme(forward = true) {
 }
 
 function applyThemeVars(theme) {
-	// document.documentElement.removeAttribute('style')
-	// document.documentElement.setAttribute('style', '')
 	let styleEl = document.getElementById('theme-overrides')
 	if (!styleEl) {
 		styleEl = document.createElement('style')
@@ -177,9 +179,9 @@ function removeThemeVarsTemporary() {
 // 	}, 1000)
 // }
 
-export function changeTheme(theme) {
+export function changeTheme(theme, skipAnimation = false) {
 	// 1. Skip animation logic if disabled
-	if (!GLOBAL['config']['ui_animations']) {
+	if (!GLOBAL['config']['ui_animations'] && !skipAnimation) {
 		document.body.querySelectorAll('*').forEach((e) => {
 			e.classList.add('themeAnimation')
 		})
@@ -262,26 +264,21 @@ export function changeTheme(theme) {
 		// clone.getBoundingClientRect()
 		setTimeout(() => {
 			document.querySelectorAll('#body-clone').forEach((e) => {
-				console.log(e)
+				// console.log(e)
 				e.remove()
 			})
 		}, 1000)
 	})
 }
 
-export function updateJsonViewerTheme(themeVariant) {
-	if (window.jsViewer) {
-		if (themeVariant === 'dark') {
-			window.jsViewer.setAttribute('theme', 'default-dark')
-		} else {
-			window.jsViewer.setAttribute('theme', 'default-light')
-		}
+export function updateJsonViewerTheme(themeVariant = GLOBAL.themeVariant) {
+	if (themeVariant.toLocaleString() === 'dark') {
+		window.jsViewer?.setAttribute('theme', 'default-dark')
+	} else {
+		window.jsViewer?.setAttribute('theme', 'default-light')
 	}
 }
 
-/**
- * Refreshes all linked CSS stylesheets by forcing the browser to re-fetch them.
- */
 export function refreshAllStylesheets() {
 	const links = document.querySelectorAll('link[rel="stylesheet"]')
 	const newTimestamp = Date.now()
