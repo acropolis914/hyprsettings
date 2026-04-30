@@ -1,3 +1,4 @@
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
@@ -171,10 +172,12 @@ class NiriParser:
 			# resolver: comment
 			if self.current_token.type in ['COMMENT']:
 				resolver_ = 'comment'
-				newNode = ItemPropsMisc(name=None, comment=f"// {self.current_token.value}" or '',
+				newNode = ItemPropsMisc(name=None, comment=f"{self.current_token.value}" or '',
 				                        value=self.current_token.value or '', type='COMMENT',
 				                        token_number=self.position, resolver=resolver_)
 				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				# if "Alternatively" in self.current_token.value:
+				# 	console.print_json(newNode.to_json())
 				# console.print(newNode.position)
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
@@ -199,7 +202,7 @@ class NiriParser:
 			):
 				resolver_ = 'keybind_group'
 				newNodeName: str = self.current_token.value or ''
-				while self.peek().type in ['OPERATION', 'WORD', 'INT', 'WS', "BOOL", "STRING"]:
+				while self.peek().type in ['OPERATION', 'WORD', 'INT', 'WS', "BOOL", "STRING", "FLOAT"]:
 					if self.peek().type == "STRING":
 						newNodeName += f"\"{self.peek().value}\""
 					else:
@@ -227,20 +230,20 @@ class NiriParser:
 				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
-				left_tokens = self.peek_until("BR")
-				last_tokens = []
-				for token in left_tokens:
-					if token.type == "RBRACE":
-						newNode.one_line = True
-						self.pop_parentstack(resolver_)
-					elif token.type == "COMMENT":
-						newNode.comment = token.value
-					else:
-						last_tokens.append(token)
-					self.consume()
-				console.print(
-					  f"[blue bold][GROUP_LBRACE:[/blue bold]{self.position}{newNode} Last Left Tokens:] {last_tokens}") if len(
-					  last_tokens) > 0 else None
+				# left_tokens = self.peek_until("BR")
+				# last_tokens = []
+				# for token in left_tokens:
+				# 	if token.type == "RBRACE":
+				# 		newNode.one_line = True
+				# 		self.pop_parentstack(resolver_)
+				# 	elif token.type == "COMMENT":
+				# 		newNode.comment = token.value
+				# 	else:
+				# 		last_tokens.append(token)
+				# 	self.consume()
+				# console.print(
+				# 	  f"[blue bold][GROUP_LBRACE:[/blue bold] {self.position}: {newNode} Last Left Tokens:] {last_tokens}") if len(
+				# 	  last_tokens) > 0 else None
 
 				continue
 
@@ -251,6 +254,7 @@ class NiriParser:
 				                                                              "OPERATION"] and self.peek(
 				  4).type == 'LBRACE'
 			):
+				resolver_ = 'group_complex'
 				newNodeName = self.current_token.value or ''
 				is_disabled = self.peek(-1).type == "SLASHDASH"
 
@@ -263,7 +267,7 @@ class NiriParser:
 					self.consume()
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP', token_number=self.position,
-				                         resolver='group_complex', disabled=is_disabled)
+				                         resolver=resolver_, disabled=is_disabled)
 				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
@@ -380,7 +384,7 @@ class NiriParser:
 					else:
 						last_tokens.append(token)
 				before_tokens = self.peek_back_until("BR")
-				if any(tok.type in ["WORD", "INT", "BOOL", "STR"] for tok in before_tokens):
+				if any(tok.type in ["WORD", "INT", "BOOL", "STR", "SEMIC"] for tok in before_tokens):
 					lastNodeGroup.last_one_line = True
 				console.print(f"[RBRACE:{self.position} Left Tokens]  {last_tokens}") if len(
 					  last_tokens) > 0 else None
@@ -465,8 +469,4 @@ if __name__ == '__main__':
 		Path.mkdir(parentpath, parents=True, exist_ok=True)
 		with open(path, "w+", encoding="utf-8") as new_file:
 			new_file.write(file["text"])
-# console.print_json(data=)
-# with open("ouput.json", "w+") as file:
-# 	file.write(parsed.to_json())
-# console.print_json(parsed.to_json())
-# print('\n'.join(repr(t) for t in tokens))
+# subprocess.run(["code", "--diff", "./config.kdl", "~/.config/niri/config.kdl"])

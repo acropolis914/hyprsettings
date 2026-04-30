@@ -137,6 +137,8 @@ class NiriLexer:
 					newNode = KDLToken('COMMENT', comment_string, position=self.pos)
 					# self.advance()
 					self.tokens.append(newNode)
+					# if "Alternatively" in comment_string:
+					# 	print(self.tokens)
 					while self.char.isspace() and self.char != '\n':
 						self.advance()
 					continue
@@ -241,17 +243,18 @@ class NiriLexer:
 		return self.text[start_pos: self.pos]
 
 	def gather_comment(self) -> str:
+		start_pos = self.pos
 		self.advance(2)
 		if cast(str, self.char).isspace():
 			self.advance()
-		start_pos = self.pos
 		while self.char is not None:
-			if (self.pos > len(self.text)) or (self.text[self.pos] in ['\n']):
-				# self.advance()
+			if (self.pos > len(self.text)) or (self.char in ['\n']):
 				break
 			self.advance()
+
 		comment = self.text[start_pos: self.pos]
 		# self.advance() #removes newline token
+
 		return comment
 
 	def gather_comment_block(self):

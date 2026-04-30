@@ -118,12 +118,15 @@ class BaseNode:
 	def to_file(self, indent: int = 0):
 		"""Recursive, clean tree representation with icons."""
 		# Root group should produce a simple dict with children
+		indent_ = '  '
+		indent_str = indent_ * indent
+		# if self.name == "struts":
+		# 	print(self.to_json())
 		if self.type == "GROUP" and self.name == "root":
 			dict_ = {"name": "root", "children": []}
 			for child in cast(list, self.children or []):
 				# append the child's file representation (may be str or dict)
 				dict_["children"].append(child.to_file())
-
 			return dict_
 		elif self.type == "FILE":
 			dict_ = {"resolved_path": self.resolved_path}
@@ -132,20 +135,44 @@ class BaseNode:
 				text += str(child.to_file())
 			dict_["text"] = text
 			return dict_
+		elif self.type.startswith("GROUP") and len(self.children) < 1:
+			disabled_text = "/-" if self.disabled else ""
+			text = f"{indent_str}{disabled_text}{self.name} " + "{ }\n"
+			return text
+		elif self.type.startswith("GROUP") and self.one_line:
+			disabled_text = "/-" if self.disabled else ""
+			text = f"{indent_str}{disabled_text}{self.name} " + "{ "
+
+			for child in cast(list, self.children or []):
+				text += str(str(child.to_file(0)) + ";").replace("\n", "")
+			text += " }\n"
+			return text
+		elif self.type.startswith("GROUP"):
+			disabled_text = "/-" if self.disabled else ""
+			newline = "\n" if not self.one_line else ""
+			text = f"{indent_str}{disabled_text}{self.name} " + "{" + f"{newline}"
+			if self.name == "default-column-width":
+				print(self.to_json())
+
+			for child in cast(list, self.children or []):
+				text += str(child.to_file(indent + 2))
+			text += f"{indent_str}" + "}\n"
+			return text
+		elif self.type == "COMMENT":
+			# print(self.to_json())
+			return f"{indent_str}{self.comment}\n"
 		else:
-			# print(self)
-
-			indent_ = '  '
-			indent_str = indent_ * indent
-
 			name_part = f'{self.name}' if self.name else ""
-			header = f"{indent_str}{name_part}"
+			disabled_text = "// " if self.disabled else ""
+			header = f"{indent_str}{disabled_text}{name_part}"
 
 			if hasattr(self, 'value') and self.value and not self.type == "COMMENT":
 				header += f" {self.value}"
 
 			if self.comment and self.type == "COMMENT":
 				header += f"{self.comment}"
+			elif self.comment:
+				header += f"\t {self.comment}"
 
 			if hasattr(self, 'children') and getattr(self, 'children'):
 				result = f"{header} " + "{" + "\n"
