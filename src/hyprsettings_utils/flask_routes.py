@@ -1,13 +1,17 @@
+from rich import logging
+
 from .hyprsettings_config import save_window_config, read_window_config
 from .pywebview_apis import api
 from flask import send_from_directory, jsonify, request, Flask
 from flask_cors import CORS
 import urllib.request
 import rich.traceback
+from rich.console import Console
 
 from .utils import log
 
 rich.traceback.install(show_locals=True)
+console = Console()
 
 
 # app = state.app
@@ -54,6 +58,7 @@ def register_routes(app: Flask):
 			return jsonify(config), 200
 		except Exception as e:
 			log(f'Error getting Hyprland config: {e}')
+			console.print_exception()
 			return jsonify({'error': str(e)}), 500
 
 	@app.route('/api/load_from_string', methods=['POST'])

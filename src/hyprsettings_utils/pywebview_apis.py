@@ -12,8 +12,9 @@ from .shared import hs_globals, state
 from .hyprland_parser import HyprParser, makeUUID
 
 from .utils import log, ui_print
-import nirisettings_utils.niri_parser as niri_parser
-import nirisettings_utils.niri_lexer as niri_lexer
+# import nirisettings_utils.niri_parser as niri_parser
+# import nirisettings_utils.niri_lexer as niri_lexer
+from nirisettings_utils.niri_parser import NiriParser
 
 thisfile_path = Path(__file__).parent.resolve()
 thisfile_path_parent = thisfile_path.parent.resolve()
@@ -29,25 +30,16 @@ class Api:
 
 	@staticmethod
 	def get_hyprland_config(path: str | None = None):
-		global current_config
 		path = Path(path) if path else state.hyprland_config_path
+		config = None
 		if str(path).endswith("conf"):
 			log(f'Loading Hyprland Conf {path}')
-			config_node = HyprParser.load(path)
-			log(f'Config loaded from {path},{config_node}')
-			config = config_node.to_json()
+			config = HyprParser.load_file(path).to_json()
+		# log(f'Config loaded from {path},{config_node}')
 		elif str(path).endswith("kdl"):
 			log(f'Loading Niri Configuration: {str(path.resolve()).strip()}')
-			file_contents = open(path).read()
-			# console.print(file_contents)
-			tokens = niri_lexer.Lexer(file_contents).tokenize()
-			# console.print(tokens)
-			try:
-				config_node = niri_parser.Parser(tokens).parse()
-			except Exception as e:
-				raise Exception(e)
-			console.print(config_node)
-			config = config_node.to_json()
+			config = NiriParser.load_file(path).to_json()
+		# config = config_node.to_json()
 		# current_config = config
 		return config
 

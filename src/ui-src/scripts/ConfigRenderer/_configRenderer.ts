@@ -16,6 +16,14 @@ export default async function getAndRenderConfig() {
 		if (typeof value === 'object') {
 			if (GLOBAL.data['mode']) {
 				GLOBAL.mode = GLOBAL.data['mode']
+				const header = document.querySelector('body>header#main-header>#header-title>span#mode')
+				if (GLOBAL.data['mode'] === 'hyprland') {
+					header.textContent = 'Hypr'
+				} else if (GLOBAL.data['mode'] === 'niri') {
+					header.textContent = 'Niri'
+				} else if (GLOBAL.data['mode'] === 'mango') {
+					header.textContent = 'Mango'
+				}
 			}
 			configGroups = getConfigGroups()
 			new _configRenderer(GLOBAL.data)
@@ -129,8 +137,18 @@ export class _configRenderer {
 		destroyOverlay().then()
 	}
 
-	renderCommentStack() {
+	renderCommentStack(resolver: string = 'UNKNOWN') {
 		const self = this
+		// Only log when there are comments to render
+		if (self.comment_stack.length > 0) {
+			try {
+				// clone the stack so console.log doesn't show a later-empty array
+				const cloned = JSON.parse(JSON.stringify(self.comment_stack))
+				console.log({ resolver, type: 'comment_stack', comments: cloned })
+			} catch (e) {
+				console.log('Failed to log comment_stack for', resolver)
+			}
+		}
 		for (let i = 0; i < self.comment_stack.length; i++) {
 			let comment_element = new EditorItem_Comments(self.comment_stack[i] as ItemPropsMisc)
 			comment_element.el.classList.add('block-comment')
@@ -148,10 +166,28 @@ export class _configRenderer {
 		self.comment_stack = []
 	}
 
-	renderCommentQueue(all: boolean = false) {
+	renderCommentQueue(all: boolean = false, resolver: string = 'UNKNOWN') {
 		const self = this
+		// Only log queued comments when there are any
+		if (self.comment_queue.length > 0) {
+			try {
+				// clone queued comments for stable logging (avoid live mutation effects)
+				const clonedQueue = JSON.parse(JSON.stringify(self.comment_queue))
+				console.log({ resolver, type: 'comment_queue', queued: clonedQueue })
+			} catch (e) {
+				console.log('Failed to log comment_queue for', resolver)
+			}
+		}
 		let limit = all ? self.comment_queue.length : self.comment_queue.length - 1
 		let itemsToProcess = self.comment_queue.splice(0, limit)
+		// if (itemsToProcess.length > 0) {
+		// 	try {
+		// 		const clonedItems = JSON.parse(JSON.stringify(itemsToProcess))
+		// 		console.log({ resolver, type: 'comment_queue_process', items: clonedItems })
+		// 	} catch (e) {
+		// 		console.log('Failed to log itemsToProcess for', resolver)
+		// 	}
+		// }
 		for (let comment_item of itemsToProcess) {
 			let comment_item_el = new EditorItem_Comments(comment_item, false)
 			if (!GLOBAL['config']['show_line_comments']) {
@@ -174,13 +210,11 @@ export class _configRenderer {
 			// console.log(json)
 			for (const child of json['children']) {
 				await this.parse(child)
+				this.renderCommentQueue(true, 'ROOT')
+				this.renderCommentStack('ROOT')
 			}
-			this.renderCommentQueue(true)
-			this.renderCommentStack()
 		} else if (json['type'] === 'FILE') {
 			GLOBAL.files[json['resolved_path']] = json as ItemPropsFile
-			this.renderCommentQueue(true)
-			this.renderCommentStack()
 			try {
 				if (json['children']) {
 					for (const child of json['children']) {
@@ -209,8 +243,8 @@ export class _configRenderer {
 			} catch (e) {
 				console.warn(e, json)
 			}
-			this.renderCommentQueue(true)
-			this.renderCommentStack()
+			// this.renderCommentQueue(true)
+			// this.renderCommentStack()
 		} else if (
 			// is a comment that looks like the start of a comment block
 			json['type'] === 'COMMENT' &&
@@ -219,7 +253,7 @@ export class _configRenderer {
 		) {
 			this.comment_stack.push(json)
 			if (this.comment_stack.length > 2) {
-				this.renderCommentStack()
+				this.renderCommentStack('HEADER')
 			}
 		} else if (
 			//if there is a comment block start and there is another comment
@@ -247,9 +281,7 @@ export class _configRenderer {
 		//inline comments
 		else if (json['type'] === 'COMMENT' && this.comment_stack.length === 0) {
 			this.comment_queue.push(json)
-			if (this.comment_queue.length > 1) {
-				this.renderCommentQueue()
-			}
+			// this.renderCommentQueue()
 		} else if (json['type'] === 'BLANK') {
 			// if (this.comment_queue.length > 0) {
 			// 	renderCommentQueue()
@@ -263,8 +295,8 @@ export class _configRenderer {
 			// //fugly
 		} else if (json['type'].startsWith('GROUP') && json['type'] !== 'GROUPEND' && json['name'] != 'root') {
 			// console.log(json)
-			this.renderCommentStack()
-			this.renderCommentQueue(true)
+			this.renderCommentStack('GROUP')
+			this.renderCommentQueue(true, 'GROUP')
 			let group_el = new ConfigGroup(json as ItemPropsGroup).return()
 			let matched: boolean
 			if (!this.renderTo) {
@@ -293,6 +325,7 @@ export class _configRenderer {
 				}
 			}
 			this.container_stack.push(group_el)
+
 			try {
 				for (const [index, child] of Array.from(json['children']).entries()) {
 					await this.parse(child as ItemProps)
@@ -301,7 +334,7 @@ export class _configRenderer {
 						// lastOfStack.style.backgroundColor = 'red' //TODO add a groupend comment
 					}
 				}
-				this.renderCommentQueue(true)
+				this.renderCommentQueue(true, 'GROUP-END')
 				this.container_stack.pop()
 			} catch (e) {
 				console.error(e, json)
@@ -313,8 +346,6 @@ export class _configRenderer {
 			// 	this.container_stack.pop()
 		} else if (json['type'] === 'KEY') {
 			try {
-				// renderCommentQueue(true)
-				// renderCommentStack()
 				let genericItem: EditorItem_Generic = new EditorItem_Generic(json as ItemPropsKey, json['disabled'])
 				let tabToAddTo: any
 				const foundPair = keyNameStarts.find(([key, value, exclude]) => {
@@ -336,8 +367,9 @@ export class _configRenderer {
 					this.container_stack.pop()
 					this.container_stack.push(tabToAddTo)
 				}
-
-				this.renderCommentQueue(true)
+				// flush any header/block comments and queued inline comments before rendering the key
+				this.renderCommentStack('KEY')
+				this.renderCommentQueue(true, 'KEY')
 				let parentStack = tabToAddTo //huh?
 				let elementToAdd = genericItem.el
 				if (parentStack?.classList?.contains('config-group')) {
@@ -348,6 +380,7 @@ export class _configRenderer {
 			} catch (e) {
 				console.log(e, json)
 			}
+		} else if (json['type'] === 'GROUPEND') {
 		} else {
 			console.log('Failed to render an item: ', json, 'Skipping')
 		}

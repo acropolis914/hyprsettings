@@ -1,6 +1,8 @@
+import collections
 import json
-from dataclasses import dataclass, field, asdict
-from typing import Literal, Union, Optional
+from dataclasses import dataclass, field, asdict, fields
+from logging import root
+from typing import Literal, Union, Optional, cast
 
 from rich.console import Console
 
@@ -29,6 +31,12 @@ class BaseNode:
 	disabled: bool = False
 	# temporary field set by parser to indicate which parse-branch created/handled this node
 	resolver: Optional[str] = None
+
+	one_line: Optional[bool] = None
+	last_one_line: Optional[bool] = None
+	mode: Literal["niri", "mango", "hyprland"] = "niri"
+	children: Optional[list] = None
+	value: Optional[str] = None
 
 	def to_dict(self):
 		"""Converts the dataclass to a dictionary, removing None values recursively for a cleaner JSON.
@@ -63,19 +71,92 @@ class BaseNode:
 		"""Returns a JSON string representation of the node."""
 		return json.dumps(self.to_dict(), indent=indent)
 
-	def from_json(self, json_string: str, indent=0):
-		data = json.loads(json_string)
-		# self.type = data
-		console.print(data)
+	@staticmethod
+	def from_dict(data: dict):
+		"""Create a BaseNode (or subclass) from a plain dict.
 
-	# newNode = BaseNode(type=data[])
-	# for k, v in asdict(data):
-	# 	if isinstance(k, dict):
-	# 		newNode[k] = v
+		Only keys that match dataclass fields and whose values are not None
+		will be forwarded to the constructor. This keeps the resulting
+		object free of explicit None entries.
+		"""
 
-	# return newNode
+		if not isinstance(data, dict):
+			raise TypeError("from_dict expects a dict")
+		base_fields = {f.name for f in fields(BaseNode)}
 
-	# console.print(data)
+		kwargs = {}
+		for k, v in data.items():
+			if k == "children" and len(v) > 0:
+				kwargs[k] = []
+				for child in v:
+					kwargs[k].append(BaseNode.from_dict(child))
+				continue
+			if k in base_fields and v is not None:
+				kwargs[k] = v
+
+		# Ensure 'type' exists (it's required)
+		if 'type' not in kwargs:
+			raise ValueError("missing required field 'type' for BaseNode")
+
+		return BaseNode(**kwargs)
+
+	@staticmethod
+	def from_json(json_string: str, indent=0):
+		# console.print(json_string)
+		data = None
+		if isinstance(json_string, str):
+			data: dict = json.loads(json_string)
+		data = BaseNode.from_dict(data)
+		return data
+
+	@staticmethod
+	def from_json_to_file(json: dict | str):
+		data = BaseNode.from_json(json)
+		string = data.to_file()
+		return string
+
+	def to_file(self, indent: int = 0):
+		"""Recursive, clean tree representation with icons."""
+		# Root group should produce a simple dict with children
+		if self.type == "GROUP" and self.name == "root":
+			dict_ = {"name": "root", "children": []}
+			for child in cast(list, self.children or []):
+				# append the child's file representation (may be str or dict)
+				dict_["children"].append(child.to_file())
+
+			return dict_
+		elif self.type == "FILE":
+			dict_ = {"resolved_path": self.resolved_path}
+			text = ""
+			for child in cast(list, self.children or []):
+				text += str(child.to_file())
+			dict_["text"] = text
+			return dict_
+		else:
+			# print(self)
+
+			indent_ = '  '
+			indent_str = indent_ * indent
+
+			name_part = f'{self.name}' if self.name else ""
+			header = f"{indent_str}{name_part}"
+
+			if hasattr(self, 'value') and self.value and not self.type == "COMMENT":
+				header += f" {self.value}"
+
+			if self.comment and self.type == "COMMENT":
+				header += f"{self.comment}"
+
+			if hasattr(self, 'children') and getattr(self, 'children'):
+				result = f"{header} " + "{" + "\n"
+				for child in getattr(self, 'children'):
+					result += child.to_file(indent + 1)
+				result += f"{indent_ * indent}" + "}\n"
+				return result
+			if self.type.startswith("GROUP") and self.one_line:
+				console.print(f"{self} is one line")
+				return f"{header.replace("\n", " ")}\n"
+			return f"{header}\n"
 
 	def __repr__(self, indent: int = 0) -> str:
 		"""Recursive, clean tree representation with icons."""
@@ -83,20 +164,20 @@ class BaseNode:
 		indent_str = indent_ * indent
 		line_prefix = f"{self.token_number}: " if self.token_number is not None else ""
 
-		name_part = f'name={self.name}' if self.name else ""
-		header = f"{line_prefix}{indent_str}{self.type} {name_part}".strip()
+		name_part = f'{self.name}' if self.name else ""
+		header = f"{line_prefix}{indent_str}{name_part}".strip()
 
 		if hasattr(self, 'value') and self.value:
 			header += f" {self.value}"
 
 		if self.comment:
-			header += f" # {self.comment}"
+			header += f"{indent_str} {self.comment}"
 
 		if hasattr(self, 'children') and getattr(self, 'children'):
 			result = f"{header} [\n"
 			for child in getattr(self, 'children'):
 				result += child.__repr__(indent + 1)
-			result += f"{indent_ * (indent + 2)}]\n"
+			result += f"{indent_ * (indent + 1)}]\n"
 			return result
 
 		return f"{header}\n"
@@ -112,10 +193,10 @@ class ItemPropsKey(BaseNode):
 class ItemPropsGroup(BaseNode):
 	type: NodeType = 'GROUP'
 
-	one_line: bool = None
-	last_one_line: bool = None
+	one_line: Optional[bool] = None
+	last_one_line: Optional[bool] = None
 	comment: Optional[str] = None
-	mode: str = "niri"
+	mode: Literal["niri", "mango", "hyprland"] = "niri"
 	children: list['ItemProps'] = field(default_factory=list)
 
 

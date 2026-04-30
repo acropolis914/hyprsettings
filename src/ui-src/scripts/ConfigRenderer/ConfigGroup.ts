@@ -1,5 +1,5 @@
 // @ts-check
-import { saveKey, deleteKey, duplicateKey, addChildItem, addItem, handleSave } from '../utils/utils.js'
+import { saveKey, deleteKey, duplicateKey, addChildItem, addItem, handleSave, makeUUID } from '../utils/utils.js'
 import { debounce } from '../utils/helpers.js'
 import { ContextMenu } from './contextMenu.js'
 import { dmenuConfirm } from '../ui_components/dmenu.ts'
@@ -22,6 +22,7 @@ export class ConfigGroup {
 	json: ItemPropsGroup
 
 	constructor(json: ItemPropsGroup) {
+		json['uuid'] = json['uuid'] ?? makeUUID()
 		this.group_el = document.createElement('div')
 		this.group_el.classList.add('config-group')
 		this.group_el.setAttribute('tabindex', '0')

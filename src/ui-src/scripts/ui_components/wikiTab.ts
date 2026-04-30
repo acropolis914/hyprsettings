@@ -192,7 +192,7 @@ async function createWikiNavigation() {
 	}
 
 	GLOBAL.onChange('activeTab', (value) => {
-		console.log({ activetab: value })
+		// console.log({ activetab: value })
 		if (GLOBAL.activeTab !== 'wiki') {
 			navigationElToggle.classList.add('hidden')
 		}

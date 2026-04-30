@@ -58,6 +58,33 @@ function getNodeContext(position: string, uuid?: string | null) {
 	return { root, path, file, parent, nodeIndex, node }
 }
 
+function getNodeandParent(uuid: string) {
+	let parent: ItemProps = GLOBAL['data']
+	function findNodeFromParent(parent: ItemProps) {
+		if ('children' in parent) {
+			// console.log(`Finding ${uuid} node in parent ${parent.name} `, parent, JSON.stringify(parent.children))
+			let node = parent.children.find((n) => n.uuid === uuid)
+			if (node) {
+				return { parent, node }
+			}
+			for (const child of parent.children) {
+				if ('children' in child) {
+					const result = findNodeFromParent(child)
+					if (result) {
+						return result
+					}
+				}
+			}
+		}
+	}
+	if (uuid in parent && parent.uuid === uuid) {
+		let node = parent
+		return { parent, node }
+	}
+
+	return findNodeFromParent(parent)
+}
+
 export function handleSave(file: string | undefined, logAction: string, debounced: boolean) {
 	if (!file) return console.warn(`No .conf file found for action: ${logAction}`)
 	if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave) {
@@ -82,6 +109,9 @@ export function saveKey(
 	if (type === 'KEY' && GLOBAL.groupsave === true) return console.log('Group save in progress, skipping key save for ', name)
 
 	let { file, node } = getNodeContext(position, uuid)
+	if (!node) {
+		node = getNodeandParent(uuid)
+	}
 	if (!node) return console.error(`Could not find child node with uuid ${uuid}`)
 
 	console.log('Changed file:', file)

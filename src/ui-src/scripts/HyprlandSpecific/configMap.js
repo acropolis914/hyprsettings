@@ -61,6 +61,8 @@ export const keyNameStarts = [
 	['spawn-at-startup', 'autostart'],
 	['spawn-sh-at-startup', 'autostart'],
 	['prefer-no-csd', 'looknfeel'],
+	['environment', 'envars'],
+	['include', 'general'],
 ]
 
 export const baseConfigGroups = [
@@ -104,10 +106,12 @@ export function getConfigGroups() {
 			['binds', 'keybinds'],
 			['output', 'monitor'],
 			['window-rule', 'win-rules'],
+			['layer-rule', 'layer-rules'],
 			['switch-events', 'input'],
 			['gestures', 'input'],
 			['layout', 'looknfeel'],
 			['recent-windows', 'looknfeel'],
+			['environment', 'envars'],
 		],
 	}
 	return [...baseConfigGroups, ...(modeGroupsMap[GLOBAL.mode] ?? modeGroupsMap['hyprland'])]

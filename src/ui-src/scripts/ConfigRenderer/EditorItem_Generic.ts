@@ -23,7 +23,6 @@ import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import findParentsUntil from '@scripts/utils/findParents.ts'
 import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
 import type { ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
-import { stopPropagation } from 'svelte/legacy'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -118,16 +117,14 @@ export class EditorItem_Generic {
 	private hasInvalidData: boolean
 
 	constructor(json: ItemPropsKey, disabled = false) {
-		json['uuid'] = json['uuid'] ?? makeUUID()
 		const startMark = performance.now()
-
 		this.initial_load = true
-
 		let name = json['name']
-		let uuid = json['uuid']
+		let uuid = json['uuid'] || makeUUID()
 		let value = json['value']
 		let comment = json['comment']
 		let position = json['position']
+		json.uuid = uuid
 
 		this.saveDebounced = debounce(() => this.save(), 50)
 		this.el = sharedTemplateNode!.cloneNode(true) as HTMLDivElement
@@ -137,7 +134,7 @@ export class EditorItem_Generic {
 		}
 
 		this.el.dataset.name = name
-		this.el.dataset.uuid = uuid
+		this.el.dataset.uuid = json['uuid']
 		this.el.dataset.value = value ?? ''
 		this.el.dataset.comment = comment ?? ''
 		this.el.dataset.position = position ?? ''

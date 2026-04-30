@@ -17,6 +17,9 @@ const deviceParams: ConfigDescription[] = configDescriptions
 	})
 let config_descriptions: ConfigDescription[] = [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
 
+function getAllConfigDescriptions() {
+	return [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
+}
 const configMap = new Map<string, ConfigDescription>()
 for (const desc of config_descriptions) {
 	const key = `${desc.path}|${desc.name}`
@@ -41,6 +44,7 @@ function cleanPath(path: string): string {
 			.split(':')
 			.filter((i) => !i.trim().startsWith('root'))
 			.filter((i) => !i.trim().endsWith('.conf'))
+			.filter((i) => !i.trim().endsWith('.kdl'))
 		return pathSet.join(':')
 	}
 	return path

@@ -3,6 +3,16 @@ from pathlib import Path
 from typing import cast
 from unittest import result
 from textwrap import dedent
+import hashlib
+import base64
+
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+
+from rich import print_json
+from rich.json import JSON
+import json
 
 try:
 	from node_types import (
@@ -23,42 +33,90 @@ except Exception:
 		ItemPropsMisc, BaseNode,
 	)
 
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-
-from rich import print_json
-from rich.json import JSON
-import json
-
 try:
-	from niri_lexer import KDLToken, Lexer
+	from niri_lexer import KDLToken, NiriLexer
 except Exception:
-	from .niri_lexer import KDLToken, Lexer
+	from .niri_lexer import KDLToken, NiriLexer
 
 console = Console()
 
 try:
 	from src.hyprsettings_utils.shared import state
 except ImportError:
-
 	class _State:
-		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config.kdl'
+		hyprland_config_path: Path = Path(__file__).parent.parent.parent.resolve() / 'config_niri_short.kdl'
 		verbose = False
 
 
 	state = _State()
+try:
+	from hyprsettings_utils.utils import stable_hash
+except:
+	def stable_hash(value: str, length: int = 9) -> str:
+		digest = hashlib.sha256(value.encode()).digest()
+		return base64.urlsafe_b64encode(digest).decode().rstrip("=")[:length]
 
 
-class Parser:
+class NiriParser:
 	def __init__(self, tokens: list[KDLToken]):
 		self.tokens = tokens
 		self.position = 0
 		self.current_token: KDLToken = self.tokens[self.position] if self.tokens else KDLToken(type='EOF', value=None)
 		# root AST is a group node
-		self.ast: ItemPropsGroup = ItemPropsGroup(name='root')
+		self.ast: ItemPropsGroup | ItemPropsFile = ItemPropsGroup(name='root')
 		# parent stack contains group/file nodes that can have children
-		self.parentStack: list[ItemPropsGroup] = [self.ast]
+		self.parentStack: list[ItemPropsGroup | ItemPropsFile] = [self.ast]
+
+	@staticmethod
+	def load_file(path: str | Path):
+		"""
+		This is a single entrypoint function. Put one file and it will parse the file
+		along with other files included within the file
+		Args:
+			path: str
+
+		Returns:
+
+		"""
+		root = ItemPropsGroup(name="root", children=[])
+
+		def load_(path):
+			newFileNode = NiriParser.parse_single_file(path)
+			root.children.append(newFileNode)
+			sourced_files = [file_ for file_ in newFileNode.children if file_.name == "include"]
+			for file_ in sourced_files:
+				newPath = NiriParser.resolve_paths(path, file_.value.strip('\"'))
+				load_(newPath)
+
+		# console.print(newFileNode.to_json())
+		load_(path)
+		return root
+
+	@staticmethod
+	def resolve_paths(parent_path: str | Path, included_path: str | Path) -> Path:
+		parent_path = Path(parent_path).resolve()
+		if parent_path.is_file():
+			parent_path = parent_path.parent
+		included_path = Path(included_path.strip())
+
+		if str(included_path)[0].isalpha():
+			return Path(parent_path / included_path).resolve()
+		elif str(included_path)[0] == "~":
+			return Path(included_path).expanduser().resolve()
+		return None
+
+	@staticmethod
+	def parse_single_file(path):
+		file_content = Path(path).read_text()
+		file_tokens = NiriLexer(file_content).tokenize()
+		# console.print(file_tokens)
+		parser = NiriParser(file_tokens)
+		newFileNode = ItemPropsFile(resolved_path=str(Path(path).resolve()), name=f"{stable_hash(str(path), 9)}.kdl",
+		                            uuid=stable_hash(str(path), 9))
+		parser.ast = newFileNode
+		parser.parentStack = [newFileNode]
+		parsed_ = parser.parse()
+		return parsed_
 
 	def peek(self, offset=1, ignore_ws=False) -> KDLToken:
 		if ignore_ws:
@@ -116,6 +174,8 @@ class Parser:
 				newNode = ItemPropsMisc(name=None, comment=f"// {self.current_token.value}" or '',
 				                        value=self.current_token.value or '', type='COMMENT',
 				                        token_number=self.position, resolver=resolver_)
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				# console.print(newNode.position)
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
 				self.consume()  # comments always has a \n at the end and were gonna eat that up
@@ -126,6 +186,7 @@ class Parser:
 				newNode = ItemPropsMisc(name=None, comment=self.current_token.value or "",
 				                        value=self.current_token.value or '', type='COMMENT',
 				                        token_number=self.position, resolver=resolver_)
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
 				continue
@@ -148,6 +209,7 @@ class Parser:
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP_KB', token_number=self.position,
 				                         resolver=resolver_)  # Todo Return to KEYBIND_GROUP
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				continue
@@ -162,6 +224,7 @@ class Parser:
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName, type='GROUP', token_number=self.position,
 				                         resolver=resolver_)
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				left_tokens = self.peek_until("BR")
@@ -201,6 +264,7 @@ class Parser:
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP', token_number=self.position,
 				                         resolver='group_complex', disabled=is_disabled)
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				continue
@@ -234,6 +298,7 @@ class Parser:
 					  resolver=resolver_,
 					  comment=comment_
 				)
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				try:
 					self.parentStack[-1].children.append(newNode)
 				except Exception as e:
@@ -267,7 +332,8 @@ class Parser:
 				resolver_ = "lbrace"
 				group_name = self.peek(-1, ignore_ws=True).value if self.peek(-1,
 				                                                              ignore_ws=True).type == 'WORD' else ''
-				new_group = ItemPropsGroup(name=group_name, type='GROUP', resolver=resolver_)
+				newNode = ItemPropsGroup(name=group_name, type='GROUP', resolver=resolver_)
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(new_group)
 				self.parentStack.append(new_group)
 				self.consume()  # consume '{'
@@ -277,6 +343,7 @@ class Parser:
 				resolver_ = "word_key"
 				newNode = ItemPropsKey(name=self.current_token.value, type='KEY', token_number=self.position,
 				                       resolver=resolver_)
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(newNode)
 				left_tokens = self.consume_until("BR")
 				for token in left_tokens:
@@ -321,6 +388,7 @@ class Parser:
 			# resolver: blank
 			elif self.current_token.type == "BR" and self.peek(-1).type == "BR":
 				newNode = ItemPropsMisc(type="BLANK", resolver='blank')
+				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
 				continue
@@ -379,11 +447,26 @@ if __name__ == '__main__':
 	# console.clear()
 	print("\033[3J\033[H\033[2J", end="")
 	# test_lexer_permutations()
-	tokens = Lexer(open(state.hyprland_config_path).read()).tokenize()
-	parsed = Parser(tokens).parse()
-	string = BaseNode(type="GROUP").from_json(json.dumps(parsed.to_json()))
-	console.print(string)
-	with open("ouput.json", "w+") as file:
-		file.write(parsed.to_json())
+	filepath = Path("~/.config/niri/config.kdl").expanduser()
+	# 	tokens = NiriLexer(filepath.read_text()).tokenize()
+	# 	parsed = NiriParser(tokens).parse()
+	# 	string = BaseNode(type="GROUP").from_json(parsed.to_json())
+	# console.print(string)
+	config = NiriParser.load_file(filepath)
+	# console.log(config)
+	# roundtriptest
+	out = BaseNode.from_json_to_file(config.to_json())
+	for file in out["children"]:
+		console.print(f"\n\n File:{file["resolved_path"]}")
+		# console.print(f"\n\n Content:\n{file["text"]}")
+		path = str(file["resolved_path"]).replace("/home/acroarch/.config/niri",
+		                                          str(Path(__file__).parent.resolve()))
+		parentpath = Path(path).parent.resolve()
+		Path.mkdir(parentpath, parents=True, exist_ok=True)
+		with open(path, "w+", encoding="utf-8") as new_file:
+			new_file.write(file["text"])
+# console.print_json(data=)
+# with open("ouput.json", "w+") as file:
+# 	file.write(parsed.to_json())
 # console.print_json(parsed.to_json())
 # print('\n'.join(repr(t) for t in tokens))

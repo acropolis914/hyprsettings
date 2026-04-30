@@ -4,6 +4,8 @@ import subprocess
 from .shared import *
 from rich.console import Console
 import os
+import hashlib
+import base64
 
 _last_log_message = None
 _last_log_count = 1
@@ -68,3 +70,8 @@ def list_fonts(mono=False, nerd=False):
 	cmd += ' | sort -u'
 	result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
 	return [f.strip() for f in result.stdout.splitlines() if f.strip()]
+
+
+def stable_hash(value: str, length: int = 9) -> str:
+	digest = hashlib.sha256(value.encode()).digest()
+	return base64.urlsafe_b64encode(digest).decode().rstrip("=")[:length]

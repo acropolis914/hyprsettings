@@ -271,7 +271,7 @@ class HyprParser:
 		return cls.from_json(json_string).to_hyprland(**kwargs)
 
 	@staticmethod
-	def load(path: PathLike) -> HyprParser:
+	def load_file(path: PathLike) -> HyprParser:
 		return _ConfigParser.load(path)
 
 	@staticmethod

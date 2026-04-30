@@ -94,7 +94,7 @@ class KDLToken:
 		return f'{t:<5}: {repr(raw)}'
 
 
-class Lexer:
+class NiriLexer:
 	def __init__(self, string: str):
 		self.text = string
 		self.pos = 0
