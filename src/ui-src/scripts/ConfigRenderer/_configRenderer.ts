@@ -301,7 +301,7 @@ export class _configRenderer {
 			let matched: boolean
 			if (!this.renderTo) {
 				for (const [key, value] of configGroups) {
-					if (json['name'].trim().startsWith(key)) {
+					if (json['name'].trim().startsWith(key) && !this.container_stack.at(-1).classList?.contains('config-group')) {
 						const container = GLOBAL.editorItemTemporaryContainers[value]
 						if (container) {
 							container.appendChild(group_el)
@@ -316,7 +316,6 @@ export class _configRenderer {
 
 			if (!matched) {
 				let parentStack = self.container_stack.at(-1)
-				// console.log(self.container_stack)
 				let elementToAdd = group_el
 				if (parentStack?.classList?.contains('config-group')) {
 					parentStack.appendConfigItems(elementToAdd)

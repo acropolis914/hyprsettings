@@ -36,10 +36,12 @@ header#main-header {
 		content: 'Reload Configs';
 		color: var(--accent);
 		display: flex;
-		gap: 10px;
+		//gap: 10px;
 		max-width: 100vw;
 		//flex-wrap: nowrap;
-
+		span#mode {
+			margin-left: 10px;
+		}
 		#icon {
 			font-size: 15px;
 			font-family: 'CommitMonoIconFont', monospace;
