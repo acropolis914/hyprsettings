@@ -75,3 +75,10 @@ AUR/
 /localhost_3000-20260418T030344.json
 #config.kdl
 /src/nirisettings_utils/ouput.json
+/src/nirisettings_utils/dms/alttab.kdl
+/src/nirisettings_utils/dms/binds.kdl
+/src/nirisettings_utils/dms/colors.kdl
+/src/nirisettings_utils/config.kdl
+/src/nirisettings_utils/dms/cursor.kdl
+/src/nirisettings_utils/dms/layout.kdl
+/src/nirisettings_utils/dms/outputs.kdl
