@@ -13,13 +13,25 @@ import { _configRenderer } from '@scripts/ConfigRenderer/_configRenderer.ts'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
 import type { ItemProps, ItemPropsGroup, ItemPropsKey, ItemPropsMisc } from '@scripts/types/editorItemTypes.ts'
 
-const allowed_dupes = ['animation', 'bezier', 'gesture', 'windowrule', 'bind', 'workspace', 'monitor', 'source', 'permission', 'device']
+const allowed_dupes = [
+	'animation',
+	'bezier',
+	'gesture',
+	'windowrule',
+	'bind',
+	'workspace',
+	'monitor',
+	'source',
+	'permission',
+	'device',
+	'exec',
+]
 
 export async function newEditorItemGeneric(options: { relatedElement: Element | HTMLElement; position: string; below: boolean }) {
 	const existingSiblingKeys = Array.from(options.relatedElement.parentNode.children)
 		.filter((el) => el.classList.contains('editor-item-generic'))
 		.map((el) => el.dataset.name)
-		.filter((i) => !allowed_dupes.includes(i))
+		.filter((i) => !allowed_dupes.some((dupe) => i?.startsWith(dupe)))
 
 	let availableKeys: any[]
 	try {
@@ -64,7 +76,7 @@ export async function newEditorItemGeneric(options: { relatedElement: Element | 
 	})
 
 	const thisName = options.relatedElement.dataset.name
-	const isAllowedDupe = allowed_dupes.includes(thisName)
+	const isAllowedDupe = allowed_dupes.some((dupe) => thisName?.startsWith(dupe))
 	const isInConfigGroup = options.relatedElement.parentElement?.classList?.contains('config-group')
 
 	console.debug('Fallback decision inputs:', {
@@ -122,6 +134,7 @@ export async function newEditorItemGeneric(options: { relatedElement: Element | 
 		newGenericElement.disable()
 	}
 	console.log(newGenericElement.el.parentElement.dataset.disabled)
+	newGenericElement.el.classList.add('invalid')
 	newGenericElement.el.focus()
 	newGenericElement.el.click()
 }
@@ -167,7 +180,7 @@ export async function addKeys(
 
 	const existingSiblingKeys = Array.from(parentElement?.querySelectorAll('.editor-item-generic'))
 		.map((el: HTMLDivElement) => el.dataset.name)
-		.filter((i) => !allowed_dupes.includes(i))
+		.filter((i) => !allowed_dupes.some((dupe) => i?.startsWith(dupe)))
 	let availableKeys = findAllAdjacentKeys(pathString, existingSiblingKeys)
 	const updatedKeys = availableKeys.map((item) => {
 		const key = { ...item } as ConfigDescription

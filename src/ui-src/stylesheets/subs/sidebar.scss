@@ -26,8 +26,9 @@ html.glossy #sidebar {
 	//overflow-y: auto;
 	//scrollbar-gutter: stable;
 	@media (min-width: 1500px) {
-		width: 10%;
-		max-width: 10%;
+		flex: 0 0 calc(10% * var(--zoom-factor));
+		//width: calc(10% / var(--zoom-factor)) !important;
+		//max-width: 10%;
 	}
 	&::-webkit-scrollbar {
 		display: none !important;
@@ -78,7 +79,7 @@ html.glossy #sidebar {
 	}
 
 	@media (max-width: 768px) {
-		flex: 0 0 10%;
+		flex: 0 0 calc(10% * var(--zoom-factor));
 		> ul {
 			padding: 0;
 		}

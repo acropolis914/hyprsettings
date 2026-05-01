@@ -25,6 +25,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 	padding-block: 1rem;
 	//overflow: clip;
 	font-size: 1.6rem;
+	//max-width: 100px !important;
 
 	&::after {
 		font-family: v.$font;
@@ -85,6 +86,8 @@ html.glossy .editor-item:not([data-name='comment']) {
 	.preview-wrapper {
 		display: flex;
 		flex-direction: row;
+		max-width: 100% !important;
+		width: 100%;
 		//background-color: red;
 		align-items: center;
 		.preview-boolean-switch {
@@ -113,6 +116,8 @@ html.glossy .editor-item:not([data-name='comment']) {
 			}
 			&#value {
 				color: var(--accent-active);
+				//overflow: clip;
+				flex: 0 0 20px;
 			}
 			&#equal-sign {
 				position: absolute;
@@ -132,6 +137,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 	.generic-editor,
 	.keybind-editor {
 		display: flex;
+		//flex-wrap: wrap;
 		flex-direction: column;
 
 		textarea,
@@ -183,22 +189,26 @@ html.glossy .editor-item:not([data-name='comment']) {
 				outline: none;
 			}
 		}
-		//&:has([data-coloris]) {
-		//	overflow: hidden;
-		//	&::after {
-		//		position: absolute;
-		//		//top: 0;
-		//		z-index: 1;
-		//		inset: 0;
-		//		top: ;
-		//		left: 0;
-		//		border-radius: inherit;
-
-		//		background-size: contain;
-		//		max-height: 10px;
-		//		content: '';
-		//	}
-		//}
+		pre {
+			padding: 0.5rem;
+			background-color: var(--surface-1);
+			max-width: 100% !important;
+			//overflow: clip !important;
+			overflow: hidden !important;
+			min-height: 3rem;
+			font-size: 1.4rem;
+			min-width: 0 !important;
+			width: 100%;
+			code {
+				outline: none !important;
+				border: none !important;
+				overflow: hidden !important;
+				padding: 0;
+				min-width: 0 !important;
+				width: 100%;
+				//background-color: red;
+			}
+		}
 	}
 
 	.keybind-editor {
@@ -349,6 +359,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 	padding: 0;
 	font-size: 1.4rem;
 	font-family: v.$font;
+	opacity: 0.4;
 
 	textarea,
 	input {

@@ -22,7 +22,11 @@ import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelt
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import findParentsUntil from '@scripts/utils/findParents.ts'
 import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
-import type { ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
+import type { ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
+import Prism from 'prismjs'
+import 'prismjs/components/prism-c.js'
+import 'prismjs/components/prism-glsl.js'
+import '@stylesheets/subs/prism.css'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -32,8 +36,7 @@ import type { ItemPropsKey } from '@scripts/types/editorItemTypes.ts'
 //         this.initial_load=true
 //     }
 //     update() {
-//         if (!this.initial_load){import bash from 'highlight.js/lib/languages/bash'
-// // hljs.registerLanguage('bash', bash)
+//         if (!this.initial_load){
 //             this.saveDebounced()
 //         }
 //     }
@@ -215,7 +218,8 @@ export class EditorItem_Generic {
 			this.keyEditor = document.createElement('textarea')
 			this.keyEditor.rows = 1
 			this.keyEditor.id = 'generic-key'
-			if (GLOBAL.mode !== 'niri') {
+			const hideWhenName = ['custom-shader']
+			if (GLOBAL.mode !== 'niri' || hideWhenName.includes(this.json.name)) {
 				this.keyEditor.classList.add('hidden')
 			}
 
@@ -366,21 +370,85 @@ export class EditorItem_Generic {
 					},
 					orientation: 'horizontal',
 					items: [
-						{
-							name: 'dwindle',
-							description: 'dwindle',
-						},
-						{
-							name: 'master',
-							description: 'master',
-						},
-						{
-							name: 'scrolling',
-							description: 'scrolling',
-						},
+						{ name: 'dwindle', description: 'dwindle' },
+						{ name: 'master', description: 'master' },
+						{ name: 'scrolling', description: 'scrolling' },
 					],
 				},
 			})
+			return null
+		} else if (
+			(this.json.value.trim().startsWith('r"') && this.json.value.trim().endsWith('"') && this.json.name === 'custom-shader') ||
+			this.json.name.trim() === 'custom-shader'
+		) {
+			// console.log(this.json)
+			function dedent(str) {
+				const lines = str.replace(/^\n/, '').split('\n')
+
+				// find minimum indentation (ignore empty lines)
+				const indent = lines
+					.filter((line) => line.trim())
+					.reduce((min, line) => {
+						const match = line.match(/^(\s*)/)
+						return Math.min(min, match ? match[1].length : 0)
+					}, Infinity)
+
+				return lines.map((line) => line.slice(indent)).join('\n')
+			}
+			const wrapper = document.createElement('div')
+			const preEditor = document.createElement('pre')
+			const codeEditor = document.createElement('code')
+			preEditor.classList.add('generic-value')
+			preEditor.classList.add('language-glsl')
+			preEditor.appendChild(codeEditor)
+			wrapper.appendChild(preEditor)
+			this.genericEditor_el.appendChild(wrapper)
+			const cleanValue = value.replace(/^r"\s*\n/, '').replace(/\n.*"$/, '')
+			codeEditor.textContent = dedent(cleanValue)
+			codeEditor.classList.add('language-glsl')
+			codeEditor.contentEditable = true
+
+			Prism.highlightElement(codeEditor)
+
+			Object.defineProperty(preEditor, 'value', {
+				get() {
+					const code = this.querySelector('code')
+					return code ? 'r"\n' + codeEditor.textContent + '\n"' : ''
+				},
+				set(v) {
+					let code = this.querySelector('code')
+					code.textContent = v
+					Prism.highlightElement(code)
+				},
+			})
+
+			codeEditor.addEventListener('input', (e) => {
+				this.el.dataset.value = 'r"\n' + codeEditor.textContent + '\n"'
+				Prism.highlightElement(codeEditor)
+				// Prism.highlightElement(preview)
+				// we update the dataset but doing preEditor.value = codeEditor.textContent
+				// will re-highlight and reset cursor, so we skip the setter call here
+				this.update()
+			})
+
+			this.genericEditor_el.style.flexWrap = 'wrap'
+			this.genericEditor_el.style.maxWidth = '100%'
+			this.genericEditor_el.style.minWidth = '0'
+
+			wrapper.style.maxWidth = '100%'
+			wrapper.style.overflow = 'scroll'
+			preEditor.style.maxWidth = '100%'
+			preEditor.style.minWidth = '0'
+			codeEditor.style.maxWidth = '100%'
+			codeEditor.style.minWidth = '0'
+
+			preEditor.style.maxWidth = '100%'
+			preEditor.style.overflowX = 'auto'
+			preEditor.style.boxSizing = 'border-box'
+
+			this.isSvelte = true
+			// this.preview_el.style.whiteSpace = 'pre-wrap'
+			// this.el.querySelector('span#value')?.classList.add('language-glsl')
 			return null
 		} else {
 			const ta = document.createElement('textarea')
@@ -514,8 +582,14 @@ export class EditorItem_Generic {
 			this.el.classList.remove('invalid')
 		}
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
-
-		this.preview_el.innerHTML = `<span id="key">${formatted} </span><span id="equal-sign">= </span><span id="value">${value}</span>&nbsp;<i class="preview-comment">${comment}<i>`
+		let valueText = (() => {
+			if (this.el.dataset.name !== 'custom-shader') {
+				return `<span id="value">${value}</span>`
+			} else {
+				return '<span id="value">...</span>'
+			}
+		})()
+		this.preview_el.innerHTML = `<span id="key">${formatted} </span><span id="equal-sign">= </span>${valueText}&nbsp;<i class="preview-comment">${comment}<i>`
 		if (!this.initial_load) {
 			this.saveDebounced()
 		}
@@ -862,7 +936,7 @@ export class EditorItem_Generic {
 	}
 
 	save() {
-		let type = this.el.dataset.type
+		let type = this.el.dataset.type as NodeType
 		let name = this.el.dataset.name
 		let uuid = this.el.dataset.uuid
 		let value = this.el.dataset.value

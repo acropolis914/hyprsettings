@@ -15,7 +15,7 @@ export class GLOBAL {
 	static _listeners: Map<string, (() => void)[]> = new Map()
 
 	// Optional config string
-	static configText?: string
+	static configText?: []
 
 	// Wiki tree object (generic object, refine if you know the structure)
 	static wikiTree?: Record<string, any>

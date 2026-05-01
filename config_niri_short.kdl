@@ -1,3 +1,34 @@
+animations {
+    window-open {
+        duration-ms 250
+        curve "linear"
+
+        custom-shader r"
+            vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+                vec4 color = vec4(0.0);
+
+                if (0.0 <= coords_geo.x && coords_geo.x <= 1.0
+                        && 0.0 <= coords_geo.y && coords_geo.y <= 1.0)
+                {
+                    vec4 from = vec4(1.0, 0.0, 0.0, 1.0);
+                    vec4 to = vec4(0.0, 1.0, 0.0, 1.0);
+                    color = mix(from, to, coords_geo.y);
+                }
+
+                return color * niri_clamped_progress;
+            }
+        "
+    }
+}
+
+
+
+
+
+
+
+
+
 // NIRI PARSER TEST SUITE
 // Focus: KDL Structural Exhaustion (Zero functional redundancy)
 

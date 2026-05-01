@@ -711,7 +711,7 @@ export const configDescriptionsExtra: ConfigDescription[] = [
 		name: 'source',
 		path: '',
 		type: 'CONFIG_OPTION_STRING_SHORT',
-		data: '~/.config/hypr/myColors.conf',
+		data: '',
 		description: 'Includes another configuration file, parsed exactly like the main config.',
 	},
 	{
@@ -720,6 +720,13 @@ export const configDescriptionsExtra: ConfigDescription[] = [
 		type: 'CONFIG_OPTION_STRING_SHORT',
 		data: 'SUPER, Return, exec, kitty',
 		description: 'Binds a key or switch to a dispatcher command.',
+	},
+	{
+		name: 'exec',
+		path: '',
+		type: 'CONFIG_OPTION_STRING_SHORT',
+		data: '',
+		description: 'Automatically run a bash command on start.',
 	},
 	{
 		name: 'enabled',

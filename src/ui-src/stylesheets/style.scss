@@ -114,7 +114,7 @@ body {
 
 #content-area {
 	display: flex;
-	flex: 0 0 80%;
+	flex: 1 1 calc(80% * var(--zoom-factor));
 	flex-direction: column;
 	transition: none !important;
 	will-change: flex-basis, transform, width, height;
@@ -126,17 +126,19 @@ body {
 	border-radius: calc(var(--border-rad) * 1) !important;
 	//margin-inline: var(--spacing-unit);
 	margin-block:0 !important;
+	animation: width 0s;
 	//@include win7bg;
 	@media (max-width: 768px) {
-		flex: 0 0 90%;
+		flex: 1 1 calc(80% * var(--zoom-factor));
 	}
 	@media (max-height: 30rem) {
 		//padding: 0;
 	}
 	@media (min-width: 1500px) {
-		flex: 0 0 90%;
-		width: 90%;
-		max-width: 90%;
+		//flex: 0 0 90%;
+		flex:1 1 calc(80% * var(--zoom-factor));
+		//width: 90%;
+		//max-width: 90%;
 	}
 
 	position: relative;

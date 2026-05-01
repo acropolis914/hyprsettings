@@ -15,7 +15,9 @@
 .generic-editor-slidermodal {
 	display: flex;
 	flex-direction: row;
+	flex-basis: 100%;
 	width: 100%;
+	align-items: center;
 
 	.slider-styled {
 		@extend %slider-base;
