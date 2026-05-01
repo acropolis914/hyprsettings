@@ -29,18 +29,15 @@ class Api:
 		self.window_config = None
 
 	@staticmethod
-	def get_hyprland_config(path: str | None = None):
+	def get_wm_config(path: str | None = None):
 		path = Path(path) if path else state.hyprland_config_path
 		config = None
 		if str(path).endswith("conf"):
 			log(f'Loading Hyprland Conf {path}')
 			config = HyprParser.load_file(path).to_json()
-		# log(f'Config loaded from {path},{config_node}')
 		elif str(path).endswith("kdl"):
 			log(f'Loading Niri Configuration: {str(path.resolve()).strip()}')
 			config = NiriParser.load_file(path).to_json()
-		# config = config_node.to_json()
-		# current_config = config
 		return config
 
 	@staticmethod

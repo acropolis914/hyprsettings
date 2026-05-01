@@ -1,4 +1,3 @@
-import { jsViewerInit } from '@scripts/ui_components/debugTab.ts'
 import { GLOBAL } from '../GLOBAL.ts'
 import { debounce, waitFor } from './helpers.js'
 
@@ -25,13 +24,17 @@ export const Backend = {
 
 	async getHyprlandConfig(path = null) {
 		console.debug(`[Backend API] getHyprlandConfig called with path: ${path}`)
-		const query = path ? `?path=${encodeURIComponent(path)}` : ''
-		GLOBAL.setKey('data', ' ')
-		let hyprlandConfig = await fetchFlask('get_hyprland_config' + query)
+		const params = new URLSearchParams()
+		if (path) params.append('path', path)
+		// const query = path ? `?path=${encodeURIComponent(path)}` : ''
+		// GLOBAL.setKey('data', ' ')
+		const url = `get_wm_config?${params.toString()}`
+		let hyprlandConfig = await fetchFlask(url)
 		let stringifiedHyprlandConfig = typeof hyprlandConfig === 'string' ? JSON.parse(hyprlandConfig) : hyprlandConfig
 		GLOBAL.setKey('data', stringifiedHyprlandConfig)
 		return hyprlandConfig
 	},
+
 	async getHyprlandConfigFromString(configString: string) {
 		try {
 			console.debug('[Backend API] getHyprlandConfigFromString called')
@@ -98,9 +101,8 @@ export const Backend = {
 	},
 
 	async saveConfig(configJSON: any, changedFiles = []) {
-		console.debug('[Backend API] saveConfig called', { changedFiles })
-		// console.log({configJSON})
-		const response = await fetchFlask('save_config', {
+		console.debug('[Backend API] saveConfig called for file', { changedFiles })
+		const response = await fetch('/api/save_config', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -108,12 +110,13 @@ export const Backend = {
 				changedFiles,
 			}),
 		})
-		if (response.status !== 'ok') {
-			console.error('[Backend API] saveConfig failed', response)
-			throw new Error('Failed to save config: ' + response.message)
+		const data = await response.json()
+		if (data.status !== 'ok') {
+			console.error('[Backend API] saveConfig failed', data)
+			throw new Error('Failed to save config: ' + data.message)
 		} else {
 			console.debug('[Backend API] saveConfig successful')
-			GLOBAL.setKey('configText', response.preview)
+			GLOBAL.setKey('configText', data.preview)
 		}
 	},
 

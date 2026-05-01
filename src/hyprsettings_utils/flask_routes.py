@@ -48,12 +48,12 @@ def register_routes(app: Flask):
 		log('API initialization requested')
 		return jsonify(api.init())
 
-	@app.route('/api/get_hyprland_config', methods=['GET'])
+	@app.route('/api/get_wm_config', methods=['GET'])
 	def api_get_hyprland_config():
 		path = request.args.get('path')
 		log(f'Hyprland config requested. Path: {path}')
 		try:
-			config = api.get_hyprland_config(path)
+			config = api.get_wm_config(path)
 			log(f'Hyprland config successfully parsed', only_verbose=True)
 			return jsonify(config), 200
 		except Exception as e:

@@ -4,7 +4,7 @@ import { _configRenderer } from '../ConfigRenderer/_configRenderer.ts'
 import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import { selectFrom } from '@scripts/ui_components/dmenu.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
-import type { ItemProps, ItemPropsGroup, ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
+import type { ItemProps, ItemPropsFile, ItemPropsGroup, ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
 
 export function hideAllContextMenus() {
 	document.querySelectorAll('.context-menu').forEach((ctx) => {
@@ -58,14 +58,19 @@ function getNodeContext(position: string, uuid?: string | null) {
 	return { root, path, file, parent, nodeIndex, node }
 }
 
-function getNodeandParent(uuid: string) {
+function getNodeandParent(uuid: string): { file: ItemPropsFile; parent: ItemPropsGroup | ItemPropsFile; node: ItemProps } {
 	let parent: ItemProps = GLOBAL['data']
+	let last_file: ItemPropsFile
 	function findNodeFromParent(parent: ItemProps) {
+		if (parent.type === 'FILE') {
+			last_file = parent
+		}
+
 		if ('children' in parent) {
 			// console.log(`Finding ${uuid} node in parent ${parent.name} `, parent, JSON.stringify(parent.children))
 			let node = parent.children.find((n) => n.uuid === uuid)
 			if (node) {
-				return { parent, node }
+				return { file: last_file, parent, node }
 			}
 			for (const child of parent.children) {
 				if ('children' in child) {
@@ -107,11 +112,19 @@ export function saveKey(
 	disabled: boolean = false,
 ): any {
 	if (type === 'KEY' && GLOBAL.groupsave === true) return console.log('Group save in progress, skipping key save for ', name)
-
-	let { file, node } = getNodeContext(position, uuid)
-	if (!node) {
-		node = getNodeandParent(uuid)
+	let file, parent, node
+	let result1 = getNodeContext(position, uuid)
+	if (!result1.node || !result1.file || !result1.parent) {
+		let result2 = getNodeandParent(uuid)
+		file = result2.file.name
+		parent = result2.parent
+		node = result2.node
+	} else {
+		file = result1.file
+		node = result1.node
+		parent = result1.parent
 	}
+
 	if (!node) return console.error(`Could not find child node with uuid ${uuid}`)
 
 	console.log('Changed file:', file)
@@ -120,10 +133,8 @@ export function saveKey(
 	if (type === 'GROUP') {
 		;(node as ItemPropsGroup).children?.forEach((child) => (child.disabled = disabled))
 	}
-
 	if (comment) node.comment = comment
 	else delete node.comment
-
 	handleSave(file, `save ${uuid}`, true)
 }
 

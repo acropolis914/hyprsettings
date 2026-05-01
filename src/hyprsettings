@@ -223,8 +223,19 @@ def main():
 				sys.exit(0)
 		if not state.args.no_window and has_webview and (state.args.ui == "gtk" or state.args.ui == "qt"):
 			start_window(ui_link)
-		if not state.args.no_window and has_webview and (state.args.ui == "electron"):
-			electron = subprocess.run(["electron42", ui_link, "--inspect"], capture_output=True)
+		elif not state.args.no_window and has_webview and str(state.args.ui).startswith("electron"):
+			cmd = r"""
+			for i in $(seq 50 -1 0); do
+			  name="electron$(printf '%02d' $i)"
+			  if command -v "$name" >/dev/null 2>&1; then
+			    echo "$name"
+			    exit 0
+			  fi
+			done
+			"""
+			result = subprocess.run(["sh", "-c", cmd], capture_output=True, text=True)
+			electron_exec = result.stdout.strip() or None
+			electron = subprocess.run([str(electron_exec), ui_link, "--inspect"], capture_output=True)
 			if electron.stdout or electron.stderr:
 				log(electron.stdout + electron.stderr)
 	except Exception as e:
