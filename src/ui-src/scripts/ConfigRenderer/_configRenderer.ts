@@ -24,6 +24,9 @@ export default async function getAndRenderConfig() {
 				} else if (GLOBAL.data['mode'] === 'mango') {
 					header.textContent = 'Mango'
 				}
+			} else {
+				GLOBAL.mode = 'hyprland'
+				GLOBAL.data.mode = 'hyprland'
 			}
 			configGroups = getConfigGroups()
 			new _configRenderer(GLOBAL.data)

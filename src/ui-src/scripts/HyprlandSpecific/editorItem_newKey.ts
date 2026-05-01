@@ -163,7 +163,7 @@ export async function addKeys(
 		.filter((i) => !i.endsWith('.kdl'))
 		.join(':')
 
-	// console.info({ pathString, originalPathString })
+	console.info({ pathString, originalPathString })
 
 	const existingSiblingKeys = Array.from(parentElement?.querySelectorAll('.editor-item-generic'))
 		.map((el: HTMLDivElement) => el.dataset.name)

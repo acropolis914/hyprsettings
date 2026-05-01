@@ -48,7 +48,7 @@ export class GLOBAL {
 	static config_info: any
 	static files: Record<string, ItemPropsFile> = {}
 	static activeContextMenus: any[] = []
-	static mode: ConfigMode = null
+	static mode: ConfigMode = 'hyprland'
 	static themeVariant: 'dark' | 'light' = 'dark'
 	static groupsave: boolean = false
 

@@ -26,7 +26,7 @@ function getAllConfigDescriptions(): ConfigDescription[] {
 		return [...NiriAnimationsConfigDescriptions]
 	} else return []
 }
-let configMap: Map<string, ConfigDescription> | null = null;
+let configMap: Map<string, ConfigDescription> | null = null
 function getConfigMap() {
 	if (!configMap) {
 		configMap = new Map<string, ConfigDescription>()
@@ -63,7 +63,7 @@ function cleanPath(path: string): string {
 }
 
 /**
- * Finds all config keys of exactly the same path
+ * Finds all config keys of exactly the same path.
  * @param path {string}
  * @param exclude {string[]}
  * @returns ConfigDescription[]
@@ -82,9 +82,10 @@ export function findAdjacentConfigKeys(path: string, exclude: string[] = []): Co
  */
 export function findAllAdjacentKeys(path: string = '', exclude: string[] = []): object[] {
 	let excludeSet = new Set(exclude)
-	return getAllConfigDescriptions()
-		.filter((item) => !path || item.path.startsWith(path))
-		.filter((item) => !excludeSet.has(item.name))
+	const allkeys = getAllConfigDescriptions()
+	const adjacentKeys = allkeys.filter((item) => !path || item.path.startsWith(path)).filter((item) => !excludeSet.has(item.name))
+	console.log({ adjacentKeys, allkeys })
+	return adjacentKeys
 }
 
 if (import.meta.main) {
