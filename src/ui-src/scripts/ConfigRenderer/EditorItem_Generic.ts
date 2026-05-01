@@ -16,7 +16,7 @@ import createToolTippy from '@scripts/ui_components/toolTippy.ts'
 import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
 import { newEditorItemGeneric } from '@scripts/HyprlandSpecific/editorItem_newKey.ts' // optional for styling
 import keyEditor_Bind from '@scripts/ConfigRenderer/keyEditor_Bind.svelte'
-import { findAdjacentConfigKeys, findConfigDescription } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
+import { findAdjacentConfigKeys, findConfigDescription } from '../utils/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelte'
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
@@ -157,6 +157,7 @@ export class EditorItem_Generic {
 			.slice(1) // Remove 'root'
 			.map((s: string) => s.trim())
 			.filter((s: string) => !s.endsWith('.conf'))
+			.filter((s: string) => !s.endsWith('.kdl'))
 			.join(':')
 
 		this.info = findConfigDescription(this.config_position, name, ['GROUP'])

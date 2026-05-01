@@ -1,6 +1,7 @@
 import threading
 from argparse import Namespace
 from pathlib import Path
+from typing import Literal
 
 from flask import Flask
 
@@ -9,25 +10,26 @@ try:
 except ImportError:
 	pass
 
+
 # traceback.install(show_locals=True)
 
 
 class State:
 	__slots__ = (
-		'_extra',
-		'window_instance',
-		'window_visible',
-		'window_thread',
-		'flask_thread',
-		'daemon',
-		'verbose',
-		'args',
-		'hyprland_config_path',
-		'webview_port',
-		'flask_port',
-		'app',
-		'vite_process',
-		'hyprland_wiki_thread',
+		  '_extra',
+		  'window_instance',
+		  'window_visible',
+		  'window_thread',
+		  'flask_thread',
+		  'daemon',
+		  'verbose',
+		  'args',
+		  'hyprland_config_path',
+		  'webview_port',
+		  'flask_port',
+		  'app',
+		  'vite_process',
+		  'hyprland_wiki_thread',
 	)
 
 	def __init__(self):
@@ -82,9 +84,12 @@ class Globals:
 	WIKI_PATH = Path.home() / '.cache' / 'hyprsettings' / 'hyprland-wiki'
 	HOST = '0.0.0.0'
 	CURRENT_VERSION = get_version()
-	HYPRSETTINGS_CONFIG_PATH: Path = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
+
 	HYPRLAND_WIKI_CONTENT_FOLDER: Path = Path(__file__).parent.parent / 'hyprland-wiki-content'
 	ONBOARDING_VERSION = 0.9
+
+	HYPRSETTINGS_CONFIG_PATH: Path = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
+	CONFIG_MODE: Literal["HYPRLAND", "MANGO", "NIRI"] = "HYPRLAND"
 
 
 state = State()

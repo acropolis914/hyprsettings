@@ -1,7 +1,7 @@
 import { Backend, saveConfigDebounced } from './backendAPI.js'
 import { GLOBAL } from '../GLOBAL.js'
 import { _configRenderer } from '../ConfigRenderer/_configRenderer.ts'
-import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
+import { findAdjacentConfigKeys } from './configDescriptionTools.ts'
 import { selectFrom } from '@scripts/ui_components/dmenu.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import type { ItemProps, ItemPropsFile, ItemPropsGroup, ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
@@ -161,6 +161,7 @@ export function saveChanged() {
 	saveChangedButton.removeEventListener('click', saveChanged)
 	saveChangedButton.classList.add('btn-hidden')
 	saveConfigDebounced(JSON.stringify(GLOBAL['data']), GLOBAL.changedFiles)
+	console.log({ data: GLOBAL['data'], changedFiles: GLOBAL.changedFiles })
 	GLOBAL.changedFiles = []
 }
 

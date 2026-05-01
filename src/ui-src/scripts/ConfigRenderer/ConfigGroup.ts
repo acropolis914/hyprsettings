@@ -30,7 +30,7 @@ export class ConfigGroup {
 		this.group_el.dataset.name = json['name']
 		this.group_el.dataset.uuid = json['uuid']
 		this.group_el.dataset.position = json['position']
-		this.group_el.dataset.disabled = String(json['disabled'])
+		this.group_el.dataset.disabled = String(json['disabled']) || String(false)
 		this.group_el.dataset.type = json['type']
 		this.group_el.disable = this.disable.bind(this)
 		this.saveDebounced = debounce(() => this.save(), 15)

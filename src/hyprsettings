@@ -258,18 +258,12 @@ if __name__ == '__main__':
 	state.args = parser.parse_args()
 	signal.signal(signal.SIGINT, handle_interrupt)
 
-	if getattr(state.args, 'uninstall', False):
+	if getattr(state.args, 'uninstall', False) or getattr(state.args, 'update', False):
 		installer = str(thisfile_path.parent / 'hyprsettings_installer.py')
-		# Replace current process with: python3 [installer]
 		temporary_installer = '/tmp/hyprsettings_installer.py'
 		subprocess.run(['cp', installer, temporary_installer])
-		os.execv(sys.executable, [sys.executable, temporary_installer, '-r'])
-	if getattr(state.args, 'update', False):
-		installer = str(thisfile_path.parent / 'hyprsettings_installer.py')
-		# Replace current process with: python3 [installer]
-		temporary_installer = '/tmp/hyprsettings_installer.py'
-		subprocess.run(['cp', installer, temporary_installer])
-		os.execv(sys.executable, [sys.executable, temporary_installer, '-a'])
+		flag = '-r' if state.args.uninstall else '-a'
+		os.execv(sys.executable, [sys.executable, temporary_installer, flag])
 
 	if state.args.kill:
 		kill_hyprsettings()
@@ -282,14 +276,22 @@ if __name__ == '__main__':
 
 	if state.args.hidden:
 		state.window_visible = False
+
 	if state.args.config:
 		log(f'Given custom config path: {state.args.config}')
-		if str(state.args.config).endswith('.conf'):
-			state.hyprland_config_path = Path(str(state.args.config).strip('"').strip("'"))
-		elif str(state.args.config).endswith('.kdl'):
-			state.hyprland_config_path = Path(str(state.args.config).strip('"').strip("'"))
+		config_path = str(state.args.config).strip().strip('"').strip("'")
+		if "hypr" in config_path and config_path.endswith(".conf"):
+			hs_globals.CONFIG_MODE = "HYPRLAND"
+		elif "mango" in config_path and config_path.endswith(".conf"):
+			hs_globals.CONFIG_MODE = "MANGO"
+		elif config_path.endswith("kdl"):
+			hs_globals.CONFIG_MODE = "NIRI"
+
+		if config_path.endswith(('.conf', '.kdl')):
+			state.hyprland_config_path = Path(config_path)
 		else:
 			warn(f'Given config file is not a ".conf" or ".kdl" file. Using default config path {state.hyprland_config_path}')
+
 	state.daemon = not state.args.no_daemon and state.args.daemon
 	if state.args.debug:
 		log(

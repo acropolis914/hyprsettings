@@ -1,6 +1,8 @@
-import { configDescriptions as _configDescriptions } from '@scripts/HyprlandSpecific/configDescriptions.ts'
+import { HyprConfigDescriptions as _configDescriptions } from '../HyprlandSpecific/hyprConfigDescriptions.ts'
 import { configDescriptionsExtra as _configDescriptionsExtra } from '@scripts/HyprlandSpecific/configDescriptionsExtra.ts'
 import type { ConfigDataType, ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
+import { GLOBAL } from '@scripts/GLOBAL.ts'
+import { NiriAnimationsConfigDescriptions } from '@scripts/NiriSpecific/niriAnimationsConfigDescriptions.ts'
 
 const configDescriptions = _configDescriptions as ConfigDescription[]
 const configDescriptionsExtra = _configDescriptionsExtra as ConfigDescription[]
@@ -17,17 +19,27 @@ const deviceParams: ConfigDescription[] = configDescriptions
 	})
 let config_descriptions: ConfigDescription[] = [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
 
-function getAllConfigDescriptions() {
-	return [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
+function getAllConfigDescriptions(): ConfigDescription[] {
+	if (GLOBAL.mode === 'hyprland') {
+		return [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
+	} else if (GLOBAL.mode === 'niri') {
+		return [...NiriAnimationsConfigDescriptions]
+	} else return []
 }
-const configMap = new Map<string, ConfigDescription>()
-for (const desc of config_descriptions) {
-	const key = `${desc.path}|${desc.name}`
-	configMap.set(key, desc)
+let configMap: Map<string, ConfigDescription> | null = null;
+function getConfigMap() {
+	if (!configMap) {
+		configMap = new Map<string, ConfigDescription>()
+		for (const desc of getAllConfigDescriptions()) {
+			const key = `${desc.path}|${desc.name}`
+			configMap.set(key, desc)
+		}
+	}
+	return configMap
 }
 
 export function findConfigDescription(path: string, name: string, exclude_types: string[]) {
-	const desc = configMap.get(`${path}|${name}`)
+	const desc = getConfigMap().get(`${path}|${name}`)
 	if (desc && !exclude_types.includes(desc.type)) {
 		return desc
 	}
@@ -58,7 +70,9 @@ function cleanPath(path: string): string {
  */
 export function findAdjacentConfigKeys(path: string, exclude: string[] = []): ConfigDescription[] {
 	let excludeSet = new Set(exclude)
-	return config_descriptions.filter((item) => item.path === path).filter((item) => !excludeSet.has(item.name))
+	return getAllConfigDescriptions()
+		.filter((item) => item.path === path)
+		.filter((item) => !excludeSet.has(item.name))
 }
 
 /**
@@ -68,7 +82,9 @@ export function findAdjacentConfigKeys(path: string, exclude: string[] = []): Co
  */
 export function findAllAdjacentKeys(path: string = '', exclude: string[] = []): object[] {
 	let excludeSet = new Set(exclude)
-	return config_descriptions.filter((item) => !path || item.path.startsWith(path)).filter((item) => !excludeSet.has(item.name))
+	return getAllConfigDescriptions()
+		.filter((item) => !path || item.path.startsWith(path))
+		.filter((item) => !excludeSet.has(item.name))
 }
 
 if (import.meta.main) {

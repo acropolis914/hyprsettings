@@ -8,12 +8,11 @@ from rich.console import Console
 
 import tomlkit as toml
 
+from nirisettings_utils.node_types import BaseNode
 from .shared import hs_globals, state
 from .hyprland_parser import HyprParser, makeUUID
 
 from .utils import log, ui_print
-# import nirisettings_utils.niri_parser as niri_parser
-# import nirisettings_utils.niri_lexer as niri_lexer
 from nirisettings_utils.niri_parser import NiriParser
 
 thisfile_path = Path(__file__).parent.resolve()
@@ -53,9 +52,25 @@ class Api:
 		return ""
 
 	@staticmethod
-	def save_config(json_string: str, changedFiles=None):
-		node = HyprParser.from_json(json_string)
-		files = node.to_hyprland(save=True, changedFiles=changedFiles)
+	def save_wm_config(json_string: str, changedFiles=None):
+		file = None
+		if hs_globals.CONFIG_MODE == "HYPRLAND" or hs_globals.CONFIG_MODE == "MANGO":
+			node = HyprParser.from_json(json_string)
+			files: dict = node.to_hyprland(save=True, changedFiles=changedFiles)
+		elif hs_globals.CONFIG_MODE == "NIRI":
+			node = BaseNode.from_json_to_file(json_string)
+			files = node
+			for file in node["children"]:
+				path = str(file["resolved_path"]).replace("/home/acroarch/.config/niri",
+				                                          str(Path(__file__).parent.resolve()))
+				parentpath = Path(path).parent.resolve()
+				if file["name"] in changedFiles:
+					Path.mkdir(parentpath, parents=True, exist_ok=True)
+					console.print(f"Saving file:{file["resolved_path"]}")
+					with open(path, "w+", encoding="utf-8") as new_file:
+						new_file.write(file["text"])
+
+		# print(node)
 		return files
 
 	@staticmethod
@@ -86,7 +101,6 @@ class Api:
 	@staticmethod
 	def getDebugStatus():
 		isDebugging = state.args.debug
-		# print("Debug mode: ", isDebugging)
 		return isDebugging
 
 	@staticmethod

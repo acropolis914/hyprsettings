@@ -1,10 +1,6 @@
-export const configDescriptions: {
-	name: string
-	path: string
-	type: string
-	data: string
-	description: string
-}[] = [
+import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
+
+export const HyprConfigDescriptions: ConfigDescription[] = [
   {
     name: "border_size",
     path: "general",

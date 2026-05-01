@@ -129,13 +129,13 @@ class BaseNode:
 				dict_["children"].append(child.to_file())
 			return dict_
 		elif self.type == "FILE":
-			dict_ = {"resolved_path": self.resolved_path}
+			dict_ = {"resolved_path": self.resolved_path, "name": self.name}
 			text = ""
 			for child in cast(list, self.children or []):
 				text += str(child.to_file())
 			dict_["text"] = text
 			return dict_
-		elif self.type.startswith("GROUP") and len(self.children) < 1:
+		elif self.type.startswith("GROUP") and self.children and len(self.children) < 1:
 			disabled_text = "/-" if self.disabled else ""
 			text = f"{indent_str}{disabled_text}{self.name} " + "{ }\n"
 			return text
@@ -151,9 +151,8 @@ class BaseNode:
 			disabled_text = "/-" if self.disabled else ""
 			newline = "\n" if not self.one_line else ""
 			text = f"{indent_str}{disabled_text}{self.name} " + "{" + f"{newline}"
-			if self.name == "default-column-width":
-				print(self.to_json())
-
+			# if self.name == "default-column-width":
+			# 	print(self.to_json())
 			for child in cast(list, self.children or []):
 				text += str(child.to_file(indent + 2))
 			text += f"{indent_str}" + "}\n"

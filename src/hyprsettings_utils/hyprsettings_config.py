@@ -91,8 +91,8 @@ def create_new_config():
 		temporary_font = None
 
 	with open(
-		template,
-		'r',
+		  template,
+		  'r',
 	) as default_config:
 		log('Reading default config template', only_verbose=True)
 		default_config_text = default_config.read()
@@ -125,9 +125,9 @@ def version_migration():
 
 	# Define the migration map: (key, from_table, to_table)
 	migrations = [
-		('last_tab', 'config', 'persistence'),
-		('first_run', 'config', 'persistence'),
-		('onboarding_version', 'file_info', 'persistence'),
+		  ('last_tab', 'config', 'persistence'),
+		  ('first_run', 'config', 'persistence'),
+		  ('onboarding_version', 'file_info', 'persistence'),
 	]
 
 	def move_key(k, v, d):
@@ -186,8 +186,8 @@ def save_window_config(json_fromjs, part='config'):
 	for key in config_from_json:
 		window_config[part][key] = config_from_json[key]
 	hs_globals.HYPRSETTINGS_CONFIG_PATH = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
-	log(f'Writing updated config to {hs_globals.HYPRSETTINGS_CONFIG_PATH}', only_verbose=True)
+	# log(f'Writing updated config to {hs_globals.HYPRSETTINGS_CONFIG_PATH}', only_verbose=True)
 	with open(hs_globals.HYPRSETTINGS_CONFIG_PATH, 'w', encoding='utf-8') as config_file:
 		config_tosave = toml.dumps(window_config)
 		config_file.write(config_tosave)
-	log('Window config saved successfully', only_verbose=True)
+# log('Window config saved successfully', only_verbose=True)

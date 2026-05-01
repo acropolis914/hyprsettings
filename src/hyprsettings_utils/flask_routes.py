@@ -84,7 +84,7 @@ def register_routes(app: Flask):
 		config, changedFiles = data['config'], data['changedFiles']
 		log(f'Files changed: {changedFiles}. Saving config.', only_verbose=False)
 		#     log(data)
-		preview = api.save_config(config, changedFiles)
+		preview = api.save_wm_config(config, changedFiles)
 		# log('Hyprland config saved successfully')
 		return jsonify({'status': 'ok', 'preview': preview}), 200
 

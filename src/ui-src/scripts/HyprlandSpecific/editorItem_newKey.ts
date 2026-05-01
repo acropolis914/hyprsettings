@@ -5,7 +5,7 @@ import { EditorItem_Comments } from '@scripts/ConfigRenderer/EditorItem_Comments
 // import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 
-import { findAdjacentConfigKeys, findAllAdjacentKeys } from '@scripts/HyprlandSpecific/configDescriptionTools.ts'
+import { findAdjacentConfigKeys, findAllAdjacentKeys } from '../utils/configDescriptionTools.ts'
 import { type DMenuItem, selectFrom } from '@scripts/ui_components/dmenu.ts'
 import { Backend } from '@scripts/utils/backendAPI.js'
 import { makeUUID, queueManualSave } from '@scripts/utils/utils.ts'
@@ -160,6 +160,7 @@ export async function addKeys(
 		.replace('root:', '')
 		.split(':')
 		.filter((i) => !i.endsWith('.conf'))
+		.filter((i) => !i.endsWith('.kdl'))
 		.join(':')
 
 	// console.info({ pathString, originalPathString })
