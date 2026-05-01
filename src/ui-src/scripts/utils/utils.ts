@@ -5,6 +5,7 @@ import { findAdjacentConfigKeys } from '@scripts/HyprlandSpecific/configDescript
 import { selectFrom } from '@scripts/ui_components/dmenu.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import type { ItemProps, ItemPropsFile, ItemPropsGroup, ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
+import { nodeIndex } from 'tom-select/src/vanilla.ts'
 
 export function hideAllContextMenus() {
 	document.querySelectorAll('.context-menu').forEach((ctx) => {
@@ -13,64 +14,70 @@ export function hideAllContextMenus() {
 	})
 }
 
-function findParent(root: ItemPropsGroup, path: string[], childuuid: string | null = null): ItemPropsGroup {
-	// console.log(`Finding parent for path: ${path}`)
-	let node = root
-	for (let i = 1; i < path.length; i++) {
-		const key = path[i]
-		if (!node.children) {
-			// console.log(`Node ${node["name"]} has no children`)
-			throw new Error(`Node ${node['name']} has no children`)
-		}
-		let parentName = node['name']
-		let matchingChildren = node.children.filter((child) => child.name === key)
-		if (matchingChildren.length > 1) {
-			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
-			let possibleParents = matchingChildren.filter(
-				(childNode) => 'children' in childNode && Array.isArray((childNode as ItemPropsGroup).children),
-			) as ItemPropsGroup[]
-			let finalParents = possibleParents.filter((parentNode) => parentNode.children.some((child) => child.uuid === childuuid))
-			node = finalParents[0]
-		} else if (matchingChildren.length === 1) {
-			node = matchingChildren[0] as ItemPropsGroup
-		} else {
-			node = undefined as any
-		}
-		// console.log(`Node ${node["name"]} has children. Looking for ${key}`)
-		if (!node) {
-			// console.log(`No parent node ${node} found`)
-			throw new Error(`Unable to find ${path.join()}`)
-		}
-	}
-	return node
-}
+// function findParent(root: ItemPropsGroup, path: string[], childuuid: string | null = null): ItemPropsGroup {
+// 	// console.log(`Finding parent for path: ${path}`)
+// 	let node = root
+// 	for (let i = 1; i < path.length; i++) {
+// 		const key = path[i]
+// 		if (!node.children) {
+// 			// console.log(`Node ${node["name"]} has no children`)
+// 			throw new Error(`Node ${node['name']} has no children`)
+// 		}
+// 		let parentName = node['name']
+// 		let matchingChildren = node.children.filter((child) => child.name === key)
+// 		if (matchingChildren.length > 1) {
+// 			// console.log(`Node ${node["name"]} has more than one child with name ${key}: `, node)
+// 			let possibleParents = matchingChildren.filter(
+// 				(childNode) => 'children' in childNode && Array.isArray((childNode as ItemPropsGroup).children),
+// 			) as ItemPropsGroup[]
+// 			let finalParents = possibleParents.filter((parentNode) => parentNode.children.some((child) => child.uuid === childuuid))
+// 			node = finalParents[0]
+// 		} else if (matchingChildren.length === 1) {
+// 			node = matchingChildren[0] as ItemPropsGroup
+// 		} else {
+// 			node = undefined as any
+// 		}
+// 		// console.log(`Node ${node["name"]} has children. Looking for ${key}`)
+// 		if (!node) {
+// 			// console.log(`No parent node ${node} found`)
+// 			throw new Error(`Unable to find ${path.join()}`)
+// 		}
+// 	}
+// 	return node
+// }
 
-function getNodeContext(position: string, uuid?: string | null) {
-	let root = GLOBAL['data'] as ItemPropsGroup
-	let path = position.split(':')
-	let file = path
-		.slice(1)
-		.filter((p) => p.includes('.conf'))
-		.at(-1)
-	let parent = findParent(root, path, uuid)
-	let nodeIndex = uuid ? parent.children.findIndex((n) => n.uuid === uuid) : -1
-	let node = nodeIndex !== -1 ? parent.children[nodeIndex] : undefined
-	return { root, path, file, parent, nodeIndex, node }
-}
+// function getNodeContext(position: string, uuid?: string | null) {
+// 	let root = GLOBAL['data'] as ItemPropsGroup
+// 	let path = position.split(':')
+// 	let file = path
+// 		.slice(1)
+// 		.filter((p) => p.includes('.conf'))
+// 		.at(-1)
+// 	let parent = findParent(root, path, uuid)
+// 	let nodeIndex = uuid ? parent.children.findIndex((n) => n.uuid === uuid) : -1
+// 	let node = nodeIndex !== -1 ? parent.children[nodeIndex] : undefined
+// 	return { root, path, file, parent, nodeIndex, node }
+// }
 
-function getNodeandParent(uuid: string): { file: ItemPropsFile; parent: ItemPropsGroup | ItemPropsFile; node: ItemProps } {
+function getNodeContext_new(uuid: string): {
+	file: ItemPropsFile
+	parent: ItemPropsGroup | ItemPropsFile
+	node: ItemProps
+	nodeIndex: number
+} {
 	let parent: ItemProps = GLOBAL['data']
-	let last_file: ItemPropsFile
+	let current_file: ItemPropsFile = null
 	function findNodeFromParent(parent: ItemProps) {
 		if (parent.type === 'FILE') {
-			last_file = parent
+			current_file = parent
 		}
 
 		if ('children' in parent) {
 			// console.log(`Finding ${uuid} node in parent ${parent.name} `, parent, JSON.stringify(parent.children))
 			let node = parent.children.find((n) => n.uuid === uuid)
 			if (node) {
-				return { file: last_file, parent, node }
+				let nodeIndex = parent.children.indexOf(node)
+				return { file: current_file, parent, node, nodeIndex }
 			}
 			for (const child of parent.children) {
 				if ('children' in child) {
@@ -84,9 +91,8 @@ function getNodeandParent(uuid: string): { file: ItemPropsFile; parent: ItemProp
 	}
 	if (uuid in parent && parent.uuid === uuid) {
 		let node = parent
-		return { parent, node }
+		return { file: current_file, parent, node, nodeIndex: 0 }
 	}
-
 	return findNodeFromParent(parent)
 }
 
@@ -103,39 +109,28 @@ export function handleSave(file: string | undefined, logAction: string, debounce
 }
 
 export function saveKey(
-	type: string,
+	type: NodeType,
 	name: string,
 	uuid: string,
 	position: string,
 	value: string,
 	comment: string = null,
 	disabled: boolean = false,
-): any {
+): void {
 	if (type === 'KEY' && GLOBAL.groupsave === true) return console.log('Group save in progress, skipping key save for ', name)
-	let file, parent, node
-	let result1 = getNodeContext(position, uuid)
-	if (!result1.node || !result1.file || !result1.parent) {
-		let result2 = getNodeandParent(uuid)
-		file = result2.file.name
-		parent = result2.parent
-		node = result2.node
-	} else {
-		file = result1.file
-		node = result1.node
-		parent = result1.parent
-	}
+	let { file, parent, node } = getNodeContext_new(uuid)
 
+	console.log({ file, parent, node })
 	if (!node) return console.error(`Could not find child node with uuid ${uuid}`)
 
-	console.log('Changed file:', file)
+	console.log('Changed file:', file.name)
 	Object.assign(node, { name, type: type as NodeType, uuid, position, value, disabled })
-
 	if (type === 'GROUP') {
 		;(node as ItemPropsGroup).children?.forEach((child) => (child.disabled = disabled))
 	}
 	if (comment) node.comment = comment
 	else delete node.comment
-	handleSave(file, `save ${uuid}`, true)
+	handleSave(file.name, `save ${uuid}`, true)
 }
 
 export function queueManualSave(file: string | undefined) {
@@ -171,16 +166,15 @@ export function saveChanged() {
 
 export function deleteKey(uuid: string, position: string) {
 	console.log(`Deleting ${position} => with uuid ${uuid}`)
-	let { file, parent, nodeIndex } = getNodeContext(position, uuid)
+	let { file, parent, nodeIndex } = getNodeContext_new(uuid)
 	if (nodeIndex === -1) return console.warn(`Could not find child node with uuid ${uuid} to delete`)
-
 	parent.children.splice(nodeIndex, 1)
-	handleSave(file, `delete ${uuid}`, false)
+	handleSave(file.name, `delete ${uuid}`, false)
 }
 
 export function duplicateKey(uuid: string, position: string, below: boolean = true, element: HTMLElement) {
 	console.log(`Duplicating ${position} => with uuid ${uuid}`)
-	let { file, parent, node, nodeIndex } = getNodeContext(position, uuid)
+	let { file, parent, node, nodeIndex } = getNodeContext_new(uuid)
 	if (!node) return console.warn(`Could not find child node with uuid ${uuid} to duplicate`)
 
 	let newNode = { ...JSON.parse(JSON.stringify(node)), uuid: makeUUID(8) }
@@ -188,7 +182,7 @@ export function duplicateKey(uuid: string, position: string, below: boolean = tr
 	console.log(newNode)
 	new _configRenderer(newNode, element, below)
 
-	handleSave(file, `duplicate ${uuid}`, false)
+	handleSave(file.name, `duplicate ${uuid}`, false)
 	if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave) window.jsViewer.data = GLOBAL['data']
 }
 
@@ -201,7 +195,7 @@ export async function addItem(
 	relative_uuid?: string,
 	below = true,
 ) {
-	let { parent, nodeIndex } = getNodeContext(position, relative_uuid)
+	let { parent, nodeIndex } = getNodeContext_new(relative_uuid)
 	let targetIndex = nodeIndex === -1 ? (below ? parent.children.length : 0) : below ? nodeIndex + 1 : nodeIndex
 
 	const newItem: ItemProps = {
@@ -215,12 +209,11 @@ export async function addItem(
 	}
 
 	parent.children.splice(targetIndex, 0, newItem)
-
 	return { ...newItem, below }
 }
 
 export async function addChildItem(position: string, parent_uuid: string) {
-	let { node: parent_node } = getNodeContext(position, parent_uuid)
+	let { node: parent_node } = getNodeContext_new(parent_uuid)
 	if (!parent_node) throw new Error(`Parent node not found: ${parent_uuid}`)
 	let existingSiblingKeys: string[] = (parent_node as ItemPropsGroup).children.map((i: { name: any }) => i.name)
 	let availableKeys: ConfigDescription[] = findAdjacentConfigKeys(parent_node.name, existingSiblingKeys)
@@ -299,13 +292,10 @@ export type NormalizedRect = {
 
 export function getNormalizedRect(el: Element): NormalizedRect {
 	const rect = el.getBoundingClientRect()
-
 	const computed = getComputedStyle(document.documentElement)
-
 	const zoom = parseFloat(computed.zoom || '') || parseFloat(computed.getPropertyValue('--zoom-factor')) || 1
 
 	const isWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent)
-
 	let left = rect.left
 	let top = rect.top
 	let width = rect.width

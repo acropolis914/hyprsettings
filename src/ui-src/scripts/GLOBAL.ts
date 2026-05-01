@@ -50,6 +50,7 @@ export class GLOBAL {
 	static activeContextMenus: any[] = []
 	static mode: ConfigMode = null
 	static themeVariant: 'dark' | 'light' = 'dark'
+	static groupsave: boolean = false
 
 	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,

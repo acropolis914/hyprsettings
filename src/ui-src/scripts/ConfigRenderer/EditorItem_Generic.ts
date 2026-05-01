@@ -100,7 +100,7 @@ void execNames
 export class EditorItem_Generic {
 	tippyTitle: string
 	initial_load: boolean
-	el: HTMLDivElement
+	el: HTMLDivElement & { disable?: (disabled?: boolean | null, groupSave?: boolean) => void }
 	preview_el: HTMLDivElement
 	saveDebounced: () => void | any
 	keyEditor: HTMLTextAreaElement
@@ -140,7 +140,9 @@ export class EditorItem_Generic {
 		this.el.dataset.position = position ?? ''
 		this.el.dataset.disabled = disabled ? 'true' : 'false'
 		this.el.dataset.type = 'KEY'
-		this.el.disable = this.disable.bind(this)
+		if (this.el) {
+			this.el.disable = this.disable.bind(this)
+		}
 		this.json = json
 
 		if (disabled === true) {
@@ -224,7 +226,7 @@ export class EditorItem_Generic {
 	createValueEditor(value: string) {
 		if (this.info?.type === 'CONFIG_OPTION_INT' || this.info?.type === 'CONFIG_OPTION_FLOAT') {
 			this.el.dataset.infoType = this.info.type
-			const [def, min, max] = this.info.data.split(',').map((s) => Number(s.trim()))
+			const [, min, max] = this.info.data.split(',').map((s) => Number(s.trim()))
 			const isFloat = this.info.type !== 'CONFIG_OPTION_INT'
 			const editor = new SliderModal(min, max, isFloat)
 			editor.value = value
@@ -298,7 +300,7 @@ export class EditorItem_Generic {
 			ta.value = value
 
 			if (this.info) {
-				ta.dataset.defaultData = this.info.data.trim('"')
+				;(ta as any).dataset.defaultData = this.info.data.trim()
 			}
 			const { wrapper: checkboxWrapper, checkbox: checkbox2 } = createSwitchBox(this.parseBool(this.el.dataset.value))
 			checkboxWrapper.classList.add('preview-boolean-switch') // needed for layout
@@ -336,9 +338,9 @@ export class EditorItem_Generic {
 				// console.log({ vector: this.parseVector(ta.value) })
 				this.hasInvalidData = !this.parseVector(ta.value)
 			})
-			let [def, min, max] = this.parseVector(this.info?.data) as any[]
-			if (this.info) ta.dataset.defaultData = def[0] + ' ' + def[1]
-			let parsed = this.parseVector(value) ?? [[], [], []]
+			let parsedVector = this.parseVector(this.info?.data)
+			if (this.info && Array.isArray(parsedVector)) (ta as any).dataset.defaultData = parsedVector[0][0] + ' ' + parsedVector[0][1]
+			let parsed = (this.parseVector(value) as any) ?? [[], [], []]
 			// console.warn(parsed)
 			if ((!parsed[0][0] || !parsed[0][1]) && (!parseInt(parsed[0]) || !parseInt(parsed[1]))) {
 				this.el.classList.add('invalid')
@@ -382,7 +384,7 @@ export class EditorItem_Generic {
 		} else {
 			const ta = document.createElement('textarea')
 			ta.rows = 1
-			if (this.info) ta.dataset.defaultData = this.info.data.trim('"')
+			if (this.info) (ta as any).dataset.defaultData = this.info.data.trim()
 			ta.value = value
 			ta.id = 'generic-value'
 			return ta
@@ -580,7 +582,8 @@ export class EditorItem_Generic {
 				this.delete()
 			}
 			if (e.key === 'd') {
-				if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
+				const target = e.target as HTMLElement
+				if (target && (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT')) {
 					return
 				}
 				e.stopPropagation()
@@ -608,7 +611,7 @@ export class EditorItem_Generic {
 
 			// this.el.classList.add("compact")
 		})
-		this.keyEditor?.addEventListener('input', (e) => {
+		this.keyEditor?.addEventListener('input', (e: any) => {
 			if (e.key === 'Enter') {
 				e.stopPropagation()
 				this.keyEditor?.classList.add('hidden')
@@ -643,7 +646,7 @@ export class EditorItem_Generic {
 		) {
 			this.valueEditor = document.createElement('textarea')
 			this.valueEditor.rows = 1
-			if (this.info) this.valueEditor.dataset.defaultData = this.info.data.trim('"')
+			if (this.info) (this.valueEditor as any).dataset.defaultData = this.info.data.trim()
 			this.valueEditor.value = value
 			this.valueEditor.id = 'generic-value'
 		}
@@ -718,15 +721,14 @@ export class EditorItem_Generic {
 	async valueReset() {
 		let confirm = await dmenuConfirm()
 		if (confirm) {
-			if (
-				this.info.type == 'CONFIG_OPTION_INT' ||
-				this.info.type === 'integer' ||
-				(this.info.data.includes(',') && this.info.data.split(',').length === 3)
-			) {
+			if (this.info.type == 'CONFIG_OPTION_INT' || (this.info.data.includes(',') && this.info.data.split(',').length === 3)) {
 				this.valueEditor.value = this.info['data'].split(',')[0].replace(/^\s*"(.*)"\s*$/, '$1')
 			} else if (this.info?.type == 'CONFIG_OPTION_VECTOR') {
-				let [def, min, max] = this.parseVector(this.info.data)
-				this.valueEditor.value = def[0] + ' ' + def[1]
+				let parsed = this.parseVector(this.info.data)
+				if (Array.isArray(parsed)) {
+					let [def] = parsed
+					this.valueEditor.value = Array.isArray(def) ? def[0] + ' ' + def[1] : def
+				}
 			} else {
 				this.valueEditor.value = this.info['data'].replace(/^\s*"(.*)"\s*$/, '$1')
 			}
@@ -740,7 +742,7 @@ export class EditorItem_Generic {
 			vectorData = vectorData.trim().replaceAll('  ', ' ')
 			if (vectorData.includes(' ')) {
 				let vector2d = vectorData.split(' ').map((i) => parseInt(i))
-				if (vector2d.some((i) => i === NaN)) {
+				if (vector2d.some((i) => isNaN(i))) {
 					return false
 				}
 				return vector2d
@@ -823,10 +825,11 @@ export class EditorItem_Generic {
 	}
 
 	async delete() {
-		let nextSibling = this.el.nextElementSibling || this.el.previousElementSibling || this.el.closest('.config-group')
+		let nextSibling: Element = this.el.nextElementSibling || this.el.previousElementSibling || this.el.closest('.config-group')
 		let confirm = await dmenuConfirm(`Are you sure you want to delete node <span class="strong">${this.el.dataset.name}</span>?`)
 		if (confirm) {
-			deleteKey(this.el.dataset.uuid, this.el.dataset.position)(nextSibling as HTMLElement)?.focus()
+			deleteKey(this.el.dataset.uuid, this.el.dataset.position)
+			nextSibling?.focus()
 			this.el.remove()
 		}
 	}

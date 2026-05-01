@@ -233,8 +233,12 @@ def main():
 			  fi
 			done
 			"""
-			result = subprocess.run(["sh", "-c", cmd], capture_output=True, text=True)
-			electron_exec = result.stdout.strip() or None
+			electron_exec = None
+			if str(state.args.ui).lower().strip() == "electron":
+				result = subprocess.run(["sh", "-c", cmd], capture_output=True, text=True)
+				electron_exec = result.stdout.strip() or None
+			else:
+				electron_exec = str(state.args.ui).lower().strip()
 			electron = subprocess.run([str(electron_exec), ui_link, "--inspect"], capture_output=True)
 			if electron.stdout or electron.stderr:
 				log(electron.stdout + electron.stderr)
