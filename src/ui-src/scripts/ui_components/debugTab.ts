@@ -23,7 +23,7 @@ export default function initializeDebugTab() {
 	})
 	setTimeout(() => {
 		initRE2Tester()
-	}, 10)
+	}, 100)
 }
 
 export function jsViewerInit() {
@@ -51,7 +51,7 @@ function initGlobalDebugger() {
 	const debugRoot = debugWindow
 	function render() {
 		// Reuse container if it exists
-		let container = debugRoot.querySelector('#global-debugger')
+		let container = debugRoot.querySelector<HTMLElement>('#global-debugger')
 
 		if (!container) {
 			container = document.createElement('section')
@@ -169,10 +169,48 @@ function initGlobalDebugger() {
 			render()
 		}
 		selector.appendChild(button)
+
+		const fsButton = document.createElement('button')
+		fsButton.classList.add('debug-key-btn')
+		fsButton.textContent = '󰊓'
+		let isFullscreen = false
+		let originalParent = container.parentElement
+		let originalNextSibling = container.nextSibling
+		fsButton.onclick = () => {
+			if (!isFullscreen) {
+				originalParent = container.parentElement
+				originalNextSibling = container.nextSibling
+				document.body.appendChild(container)
+				container.style.position = 'fixed'
+				container.style.top = '0'
+				container.style.left = '0'
+				container.style.width = '100vw'
+				container.style.height = '100vh'
+				container.style.zIndex = '99999'
+				container.classList.add('fullscreen')
+				fsButton.textContent = '󰊔'
+				isFullscreen = true
+			} else {
+				if (originalNextSibling) {
+					originalParent.insertBefore(container, originalNextSibling)
+				} else {
+					originalParent.appendChild(container)
+				}
+				container.style.position = ''
+				container.style.top = ''
+				container.style.left = ''
+				container.style.width = ''
+				container.style.height = ''
+				container.style.zIndex = ''
+				container.classList.remove('fullscreen')
+				fsButton.textContent = '󰊓'
+				isFullscreen = false
+			}
+		}
+		selector.appendChild(fsButton)
 	}
 	;['config', 'persistence'].forEach((key) => {
 		GLOBAL.onChange(key, () => {
-			console.log('potaa')
 			render()
 		})
 	})

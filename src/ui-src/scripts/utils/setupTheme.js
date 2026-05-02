@@ -272,7 +272,7 @@ export function changeTheme(theme, skipAnimation = false) {
 }
 
 export function updateJsonViewerTheme(themeVariant = GLOBAL.themeVariant) {
-	if (themeVariant.toLocaleString() === 'dark') {
+	if (themeVariant.toLowerCase() === 'dark') {
 		window.jsViewer?.setAttribute('theme', 'default-dark')
 	} else {
 		window.jsViewer?.setAttribute('theme', 'default-light')

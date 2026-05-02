@@ -1,5 +1,5 @@
-# import json
-# import subprocess
+import json
+import subprocess
 
 from flask import Flask, jsonify
 from pathlib import Path
@@ -51,7 +51,7 @@ def read_hyprland_wiki_folder():
 	# json_tree = json.dumps(tree, indent=4)
 	# with open("/tmp/hyprland_wiki_tree.json", "w") as f:
 	# 	json.dump(tree, f, indent=4)
-	# 	subprocess.Popen(["code", "/tmp/hyprland_wiki_tree.json"])
+	# 	subprocess.Popen(["json-janice", "/tmp/hyprland_wiki_tree.json"])
 	# console.print_json(data=tree)
 	# print(type(tree))
 	return tree
