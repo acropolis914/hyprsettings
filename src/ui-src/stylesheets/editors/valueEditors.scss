@@ -27,7 +27,7 @@
 		@extend %input-clean;
 		margin-bottom: 0;
 		margin-left: 1rem;
-		background-color: transparent;
+		//background-color: transparent;
 	}
 }
 
@@ -54,12 +54,15 @@
 		flex-direction: row;
 		border-radius: 0;
 		width: 100%;
+		height: 2.5rem;
+		align-items: center;
 
 		.slider-styled {
 			@extend %slider-base;
+			flex: 1 1 auto;
 			margin: 1rem;
-			width: 95%;
-			max-width: 90%;
+			//width: 95%;
+			//max-width: 90%;
 			//overflow: hidden;
 		}
 
@@ -68,6 +71,26 @@
 			margin-bottom: 0;
 			width: 5%;
 			min-width: 4ch;
+			text-align: center;
+			background-color: var(--surface-2);
+		}
+	}
+
+	.generic-editor-colormodal {
+		display: grid;
+		grid-template-columns: 1fr;
+		background-size: cover;
+		background: url('/assets/transparent.png');
+		background-size: 80% auto;
+		background-repeat: repeat-x;
+
+		> input {
+			height: 100%;
+			width: 100%;
+			border-radius: 0 !important;
+		}
+		&.active {
+			transform: none !important;
 		}
 	}
 
@@ -112,12 +135,12 @@
 			transition: all 0.1s ease-in-out;
 			box-sizing: border-box !important;
 			outline: 1px solid transparent;
-			border: 2px solid transparent;
+			//border: 2px solid transparent;
 			//border-color: transparent;
 			background-color: transparent !important;
 			&:is(:focus-within, :focus, :focus-visible, :hover) {
 				scale: 1 !important;
-				outline: 1px solid var(--accent);
+				outline: 2px solid var(--text-0);
 			}
 
 			&:is(:focus-within, :focus, :focus-visible, :hover) button {
@@ -170,18 +193,15 @@
 				}
 			}
 
-			input[type='text'] {
-				-webkit-appearance: none;
-				z-index: 2;
-				//box-shadow: var(--surface-2) 0 3px;
-				transition: all 0.2s ease-in-out;
-				//border: 1px solid var(--surface-2) !important;
-				//border: 2px transparent solid;
-				background-clip: padding-box;
-				width: 100%;
-				height: 100%;
-				color: transparent;
-			}
+			//input[type='text'] {
+			//	-webkit-appearance: none;
+			//	z-index: 2;
+			//	transition: all 0.2s ease-in-out;
+			//	background-clip: padding-box;
+			//	width: 100%;
+			//	height: 100%;
+			//	color: transparent;
+			//}
 		}
 	}
 }
@@ -228,11 +248,5 @@
 			flex: 3;
 			background-color: var(--surface-2);
 		}
-	}
-}
-
-.generic-editor-colormodal {
-	&.active {
-		transform: none !important;
 	}
 }

@@ -93,6 +93,9 @@ html.glossy .editor-item:not([data-name='comment']) {
 		.preview-boolean-switch {
 			margin-left: auto;
 		}
+		.inline-buttons {
+			margin-left: auto;
+		}
 	}
 
 	&-preview {
@@ -139,6 +142,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 		display: flex;
 		//flex-wrap: wrap;
 		flex-direction: column;
+		min-height: 0;
 
 		textarea,
 		input {
@@ -155,7 +159,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 		flex: 1;
 		align-items: stretch;
 		gap: 1rem;
-		margin-top: 1rem;
+		//margin-top: 1rem;
 		width: 100%;
 		//overflow: hidden;
 
@@ -172,23 +176,21 @@ html.glossy .editor-item:not([data-name='comment']) {
 			width: 100%;
 			height: 3rem;
 		}
-		input[data-coloris] {
-			position: relative;
-			z-index: 5;
-			box-sizing: border-box;
-			outline-offset: -10px;
-			border-radius: 0;
-			//border: 1px solid var(--surface-0);
-			background-size: cover;
-			background: url('/assets/transparent.png') no-repeat center;
-			width: 100%;
-			max-width: 100%;
-			//border: 1px solid red;
-			overflow: visible;
-			&:is(:focus, :focus-within) {
-				outline: none;
-			}
-		}
+		//input[data-coloris] {
+		//	position: relative;
+		//	z-index: 5;
+		//	box-sizing: border-box;
+		//	outline-offset: -10px;
+		//	border-radius: 0;
+		//	//border: 1px solid var(--surface-0);
+		//	width: 100%;
+		//	max-width: 100%;
+		//	//border: 1px solid red;
+		//	overflow: visible;
+		//	&:is(:focus, :focus-within) {
+		//		outline: none;
+		//	}
+		//}
 		pre {
 			padding: 0.5rem;
 			background-color: var(--surface-1);
@@ -280,6 +282,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 			display: none;
 			opacity: 0;
 		}
+
 		padding: 0.5rem;
 	}
 	&.disabled {
@@ -417,6 +420,17 @@ html.glossy .editor-item:not([data-name='comment']) {
 		color: var(--teal);
 		white-space: nowrap;
 		@include text-ellipsis;
+	}
+	.key-editor-inline,
+	.inline-buttons {
+		opacity: 0.2;
+		transition: opacity 0.5s ease;
+	}
+	:is(:focus-within, :focus-visible, :focus, :hover, :active) {
+		.key-editor-inline,
+		.inline-buttons {
+			opacity: 1 !important;
+		}
 	}
 }
 

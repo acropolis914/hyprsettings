@@ -3,6 +3,7 @@ import { configDescriptionsExtra as _configDescriptionsExtra } from '@scripts/Hy
 import type { ConfigDataType, ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
 import { NiriAnimationsConfigDescriptions } from '@scripts/NiriSpecific/niriAnimationsConfigDescriptions.ts'
+import { NiriLayoutCDs } from '@scripts/NiriSpecific/niriLayoutCDs.ts'
 
 const configDescriptions = _configDescriptions as ConfigDescription[]
 const configDescriptionsExtra = _configDescriptionsExtra as ConfigDescription[]
@@ -23,7 +24,7 @@ function getAllConfigDescriptions(): ConfigDescription[] {
 	if (GLOBAL.mode === 'hyprland') {
 		return [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
 	} else if (GLOBAL.mode === 'niri') {
-		return [...NiriAnimationsConfigDescriptions]
+		return [...NiriAnimationsConfigDescriptions, ...NiriLayoutCDs]
 	} else return []
 }
 let configMap: Map<string, ConfigDescription> | null = null

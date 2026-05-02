@@ -160,6 +160,9 @@
 		justify-content: flex-end;
 		margin-left: auto;
 		transition: opacity 0.2s ease;
+		>:is(:focus){
+			outline: 2px solid var(--text-0);
+		}
 		button{
 			background: none;
 			font-size: 1.5rem;

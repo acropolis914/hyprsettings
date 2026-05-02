@@ -319,3 +319,56 @@ button {
 	//transform: scale(0.5);
 	//display: none;s
 }
+
+
+input:has(+button+button){
+	border-top-left-radius: var(--border-rad);
+	border-bottom-left-radius: var(--border-rad);
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+	height: 100%;
+	max-width: 5ch;
+	background-color: var(--surface-1);
+	&::-webkit-outer-spin-button,&::-webkit-inner-spin-button{
+		-webkit-appearance: none !important;
+		margin: 0;
+	}
+	margin-left:20px !important;
+}
+
+
+@mixin button-interactions(){
+	&:focus {
+		outline: 2px solid var(--text-1);
+		z-index: 10;
+	}
+
+	&:hover {
+
+		background-color: var(--accent-hover);
+		color: var(--text-contrast);
+	}
+
+	&:active {
+		transform: scale(0.95);
+	}
+
+}
+input+ button:has(+button){
+	border-radius: 0;
+	background-color: var(--surface-1);
+
+	@include button-interactions;
+}
+
+input +button:has(+button)+button {
+	border-radius: 0;
+	border-top-right-radius: var(--border-rad);
+	border-bottom-right-radius: var(--border-rad);
+	background-color: var(--surface-1);
+	@include button-interactions;
+
+}
+
+
+

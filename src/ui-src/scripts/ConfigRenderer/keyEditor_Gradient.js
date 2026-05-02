@@ -35,9 +35,30 @@ export class GradientModal {
 
 		// Angle text input
 		this.textEditor = document.createElement('input')
-		this.textEditor.type = 'text'
+		this.textEditor.type = 'number'
 		this.textEditor.size = 3
 		this.angleContainer.appendChild(this.textEditor)
+
+		let decButton = document.createElement('button')
+		decButton.type = 'button'
+		decButton.id = 'dec-button'
+		decButton.innerText = ''
+
+		let incButton = document.createElement('button')
+		incButton.type = 'button'
+		incButton.id = 'inc-button'
+		incButton.innerText = ''
+
+		this.angleContainer.appendChild(decButton)
+		this.angleContainer.appendChild(incButton)
+		decButton.addEventListener('click', () => {
+			this.textEditor.value = Number(this.textEditor.value) - 1
+			this.slider.set(Number(this.textEditor.value))
+		})
+		incButton.addEventListener('click', () => {
+			this.textEditor.value = Number(this.textEditor.value) + 1
+			this.slider.set(Number(this.textEditor.value))
+		})
 
 		let updating = false
 
@@ -197,13 +218,13 @@ export class GradientModal {
 		// console.log(colorText)
 		const rgba = parseHyprColor(colorText)
 		// console.log(rgba)
-		const colordiv = new ColorModal(rgba)
-		colordiv.type = 'text'
+		const colordiv = new ColorModal(rgba).wrapper
+		// colordiv.type = 'text'
 		colordiv.tabIndex = -1
 
 		// colordiv.dataset.coloris = ''
 		colordiv.value = rgba
-		colordiv.style.outline = `11px solid ${rgba}`
+		// colordiv.style.outline = `11px solid ${rgba}`
 		colordiv.size = 1
 		const removeButton = Object.assign(document.createElement('button'), {
 			type: 'button',
@@ -260,14 +281,12 @@ export class GradientModal {
 				this._notifyInputListeners()
 			}
 		})
-		colordiv.addEventListener('change', () => {
-			colordiv.style.outline = `11px solid ${colordiv.value}`
-		})
+
 		colordiv.addEventListener('input', () => {
-			colordiv.style.outline = `11px solid ${colordiv.value}`
 			this._emit()
 			this._notifyInputListeners()
 		})
+
 		colordiv.addEventListener('contextmenu', (e) => {
 			e.preventDefault()
 			if (this.colorContainer.children.length < 3) {
@@ -330,20 +349,4 @@ export class GradientModal {
 		})
 		return parentEl
 	}
-
-	replaceElement(target) {
-		if (!target) return
-		target.replaceWith(this.el)
-	}
 }
-
-// document.addEventListener("DOMContentLoaded", () => {
-// 	const testingScreen = document.querySelector(".testing-screen>#main-part")
-// 	const gradient = new GradientModal("111111 rgba(1,178,7,1) 20deg")
-// 	gradient.el.style.width = "500px"
-// 	testingScreen.appendChild(gradient.el)
-
-// 	gradient.el.addEventListener("input", () => {
-// 		console.log(gradient.el.value)
-// 	})
-// })

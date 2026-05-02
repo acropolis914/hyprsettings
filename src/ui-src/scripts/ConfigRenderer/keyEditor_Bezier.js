@@ -1,5 +1,6 @@
 // import { debounce } from '../utils.js';
 import { debounce } from '../utils/helpers.js'
+import { GLOBAL } from '@scripts/GLOBAL.ts'
 
 export class BezierModal {
 	constructor(initialValue) {
@@ -109,9 +110,16 @@ export class BezierModal {
 	}
 
 	get value() {
-		const name = this.textEditor.value
-		const points = this.curveEditor.points.map((p) => Math.round(p * 100) / 100).join(',')
-		return `${name}, ${points}`
+		if (GLOBAL.mode === 'hyprland') {
+			const name = this.textEditor.value
+			const points = this.curveEditor.points.map((p) => Math.round(p * 100) / 100).join(',')
+			return `${name}, ${points}`
+		}
+		if (GLOBAL.mode === 'niri') {
+			// const name = this.textEditor.value
+			const points = this.curveEditor.points.map((p) => Math.round(p * 100) / 100).join(' ')
+			return `"cubic-bezier", ${points}`
+		}
 	}
 
 	set value(val) {
@@ -412,18 +420,18 @@ export class BezierEditor {
 
 		this.line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line')
 		this.line2.setAttribute('stroke', this.colors.handle2)
-		this.line2.setAttribute('stroke-width', '2')
+		this.line2.setAttribute('stroke-width', '1')
 		this.line2.setAttribute('stroke-dasharray', '4,4')
 		this.svg.appendChild(this.line2)
 
 		// Handles
 		this.handle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-		this.handle1.setAttribute('r', 8)
+		this.handle1.setAttribute('r', 6)
 		this.handle1.setAttribute('fill', this.colors.handle1)
 		this.svg.appendChild(this.handle1)
 
 		this.handle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-		this.handle2.setAttribute('r', 8)
+		this.handle2.setAttribute('r', 6)
 		this.handle2.setAttribute('fill', this.colors.handle2)
 		this.svg.appendChild(this.handle2)
 
@@ -480,7 +488,7 @@ export class BezierEditor {
 		this.gridLines.forEach((line) => this.svg.removeChild(line))
 		this.gridLines = []
 
-		const addLine = (x1, y1, x2, y2, color, width = 2, dash = null) => {
+		const addLine = (x1, y1, x2, y2, color, width = 1, dash = null) => {
 			const l = document.createElementNS('http://www.w3.org/2000/svg', 'line')
 			l.setAttribute('x1', x1)
 			l.setAttribute('y1', y1)

@@ -11,7 +11,7 @@ export class SliderModal {
 		this.sliderEl.id = 'slider-square'
 		this.el.appendChild(this.sliderEl)
 
-		let divisor = (max - min) * 2
+		let divisor = (max - min) * 20
 		let steps = float ? (max - min) / divisor : 1
 		this.slider = noUiSlider.create(this.sliderEl, {
 			start: 0,
@@ -21,10 +21,39 @@ export class SliderModal {
 			},
 		})
 
+		let decButton = document.createElement('button')
+		decButton.type = 'button'
+		decButton.id = 'dec-button'
+		decButton.innerText = ''
+
+		let incButton = document.createElement('button')
+		incButton.type = 'button'
+		incButton.id = 'inc-button'
+		incButton.innerText = ''
+
+		decButton.addEventListener('click', (e) => {
+			e.stopPropagation()
+			this.textEditor.value = String(Number(this.textEditor.value) - steps)
+			this.slider.set(Number(this.textEditor.value))
+		})
+		incButton.addEventListener('click', (e) => {
+			e.stopPropagation()
+			this.textEditor.value = Number(this.textEditor.value) + steps
+			this.slider.set(Number(this.textEditor.value))
+		})
+		decButton.addEventListener('dblclick', (e) => {
+			e.stopPropagation()
+		})
+		incButton.addEventListener('dblclick', (e) => {
+			e.stopPropagation()
+		})
 		this.textEditor = document.createElement('input')
 		this.textEditor.setAttribute('type', 'text')
 		this.textEditor.setAttribute('size', float ? '5' : '3')
 		this.el.appendChild(this.textEditor)
+
+		this.el.appendChild(decButton)
+		this.el.appendChild(incButton)
 
 		const debouncedUpdateSlider = debounce(() => this.updateSlider(), 300)
 		const debouncedUpdateTextValue = debounce(() => this.updateSlider(), 50)

@@ -85,9 +85,7 @@ class Globals:
 	HOST = '0.0.0.0'
 	CURRENT_VERSION = get_version()
 
-	HYPRLAND_WIKI_CONTENT_FOLDER: Path = Path(__file__).parent.parent / 'hyprland-wiki-content'
 	ONBOARDING_VERSION = 0.9
-
 	HYPRSETTINGS_CONFIG_PATH: Path = Path.home() / '.config' / 'hypr' / 'hyprsettings.toml'
 	CONFIG_MODE: Literal["HYPRLAND", "MANGO", "NIRI"] = "HYPRLAND"
 

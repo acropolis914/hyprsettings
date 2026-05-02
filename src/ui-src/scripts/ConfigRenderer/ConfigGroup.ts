@@ -211,6 +211,15 @@ export class ConfigGroup {
 		this.group_el.addEventListener('click', () => {
 			this.contextMenu?.hide()
 		})
+
+		this.group_el.addEventListener('dblclick', (e) => {
+			if (
+				!(e.target as HTMLDivElement).classList.contains('editor-item-generic') &&
+				(e.target as HTMLDivElement).querySelector('.editor-item:has(.editor-item-comment)')
+			) {
+				this.group_el.classList.toggle('compact')
+			}
+		})
 		this.group_el.addEventListener('focus', () => {
 			// this.createContextMenu()
 		})

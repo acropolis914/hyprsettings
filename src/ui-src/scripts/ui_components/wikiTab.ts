@@ -21,19 +21,12 @@ export default async function createWiki() {
 	await Backend.getHyprlandWikiNavigation()
 }
 
-// GLOBAL.onChange('currentView', (value) => {
-// 	console.log('currentView: ', value)
-// })
-
 async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTMLDivElement) {
 	let objectTree = []
 	let frag = document.createDocumentFragment()
 	objectTree.push(frag)
-	// objectTree.push(navigationEl)
-
 	let tree: Object = GLOBAL.wikiTree
 	GLOBAL.setKey('wikiEntry', {})
-
 	async function setupNavigation(object: object, indentation = 0, path = 'wiki') {
 		let indent = '       '.repeat(indentation)
 		for (const [key, value] of Object.entries(object)) {
@@ -165,9 +158,9 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 			})
 		}
 	}
-
 	await setupNavigation(tree, 0, 'Wiki')
 	navigationEl.appendChild(frag)
+	reorderByWeight(navigationEl)
 }
 
 async function createWikiNavigation() {
@@ -254,13 +247,9 @@ async function createWikiNavigation() {
 	viewEl_content.addEventListener('click', (e) => {
 		GLOBAL.setKey('currentView', 'wikiContent')
 	})
-
 	wikiRoot_el.appendChild(navigationEl)
 	wikiRoot_el.appendChild(viewEl)
 	await createWikiNavi(navigationEl, viewEl_content)
-	// downloadTextFile('wikientries.txt', JSON.stringify(GLOBAL['wikiEntry']))
-	let navigationNode = document.getElementById('wikiNavigation')
-	reorderByWeight(navigationNode)
 }
 
 export function reorderByWeight(el: HTMLElement): void {

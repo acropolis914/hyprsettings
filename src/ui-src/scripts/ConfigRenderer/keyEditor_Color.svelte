@@ -2,7 +2,7 @@
 	import { onMount } from "svelte"
 	import { parseHyprColor } from "@scripts/HyprlandSpecific/colorparser"
 
-	let { initial_value, onChange } = $props()
+	let { initial_value, onChange, customWidth } = $props()
 	const num = Number(initial_value)
 	let parsedColor = Number.isNaN(num) ? parseHyprColor(initial_value) : parseHyprColor(initial_value)
 	let state = $state({ value: parsedColor })
@@ -21,7 +21,7 @@
 
 </script>
 
-<div id="color-editor" tabIndex="0" bind:this={modal} data-value={state.value}>
+<div id="color-editor" tabIndex="0" bind:this={modal} data-value={state.value} style="width: {customWidth};" >
 	<div id="background-wrapper"><img src="/assets/transparent.png" alt="" /></div>
 	<div id="color-preview" bind:this={colorPreview}></div>
 	<input type="text" data-coloris bind:value={state.value} tabindex="-1" />
@@ -34,6 +34,9 @@
 		grid-template-columns:1fr;
 		height: 20px;
 		//overflow: hidden;
+		border-radius: var(--border-rad);
+		overflow: hidden;
+
 		#background-wrapper {
 			overflow: hidden;
 

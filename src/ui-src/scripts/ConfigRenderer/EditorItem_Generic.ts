@@ -1,3 +1,8 @@
+import Prism from 'prismjs'
+import 'prismjs/components/prism-c.js'
+import 'prismjs/components/prism-glsl.js'
+import '@stylesheets/subs/prism.css'
+
 import { ContextMenu } from './contextMenu.js'
 import { addItem, deleteKey, makeUUID, saveKey } from '../utils/utils.js'
 import { debounce } from '../utils/helpers.js'
@@ -5,8 +10,7 @@ import { GLOBAL } from '../GLOBAL.js'
 import { EditorItem_Comments } from './EditorItem_Comments.js'
 import { SliderModal } from './keyEditor_Slider.js'
 import { GradientModal } from './keyEditor_Gradient.js'
-import { parseHyprColor } from '@scripts/HyprlandSpecific/colorparser.js'
-import { dmenuConfirm, selectFrom } from '../ui_components/dmenu.js'
+import { dmenuConfirm } from '../ui_components/dmenu.js'
 import { BezierModal } from './keyEditor_Bezier.js'
 import { html, render } from 'lit'
 import { gotoWiki } from '../ui_components/wikiTab.ts'
@@ -14,19 +18,16 @@ import { mount, unmount } from 'svelte'
 import keyEditor_Animation from '@scripts/ConfigRenderer/keyEditor_Animation.svelte'
 import createToolTippy from '@scripts/ui_components/toolTippy.ts'
 import { ColorModal } from '@scripts/ConfigRenderer/keyEditor_Color.ts'
-import { newEditorItemGeneric } from '@scripts/HyprlandSpecific/editorItem_newKey.ts' // optional for styling
+import { newEditorItemGeneric } from '@scripts/HyprlandSpecific/editorItem_newKey.ts'
 import keyEditor_Bind from '@scripts/ConfigRenderer/keyEditor_Bind.svelte'
-import { findAdjacentConfigKeys, findConfigDescription } from '../utils/configDescriptionTools.ts'
+import { findConfigDescription } from '../utils/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
 import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelte'
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import findParentsUntil from '@scripts/utils/findParents.ts'
 import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
 import type { ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
-import Prism from 'prismjs'
-import 'prismjs/components/prism-c.js'
-import 'prismjs/components/prism-glsl.js'
-import '@stylesheets/subs/prism.css'
+import keyEditor_Number from '@scripts/ConfigRenderer/keyEditor_Number.svelte'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -56,6 +57,7 @@ const templateString = html`
 			<div class="save-editor-item-wrapper hidden">
 				<button id="save-editor-item">Save</button>
 			</div>
+			<div class="inline-buttons"></div>
 		</div>
 		<div class="generic-editor">
 			<!-- <textarea name="key" id="generic-key"></textarea>
@@ -116,84 +118,54 @@ export class EditorItem_Generic {
 	private value: any
 	private isBoolean: boolean = false
 	isSvelte: boolean = false
+	customValueEditor: boolean = false
 	private json: ItemPropsKey
 	private hasInvalidData: boolean
+	private inlineContainer: HTMLDivElement
 
 	constructor(json: ItemPropsKey, disabled = false) {
-		const startMark = performance.now()
+		this.json = json
+		json.uuid = json['uuid'] || makeUUID()
 		this.initial_load = true
 		let name = json['name']
-		let uuid = json['uuid'] || makeUUID()
+		let uuid = json['uuid']
 		let value = json['value']
 		let comment = json['comment']
 		let position = json['position']
-		json.uuid = uuid
-
-		this.saveDebounced = debounce(() => this.save(), 50)
 		this.el = sharedTemplateNode!.cloneNode(true) as HTMLDivElement
-
-		if (GLOBAL['config'].compact) {
-			this.el.classList.add('compact')
-		}
-
 		this.el.dataset.name = name
 		this.el.dataset.uuid = json['uuid']
 		this.el.dataset.value = value ?? ''
+		this.value = value ?? ''
 		this.el.dataset.comment = comment ?? ''
 		this.el.dataset.position = position ?? ''
 		this.el.dataset.disabled = disabled ? 'true' : 'false'
 		this.el.dataset.type = 'KEY'
-		if (this.el) {
-			this.el.disable = this.disable.bind(this)
-		}
-		this.json = json
+		this.el.disable = this.disable.bind(this)
 
-		if (disabled === true) {
-			this.el.classList.add('disabled')
-		}
+		this.saveDebounced = debounce(() => this.save(), 50)
+		GLOBAL['config'].compact ? this.el.classList.add('compact') : null
+		disabled ? this.el.classList.add('disabled') : null
 
 		this.preview_el = this.el.querySelector('.editor-item-preview')
 		this.genericEditor_el = this.el.querySelector('.generic-editor')
-		this.createNameEditor(name)
+		this.inlineContainer = this.el.querySelector('.inline-buttons')
+
 		this.config_position = (position ?? '')
+			.replace('root:', '')
 			.split(':')
-			.slice(1) // Remove 'root'
 			.map((s: string) => s.trim())
 			.filter((s: string) => !s.endsWith('.conf'))
 			.filter((s: string) => !s.endsWith('.kdl'))
 			.join(':')
 
 		this.info = findConfigDescription(this.config_position, name, ['GROUP'])
-
-		this.value = value
-
+		this.createNameEditor(name)
 		this.initValueEditor()
-
-		if (name === 'generic' || name.startsWith('Custom') || !name) {
-			this.keyEditor.classList.remove('hidden')
-		} else if (name.startsWith('$')) {
-			this.keyEditor.classList.remove('hidden')
-			this.keyEditor.value = name
-		} else if (name.startsWith('exec')) {
-			// this.genericEditor_el.style.flex
-		} else {
-			this.keyEditor.value = name
-		}
-
-		if (value === 'undefined' || value === '' || !value) {
-			value = ''
-		}
-
 		this.commentArea = this.el.querySelector('.comment')
 		this.commentArea.value = this.el.dataset.comment
-
-		// const t0 = performance.now()
 		this.createTooltip(json)
-		// const t1 = performance.now()
-
 		this.addListeners()
-		// const t2 = performance.now()
-
 		this.update()
 		setTimeout(() => {
 			this.initial_load = false
@@ -217,18 +189,26 @@ export class EditorItem_Generic {
 		} else {
 			this.keyEditor = document.createElement('textarea')
 			this.keyEditor.rows = 1
+			this.keyEditor.value = this.json.name.trim()
 			this.keyEditor.id = 'generic-key'
+			this.keyEditor.classList.add('hidden')
 			const hideWhenName = ['custom-shader']
-			if (GLOBAL.mode !== 'niri' || hideWhenName.includes(this.json.name)) {
-				this.keyEditor.classList.add('hidden')
-			}
+			const showWhenName = ['generic']
+			const startsWithName = ['Custom', 'custom', '$']
+			const name = this.json.name.trim()
+			const shouldShow =
+				(showWhenName.includes(name) || startsWithName.some((start) => name.startsWith(start)) || !this.el.dataset.value) &&
+				!hideWhenName.includes(name)
 
+			if (shouldShow) {
+				this.keyEditor.classList.remove('hidden')
+			}
 			this.keyEditor.setAttribute('placeholder', 'Input key here...')
 			this.genericEditor_el.appendChild(this.keyEditor)
 		}
 	}
 
-	createValueEditor(value: string) {
+	private createValueEditor(value: string) {
 		if (this.info?.type === 'CONFIG_OPTION_INT' || this.info?.type === 'CONFIG_OPTION_FLOAT') {
 			this.el.dataset.infoType = this.info.type
 			const [, min, max] = this.info.data.split(',').map((s) => Number(s.trim()))
@@ -239,8 +219,20 @@ export class EditorItem_Generic {
 		} else if (this.info?.type === 'CONFIG_OPTION_COLOR' || this.el.dataset.value.startsWith('rgb')) {
 			this.el.dataset.infoType = this.info?.type ?? 'CONFIG_OPTION_COLOR'
 			this.isSvelte = true
+			// mount(keyEditor_Color, {
+			// 	target: this.genericEditor_el,
+			// 	props: {
+			// 		initial_value: value,
+			// 		onChange: (value) => {
+			// 			this.value = value
+			// 			this.el.dataset.value = value
+			// 			this.update()
+			// 		},
+			// 	},
+			// })
+
 			mount(keyEditor_Color, {
-				target: this.genericEditor_el,
+				target: this.inlineContainer,
 				props: {
 					initial_value: value,
 					onChange: (value) => {
@@ -248,13 +240,15 @@ export class EditorItem_Generic {
 						this.el.dataset.value = value
 						this.update()
 					},
+					customWidth: '5ch',
 				},
 			})
 		} else if (this.info?.type === 'CONFIG_OPTION_GRADIENT') {
 			this.el.dataset.infoType = this.info.type
 			try {
 				return new GradientModal(value)
-			} catch {
+			} catch (e) {
+				console.error('Failed to instantiate GradientModal:', e)
 				return null
 			}
 		} else if (this.el.dataset.name === 'bezier') {
@@ -298,7 +292,8 @@ export class EditorItem_Generic {
 			this.el.dataset.name === 'enabled' ||
 			this.info?.type === 'CONFIG_OPTION_BOOL'
 		) {
-			this.isBoolean = true
+			// this.isBoolean = true
+			this.isSvelte = true
 			const ta = document.createElement('textarea')
 			ta.id = 'generic-value'
 			ta.rows = 1
@@ -308,19 +303,14 @@ export class EditorItem_Generic {
 				;(ta as any).dataset.defaultData = this.info.data.trim()
 			}
 			const { wrapper: checkboxWrapper, checkbox: checkbox2 } = createSwitchBox(this.parseBool(this.el.dataset.value))
-			checkboxWrapper.classList.add('preview-boolean-switch') // needed for layout
-			checkboxWrapper.addEventListener('click', (e) => {
-				// e.stopPropagation()
-			})
+			checkboxWrapper.classList.add('preview-boolean-switch', 'key-editor-inline') // needed for layout
 			checkbox2.addEventListener('change', (e) => {
 				if (this.initial_load) return
 				const val = this.el.dataset.value?.trim()
 				if (val === '0' || val === '1') {
-					// Determine the new value (toggle it)
 					const newValue = val === '1' ? '0' : '1'
 					this.el.dataset.value = newValue
 					this.valueEditor.value = newValue
-					// console.log(`Changed value from ${val} to ${newValue}`)
 				} else {
 					this.flipValueIfBool(true)
 				}
@@ -425,9 +415,6 @@ export class EditorItem_Generic {
 			codeEditor.addEventListener('input', (e) => {
 				this.el.dataset.value = 'r"\n' + codeEditor.textContent + '\n"'
 				Prism.highlightElement(codeEditor)
-				// Prism.highlightElement(preview)
-				// we update the dataset but doing preEditor.value = codeEditor.textContent
-				// will re-highlight and reset cursor, so we skip the setter call here
 				this.update()
 			})
 
@@ -447,9 +434,25 @@ export class EditorItem_Generic {
 			preEditor.style.boxSizing = 'border-box'
 
 			this.isSvelte = true
-			// this.preview_el.style.whiteSpace = 'pre-wrap'
-			// this.el.querySelector('span#value')?.classList.add('language-glsl')
 			return null
+		} else if (Number(value)) {
+			this.isSvelte = true
+			mount(keyEditor_Number, {
+				target: this.el.querySelector('.preview-wrapper'),
+				props: {
+					initialValue: value,
+					options: {
+						min: null,
+						max: null,
+						step: 1,
+					},
+					onChange: (v: number) => {
+						this.value = v
+						this.el.dataset.value = v.toString()
+						this.update()
+					},
+				},
+			})
 		} else {
 			const ta = document.createElement('textarea')
 			ta.rows = 1
@@ -490,7 +493,7 @@ export class EditorItem_Generic {
 		this.el.addEventListener('mouseenter', initTooltip)
 	}
 
-	createContextMenu(x = 0, y = 0, show = true) {
+	private createContextMenu(x = 0, y = 0, show = true) {
 		if (x == 0 || y == 0) {
 			let [x0, x1, y0, y1] = this.getElementRects()
 			x = x1
@@ -841,11 +844,8 @@ export class EditorItem_Generic {
 		try {
 			val = this.valueEditor?.value?.toLowerCase().trim() ?? this.value?.toString().toLowerCase().trim() ?? ''
 		} catch (e) {
-			// console.error(e)
 			return false
 		}
-
-		// Define toggle pairs
 		const pairs = {
 			true: 'false',
 			false: 'true',
@@ -855,7 +855,6 @@ export class EditorItem_Generic {
 			no: 'yes',
 		}
 
-		// Find which toggle group this belongs to
 		const key = Object.keys(pairs).find((k) => val.startsWith(k))
 		const isConfigBool = this.el.dataset.infoType === 'CONFIG_OPTION_BOOL'
 
@@ -863,11 +862,7 @@ export class EditorItem_Generic {
 			if (save) {
 				// Determine the opposite value
 				let next = pairs[key] || (val === 'true' ? 'false' : 'true') || (val === '1' ? '0' : '1')
-
-				// Apply specific flavor
 				if (next === 'yes') next = 'yes, please :)'
-
-				// Commit to UI, DOM, and Backend
 				this.valueEditor.value = next
 				this.el.dataset.value = next
 				const previewCheckboxEl = this.el.querySelector('.preview-wrapper input[type="checkbox"]') as HTMLInputElement
@@ -883,20 +878,12 @@ export class EditorItem_Generic {
 
 	parseBool(str: string): boolean {
 		if (typeof str !== 'string') return null
-
 		let val = str.toLowerCase().trim()
-
-		// normalize known truthy / falsy prefixes
 		const truthy = ['true', 'on', 'yes', '1']
 		const falsy = ['false', 'off', 'no', '0', '', ' ']
-
-		// check truthy
 		if (truthy.some((k) => val.startsWith(k))) return true
-
-		// check falsy
 		if (falsy.some((k) => val.startsWith(k))) return false
-
-		return null // not a boolean-like str
+		return null
 	}
 
 	async delete() {
@@ -929,10 +916,6 @@ export class EditorItem_Generic {
 
 	return() {
 		return this.el
-	}
-
-	addToParent(parent: HTMLDivElement) {
-		parent.appendChild(this.el)
 	}
 
 	save() {
