@@ -26,7 +26,7 @@ def register_routes(app: Flask):
 			  "target_dir": "niri-wiki-content/img",
 			  "requested_path": path
 		})
-		log(f'Serving niri img file: {path}', only_verbose=False)
+		log(f'Serving niri img file: {path}', only_verbose=True)
 		return send_from_directory('niri-wiki-content/img', path)
 
 	@app.route('/_assets/<path:path>')
@@ -37,50 +37,50 @@ def register_routes(app: Flask):
 			  "target_dir": "niri-wiki-content/_assets",
 			  "requested_path": path
 		})
-		log(f'Serving niri asset file: {path}', only_verbose=False)
+		log(f'Serving niri asset file: {path}', only_verbose=True)
 		return send_from_directory('niri-wiki-content/_assets', path)
 
 	@app.route('/logo/<path:path>')
 	def niri_logo_files(path):
-		console.print_json(data={
-			  "route": "/logo/<path:path>",
-			  "function": "niri_logo_files",
-			  "target_dir": "niri-wiki-content/logo",
-			  "requested_path": path
-		})
-		log(f'Serving niri logo file: {path}', only_verbose=False)
+		# console.print_json(data={
+		# 	  "route": "/logo/<path:path>",
+		# 	  "function": "niri_logo_files",
+		# 	  "target_dir": "niri-wiki-content/logo",
+		# 	  "requested_path": path
+		# })
+		log(f'Serving niri logo file: {path}', only_verbose=True)
 		return send_from_directory('niri-wiki-content/logo', path)
 
 	@app.route('/examples/<path:path>')
 	def niri_example_files(path):
-		console.print_json(data={
-			  "route": "/examples/<path:path>",
-			  "function": "niri_example_files",
-			  "target_dir": "niri-wiki-content/examples",
-			  "requested_path": path
-		})
-		log(f'Serving niri example file: {path}', only_verbose=False)
+		# console.print_json(data={
+		# 	  "route": "/examples/<path:path>",
+		# 	  "function": "niri_example_files",
+		# 	  "target_dir": "niri-wiki-content/examples",
+		# 	  "requested_path": path
+		# })
+		log(f'Serving niri example file: {path}', only_verbose=True)
 		return send_from_directory('niri-wiki-content/examples', path)
 
 	@app.route('/<path:path>')
 	def ui_files(path):
-		console.print_json(data={
-			  "route": "/<path:path>",
-			  "function": "ui_files",
-			  "target_dir": "ui",
-			  "requested_path": path
-		})
+		# console.print_json(data={
+		# 	  "route": "/<path:path>",
+		# 	  "function": "ui_files",
+		# 	  "target_dir": "ui",
+		# 	  "requested_path": path
+		# })
 		log(f'Serving UI file: {path}', only_verbose=True)
 		return send_from_directory('ui', path)
 
 	@app.route('/')
 	def home():
-		console.print_json(data={
-			  "route": "/",
-			  "function": "home",
-			  "target_dir": "ui",
-			  "requested_path": "index.html"
-		})
+		# console.print_json(data={
+		# 	  "route": "/",
+		# 	  "function": "home",
+		# 	  "target_dir": "ui",
+		# 	  "requested_path": "index.html"
+		# })
 		log('Serving UI home page', only_verbose=True)
 		return send_from_directory('ui', 'index.html')
 
