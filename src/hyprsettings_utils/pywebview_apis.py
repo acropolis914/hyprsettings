@@ -36,9 +36,11 @@ class Api:
 		if str(path).endswith("conf"):
 			log(f'Loading Hyprland Conf {path}')
 			config = HyprParser.load_file(path).to_json()
+		# console.print_json(config)
 		elif str(path).endswith("kdl"):
 			log(f'Loading Niri Configuration: {str(path.resolve()).strip()}')
 			config = NiriParser.load_file(path).to_json()
+		# console.print_json(config)
 		return config
 
 	@staticmethod

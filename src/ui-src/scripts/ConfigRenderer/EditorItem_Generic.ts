@@ -22,12 +22,13 @@ import { newEditorItemGeneric } from '@scripts/HyprlandSpecific/editorItem_newKe
 import keyEditor_Bind from '@scripts/ConfigRenderer/keyEditor_Bind.svelte'
 import { findConfigDescription } from '../utils/configDescriptionTools.ts'
 import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts'
-import nameEditor_Chooser from '@scripts/ConfigRenderer/nameEditor_Chooser.svelte'
+import MiniChooser from './MiniChooser.svelte'
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import findParentsUntil from '@scripts/utils/findParents.ts'
 import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
 import type { ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
 import keyEditor_Number from '@scripts/ConfigRenderer/keyEditor_Number.svelte'
+import keyEditor_NiriCurve from '@scripts/ConfigRenderer/keyEditor_NiriCurve.svelte'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -174,7 +175,7 @@ export class EditorItem_Generic {
 
 	private createNameEditor(name) {
 		if (name.startsWith('exec')) {
-			mount(nameEditor_Chooser, {
+			mount(MiniChooser, {
 				target: this.genericEditor_el,
 				props: {
 					value: name,
@@ -209,6 +210,7 @@ export class EditorItem_Generic {
 	}
 
 	private createValueEditor(value: string) {
+		let mode = GLOBAL.mode
 		if (this.info?.type === 'CONFIG_OPTION_INT' || this.info?.type === 'CONFIG_OPTION_FLOAT') {
 			this.el.dataset.infoType = this.info.type
 			const [, min, max] = this.info.data.split(',').map((s) => Number(s.trim()))
@@ -219,17 +221,6 @@ export class EditorItem_Generic {
 		} else if (this.info?.type === 'CONFIG_OPTION_COLOR' || this.el.dataset.value.startsWith('rgb')) {
 			this.el.dataset.infoType = this.info?.type ?? 'CONFIG_OPTION_COLOR'
 			this.isSvelte = true
-			// mount(keyEditor_Color, {
-			// 	target: this.genericEditor_el,
-			// 	props: {
-			// 		initial_value: value,
-			// 		onChange: (value) => {
-			// 			this.value = value
-			// 			this.el.dataset.value = value
-			// 			this.update()
-			// 		},
-			// 	},
-			// })
 
 			mount(keyEditor_Color, {
 				target: this.inlineContainer,
@@ -252,7 +243,7 @@ export class EditorItem_Generic {
 				return null
 			}
 		} else if (this.el.dataset.name === 'bezier') {
-			return new BezierModal(value)
+			return new BezierModal(value).el
 		} else if (this.el.dataset.name === 'animation') {
 			mount(keyEditor_Animation, {
 				target: this.genericEditor_el,
@@ -349,7 +340,7 @@ export class EditorItem_Generic {
 			return ta
 		} else if (this.el.dataset.position.endsWith('general') && this.el.dataset.name === 'layout') {
 			this.isSvelte = true
-			mount(nameEditor_Chooser, {
+			mount(MiniChooser, {
 				target: this.genericEditor_el,
 				props: {
 					value: value,
@@ -446,6 +437,19 @@ export class EditorItem_Generic {
 						max: null,
 						step: 1,
 					},
+					onChange: (v: number) => {
+						this.value = v
+						this.el.dataset.value = v.toString()
+						this.update()
+					},
+				},
+			})
+		} else if (this.json.name === 'curve' && mode === 'niri') {
+			this.isSvelte = true
+			mount(keyEditor_NiriCurve, {
+				target: this.genericEditor_el,
+				props: {
+					initialValue: value,
 					onChange: (v: number) => {
 						this.value = v
 						this.el.dataset.value = v.toString()

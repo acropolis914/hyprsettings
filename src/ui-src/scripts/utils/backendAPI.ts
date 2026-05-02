@@ -77,7 +77,7 @@ export const Backend = {
 				json_string: json_string,
 			}),
 		})
-		// console.log(response)
+		console.log(response)
 		if (response) {
 			console.debug('[Backend API] getHyprlandConfigTexts success')
 			GLOBAL.setKey('configText', response)
@@ -112,12 +112,13 @@ export const Backend = {
 			}),
 		})
 		const data = await response.json()
-		if (data.status !== 'ok') {
+		if (data.status !== 'ok' || !data.preview) {
 			console.error('[Backend API] saveConfig failed', data)
 			throw new Error('Failed to save config: ' + data.message)
 		} else {
 			console.debug('[Backend API] saveConfig successful')
-			GLOBAL.setKey('configText', data.preview)
+			// console.log(data.preview)
+			// GLOBAL.setKey('configText', data.preview)
 		}
 	},
 

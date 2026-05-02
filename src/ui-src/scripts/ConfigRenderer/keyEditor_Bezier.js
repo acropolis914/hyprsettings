@@ -3,7 +3,7 @@ import { debounce } from '../utils/helpers.js'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
 
 export class BezierModal {
-	constructor(initialValue) {
+	constructor(initialValue, hideName = false) {
 		this.initialLoad = true
 		this._listeners = []
 		this._updating = false
@@ -24,6 +24,9 @@ export class BezierModal {
 		this.textEditor.type = 'text'
 		this.textEditor.className = 'bezier-name-input'
 		this.textEditor.value = name
+		if (hideName) {
+			this.textEditor.classList.add('hidden')
+		}
 		this.el.appendChild(this.textEditor)
 
 		this.textEditor.addEventListener('input', () => {
@@ -81,7 +84,6 @@ export class BezierModal {
 			set: (val) => (this.value = val),
 		})
 		this.initialLoad = false
-		return this.el
 	}
 
 	parseValue(value) {
@@ -116,9 +118,9 @@ export class BezierModal {
 			return `${name}, ${points}`
 		}
 		if (GLOBAL.mode === 'niri') {
-			// const name = this.textEditor.value
+			const name_ = this.textEditor.value
 			const points = this.curveEditor.points.map((p) => Math.round(p * 100) / 100).join(' ')
-			return `"cubic-bezier", ${points}`
+			return `"${name_}" ${points}`
 		}
 	}
 
@@ -138,6 +140,10 @@ export class BezierModal {
 	replaceElement(element) {
 		if (!element) return
 		element.replaceWith(this.el)
+	}
+
+	return() {
+		return this.el
 	}
 }
 

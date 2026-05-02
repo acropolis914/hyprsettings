@@ -1,12 +1,9 @@
 <!--A selector for when there are only few choices-->
 <script lang="ts">
-	import type { ComponentProps } from "svelte"
-
 	interface item {
 		name: string,
 		description: string,
 	}
-
 	type orientation = "horizontal" | "vertical"
 	interface Props {
 		value: string,
@@ -16,14 +13,12 @@
 	}
 
 	let { value, items, orientation, onChange }: Props = $props()
-	let state = $state({ selected: value })
-
-
 	function handleChoiceClick(name: string) {
-		state.selected = name
+		onChange(name)
+		value = name
 	}
 	$effect(()=>{
-		onChange(state.selected)
+		console.log(value)
 	})
 
 </script>
@@ -32,15 +27,13 @@
 <div id="generic-key" class="chooser-modal">
 	<div id="choices" style="flex-direction:{orientation=== 'horizontal' ? 'row' : 'column'}">
 		{#each items as item}
-			<button class="choice {item.name=== state.selected ? 'selected': '' }" title={item.description} onclick={()=> handleChoiceClick(item.name)}>{item.name}</button>
+			<button class="choice {item.name === value ? 'selected': '' }" title={item.description} onclick={()=> handleChoiceClick(item.name)}>{item.name}</button>
 		{/each}
+
 	</div>
-<!--	<button type="button" id="cycler">-->
-<!--		-->
-<!--	</button>-->
 
 </div>
-
+<!--<div>{value}</div>-->
 
 <style>
 	.chooser-modal {
@@ -70,9 +63,15 @@
 		font-size: 1.3rem;
 		color: var(--text-0);
 		border: 1px solid transparent;
+		height:100%;
 		&:is(:focus, :focus-visible) {
-			outline: none;
-			border: 1px solid var(--surface-0);
+			/*outline: none;*/
+			outline: 1px solid var(--surface-0);
+			transform: none !important;
+		}
+		&:is(:active, :hover) {
+			transform: none !important;
+
 		}
 		&.selected{
 			background-color: var(--accent);
@@ -80,7 +79,3 @@
 		}
 	}
 </style>
-
-
-
-
