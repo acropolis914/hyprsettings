@@ -3,21 +3,81 @@ import subprocess
 
 from flask import Flask, jsonify
 from pathlib import Path
-from .shared import hs_globals
+
+try:
+	from .shared import hs_globals
+except:
+	pass
 import os
 from rich.console import Console
+import rich.traceback
 
+rich.traceback.install(show_locals=True)
 console = Console()
 
 thisfile_path = Path(__file__).parent.resolve()
 
 
 def register_markdown_routes(app: Flask):
-	@app.route('/api/wiki_tree', methods=['GET'])
-	def wiki_tree():
+	@app.route('/api/wiki_tree_hypr', methods=['GET'])
+	def wiki_tree_hypr():
 		if hs_globals.CONFIG_MODE == "HYPRLAND":
 			return jsonify(read_hyprland_wiki_folder())
-		return None
+		return jsonify({})
+
+	@app.route('/api/wiki_tree_niri', methods=['GET'])
+	def wiki_tree_niri():
+		if hs_globals.CONFIG_MODE == "NIRI":
+			return jsonify(read_niri_wiki_folder())
+		return jsonify({})
+
+
+def read_niri_wiki_folder() -> dict:
+	import re
+	wiki_folder: Path = Path(__file__).parent.parent / "niri-wiki-content"
+	with open(wiki_folder / "_Sidebar.md", "r") as file_content_:
+		tree = {}
+		currentParent: dict = None
+		content = file_content_.readlines()
+		read_files = []
+		unread_files = []
+		parentWeights = 0
+		childWeights = 0
+		for line in content:
+			if line.strip().startswith("#"):
+				childWeights = 0
+				header = line.strip().replace("## ", "").strip()
+				tree[header] = {}
+				currentParent = tree[header]
+			if line.strip().startswith("*"):
+				title = re.search(r"\[(.*?)\]", line).group(1).strip()
+				link = re.search(r"\((.*?)\)", line).group(1).strip()
+				read_files.append(link.replace("./", "") + ".md")
+				resolved_link = Path(str(wiki_folder) + "/" + link.replace("./", "") + ".md")
+				try:
+					with open(resolved_link, "r") as md:
+						content = md.read()
+				except FileNotFoundError:
+					content = f"File {resolved_link.name} not found."
+				frontmatter = f"""---
+weight: {childWeights}
+title: {title.replace("_", " ").replace("-", " ")}
+---"""
+				currentParent[link.replace("./", "")] = frontmatter + content
+				childWeights += 1
+		# print({"title": title, "link": link, "content": content})
+		with open(wiki_folder / "Home.md", "r") as home:
+			tree["_index.md"] = home.read()
+
+		with open(wiki_folder / ".version", "r") as home:
+			tree[".version"] = home.read()
+		return tree
+
+
+# for file in os.listdir(wiki_folder):
+# 	if file.endswith(".md") and Path(file).name not in read_files:
+# 		unread_files.append(file)
+# console.print({"unread": unread_files, "read": read_files})
 
 
 def read_hyprland_wiki_folder():
@@ -56,5 +116,13 @@ def read_hyprland_wiki_folder():
 	# print(type(tree))
 	return tree
 
+
 # read_wiki_navigation()
 # read_wiki_folder()
+
+
+if __name__ == '__main__':
+	json_content = read_niri_wiki_folder()
+	with open("/tmp/niri_wiki_content.json", "w") as file_content:
+		json.dump(json_content, file_content, indent=4)
+	subprocess.Popen(["json-janice", "/tmp/niri_wiki_content.json"])

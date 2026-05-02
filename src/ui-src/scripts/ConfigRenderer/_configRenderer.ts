@@ -33,7 +33,7 @@ export default async function getAndRenderConfig() {
 		}
 		return
 	})
-	await Backend.getHyprlandConfig()
+	await Backend.getWaylandCompositorConfig()
 	setTimeout(async () => {
 		Backend.getHyprlandConfigTexts().then()
 	}, 2000)

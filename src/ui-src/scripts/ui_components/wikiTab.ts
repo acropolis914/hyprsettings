@@ -14,11 +14,18 @@ import '@stylesheets/subs/tippy.scss'
 import tippy, { followCursor } from 'tippy.js'
 import { attemptSwitchToMain } from '@scripts/ui_components/documentListeners.ts'
 import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
-
+let title_text
 export default async function createWiki() {
 	console.log('Creating Wiki...')
 	GLOBAL.onChange('wikiTree', createWikiNavigation)
-	await Backend.getHyprlandWikiNavigation()
+	if (GLOBAL.mode === 'hyprland') {
+		await Backend.getHyprlandWikiNavigation()
+		title_text = "Hyprland"
+	} else if (GLOBAL.mode === 'niri') {
+		await Backend.getNiriWikiNavigation()
+		title_text = 'Niri'
+	}
+
 }
 
 async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTMLDivElement) {
@@ -70,11 +77,11 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 				objectTree.at(-1).appendChild(el)
 			} else if (key != '_index.md' && typeof value != 'string') {
 				el.classList.add('wiki-folder', 'config-group')
-				el.dataset.position = `${path}:${key}`
+				el.dataset.position = `${path}::${key}`
 				objectTree.at(-1).appendChild(el)
 				objectTree.push(el)
 				indentation += 1
-				await setupNavigation(value, indentation, `${path}:${key}`)
+				await setupNavigation(value, indentation, `${path}::${key}`)
 				indentation -= 1
 
 				objectTree.pop()
@@ -100,12 +107,34 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 				el.dataset.weight = '-2'
 				objectTree.at(-1).appendChild(el)
 				let parsed = await parseMarkdown(value)
-				parsed.value = `
+
+				let template = ''
+				let versionText = GLOBAL.wikiVersion?.split('\n')[0] || 'Unknown'
+				if (GLOBAL.mode === 'hyprland') {
+					template = `
 					<blockquote class="info">
-					This wiki is sourced from the hyprwm/hyprland-wiki github page. It was pulled with version <strong>${GLOBAL.wikiVersion.split('\n')[0]}.</strong>
+					This wiki is sourced from the hyprwm/hyprland-wiki github page. It was pulled with version <strong>${versionText}.</strong>
 					<br>
 					All rights reserved to vaxry and the hyprland contributors! See <a href="./LICENSE">LICENSE</a> for the hyprland wiki.
-					</blockquote>
+					</blockquote>`
+				} else if (GLOBAL.mode === 'niri') {
+					template = `
+					<blockquote class="info">
+					This wiki is sourced from the YaLTeR/niri github wiki. It was pulled with version <strong>${versionText}.</strong>
+					<br>
+					All rights reserved to YaLTeR and the niri contributors!
+					</blockquote>`
+				} else if (GLOBAL.mode === 'mango') {
+					template = `
+					<blockquote class="info">
+					This wiki is sourced from the mango github wiki. It was pulled with version <strong>${versionText}.</strong>
+					<br>
+					All rights reserved to the mango contributors!
+					</blockquote>`
+				}
+
+				parsed.value = `
+					${template}
 					${parsed.value}
 					`
 				let markdown_json_parsed = parsed
@@ -116,10 +145,11 @@ async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTML
 				} else {
 					console.warn('Skipping null parse for', key)
 				}
-				setViewElValue(markdown_json_parsed, path, 'Hyprland Wiki')
+				setViewElValue(markdown_json_parsed, path, `${title_text} Wiki`)
 			} else {
 				console.warn(`Error parsing "${key}: ${value}"`)
 			}
+
 			el.addEventListener('click', (e) => {
 				if (e.target != el) {
 					return
@@ -499,7 +529,7 @@ function fixLinxElement(element: HTMLElement, position: string) {
 		// console.log({ position })
 		let link_without_section = link.replace(link.substring(link.indexOf('#')), '')
 		// console.log(link_without_section)
-		let position_paths = position.split(':').filter(Boolean)
+		let position_paths = position.split('::').filter(Boolean)
 		let link_parts = link
 			.split('/')
 			.filter(Boolean)
@@ -509,7 +539,7 @@ function fixLinxElement(element: HTMLElement, position: string) {
 			.filter(Boolean)
 			.filter((item) => item.startsWith('#'))
 
-		let linkToFix = link_parts.join(':')
+		let linkToFix = link_parts.join('::')
 		while (link_parts[0] === '..') {
 			link_parts.shift()
 			if (!link_without_section.endsWith('/') && position_paths.length > 1) {
@@ -519,7 +549,7 @@ function fixLinxElement(element: HTMLElement, position: string) {
 		while (link_parts[0] === '.') {
 			link_parts.shift()
 		}
-		const newLink = [...position_paths, ...link_parts, ...link_section].join(':')
+		const newLink = [...position_paths, ...link_parts, ...link_section].join('::')
 		title = newLink
 		// console.log('Fixing link element', { link_without_section, position,newLink })
 		element.addEventListener('click', (e) => {
@@ -543,7 +573,7 @@ function fixLinxElement(element: HTMLElement, position: string) {
 	if (title.startsWith('http')) {
 		content = title
 	} else {
-		content = title.replace(':', '  ')
+		content = title.replace('::', '  ')
 	}
 	tippy(element, {
 		content: content,
@@ -554,9 +584,9 @@ function fixLinxElement(element: HTMLElement, position: string) {
 window.gotoWiki = gotoWiki
 export function gotoWiki(wikidir: string) {
 	document.querySelector('.sidebar-item#wiki').click()
-	let wikiDir_path = wikidir.split(':').filter((e) => !e.startsWith('#'))
+	let wikiDir_path = wikidir.split('::').filter((e) => !e.startsWith('#'))
 	let wikiDir_path_immutable = wikiDir_path
-	let wikiDir_section = wikidir.split(':').filter((e) => e.startsWith('#'))
+	let wikiDir_section = wikidir.split('::').filter((e) => e.startsWith('#'))
 
 	console.log('[wiki] gotoWiki request', {
 		wikidir,
@@ -594,7 +624,7 @@ export function gotoWiki(wikidir: string) {
 		node.click()
 	} else {
 		let directory = wikidir
-			.split(':')
+			.split('::')
 			.filter((e) => !e.startsWith('#'))
 			.at(-1)
 		console.log('[wiki] tree traversal failed, trying flat lookup', {
@@ -670,7 +700,8 @@ async function setViewElValue(value: string, position: string, title = '') {
 		let viewEl_content = document.getElementById('wikiView_content')
 		let viewEl_position = document.getElementById('wikiView_position')
 		if (parsed.data.matter.title) {
-			viewEl_title.textContent = parsed.data.matter.title || 'Hyprland Wiki'
+
+			viewEl_title.textContent = parsed.data.matter.title || `${title_text} Wiki`
 			viewEl_title.classList.remove('hidden')
 		} else if (title) {
 			viewEl_title.textContent = title
@@ -680,7 +711,7 @@ async function setViewElValue(value: string, position: string, title = '') {
 			// viewEl_title.classList.add('hidden')
 		}
 
-		viewEl_position.innerHTML = ` ${position.split(':').join('  ')} `
+		viewEl_position.innerHTML = ` ${position.split('::').join('  ')} `
 
 		viewEl_content.innerHTML = parsed['value']
 		// console.clear()

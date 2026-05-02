@@ -5,9 +5,9 @@ async function fetchFlask(path: string, options = {}) {
 	const url = '/api/' + path
 	// console.debug(`[Backend API] Fetching: ${url}`, options)
 	const resp = await fetch(url, options)
-	const data = await resp.json()
+	return await resp.json()
 	// console.debug(`[Backend API] Response from ${url}:`, data)
-	return data
+	// return data
 }
 
 export const saveConfigDebounced = debounce((configJSON: any, changedFiles = []) => {
@@ -22,8 +22,9 @@ export const Backend = {
 		return config
 	},
 
-	async getHyprlandConfig(path = null) {
-		console.debug(`[Backend API] getHyprlandConfig called with path: ${path}`)
+	async getWaylandCompositorConfig(path = null) {
+		// pathText = path ?? ""
+		console.debug(`[Backend API]Getting the compositor from backend ${path ?? ''}`)
 		const params = new URLSearchParams()
 		if (path) params.append('path', path)
 		// const query = path ? `?path=${encodeURIComponent(path)}` : ''
@@ -138,7 +139,20 @@ export const Backend = {
 	async getHyprlandWikiNavigation() {
 		try {
 			console.debug('[Backend API] getHyprlandWikiNavigation called')
-			const tree = await fetchFlask('wiki_tree', {
+			const tree = await fetchFlask('wiki_tree_hypr', {
+				method: 'GET',
+			})
+			GLOBAL.setKey('wikiTree', tree)
+			return tree
+		} catch (e) {
+			console.error('[Backend API] getHyprlandWikiNavigation error:', e)
+		}
+	},
+
+	async getNiriWikiNavigation() {
+		try {
+			console.debug('[Backend API] getHyprlandWikiNavigation called')
+			const tree = await fetchFlask('wiki_tree_niri', {
 				method: 'GET',
 			})
 			GLOBAL.setKey('wikiTree', tree)

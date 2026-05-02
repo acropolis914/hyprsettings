@@ -11,11 +11,6 @@ from rich.console import Console
 from contextlib import redirect_stderr, redirect_stdout
 from flask import Flask
 import logging
-
-# import webview
-
-# traceback.install(show_locals=True)
-
 from hyprsettings_utils.argument_parser import createArgParse
 from hyprsettings_utils.shared import hs_globals, state
 from hyprsettings_utils.flask_routes import register_routes
@@ -23,12 +18,16 @@ from hyprsettings_utils.utils import is_port_open
 from hyprsettings_utils.window_manager import *
 from hyprsettings_utils.hyprland_wiki import register_markdown_routes
 
+import rich.traceback
+
+rich.traceback.install(show_locals=True)
+console = Console()
+
 os.environ['GDK_BACKEND'] = 'wayland'
 os.environ['FLASK_SKIP_DOTENV'] = '1'
 console = Console()
 werlog = logging.getLogger('werkzeug')
 werlog.setLevel(logging.ERROR)
-
 thisfile_path = Path(__file__).parent.resolve()
 
 

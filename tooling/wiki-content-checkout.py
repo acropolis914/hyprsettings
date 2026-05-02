@@ -10,24 +10,39 @@ console = Console()
 # -------------------------
 # Config
 # -------------------------
-REPO_URL = 'https://github.com/hyprwm/hyprland-wiki.git'
+MODE = "NIRI"
+REPO_URL: str
+LOCAL_REPO: Path
+TARGET_DIR: Path
+CONTENT_SRC: Path
 SCRIPT_DIR = Path(__file__).parent.resolve()
-LOCAL_REPO = SCRIPT_DIR / '.hyprland-wiki'
-TARGET_DIR = SCRIPT_DIR.parent / 'src' / 'hyprland-wiki-content'
 
-console.print('[bold cyan]Updating wiki content...[/bold cyan]')
+if MODE == "HYPRLAND":
+	REPO_URL = 'https://github.com/hyprwm/hyprland-wiki.git'
+	LOCAL_REPO = SCRIPT_DIR / '.hyprland-wiki'
+	TARGET_DIR = SCRIPT_DIR.parent / 'src' / 'hyprland-wiki-content'
+	CONTENT_SRC = LOCAL_REPO / 'content'
 
+if MODE == "NIRI":
+	REPO_URL = "https://github.com/niri-wm/niri.wiki.git"
+	LOCAL_REPO = SCRIPT_DIR / '.niri-wiki'
+	TARGET_DIR = SCRIPT_DIR.parent / 'src' / 'niri-wiki-content'
+	CONTENT_SRC = LOCAL_REPO
+
+console.print(f'[bold cyan]Updating wiki content for {MODE}...[/bold cyan]')
 # -------------------------
 # 1️⃣ Clone or update local repo
 # -------------------------
 if not (LOCAL_REPO / '.git').exists():
-	console.print(f'[green]Cloning full repo into {LOCAL_REPO}...[/green]')
-	subprocess.run(['git', 'clone', '--branch', 'main', '--tags', REPO_URL, str(LOCAL_REPO)], check=True)
+	console.print(f'[green]Cloning repo into {LOCAL_REPO}...[/green]')
+	# Removed --tags and --branch main to let git handle defaults
+	subprocess.run(['git', 'clone', REPO_URL, str(LOCAL_REPO)], check=True)
 else:
 	console.print(f'[yellow]Updating local repo in {LOCAL_REPO}...[/yellow]')
-	subprocess.run(['git', '-C', str(LOCAL_REPO), 'fetch', '--tags', 'origin', 'main'], check=True)
-	subprocess.run(['git', '-C', str(LOCAL_REPO), 'reset', '--hard', 'origin/main'], check=True)
-
+	# Fetch without forcing tags; use --prune to keep things clean
+	subprocess.run(['git', '-C', str(LOCAL_REPO), 'fetch', '--prune', 'origin'], check=True)
+	# Reset to the remote tracking branch (handles 'main' or 'master' automatically)
+	subprocess.run(['git', '-C', str(LOCAL_REPO), 'reset', '--hard', 'origin/HEAD'], check=True)
 # -------------------------
 # 2️⃣ Clear target folder
 # -------------------------
@@ -42,7 +57,7 @@ for item in TARGET_DIR.iterdir():
 # -------------------------
 # 3️⃣ Copy content folder
 # -------------------------
-CONTENT_SRC = LOCAL_REPO / 'content'
+
 if CONTENT_SRC.exists() and CONTENT_SRC.is_dir():
 	console.print('[green]Copying content folder...[/green]')
 	shutil.copytree(CONTENT_SRC, TARGET_DIR, dirs_exist_ok=True)
