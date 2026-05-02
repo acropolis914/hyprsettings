@@ -20,12 +20,11 @@ export default async function createWiki() {
 	GLOBAL.onChange('wikiTree', createWikiNavigation)
 	if (GLOBAL.mode === 'hyprland') {
 		await Backend.getHyprlandWikiNavigation()
-		title_text = "Hyprland"
+		title_text = 'Hyprland'
 	} else if (GLOBAL.mode === 'niri') {
 		await Backend.getNiriWikiNavigation()
 		title_text = 'Niri'
 	}
-
 }
 
 async function createWikiNavi(navigationEl: HTMLDivElement, viewEl_content: HTMLDivElement) {
@@ -525,7 +524,7 @@ function fixLinxElement(element: HTMLElement, position: string) {
 	let link = element.getAttribute('href')
 	let title = link
 
-	if (link.startsWith('..') || link.startsWith('.')) {
+	if ((link.startsWith('..') || link.startsWith('.')) && !link.endsWith('.frag')) {
 		// console.log({ position })
 		let link_without_section = link.replace(link.substring(link.indexOf('#')), '')
 		// console.log(link_without_section)
@@ -568,6 +567,13 @@ function fixLinxElement(element: HTMLElement, position: string) {
 		})
 	} else if (link.trim().startsWith('http')) {
 		element.setAttribute('target', '_blank')
+	} else if (link.endsWith('.frag')) {
+		element.addEventListener('click', async (e) => {
+			e.preventDefault()
+			let response = await fetch(element.href)
+			let content = await response.text()
+			createFloatingCode(content)
+		})
 	}
 	let content
 	if (title.startsWith('http')) {
@@ -700,14 +706,13 @@ async function setViewElValue(value: string, position: string, title = '') {
 		let viewEl_content = document.getElementById('wikiView_content')
 		let viewEl_position = document.getElementById('wikiView_position')
 		if (parsed.data.matter.title) {
-
 			viewEl_title.textContent = parsed.data.matter.title || `${title_text} Wiki`
 			viewEl_title.classList.remove('hidden')
 		} else if (title) {
 			viewEl_title.textContent = title
 			viewEl_title.classList.remove('hidden')
 		} else {
-			viewEl_title.textContent = 'Hyprland Wiki'
+			viewEl_title.textContent = `${title_text} Wiki`
 			// viewEl_title.classList.add('hidden')
 		}
 
@@ -827,4 +832,56 @@ function downloadTextFile(filename, content) {
 
 	document.body.removeChild(a)
 	URL.revokeObjectURL(a.href)
+}
+
+function createFloatingCode(content: string) {
+	const dialog = document.createElement('dialog')
+	dialog.style.position = 'fixed' // Fixed is usually better for modals
+	dialog.style.top = '50%'
+	dialog.style.left = '50%'
+	dialog.style.transform = 'translate(-50%, -50%)'
+	dialog.style.width = '90%'
+	dialog.style.maxWidth = '800px' // Optional cap for larger screens
+	dialog.style.maxHeight = '80vh' // Constrain the dialog height
+	dialog.style.padding = '1rem'
+	dialog.style.paddingBottom = '3.5rem' // Space for the absolute button
+	dialog.style.borderRadius = '0.4rem'
+	dialog.style.border = '1px solid #666'
+	dialog.style.overflow = 'hidden' // Prevents the dialog itself from scrolling
+
+	// Container for the scrollable code
+	const scrollContainer = document.createElement('div')
+	scrollContainer.style.maxHeight = 'calc(80vh - 5rem)' // Leave room for padding/button
+	scrollContainer.style.overflowY = 'auto'
+	scrollContainer.style.width = '100%'
+
+	const code = document.createElement('code')
+	code.style.fontSize = '1.2rem'
+	code.style.whiteSpace = 'pre-wrap'
+	code.style.display = 'block'
+	code.textContent = content
+	code.classList.add('language-glsl')
+
+	// Use the global Prism instance
+	Prism.highlightElement(code)
+
+	scrollContainer.appendChild(code)
+	dialog.appendChild(scrollContainer)
+
+	const closeBtn = document.createElement('button')
+	closeBtn.textContent = 'Close'
+	closeBtn.style.position = 'absolute'
+	closeBtn.style.bottom = '1rem'
+	closeBtn.style.right = '1rem'
+	closeBtn.style.padding = '0.5rem 1rem'
+	closeBtn.style.cursor = 'pointer'
+
+	closeBtn.onclick = () => {
+		dialog.close()
+		dialog.remove() // Cleanup DOM
+	}
+
+	dialog.appendChild(closeBtn)
+	document.body.appendChild(dialog)
+	dialog.showModal()
 }

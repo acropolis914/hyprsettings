@@ -62,7 +62,7 @@ def read_niri_wiki_folder() -> dict:
 				frontmatter = f"""---
 weight: {childWeights}
 title: {title.replace("_", " ").replace("-", " ")}
----"""
+---\n"""
 				currentParent[link.replace("./", "")] = frontmatter + content
 				childWeights += 1
 		# print({"title": title, "link": link, "content": content})

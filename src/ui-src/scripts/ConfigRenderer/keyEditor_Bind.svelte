@@ -191,7 +191,7 @@
 	}
 </script>
 
-<div class="bind-editor" bind:this={root}>
+<div class="bind-editor value-editor" bind:this={root}>
 	<div class="bind-flags field">
 		<label>Flags:</label>
 		<div class="flags-list">

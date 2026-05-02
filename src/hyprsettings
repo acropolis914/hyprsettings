@@ -17,12 +17,9 @@ from hyprsettings_utils.flask_routes import register_routes
 from hyprsettings_utils.utils import is_port_open
 from hyprsettings_utils.window_manager import *
 from hyprsettings_utils.hyprland_wiki import register_markdown_routes
-
 import rich.traceback
 
 rich.traceback.install(show_locals=True)
-console = Console()
-
 os.environ['GDK_BACKEND'] = 'wayland'
 os.environ['FLASK_SKIP_DOTENV'] = '1'
 console = Console()
@@ -39,6 +36,7 @@ def start_flask_server():
 		state.flask_port += 1
 	log(f'You can access the ui on [blue][link=localhost:{state.flask_port}]localhost:{state.flask_port}[/link][/blue]')
 	state.app.run(host=hs_globals.HOST, port=state.flask_port, use_reloader=False)
+	print(state.app.url_map)
 
 
 def ui_print(*args, **kwargs):

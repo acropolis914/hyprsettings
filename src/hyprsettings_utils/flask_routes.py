@@ -18,30 +18,82 @@ console = Console()
 def register_routes(app: Flask):
 	CORS(app, origins='*', supports_credentials=True)
 
-	@app.route('/')
-	def home():
-		log('Serving UI home page', only_verbose=True)
-		return send_from_directory('ui', 'index.html')
+	@app.route('/img/<path:path>')
+	def niri_image_files(path):
+		console.print_json(data={
+			"route": "/img/<path:path>",
+			"function": "niri_image_files",
+			"target_dir": "niri-wiki-content/img",
+			"requested_path": path
+		})
+		log(f'Serving niri img file: {path}', only_verbose=False)
+		return send_from_directory('niri-wiki-content/img', path)
 
-	@app.route('/wiki', strict_slashes=False)
-	def wiki():
-		log('Serving wiki home page', only_verbose=True)
-		return send_from_directory('hyprland-wiki', 'index.html')
+	@app.route('/_assets/<path:path>')
+	def niri_asset_files(path):
+		console.print_json(data={
+			"route": "/_assets/<path:path>",
+			"function": "niri_asset_files",
+			"target_dir": "niri-wiki-content/_assets",
+			"requested_path": path
+		})
+		log(f'Serving niri asset file: {path}', only_verbose=False)
+		return send_from_directory('niri-wiki-content/_assets', path)
 
-	@app.route('/wiki/<path:path>', strict_slashes=False)
-	def wiki_assets(path):
-		log(f'Serving wiki asset: {path}', only_verbose=True)
-		path = str(path)
-		if '.' not in path and not path.endswith('/'):
-			path += '/'
-		if path.endswith('/'):
-			path += 'index.html'
-		return send_from_directory('hyprland-wiki', path)
+	@app.route('/logo/<path:path>')
+	def niri_logo_files(path):
+		console.print_json(data={
+			"route": "/logo/<path:path>",
+			"function": "niri_logo_files",
+			"target_dir": "niri-wiki-content/logo",
+			"requested_path": path
+		})
+		log(f'Serving niri logo file: {path}', only_verbose=False)
+		return send_from_directory('niri-wiki-content/logo', path)
+
+	@app.route('/examples/<path:path>')
+	def niri_example_files(path):
+		console.print_json(data={
+			"route": "/examples/<path:path>",
+			"function": "niri_example_files",
+			"target_dir": "niri-wiki-content/examples",
+			"requested_path": path
+		})
+		log(f'Serving niri example file: {path}', only_verbose=False)
+		return send_from_directory('niri-wiki-content/examples', path)
+
+	@app.route('/assets/<path:path>')
+	def hyprland_asset_files(path):
+		console.print_json(data={
+			"route": "/assets/<path:path>",
+			"function": "hyprland_asset_files",
+			"target_dir": "hyprland-wiki-content/assets",
+			"requested_path": path
+		})
+		log(f'Serving hyprland asset file: {path}', only_verbose=False)
+		return send_from_directory('hyprland-wiki-content/assets', path)
 
 	@app.route('/<path:path>')
 	def ui_files(path):
+		console.print_json(data={
+			"route": "/<path:path>",
+			"function": "ui_files",
+			"target_dir": "ui",
+			"requested_path": path
+		})
 		log(f'Serving UI file: {path}', only_verbose=True)
 		return send_from_directory('ui', path)
+
+	@app.route('/')
+	def home():
+		console.print_json(data={
+			"route": "/",
+			"function": "home",
+			"target_dir": "ui",
+			"requested_path": "index.html"
+		})
+		log('Serving UI home page', only_verbose=True)
+		return send_from_directory('ui', 'index.html')
 
 	@app.route('/api/init', methods=['GET'])
 	def api_init():

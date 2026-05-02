@@ -117,7 +117,7 @@
 
 </script>
 
-<div id="animation-modal" class="" data-value={value} bind:this={root}>
+<div id="animation-modal" class="value-editor" data-value={value} bind:this={root}>
 	<div class="field" tabindex="0" role="checkbox" aria-checked="{state.enabled}" onclick={toggleEnabled}>
 		<label for="anim-enabled">On</label>
 		<input id="anim-enabled" class="checkbox" type="checkbox" bind:checked={state.enabled}

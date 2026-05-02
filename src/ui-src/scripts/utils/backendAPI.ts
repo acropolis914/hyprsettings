@@ -60,7 +60,7 @@ export const Backend = {
 	},
 	async debounceGetHyprlandConfig() {
 		console.debug('[Backend API] debounceGetHyprlandConfig triggered')
-		debounce(this.getHyprlandConfig(), 2000)
+		debounce(this.getWaylandCompositorConfig(), 2000)
 	},
 	async debounceGetHyprlandConfigTexts() {
 		console.debug('[Backend API] debounceGetHyprlandConfigTexts triggered')

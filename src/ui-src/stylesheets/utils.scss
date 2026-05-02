@@ -1,5 +1,5 @@
 /* --- Utility Classes ---*/
-@use "mixins" as m;
+@use 'mixins' as m;
 .blank-line {
 	max-width: 100%;
 	color: transparent;
@@ -23,7 +23,7 @@ select {
 code {
 	border: var(--surface-border);
 	border-radius: var(--border-rad);
-	background-color: var(--surface-1) !important;
+	background-color: transparent !important;
 	color: var(--accent-active);
 }
 

@@ -70,6 +70,10 @@ export default defineConfig({
 		proxy: {
 			'/api': 'http://localhost:6969',
 			'/wiki': 'http://localhost:6969',
+			'/img': 'http://localhost:6969',
+			'/logo': 'http://localhost:6969',
+			'/examples': 'http://localhost:6969',
+			'/_assets': 'http://localhost:6969',
 		},
 		allowedHosts: ['192.168.1.1'],
 	},
