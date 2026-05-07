@@ -35,8 +35,8 @@ def start_flask_server():
 	while is_port_open(port=state.flask_port):
 		state.flask_port += 1
 	log(f'You can access the ui on [blue][link=localhost:{state.flask_port}]localhost:{state.flask_port}[/link][/blue]')
+	log(state.flask_port, "[flaskk]")
 	state.app.run(host=hs_globals.HOST, port=state.flask_port, use_reloader=False)
-	print(state.app.url_map)
 
 
 def ui_print(*args, **kwargs):
@@ -191,7 +191,8 @@ class LogFilter:
 def main():
 	state.flask_thread = threading.Thread(target=start_flask_server, daemon=True)
 	state.flask_thread.start()
-	# time.sleep(0.1)
+	# state.flask_ready.wait()
+	time.sleep(0.01)  # needed to make sure flask_port in ui link is updated
 
 	ui_link = f'http://localhost:{state.flask_port}/'
 	if state.args.bun_dev:
@@ -312,10 +313,10 @@ if __name__ == '__main__':
 			log("Run with '-d' to use that existing daemon.")
 			log('Daemon uses RAM but starts faster.')
 			state.webview_port += 1
-		log(f'Using port {state.webview_port} for the no daemon pywebview window.', only_verbose=True)
+		log(f'Using port {state.webview_port} for the no daemon pywebview window.', only_verbose=False)
 
 	if not state.args.no_daemon and is_port_open(state.webview_port) and not state.args.config:
 		if send_toggle():
-			sys.exit(0)
+			sys.exit()
 
 	goto_main()

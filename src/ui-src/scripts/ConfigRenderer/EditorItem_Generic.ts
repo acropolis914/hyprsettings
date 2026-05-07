@@ -29,6 +29,7 @@ import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
 import type { ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
 import keyEditor_Number from '@scripts/ConfigRenderer/keyEditor_Number.svelte'
 import keyEditor_NiriCurve from '@scripts/ConfigRenderer/keyEditor_NiriCurve.svelte'
+import { CurveEditor } from '@scripts/ConfigRenderer/NiriCurveEditor.ts'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -457,6 +458,12 @@ export class EditorItem_Generic {
 					},
 				},
 			})
+			// const curveEditor = new CurveEditor(value, (v) => {
+			// 	this.value = v
+			// 	this.el.dataset.value = v.toString()
+			// 	this.update()
+			// })
+			// curveEditor.mount(this.genericEditor_el)
 		} else {
 			const ta = document.createElement('textarea')
 			ta.rows = 1

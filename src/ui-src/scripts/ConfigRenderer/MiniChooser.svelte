@@ -9,10 +9,11 @@
 		value: string,
 		onChange: (value: string) => void
 		orientation?: orientation
-		items: item[]
+		items: item[] | any[]
 	}
 
-	let { value, items, orientation, onChange }: Props = $props()
+	let { value=$bindable(), items, orientation, onChange }: Props = $props()
+	// console.log(items)
 	function handleChoiceClick(name: string) {
 		onChange(name)
 		value = name
@@ -33,7 +34,6 @@
 	</div>
 
 </div>
-<!--<div>{value}</div>-->
 
 <style>
 	.chooser-modal {
@@ -43,6 +43,7 @@
 		flex-direction: row;
 		gap: 1rem;
 		margin-inline: auto;
+		height:30px;
 	}
 
 	#choices {
@@ -76,6 +77,7 @@
 		&.selected{
 			background-color: var(--accent);
 			color:var(--text-contrast);
+			transform: none !important;
 		}
 	}
 </style>

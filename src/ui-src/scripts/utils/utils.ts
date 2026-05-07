@@ -99,7 +99,7 @@ function getNodeContext_new(uuid: string): {
 export function handleSave(file: string | undefined, logAction: string, debounced: boolean) {
 	if (!file) return console.warn(`No .conf file found for action: ${logAction}`)
 	if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave) {
-		console.log(`Saving config (${logAction}):`, file)
+		// console.log(`Saving config (${logAction}):`, file)
 		if (debounced) saveConfigDebounced(JSON.stringify(GLOBAL['data']), [file])
 		else Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 	} else {
@@ -120,10 +120,10 @@ export function saveKey(
 	if (type === 'KEY' && GLOBAL.groupsave === true) return console.log('Group save in progress, skipping key save for ', name)
 	let { file, parent, node } = getNodeContext_new(uuid)
 
-	console.log({ file, parent, node })
+	// console.log({ file, parent, node })
 	if (!node) return console.error(`Could not find child node with uuid ${uuid}`)
 
-	console.log('Changed file:', file.name)
+	// console.log('Changed file:', file.name)
 	Object.assign(node, { name, type: type as NodeType, uuid, position, value, disabled })
 	if (type === 'GROUP') {
 		;(node as ItemPropsGroup).children?.forEach((child) => (child.disabled = disabled))

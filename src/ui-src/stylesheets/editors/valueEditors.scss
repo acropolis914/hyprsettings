@@ -225,6 +225,8 @@
 		//align-items: center;
 		gap: var(--spacing-unit);
 		max-height: 30rem;
+		height: 20rem;
+		overflow: hidden;
 		> * {
 			border-radius: var(--border-radius);
 			overflow: hidden;
@@ -237,12 +239,14 @@
 		}
 		.curve-editor {
 			display: block; /* important: inline SVG defaults can shrink */
-			flex: 2;
-			aspect-ratio: 1/1;
-			width: 100%; /* fill flex width */
+			//flex: 2;
+			aspect-ratio: 1/1 !important;
+			//width: 100%; /* fill flex width */
+			width: auto;
 			height: 100%; /* fill flex height */
 			//max-width: 20rem;
 			touch-action: none;
+			border: 1px solid var(--surface-1, #ccc);
 		}
 		.curve-preview {
 			flex: 3;

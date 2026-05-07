@@ -116,7 +116,7 @@
 			color: var(--accent-success);
 		}
 	}
-	&:is(:focus-within) {
+	&:is(:focus-within):not(:has(.config-group:focus-within)) {
 		//outline-color: var(--accent) !important;
 		outline-offset: 0px !important;
 		outline: 1px solid var(--accent-hover) !important;
@@ -160,8 +160,9 @@
 		justify-content: flex-end;
 		margin-left: auto;
 		transition: opacity 0.2s ease;
+		//padding-block: 10px;
 		>:is(:focus){
-			outline: 2px solid var(--text-0);
+			outline: 1px solid var(--text-2);
 		}
 		button{
 			background: none;
@@ -169,6 +170,9 @@
 			color: var(--text-2);
 			margin-right: 0.5rem;
 			opacity: 0.5;
+			aspect-ratio: 1/1;
+			//padding-block: 10px;
+			line-height: 10px;
 			&:hover{
 				opacity: 1;
 				transform: scale(1.1);

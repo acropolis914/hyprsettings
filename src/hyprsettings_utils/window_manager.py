@@ -5,14 +5,16 @@ from .utils import log
 import threading
 import subprocess
 import os
+import rich.traceback
 
 console = Console()
+rich.traceback.install(show_locals=True)
 
 
 def handle_client(conn):
 	try:
 		data = conn.recv(1024)
-		if data.decode() == 'TOGGLE' and state.window_instance:
+		if data.decode() == 'TOGGLE' and state.window_instance and (state.daemon or not state.args.no_daemon):
 			toggle_window()
 	except Exception as e:
 		log(e)

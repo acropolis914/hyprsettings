@@ -11,7 +11,7 @@ async function fetchFlask(path: string, options = {}) {
 }
 
 export const saveConfigDebounced = debounce((configJSON: any, changedFiles = []) => {
-	console.debug('[Backend API] saveConfigDebounced executing', { changedFiles })
+	// console.debug('[Backend API] saveConfigDebounced executing', { changedFiles })
 	Backend.saveConfig(configJSON, changedFiles).then()
 }, 50)
 

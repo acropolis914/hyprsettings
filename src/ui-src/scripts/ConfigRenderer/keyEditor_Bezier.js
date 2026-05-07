@@ -87,9 +87,19 @@ export class BezierModal {
 	}
 
 	parseValue(value) {
-		const [name, ...rest] = value.split(',').map((m) => m.trim())
-		const points = rest.map((n) => Math.round(Number(n) * 100) / 100)
-		return [name, points]
+		if (value.trim().includes('"') && value.trim().includes(' ') && !value.trim().includes(',')) {
+			let [name, ...rest] = value
+				.trim()
+				.split(' ')
+				.map((i) => i.trim())
+			name = name.replace('"', '')
+			const points = rest.map((n) => Math.round(Number(n) * 100) / 100)
+			return [name, points]
+		} else {
+			const [name, ...rest] = value.split(',').map((m) => m.trim())
+			const points = rest.map((n) => Math.round(Number(n) * 100) / 100)
+			return [name, points]
+		}
 	}
 
 	animatePreview() {
@@ -200,6 +210,7 @@ export class BezierPreview {
 		this.svg.style.width = '100%'
 		this.svg.style.height = '100%'
 		this.svg.style.display = 'block'
+		this.svg.style.transform = 'translateZ(0)'
 
 		this.window = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		this.window.setAttribute('fill', 'var(--accent)')
@@ -365,23 +376,16 @@ export class BezierPreview {
 export class BezierEditor {
 	constructor({ parent, grid = {} }) {
 		this.parent = parent
-
-		11 // Default points
 		this._cp1 = { x: 0.25, y: 0.25 }
 		this._cp2 = { x: 0.75, y: 0.75 }
 		this.dragging = null
 
-		// Grid settings
-		this.gridMajor = grid.major || 0.25
-		this.gridMinor = grid.minor || 0.05
-
-		// Range
+		this.gridMajor = grid.major || 0.5
+		this.gridMinor = grid.minor || 0.1
 		this.range = { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }
 		this.extended = true
-
 		this.onchange = null
 
-		// Colors
 		this.colors = {
 			handle1: 'var(--accent, red)',
 			handle2: 'var(--accent-success, blue)',
@@ -392,32 +396,49 @@ export class BezierEditor {
 			unitSquare: 'rgba(0,0,0,0.2)',
 		}
 
-		// Create SVG
 		this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 		this.svg.classList.add('curve-editor')
-
-		// Make SVG fill the flex-allocated space
-		this.svg.style.width = '100%'
-		this.svg.style.height = '100%'
-		this.svg.style.display = 'block'
+		// this.svg.style.height = '100%'
+		// this.svg.style.display = 'block'
 		this.svg.style.border = `1px solid ${this.colors.border}`
+
+		// WebKit optimization: promote to layer
+		this.svg.style.transform = 'translateZ(0)'
+
 		this.parent.appendChild(this.svg)
 
-		// Unit square
+		// --- NEW: Grid Pattern Setup ---
+		const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs')
+		defs.innerHTML = `
+            <pattern id="gridMinorPattern" width="${this.gridMinor}" height="${this.gridMinor}" patternContentUnits="objectBoundingBox">
+                <path d="M ${this.gridMinor} 0 L 0 0 0 ${this.gridMinor}" fill="none" stroke="${this.colors.gridMinor}" stroke-width="0.01"/>
+            </pattern>
+            <pattern id="gridMajorPattern" width="${this.gridMajor}" height="${this.gridMajor}" patternContentUnits="objectBoundingBox">
+                <rect width="1" height="1" fill="url(#gridMinorPattern)"/>
+                <path d="M ${this.gridMajor} 0 L 0 0 0 ${this.gridMajor}" fill="none" stroke="${this.colors.gridMajor}" stroke-width="0.015"/>
+            </pattern>
+        `
+		this.svg.appendChild(defs)
+
 		this.unitSquare = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		this.unitSquare.setAttribute('fill', this.colors.unitSquare)
 		this.unitSquare.setAttribute('stroke', 'rgba(255, 255, 255, 0.1)')
 		this.unitSquare.setAttribute('stroke-width', '1')
 		this.svg.appendChild(this.unitSquare)
 
-		// Path
+		// Grid Background Rect
+		this.gridRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+		this.gridRect.setAttribute('fill', 'url(#gridMajorPattern)')
+		this.gridRect.setAttribute('width', '100%')
+		this.gridRect.setAttribute('height', '100%')
+		this.svg.appendChild(this.gridRect)
+
 		this.path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 		this.path.setAttribute('stroke', this.colors.path)
 		this.path.setAttribute('fill', 'none')
 		this.path.setAttribute('stroke-width', '2')
 		this.svg.appendChild(this.path)
 
-		// Connecting lines
 		this.line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line')
 		this.line1.setAttribute('stroke', this.colors.handle1)
 		this.line1.setAttribute('stroke-width', '2')
@@ -430,7 +451,6 @@ export class BezierEditor {
 		this.line2.setAttribute('stroke-dasharray', '4,4')
 		this.svg.appendChild(this.line2)
 
-		// Handles
 		this.handle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
 		this.handle1.setAttribute('r', 6)
 		this.handle1.setAttribute('fill', this.colors.handle1)
@@ -441,191 +461,114 @@ export class BezierEditor {
 		this.handle2.setAttribute('fill', this.colors.handle2)
 		this.svg.appendChild(this.handle2)
 
-		// Grid lines array
-		this.gridLines = []
+		this.gridLines = [] // Kept for legacy parity, but unused
+		this._ticking = false
 
-		// Setup drag events
 		this._setupEvents()
-
-		// Draw initially
 		this._draw()
 
-		// ---------------- ResizeObserver ----------------
-		// Watches the SVG's flex-allocated size
 		this._resizeObserver = new ResizeObserver((entries) => {
 			for (let entry of entries) {
-				const { width, height } = entry.contentRect
-				this.width = width
-				this.height = height
+				this.width = entry.contentRect.width
+				this.height = entry.contentRect.height
 				this._draw()
 			}
 		})
-		this._resizeObserver.observe(this.svg) // observe the SVG itself
+		this._resizeObserver.observe(this.svg)
 	}
 
 	_draw() {
-		if (!this.width || !this.height) return
+		if (!this.width || !this.height || this._ticking) return
 
-		const W = this.width
-		const H = this.height
+		this._ticking = true
+		requestAnimationFrame(() => {
+			const W = this.width
+			const H = this.height
 
-		// Extend range if enabled
-		if (this.extended) {
-			const EXTENSION = 0.25
-			const xMax = Math.max(1, this._cp1.x, this._cp2.x, 1 + EXTENSION)
-			const xMin = Math.min(0, this._cp1.x, this._cp2.x, -EXTENSION)
-			const yMax = Math.max(1, this._cp1.y, this._cp2.y, 1 + EXTENSION)
-			const yMin = Math.min(0, this._cp1.y, this._cp2.y, -EXTENSION)
-			this.range = { xMin, xMax, yMin, yMax }
-		} else {
-			this.range = { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }
-		}
+			if (this.extended) {
+				const EXTENSION = 0.25
+				const xMax = Math.max(1, this._cp1.x, this._cp2.x, 1 + EXTENSION)
+				const xMin = Math.min(0, this._cp1.x, this._cp2.x, -EXTENSION)
+				const yMax = Math.max(1, this._cp1.y, this._cp2.y, 1 + EXTENSION)
+				const yMin = Math.min(0, this._cp1.y, this._cp2.y, -EXTENSION)
+				this.range = { xMin, xMax, yMin, yMax }
+			} else {
+				this.range = { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }
+			}
 
-		const scaleX = W / (this.range.xMax - this.range.xMin)
-		const scaleY = H / (this.range.yMax - this.range.yMin)
+			const scaleX = W / (this.range.xMax - this.range.xMin)
+			const scaleY = H / (this.range.yMax - this.range.yMin)
+			const tx = (x) => (x - this.range.xMin) * scaleX
+			const ty = (y) => H - (y - this.range.yMin) * scaleY
 
-		// Draw unit square
-		this.unitSquare.setAttribute('x', (0 - this.range.xMin) * scaleX)
-		this.unitSquare.setAttribute('y', H - (1 - this.range.yMin) * scaleY)
-		this.unitSquare.setAttribute('width', 1 * scaleX)
-		this.unitSquare.setAttribute('height', 1 * scaleY)
+			// Update Unit Square
+			this.unitSquare.setAttribute('x', tx(0))
+			this.unitSquare.setAttribute('y', ty(1))
+			this.unitSquare.setAttribute('width', 1 * scaleX)
+			this.unitSquare.setAttribute('height', 1 * scaleY)
 
-		// Remove old grid lines
-		this.gridLines.forEach((line) => this.svg.removeChild(line))
-		this.gridLines = []
+			// Update Handle Lines
+			this.line1.setAttribute('x1', tx(0))
+			this.line1.setAttribute('y1', ty(0))
+			this.line1.setAttribute('x2', tx(this._cp1.x))
+			this.line1.setAttribute('y2', ty(this._cp1.y))
 
-		const addLine = (x1, y1, x2, y2, color, width = 1, dash = null) => {
-			const l = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-			l.setAttribute('x1', x1)
-			l.setAttribute('y1', y1)
-			l.setAttribute('x2', x2)
-			l.setAttribute('y2', y2)
-			l.setAttribute('stroke', color)
-			l.setAttribute('stroke-width', width)
-			// l.setAttribute('fill', 'white')
-			if (dash) l.setAttribute('stroke-dasharray', dash)
-			this.svg.insertBefore(l, this.path)
-			this.gridLines.push(l)
-		}
+			this.line2.setAttribute('x1', tx(1))
+			this.line2.setAttribute('y1', ty(1))
+			this.line2.setAttribute('x2', tx(this._cp2.x))
+			this.line2.setAttribute('y2', ty(this._cp2.y))
 
-		// Draw vertical grid
-		for (let gx = Math.ceil(this.range.xMin / this.gridMinor) * this.gridMinor; gx <= this.range.xMax; gx += this.gridMinor) {
-			const color = Math.abs(gx % this.gridMajor) < 1e-6 ? this.colors.gridMajor : this.colors.gridMinor
-			addLine((gx - this.range.xMin) * scaleX, 0, (gx - this.range.xMin) * scaleX, H, color)
-		}
+			// Update Bezier Path
+			this.path.setAttribute(
+				'd',
+				`M${tx(0)},${ty(0)} C ${tx(this._cp1.x)},${ty(this._cp1.y)} ${tx(this._cp2.x)},${ty(this._cp2.y)} ${tx(1)},${ty(1)}`,
+			)
 
-		// Draw horizontal grid
-		for (let gy = Math.ceil(this.range.yMin / this.gridMinor) * this.gridMinor; gy <= this.range.yMax; gy += this.gridMinor) {
-			const color = Math.abs(gy % this.gridMajor) < 1e-6 ? this.colors.gridMajor : this.colors.gridMinor
-			addLine(0, H - (gy - this.range.yMin) * scaleY, W, H - (gy - this.range.yMin) * scaleY, color)
-		}
+			// Update Handles
+			this.handle1.setAttribute('cx', tx(this._cp1.x))
+			this.handle1.setAttribute('cy', ty(this._cp1.y))
+			this.handle2.setAttribute('cx', tx(this._cp2.x))
+			this.handle2.setAttribute('cy', ty(this._cp2.y))
 
-		// Draw connecting lines
-		this.line1.setAttribute('x1', (0 - this.range.xMin) * scaleX)
-		this.line1.setAttribute('y1', H - (0 - this.range.yMin) * scaleY)
-		this.line1.setAttribute('x2', (this._cp1.x - this.range.xMin) * scaleX)
-		this.line1.setAttribute('y2', H - (this._cp1.y - this.range.yMin) * scaleY)
-
-		this.line2.setAttribute('x1', (1 - this.range.xMin) * scaleX)
-		this.line2.setAttribute('y1', H - (1 - this.range.yMin) * scaleY)
-		this.line2.setAttribute('x2', (this._cp2.x - this.range.xMin) * scaleX)
-		this.line2.setAttribute('y2', H - (this._cp2.y - this.range.yMin) * scaleY)
-
-		// Draw Bézier curve
-		this.path.setAttribute(
-			'd',
-			`M${(0 - this.range.xMin) * scaleX},${H - (0 - this.range.yMin) * scaleY} 
-			 C ${(this._cp1.x - this.range.xMin) * scaleX},${H - (this._cp1.y - this.range.yMin) * scaleY} 
-			   ${(this._cp2.x - this.range.xMin) * scaleX},${H - (this._cp2.y - this.range.yMin) * scaleY} 
-			   ${(1 - this.range.xMin) * scaleX},${H - (1 - this.range.yMin) * scaleY}`,
-		)
-
-		// Draw handles
-		this.handle1.setAttribute('cx', (this._cp1.x - this.range.xMin) * scaleX)
-		this.handle1.setAttribute('cy', H - (this._cp1.y - this.range.yMin) * scaleY)
-		this.handle2.setAttribute('cx', (this._cp2.x - this.range.xMin) * scaleX)
-		this.handle2.setAttribute('cy', H - (this._cp2.y - this.range.yMin) * scaleY)
+			this._ticking = false
+		})
 	}
 
 	_setupEvents() {
 		const svg = this.svg
-
-		// Unified Coordinate Mapper (Isolates the Safari/AppleWebKit zoom bug)
 		const getCoords = (e) => {
 			const rect = svg.getBoundingClientRect()
-
-			// Detect Apple WebKit (Safari, macOS webviews), but exclude Chromium/Blink
-			// const isAppleWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)
-
-			let pctX, pctY
-			pctX = (e.clientX - rect.left) / rect.width
-			pctY = (e.clientY - rect.top) / rect.height
-
-			// if (isAppleWebKit) {
-			// 	// Apple WebKit: Mouse is zoomed, rect is unzoomed.
-			// 	// We apply your custom zoom variable to the mouse first.
-			// 	const htmlNode = document.documentElement
-			// 	const zoomFactorVar = parseFloat(getComputedStyle(htmlNode).getPropertyValue('--zoom-factor')) || 1
-			//
-			// 	const unzoomedMouseX = e.clientX * zoomFactorVar
-			// 	const unzoomedMouseY = e.clientY * zoomFactorVar
-			//
-			// 	pctX = (unzoomedMouseX - rect.left) / rect.width
-			// 	pctY = (unzoomedMouseY - rect.top) / rect.height
-			// } else {
-			// 	// Chrome, Firefox, Edge, etc.: Mouse and rect scale proportionally. Simple math.
-			// 	pctX = (e.clientX - rect.left) / rect.width
-			// 	pctY = (e.clientY - rect.top) / rect.height
-			// }
-
-			// Clamp percentages strictly between 0.0 and 1.0
+			let pctX = (e.clientX - rect.left) / rect.width
+			let pctY = (e.clientY - rect.top) / rect.height
 			pctX = Math.max(0, Math.min(1, pctX))
-
-			// Invert Y because SVG y=0 is at the top, but mathematical y=0 is at the bottom
 			pctY = Math.max(0, Math.min(1, 1 - pctY))
-
-			// Map the 0-1 percentage to your mathematical range
-			const rangeX = this.range.xMax - this.range.xMin
-			const rangeY = this.range.yMax - this.range.yMin
-
 			return {
-				x: this.range.xMin + pctX * rangeX,
-				y: this.range.yMin + pctY * rangeY,
+				x: this.range.xMin + pctX * (this.range.xMax - this.range.xMin),
+				y: this.range.yMin + pctY * (this.range.yMax - this.range.yMin),
 			}
 		}
 
 		const setupHandle = (handle, pointReference) => {
 			handle.style.cursor = 'grab'
-			handle.style.touchAction = 'none' // Prevents mobile/touchscreen scrolling
-
+			handle.style.touchAction = 'none'
 			handle.addEventListener('pointerdown', (e) => {
 				this.dragging = pointReference
-
-				// SVG natively "grabs" the mouse so moves outside the window still register
 				handle.setPointerCapture(e.pointerId)
 				handle.style.cursor = 'grabbing'
-
-				// Instantly snap to the exact click point
 				const coords = getCoords(e)
 				this.dragging.x = coords.x
 				this.dragging.y = coords.y
-
 				this._draw()
-
 				e.preventDefault()
 				e.stopPropagation()
 			})
 
 			handle.addEventListener('pointermove', (e) => {
 				if (this.dragging !== pointReference) return
-
 				const coords = getCoords(e)
 				this.dragging.x = coords.x
 				this.dragging.y = coords.y
-
 				this._draw()
-
-				// Emit changes upwards to the Modal/Preview
 				if (this.onchange) this.onchange(this.points)
 			})
 
@@ -636,24 +579,18 @@ export class BezierEditor {
 					handle.style.cursor = 'grab'
 				}
 			}
-
-			// Catch both intentional releases and system interruptions
 			handle.addEventListener('pointerup', endDrag)
 			handle.addEventListener('pointercancel', endDrag)
 		}
 
-		// Initialize both control points
 		setupHandle(this.handle1, this._cp1)
 		setupHandle(this.handle2, this._cp2)
-
-		// Prevent default HTML drag-and-drop ghosting on the parent SVG
 		svg.addEventListener('dragstart', (e) => e.preventDefault())
 	}
-	// Getter / setter
+
 	get points() {
 		return [this._cp1.x, this._cp1.y, this._cp2.x, this._cp2.y]
 	}
-
 	set points([x0, y0, x1, y1]) {
 		this._cp1.x = x0
 		this._cp1.y = y0
@@ -663,22 +600,16 @@ export class BezierEditor {
 		if (this.onchange) this.onchange(this.points)
 	}
 
-	/**
-	 * Returns an array of Y values for evenly spaced X samples along the curve.
-	 * @param {number} steps - how many samples you want (integer)
-	 * @returns {number[]} - array of Y values, length = steps + 1
-	 */
-	getYvals(steps = 20) {
+	getYvals(steps = 60) {
 		if (steps <= 0) return []
-
 		const yVals = []
 		for (let i = 0; i <= steps; i++) {
 			const t = i / steps
 			const y =
-				Math.pow(1 - t, 3) * 0 + // P0.y
-				3 * Math.pow(1 - t, 2) * t * this._cp1.y + // P1.y
-				3 * (1 - t) * Math.pow(t, 2) * this._cp2.y + // P2.y
-				Math.pow(t, 3) * 1 // P3.y
+				Math.pow(1 - t, 3) * 0 +
+				3 * Math.pow(1 - t, 2) * t * this._cp1.y +
+				3 * (1 - t) * Math.pow(t, 2) * this._cp2.y +
+				Math.pow(t, 3) * 1
 			yVals.push(y)
 		}
 		return yVals

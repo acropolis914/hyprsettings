@@ -48,6 +48,7 @@ html.glossy #sidebar {
 		li {
 			position: relative;
 			scroll-margin: 5px;
+
 			//transition: all 1s ease-in-out;
 		}
 
@@ -144,7 +145,7 @@ html.glossy #sidebar {
 		background-color 0.1s ease-in-out,
 		transform 1s ease;
 	padding-left: var(--spacing-unit);
-	width: 100%;
+	//width: 100%;
 	height: 3rem;
 	@include text-ellipsis;
 	z-index: 2;
@@ -169,6 +170,7 @@ html.glossy #sidebar {
 	&:hover {
 		@include sidebar-item-active;
 		background-color: var(--accent-active);
+		//@include box-shadow;
 	}
 
 	&:active {
@@ -179,6 +181,10 @@ html.glossy #sidebar {
 	&.selected {
 		opacity: 1;
 		@include sidebar-item-active;
-		scale: 1.1;
+		//scale: 1.1;
+		//margin-inline: 5px;
+		//transition: all 0.2s ease;
+		@include box-shadow;
+		@include win7bg;
 	}
 }

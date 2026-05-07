@@ -2,6 +2,7 @@
 	import MiniChooser from "@scripts/ConfigRenderer/MiniChooser.svelte"
 	import { onMount } from "svelte"
 	import { BezierModal } from "@scripts/ConfigRenderer/keyEditor_Bezier"
+	import { MiniChooserTS } from "@scripts/ConfigRenderer/MiniChooser.ts"
 
 	let { initialValue, onChange } = $props()
 	let name = initialValue.trim().split(" ")[0].replace(/^["']|["']$/g, "")
@@ -12,13 +13,20 @@
 	let bezierEditor
 	let updating_bezier: boolean = false
 	let updating_choices: boolean = false
+
 	const easingDict = {
 		"ease-out-quad": "ease-out-quad,0.25,0.46,0.45,0.94",
 		"ease-out-cubic": "ease-out-cubic,0.22,0.61,0.36,1.0",
 		"ease-out-expo": "ease-out-expo,0.16,1,0.3,1",
 		"linear": "linear,0.0,0.0,1.0,1.0"
 	}
-	const easingNames: Item[] = [
+
+	interface item {
+		name: string,
+		description: string,
+	}
+
+	const easingNames: item[] = [
 		{
 			name: "ease-out-quad",
 			description: "Decelerating to zero velocity (quadratic easing)"
@@ -41,57 +49,58 @@
 		}
 
 	]
-
+	let lastCubicBezier = `cubic-bezier,0.0,${Math.random()},1.0,${Math.random()}`
 	let chooserProps = $state({
 		value: state.name,
 		onChange: (v) => {
-			if (updating_bezier) return
 			updating_choices = true
 			state.name = v
-			console.warn(state.name)
-			console.warn(`Bezier is not updating. Settings its value`)
-			bezierEditor.value = easingDict[state.name] ?? `cubic-bezier,${Math.random()},${Math.random()},${Math.random()},${Math.random()}`
+			if (!updating_bezier) {
+				console.log("Choices updated, updating bezier")
+				bezierEditor.value = easingDict[state.name] ?? lastCubicBezier
+			}
 			bezierEditor.animatePreview()
 			onChange(v)
 			setTimeout(() => {
 				updating_choices = false
-			})
+			}, 10)
+
 		},
 		orientation: "horizontal",
 		items: easingNames
 	})
 
 	onMount(() => {
-		bezierEditor = new BezierModal(easingDict[state.name] ?? "Linear,0.0,0.0,1.0,1.0", true)
+		const miniChooser = new MiniChooserTS(root, chooserProps.items, state.name, chooserProps.onChange, "horizontal")
+
+		bezierEditor = new BezierModal(easingDict[state.name] ?? "cubic-bezier,0.0,0.0,1.0,1.0", true)
 		root.appendChild(bezierEditor.return())
 		bezierEditor.onChange((v) => {
-			if (updating_choices) return
 			updating_bezier = true
-			// chooserProps.value = v.split(" ")[0].replace(/^["']|["']$/g, "")
-			console.warn(v.split(" ")[0] === "\"cubic-bezier\"", v.split(" ")[0])
-			if (v.split(" ")[0] === "\"cubic-bezier\"") {
-				console.log(`Bezier is cubic`)
+			const val = v.split(/[, ]/)[0].replace(/^["']|["']$/g, "")
+			state.name = val
+			if (!updating_choices) {
+				console.log("Bezier updated, updating choices")
+				lastCubicBezier = v
+				miniChooser.set("cubic-bezier")
+			}
+
+			if (v.split(/[, ]/)[0] === "\"cubic-bezier\"") {
 				onChange(v)
 			} else {
-				console.log(`Bezier not cubic`)
-				onChange(v.split(" ")[0])
-
+				onChange(v.split(/[, ]/)[0])
 			}
 			setTimeout(() => {
 				updating_bezier = false
-			}, 10)
+			})
 
 		})
 	})
 
-	$effect(() => {
-
-	})
 </script>
 
 
 <div bind:this={root} id="niri-curve" class="value-editor">
-	<MiniChooser {...chooserProps}></MiniChooser>
 </div>
 
 
@@ -101,6 +110,7 @@
 		flex-direction: column;
 		gap: 10px;
 		width: 100%;
+		height: 100%;
 		//flex-direction: row;
 	}
 

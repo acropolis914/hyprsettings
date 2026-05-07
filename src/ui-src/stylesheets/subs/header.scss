@@ -76,6 +76,7 @@ header#main-header {
 
 .search-wrap {
 	//margin-top: 0.7rem;
+	display: flex;
 	position: relative;
 	box-sizing: border-box;
 	margin-left: auto;
@@ -83,6 +84,9 @@ header#main-header {
 	border-radius: var(--border-rad);
 	@media (max-width: 768px) {
 		max-width: 30ch;
+	}
+	> * {
+		//outline: 1px red solid !important;
 	}
 
 	&:is(:focus, :focus-visible, :focus-within) {
@@ -105,13 +109,14 @@ header#main-header {
 		//display: none;
 		transition: color 0.5s ease;
 		color: transparentize(var(--text-2), 0.3);
-		font-size: 25px;
+		font-size: 20px;
 	}
 
 	#search-bar {
 		border: 1px solid transparent !important;
 		border-radius: var(--border-rad);
 		@include editor-input-reset;
+		//margin-block: auto;
 		padding-left: 0.5rem;
 		font-size: 12px;
 		color: var(--text-0);
@@ -142,7 +147,7 @@ header#main-header {
 		height: 8rem;
 		overflow-y: scroll;
 		font-weight: normal;
-		font-size: 1.6rem;
+		font-size: 1.4rem;
 		@include box-shadow;
 		//box-shadow: var(--surface);
 		@media (max-width: 768px) {
