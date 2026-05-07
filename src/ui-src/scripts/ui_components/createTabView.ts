@@ -5,6 +5,7 @@ import ContextMenu from './verticalContextMenu.svelte'
 import { mount, unmount } from 'svelte'
 import { counter, menuState } from './svelteStates.svelte.js'
 import { implementScrollHints } from '@scripts/utils/scrollHints.ts'
+import { handleTabsView } from '@scripts/ui_components/documentListeners.ts'
 
 let initialLoad = true
 
@@ -202,7 +203,12 @@ class ConfigTab {
 
 export default async function createTabView() {
 	return new Promise(async (resolve) => {
+		let tabBar = document.querySelector('aside#sidebar')
 		let sidebar = document.querySelector('aside#sidebar>ul')
+		// tabBar.addEventListener('keydown', (e) => {
+		// 	e.preventDefault()
+		// 	handleTabsView(e)
+		// })
 		sidebar.innerHTML = ''
 		document.querySelectorAll('.config-set').forEach((element) => {
 			element.remove()

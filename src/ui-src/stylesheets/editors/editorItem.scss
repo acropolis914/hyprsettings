@@ -275,7 +275,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 	}
 
 	// --- Modifiers ---
-	&.compact:not(.config-group) {
+	&.compact:not(.config-group, :has(.editor-item-comment)) {
 		.keybind-editor,
 		.generic-editor,
 		.comment-area {

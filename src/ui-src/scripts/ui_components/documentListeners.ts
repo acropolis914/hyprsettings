@@ -55,7 +55,7 @@ function handleKeyInput(event) {
 /**
  * Logic for when the sidebar (tabs) is active
  */
-function handleTabsView(event) {
+export function handleTabsView(event) {
 	const key = event.key
 
 	if (key === 'ArrowRight') {

@@ -182,7 +182,7 @@ export default async function initializeSearchBar() {
 	// })
 	searchBar.addEventListener('focus', (e) => {
 		e.stopPropagation()
-		console.log('focused search bar. previous:', GLOBAL.currentView)
+		console.log('Focused search bar. previous:', GLOBAL.currentView)
 		GLOBAL['previousView'] = GLOBAL['currentView']
 		GLOBAL.setKey('currentView', 'search')
 		searchResultEl.style.display = 'flex'
@@ -222,11 +222,13 @@ export default async function initializeSearchBar() {
 		}
 	})
 	document.addEventListener('click', (e) => {
-		let clickedInsideSearchbar = searchBar.contains(e.target)
-		let clickedInsideSearchResults = searchResultEl.contains(e.target)
-		if (!clickedInsideSearchbar && !clickedInsideSearchResults && GLOBAL['currentView'] === 'search') {
-			console.log('pota')
-			cleanUp()
+		let clickedInsideSearchbar = searchBar.contains(e.target) || e.target === searchBar
+		let clickedInsideSearchResults = searchResultEl.contains(e.target) || e.target === searchResultEl
+		if (!clickedInsideSearchbar && !clickedInsideSearchResults) {
+			console.log('SearchBar defocused via click outside searchbar')
+			setTimeout(() => {
+				cleanUp()
+			}, 0)
 		}
 	})
 
@@ -234,9 +236,9 @@ export default async function initializeSearchBar() {
 		console.log('Cleaning up result')
 		// const stack = new Error().stack
 		// console.log(stack)
+		searchBar.blur()
 		searchResultEl.style.display = 'none'
 		searchBar.value = ''
-		searchBar.blur()
 		destroyOverlay()
 		document.querySelectorAll('.search-result').forEach((el) => {
 			el.remove()
@@ -244,8 +246,10 @@ export default async function initializeSearchBar() {
 
 		if (!resultClicked) {
 			console.log('No result is clicked')
-			console.log('Previous view:', GLOBAL.previousView)
-			GLOBAL.setKey('currentView', GLOBAL.previousView)
+			console.log('Refocusing:', GLOBAL.previousView)
+			if (GLOBAL.previousView != 'search') {
+				GLOBAL.setKey('currentView', GLOBAL.previousView)
+			}
 			GLOBAL.setKey('previousView', 'search')
 		} else {
 			console.log('A result is clicked')
@@ -253,7 +257,7 @@ export default async function initializeSearchBar() {
 			GLOBAL.setKey('previousView', 'search')
 		}
 
-		console.log('current:', GLOBAL.currentView, 'prev:', GLOBAL.previousView)
+		// console.log('current:', GLOBAL.currentView, 'prev:', GLOBAL.previousView)
 	}
 }
 
