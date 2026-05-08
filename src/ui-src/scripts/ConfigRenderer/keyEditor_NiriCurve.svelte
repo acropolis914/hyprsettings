@@ -59,8 +59,11 @@
 				console.log("Choices updated, updating bezier")
 				bezierEditor.value = easingDict[state.name] ?? lastCubicBezier
 			}
-			bezierEditor.animatePreview()
-			onChange(v)
+			bezierEditor._debouncedAnimatePreview()
+			if (!updating_bezier && v != "cubic-bezier") {
+				onChange(`"${v}"`)
+			}
+
 			setTimeout(() => {
 				updating_choices = false
 			}, 10)
@@ -72,7 +75,6 @@
 
 	onMount(() => {
 		const miniChooser = new MiniChooserTS(root, chooserProps.items, state.name, chooserProps.onChange, "horizontal")
-
 		bezierEditor = new BezierModal(easingDict[state.name] ?? "cubic-bezier,0.0,0.0,1.0,1.0", true)
 		root.appendChild(bezierEditor.return())
 		bezierEditor.onChange((v) => {
@@ -83,16 +85,16 @@
 				console.log("Bezier updated, updating choices")
 				lastCubicBezier = v
 				miniChooser.set("cubic-bezier")
-			}
-
-			if (v.split(/[, ]/)[0] === "\"cubic-bezier\"") {
 				onChange(v)
-			} else {
-				onChange(v.split(/[, ]/)[0])
 			}
+			// if (v.split(/[, ]/)[0] === "\"cubic-bezier\"") {
+			// 	onChange(v)
+			// } else {
+			// 	onChange(v.split(/[, ]/)[0])
+			// }
 			setTimeout(() => {
 				updating_bezier = false
-			})
+			}, 0)
 
 		})
 	})
@@ -111,11 +113,12 @@
 		gap: 10px;
 		width: 100%;
 		height: 100%;
+		transition: scale 1s ease;
 		//flex-direction: row;
 	}
 
 	.chooser-modal {
-		height: 100px !important;
+		height: 100px;
 		min-height: 100px !important;
 	}
 

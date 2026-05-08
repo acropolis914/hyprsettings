@@ -3,7 +3,21 @@ import { debounce } from '../utils/helpers.js'
 import { GLOBAL } from '@scripts/GLOBAL.ts'
 
 export class BezierModal {
-	constructor(initialValue, hideName = false) {
+	initialLoad: boolean
+	_listeners: Array<(val: any) => void>
+	_updating: boolean
+	el: HTMLDivElement
+	_debouncedEmit: () => void
+	_debouncedNotifyInputListeners: () => void
+	textEditor: HTMLInputElement
+	curveEditorEl: HTMLDivElement
+	curveEditorControls: HTMLDivElement
+	resetButton: HTMLButtonElement
+	curveEditor: BezierEditor
+	curveEditorPreview: BezierPreview
+	_debouncedAnimatePreview: () => void
+
+	constructor(initialValue: string, hideName = false) {
 		this.initialLoad = true
 		this._listeners = []
 		this._updating = false
@@ -56,7 +70,7 @@ export class BezierModal {
 		this.curveEditorControls.appendChild(this.resetButton)
 
 		this.curveEditor = new BezierEditor({
-			parent: this.curveEditorEl,
+			parent: this.curveEditorEl as any,
 			grid: { major: 0.5, minor: 0.1 },
 		})
 
@@ -86,7 +100,7 @@ export class BezierModal {
 		this.initialLoad = false
 	}
 
-	parseValue(value) {
+	parseValue(value: string): [string, number[]] {
 		if (value.trim().includes('"') && value.trim().includes(' ') && !value.trim().includes(',')) {
 			let [name, ...rest] = value
 				.trim()
@@ -117,11 +131,11 @@ export class BezierModal {
 		for (const fn of this._listeners) fn(this.value)
 	}
 
-	onChange(fn) {
+	onChange(fn: (val: any) => void) {
 		this._listeners.push(fn)
 	}
 
-	get value() {
+	get value(): string {
 		if (GLOBAL.mode === 'hyprland') {
 			const name = this.textEditor.value
 			const points = this.curveEditor.points.map((p) => Math.round(p * 100) / 100).join(',')
@@ -132,10 +146,11 @@ export class BezierModal {
 			const points = this.curveEditor.points.map((p) => Math.round(p * 100) / 100).join(' ')
 			return `"${name_}" ${points}`
 		}
+		return ''
 	}
 
-	set value(val) {
-		const [name, points] = this.parseValue(val)
+	set value(val: string) {
+		const [name, points] = this.parseValue(val) as [string, number[]]
 		if (this._updating) return
 		this._updating = true
 		this.textEditor.value = name
@@ -147,7 +162,7 @@ export class BezierModal {
 		this._updating = false
 	}
 
-	replaceElement(element) {
+	replaceElement(element: HTMLElement | null) {
 		if (!element) return
 		element.replaceWith(this.el)
 	}
@@ -158,64 +173,85 @@ export class BezierModal {
 }
 
 // -------------------- BezierEditor --------------------
+declare global {
+	interface Window {
+		__bezierPreviewCoordinator?: BezierPreviewCoordinator
+	}
+}
 
-// Global coordinator singleton (attached to window)
-if (!window.__bezierPreviewCoordinator) {
-	class BezierPreviewCoordinator {
-		constructor() {
-			this.instances = new Set()
-			this.globalStartTime = null
-			this.isRunning = false
-		}
+class BezierPreviewCoordinator {
+	instances: Set<BezierPreview>
+	globalStartTime: number | null
+	isRunning: boolean
 
-		register(instance) {
-			this.instances.add(instance)
-		}
-
-		unregister(instance) {
-			this.instances.delete(instance)
-		}
-
-		startAll() {
-			this.globalStartTime = performance.now()
-			this.isRunning = true
-			this.instances.forEach((instance) => instance._startSync())
-		}
-
-		resetAll() {
-			this.globalStartTime = null
-			this.isRunning = false
-			this.instances.forEach((instance) => instance._reset())
-			requestAnimationFrame(() => this.startAll())
-		}
-
-		getGlobalTime() {
-			return this.globalStartTime
-		}
+	constructor() {
+		this.instances = new Set()
+		this.globalStartTime = null
+		this.isRunning = false
 	}
 
-	window.__bezierPreviewCoordinator = new BezierPreviewCoordinator()
+	register(instance: BezierPreview) {
+		this.instances.add(instance)
+	}
+
+	unregister(instance: BezierPreview) {
+		this.instances.delete(instance)
+	}
+
+	startAll() {
+		this.globalStartTime = performance.now()
+		this.isRunning = true
+		this.instances.forEach((instance) => instance._startSync())
+	}
+
+	resetAll() {
+		this.globalStartTime = null
+		this.isRunning = false
+		this.instances.forEach((instance) => instance._reset())
+		requestAnimationFrame(() => this.startAll())
+	}
+
+	getGlobalTime() {
+		return this.globalStartTime
+	}
 }
+
+window.__bezierPreviewCoordinator = new BezierPreviewCoordinator()
 
 // Always use the global instance
 const coordinator = window.__bezierPreviewCoordinator
 
 export class BezierPreview {
-	constructor(parent) {
+	parent: HTMLElement
+	svg: SVGSVGElement
+	window: SVGRectElement
+	width: number
+	height: number
+	_resizeTimeout: any
+	_resizeObserver: ResizeObserver
+	_animationId: number | null
+	_pauseTimeout: any
+	_yVals: number[] | null
+	_duration: number
+	_pauseMs: number
+	_wasHidden: boolean
+	_intersectionObserver: IntersectionObserver
+
+	constructor(parent: HTMLElement) {
 		this.parent = parent
 
 		this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 		this.svg.classList.add('curve-preview')
 
-		this.svg.style.width = '100%'
-		this.svg.style.height = '100%'
-		this.svg.style.display = 'block'
+		// this.svg.style.width = '100%'
+		// this.svg.style.height = '100%'
+		// this.svg.style.display = 'block'
 		this.svg.style.transform = 'translateZ(0)'
 
 		this.window = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		this.window.setAttribute('fill', 'var(--accent)')
-		this.window.setAttribute('rx', 2)
-		this.window.setAttribute('ry', 2)
+		this.window.setAttribute('rx', '2')
+		this.window.setAttribute('ry', '2')
 		this.svg.appendChild(this.window)
 
 		this.parent.appendChild(this.svg)
@@ -230,8 +266,9 @@ export class BezierPreview {
 				for (const entry of entries) {
 					this.width = entry.contentRect.width
 					this.height = entry.contentRect.height
+					coordinator.resetAll()
 				}
-			}, 16)
+			}, 0)
 		})
 		this._resizeObserver.observe(this.svg)
 
@@ -239,7 +276,7 @@ export class BezierPreview {
 		this._pauseTimeout = null
 		this._yVals = null
 		this._duration = 1000
-		this._pauseMs = 500
+		this._pauseMs = 200
 		this._wasHidden = false
 
 		this._intersectionObserver = new IntersectionObserver(
@@ -276,16 +313,16 @@ export class BezierPreview {
 		return true
 	}
 
-	_draw(rectW) {
-		const rectH = (rectW * 9) / 16
+	_draw(rectW: number) {
+		const rectH = (rectW * 3) / 5
 
 		const x = (this.width - rectW) / 2
 		const y = (this.height - rectH) / 2
 
-		this.window.setAttribute('x', x)
-		this.window.setAttribute('y', y)
-		this.window.setAttribute('width', rectW)
-		this.window.setAttribute('height', rectH)
+		this.window.setAttribute('x', x.toString())
+		this.window.setAttribute('y', y.toString())
+		this.window.setAttribute('width', rectW.toString())
+		this.window.setAttribute('height', rectH.toString())
 	}
 
 	_startSync() {
@@ -343,7 +380,7 @@ export class BezierPreview {
 		}
 	}
 
-	animate(yVals, duration = 1000, pauseMs = 500) {
+	animate(yVals: number[], duration = 1000, pauseMs = 500) {
 		if (!yVals || yVals.length < 2) return
 
 		this._yVals = yVals
@@ -374,7 +411,31 @@ export class BezierPreview {
 }
 
 export class BezierEditor {
-	constructor({ parent, grid = {} }) {
+	parent: HTMLElement
+	_cp1: { x: number; y: number }
+	_cp2: { x: number; y: number }
+	dragging: { x: number; y: number } | null
+	gridMajor: number
+	gridMinor: number
+	range: { xMin: number; xMax: number; yMin: number; yMax: number }
+	extended: boolean
+	onchange: ((pts: number[]) => void) | null
+	colors: Record<string, string>
+	svg: SVGSVGElement
+	unitSquare: SVGRectElement
+	gridRect: SVGRectElement
+	path: SVGPathElement
+	line1: SVGLineElement
+	line2: SVGLineElement
+	handle1: SVGCircleElement
+	handle2: SVGCircleElement
+	gridLines: any[]
+	_ticking: boolean
+	_resizeObserver: ResizeObserver
+	width?: number
+	height?: number
+
+	constructor({ parent, grid = {} as any }: { parent: HTMLElement; grid?: any }) {
 		this.parent = parent
 		this._cp1 = { x: 0.25, y: 0.25 }
 		this._cp2 = { x: 0.75, y: 0.75 }
@@ -391,18 +452,13 @@ export class BezierEditor {
 			handle2: 'var(--accent-success, blue)',
 			path: 'var(--text-0, black)',
 			border: 'var(--surface-1, #ccc)',
-			gridMajor: 'rgba(0,0,0,0.2)',
+			gridMajor: 'var(--surface-0, #ccc)',
 			gridMinor: 'rgba(0,0,0,0.1)',
 			unitSquare: 'rgba(0,0,0,0.2)',
 		}
 
 		this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 		this.svg.classList.add('curve-editor')
-		// this.svg.style.height = '100%'
-		// this.svg.style.display = 'block'
-		this.svg.style.border = `1px solid ${this.colors.border}`
-
-		// WebKit optimization: promote to layer
 		this.svg.style.transform = 'translateZ(0)'
 
 		this.parent.appendChild(this.svg)
@@ -452,12 +508,12 @@ export class BezierEditor {
 		this.svg.appendChild(this.line2)
 
 		this.handle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-		this.handle1.setAttribute('r', 6)
+		this.handle1.setAttribute('r', '6')
 		this.handle1.setAttribute('fill', this.colors.handle1)
 		this.svg.appendChild(this.handle1)
 
 		this.handle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-		this.handle2.setAttribute('r', 6)
+		this.handle2.setAttribute('r', '6')
 		this.handle2.setAttribute('fill', this.colors.handle2)
 		this.svg.appendChild(this.handle2)
 
@@ -498,25 +554,25 @@ export class BezierEditor {
 
 			const scaleX = W / (this.range.xMax - this.range.xMin)
 			const scaleY = H / (this.range.yMax - this.range.yMin)
-			const tx = (x) => (x - this.range.xMin) * scaleX
-			const ty = (y) => H - (y - this.range.yMin) * scaleY
+			const tx = (x: number) => (x - this.range.xMin) * scaleX
+			const ty = (y: number) => H - (y - this.range.yMin) * scaleY
 
 			// Update Unit Square
-			this.unitSquare.setAttribute('x', tx(0))
-			this.unitSquare.setAttribute('y', ty(1))
-			this.unitSquare.setAttribute('width', 1 * scaleX)
-			this.unitSquare.setAttribute('height', 1 * scaleY)
+			this.unitSquare.setAttribute('x', tx(0).toString())
+			this.unitSquare.setAttribute('y', ty(1).toString())
+			this.unitSquare.setAttribute('width', (1 * scaleX).toString())
+			this.unitSquare.setAttribute('height', (1 * scaleY).toString())
 
 			// Update Handle Lines
-			this.line1.setAttribute('x1', tx(0))
-			this.line1.setAttribute('y1', ty(0))
-			this.line1.setAttribute('x2', tx(this._cp1.x))
-			this.line1.setAttribute('y2', ty(this._cp1.y))
+			this.line1.setAttribute('x1', tx(0).toString())
+			this.line1.setAttribute('y1', ty(0).toString())
+			this.line1.setAttribute('x2', tx(this._cp1.x).toString())
+			this.line1.setAttribute('y2', ty(this._cp1.y).toString())
 
-			this.line2.setAttribute('x1', tx(1))
-			this.line2.setAttribute('y1', ty(1))
-			this.line2.setAttribute('x2', tx(this._cp2.x))
-			this.line2.setAttribute('y2', ty(this._cp2.y))
+			this.line2.setAttribute('x1', tx(1).toString())
+			this.line2.setAttribute('y1', ty(1).toString())
+			this.line2.setAttribute('x2', tx(this._cp2.x).toString())
+			this.line2.setAttribute('y2', ty(this._cp2.y).toString())
 
 			// Update Bezier Path
 			this.path.setAttribute(
@@ -525,10 +581,10 @@ export class BezierEditor {
 			)
 
 			// Update Handles
-			this.handle1.setAttribute('cx', tx(this._cp1.x))
-			this.handle1.setAttribute('cy', ty(this._cp1.y))
-			this.handle2.setAttribute('cx', tx(this._cp2.x))
-			this.handle2.setAttribute('cy', ty(this._cp2.y))
+			this.handle1.setAttribute('cx', tx(this._cp1.x).toString())
+			this.handle1.setAttribute('cy', ty(this._cp1.y).toString())
+			this.handle2.setAttribute('cx', tx(this._cp2.x).toString())
+			this.handle2.setAttribute('cy', ty(this._cp2.y).toString())
 
 			this._ticking = false
 		})
@@ -536,7 +592,7 @@ export class BezierEditor {
 
 	_setupEvents() {
 		const svg = this.svg
-		const getCoords = (e) => {
+		const getCoords = (e: PointerEvent) => {
 			const rect = svg.getBoundingClientRect()
 			let pctX = (e.clientX - rect.left) / rect.width
 			let pctY = (e.clientY - rect.top) / rect.height
@@ -548,14 +604,14 @@ export class BezierEditor {
 			}
 		}
 
-		const setupHandle = (handle, pointReference) => {
+		const setupHandle = (handle: SVGCircleElement, pointReference: { x: number; y: number }) => {
 			handle.style.cursor = 'grab'
 			handle.style.touchAction = 'none'
 			handle.addEventListener('pointerdown', (e) => {
 				this.dragging = pointReference
 				handle.setPointerCapture(e.pointerId)
 				handle.style.cursor = 'grabbing'
-				const coords = getCoords(e)
+				const coords = getCoords(e as PointerEvent)
 				this.dragging.x = coords.x
 				this.dragging.y = coords.y
 				this._draw()
@@ -565,7 +621,7 @@ export class BezierEditor {
 
 			handle.addEventListener('pointermove', (e) => {
 				if (this.dragging !== pointReference) return
-				const coords = getCoords(e)
+				const coords = getCoords(e as PointerEvent)
 				this.dragging.x = coords.x
 				this.dragging.y = coords.y
 				this._draw()
@@ -602,7 +658,7 @@ export class BezierEditor {
 
 	getYvals(steps = 60) {
 		if (steps <= 0) return []
-		const yVals = []
+		const yVals: number[] = []
 		for (let i = 0; i <= steps; i++) {
 			const t = i / steps
 			const y =

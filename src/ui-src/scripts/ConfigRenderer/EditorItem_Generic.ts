@@ -591,14 +591,9 @@ export class EditorItem_Generic {
 			this.el.classList.remove('invalid')
 		}
 		let comment = this.commentArea.value ? `# ${this.commentArea.value}` : ''
-		let valueText = (() => {
-			if (this.el.dataset.name !== 'custom-shader') {
-				return `<span id="value">${value}</span>`
-			} else {
-				return '<span id="value">...</span>'
-			}
-		})()
-		this.preview_el.innerHTML = `<span id="key">${formatted} </span><span id="equal-sign">= </span>${valueText}&nbsp;<i class="preview-comment">${comment}<i>`
+		let valueText = this.el.dataset.name !== 'custom-shader' ? `<span id="value">${value}</span>` : '<span id="value">...</span>'
+		let equalSign = GLOBAL.mode != 'niri' ? '<span id="equal-sign">&nbsp;=&nbsp;</span>' : '&nbsp;'
+		this.preview_el.innerHTML = `<span id="key">${formatted}</span>${equalSign}${valueText}&nbsp;<i class="preview-comment">${comment}<i>`
 		if (!this.initial_load) {
 			this.saveDebounced()
 		}

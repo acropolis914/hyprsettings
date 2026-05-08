@@ -6,6 +6,7 @@
 		background-color: transparent;
 	}
 	* {
+		border: 2px solid transparent;
 		&:is(:focus) {
 			@include isActive;
 		}
@@ -218,17 +219,20 @@
 
 	.curve-editor-el {
 		display: flex;
+		//width: 100%;
 		// max-width: 100%;
-		grid-column: 1rem;
+		//grid-column: 1rem;
 		flex-direction: row;
+		//flex-wrap: wrap;
 		justify-content: center;
-		//align-items: center;
 		gap: var(--spacing-unit);
-		max-height: 30rem;
-		height: 20rem;
-		overflow: hidden;
+		max-height: 15rem;
+		height: 15rem;
+		min-width: 0 !important;
+		//overflow: hidden;
+
 		> * {
-			border-radius: var(--border-radius);
+			border-radius: var(--border-rad);
 			overflow: hidden;
 		}
 		.controls {
@@ -239,18 +243,58 @@
 		}
 		.curve-editor {
 			display: block; /* important: inline SVG defaults can shrink */
-			//flex: 2;
+			//flex-basis: 15rem;
+			//width: 15rem !important;
+			flex: 0 0 auto;
 			aspect-ratio: 1/1 !important;
-			//width: 100%; /* fill flex width */
-			width: auto;
-			height: 100%; /* fill flex height */
+			height: auto;
 			//max-width: 20rem;
 			touch-action: none;
-			border: 1px solid var(--surface-1, #ccc);
+			border: 2px solid var(--surface-1, #ccc);
 		}
 		.curve-preview {
-			flex: 3;
+			flex: 1 1 auto;
+			//flex-grow: 1;
 			background-color: var(--surface-2);
+			max-width: 30rem;
 		}
+	}
+
+	//@media (max-width: 40rem) {
+	//	.curve-editor-el {
+	//		border: 1px dashed red;
+	//		//display: grid;
+	//		//flex-direction: column !important;
+	//		//justify-content: center;
+	//		//height: 30rem;
+	//		height: auto;
+	//		max-height: none;
+	//		> * {
+	//			//height: 50%;
+	//			margin-inline: auto !important;
+	//			margin-left: auto;
+	//			flex-basis: 10rem;
+	//		}
+	//		.curve-editor {
+	//			height: 19rem;
+	//			margin-bottom: 1rem;
+	//		}
+	//		.curve-preview {
+	//			height: 10rem;
+	//			min-width: 0;
+	//		}
+	//	}
+	//}
+	@media (pointer: coarse) {
+		svg circle {
+			transform-box: fill-box;
+			transform-origin: center;
+			transform: scale(1.5);
+		}
+		//svg {
+		//	circle {
+		//		transform: scale(2);
+		//	}
+		//}
 	}
 }

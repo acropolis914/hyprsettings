@@ -1,43 +1,58 @@
+@use '../mixins' as *;
+
 .chooser-modal {
 	/*flex:100;*/
 	/*flex-basis: 100%;*/
-	display: flex;
-	flex-direction: row;
-	gap: 1rem;
-	margin-inline: auto;
-	height: 30px;
+	//display: flex;
+	//flex-direction: row;
+	//gap: 1rem;
+	//margin-inline: auto;
+	////height: 30px;
+	//align-items: center;
+	//min-width: 0;
+	width: 100% !important;
+	display: block;
 }
 
 #choices {
 	display: flex;
+	flex-wrap: wrap;
 	border-radius: var(--border-rad);
 	overflow: hidden;
-	flex-direction: column;
+	flex-flow: row wrap;
+	//flex-direction: column;
 	background-color: var(--surface-0);
-
-	/*flex-direction here is temporary;*/
+	align-items: center;
 }
 .choice {
 	box-sizing: border-box;
-	white-space: pre;
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: 10ch;
+	//white-space: pre;
 	text-wrap: nowrap;
+	word-break: break-all;
+	text-overflow: ellipsis;
 	border-radius: 0;
 	background-color: var(--surface-1);
 	font-size: 1.3rem;
 	color: var(--text-0);
-	border: 1px solid transparent;
+	border: 2px solid transparent;
 	height: 100%;
+	//@include text-ellipsis;
 	&:is(:focus, :focus-visible) {
 		/*outline: none;*/
 		outline: 1px solid var(--surface-0);
-		transform: none !important;
+		//color: var(--text-contrast);
+		//transform: none !important;
 	}
 	&:is(:active, :hover) {
-		transform: none !important;
+		color: var(--text-contrast);
+		//transform: none !important;
 	}
 	&.selected {
 		background-color: var(--accent);
 		color: var(--text-contrast);
-		transform: none !important;
+		//transform: none !important;
 	}
 }

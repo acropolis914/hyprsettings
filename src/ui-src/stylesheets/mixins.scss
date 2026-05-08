@@ -134,8 +134,9 @@
 
 @mixin isActive {
 	//scale: 1.05 !important;
-	outline: 2px solid var(--accent-active) !important;
-	//border: 2px solid var(--accent-active) !important;
+	box-sizing: border-box;
+	//outline: 2px solid var(--accent-active) !important;
+	border: 2px solid var(--accent-active) !important;
 }
 
 @mixin box-shadow {
