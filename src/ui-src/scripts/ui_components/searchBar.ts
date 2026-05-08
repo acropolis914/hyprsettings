@@ -222,6 +222,9 @@ export default async function initializeSearchBar() {
 		}
 	})
 	document.addEventListener('click', (e) => {
+		if (GLOBAL.currentView != 'search') {
+			return
+		}
 		let clickedInsideSearchbar = searchBar.contains(e.target) || e.target === searchBar
 		let clickedInsideSearchResults = searchResultEl.contains(e.target) || e.target === searchResultEl
 		if (!clickedInsideSearchbar && !clickedInsideSearchResults) {

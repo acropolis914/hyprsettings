@@ -25,6 +25,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 	padding-block: 1rem;
 	//overflow: clip;
 	font-size: 1.6rem;
+	will-change: transform, height;
 	//max-width: 100px !important;
 
 	&::after {
@@ -279,8 +280,18 @@ html.glossy .editor-item:not([data-name='comment']) {
 		.keybind-editor,
 		.generic-editor,
 		.comment-area {
-			display: none;
-			opacity: 0;
+			//transform: scale(0);
+			height: 0 !important;
+			//opacity: 0;
+			margin: 0;
+			padding: 0;
+			* {
+				transform: scale(0);
+				height: 0 !important;
+				opacity: 0;
+				margin: 0;
+				padding: 0;
+			}
 		}
 
 		padding: 0.5rem;

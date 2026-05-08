@@ -21,32 +21,34 @@
 	//scroll-margin-block: 20px;
 	scroll-padding-block: 20px;
 	max-width: 100%;
+	will-change: transform, opacity;
 	//align-items: center;
 	//overflow: clip;
 	.children-container{
 		display: grid;
 		grid-template-rows: 1fr;
-		transition: grid-template-rows 0.3s ease,
-		margin 0.3s ease, padding 0.3s ease, opacity 0.3s ease , height 0.3s ease;
+		will-change: transform, opacity;
+		transition: grid-template-rows 0.3s ease, padding 0.3s ease, opacity 0.3s ease , height 0.3s ease;
 	}
 	&.compact{
 		.topbar{
 			margin-bottom: 0;
 		}
 		.children-container{
-			grid-template-rows: 0fr !important;
-			padding-top: 0 !important;
-			padding-bottom: 0 !important;
-			margin-top: 0 !important;
-			margin-bottom: 0 !important;
+			transform: scaleY(0) translateZ(0);
+			//grid-template-rows: 0fr !important;
+			//padding-top: 0 !important;
+			//padding-bottom: 0 !important;
+			//margin-top: 0 !important;
+			//margin-bottom: 0 !important;
 			opacity: 0;
 			min-height: 0;
-			overflow: hidden !important;
-			//height: 0;
+			//overflow: hidden !important;
 			.editor-item.editor-item {
-				display: grid;
-				grid-template-columns: 0fr;
-				height: 0 !important;
+				transform: scaleY(0) translateZ(0);
+				//display: grid;
+				//grid-template-columns: 0fr;
+				//height: 0 !important;
 				max-height: 0 !important;
 				min-height: 0 !important;
 				overflow: hidden;

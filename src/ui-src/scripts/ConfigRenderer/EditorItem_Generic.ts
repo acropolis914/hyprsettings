@@ -29,7 +29,7 @@ import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
 import type { ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
 import keyEditor_Number from '@scripts/ConfigRenderer/keyEditor_Number.svelte'
 import keyEditor_NiriCurve from '@scripts/ConfigRenderer/keyEditor_NiriCurve.svelte'
-import { CurveEditor } from '@scripts/ConfigRenderer/NiriCurveEditor.ts'
+// import { CurveEditor } from '@scripts/ConfigRenderer/NiriCurveEditor.ts'
 
 // class EditorItem_Template {
 //     constructor(json, disabled = false,) {
@@ -220,9 +220,8 @@ export class EditorItem_Generic {
 			editor.value = value
 			return editor
 		} else if (this.info?.type === 'CONFIG_OPTION_COLOR' || this.el.dataset.value.startsWith('rgb')) {
-			this.el.dataset.infoType = this.info?.type ?? 'CONFIG_OPTION_COLOR'
 			this.isSvelte = true
-
+			this.el.dataset.infoType = this.info?.type ?? 'CONFIG_OPTION_COLOR'
 			mount(keyEditor_Color, {
 				target: this.inlineContainer,
 				props: {
@@ -358,12 +357,11 @@ export class EditorItem_Generic {
 					],
 				},
 			})
-			return null
 		} else if (
 			(this.json.value.trim().startsWith('r"') && this.json.value.trim().endsWith('"') && this.json.name === 'custom-shader') ||
 			this.json.name.trim() === 'custom-shader'
 		) {
-			// console.log(this.json)
+			this.isSvelte = true
 			function dedent(str) {
 				const lines = str.replace(/^\n/, '').split('\n')
 
@@ -424,9 +422,6 @@ export class EditorItem_Generic {
 			preEditor.style.maxWidth = '100%'
 			preEditor.style.overflowX = 'auto'
 			preEditor.style.boxSizing = 'border-box'
-
-			this.isSvelte = true
-			return null
 		} else if (Number(value)) {
 			this.isSvelte = true
 			mount(keyEditor_Number, {
