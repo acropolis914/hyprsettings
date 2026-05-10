@@ -32,9 +32,6 @@ animations {
 // NIRI PARSER TEST SUITE
 // Focus: KDL Structural Exhaustion (Zero functional redundancy)
 
-/* * Multi-line comment test block.{
- * Ensures the parser handles block comments correctly.
- */
 
 // 1. Root Level Flags & Nulls
 prefer-no-csd

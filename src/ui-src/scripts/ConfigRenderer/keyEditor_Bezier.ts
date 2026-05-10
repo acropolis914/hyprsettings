@@ -250,8 +250,6 @@ export class BezierPreview {
 
 		this.window = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		this.window.setAttribute('fill', 'var(--accent)')
-		this.window.setAttribute('rx', '2')
-		this.window.setAttribute('ry', '2')
 		this.svg.appendChild(this.window)
 
 		this.parent.appendChild(this.svg)
@@ -323,6 +321,10 @@ export class BezierPreview {
 		this.window.setAttribute('y', y.toString())
 		this.window.setAttribute('width', rectW.toString())
 		this.window.setAttribute('height', rectH.toString())
+
+		const radius = Math.max(2, rectW * 0.03)
+		this.window.setAttribute('rx', radius.toString())
+		this.window.setAttribute('ry', radius.toString())
 	}
 
 	_startSync() {

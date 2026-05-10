@@ -903,9 +903,9 @@ export class EditorItem_Generic {
 			disabled === true ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
 		} else {
 			this.el.dataset.disabled = this.el.dataset.disabled === 'true' ? 'false' : 'true'
-			// this.el.classList.toggle('disabled')
 			this.el.dataset.disabled === 'true' ? this.el.classList.add('disabled') : this.el.classList.remove('disabled')
 		}
+		console.log(this.el.dataset.disabled)
 		// let closestConfigGroup = this.el.closest('.config-group')
 		// closestConfigGroup.disable(false)
 		if (!groupSave) {

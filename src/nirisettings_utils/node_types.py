@@ -162,11 +162,12 @@ class BaseNode:
 			return f"{indent_str}{self.comment}\n"
 		else:
 			name_part = f'{self.name}' if self.name else ""
-			disabled_text = "// " if self.disabled else ""
+			disabled_text = "/-" if self.disabled else ""
 			header = f"{indent_str}{disabled_text}{name_part}"
 
 			if hasattr(self, 'value') and self.value and not self.type == "COMMENT":
 				header += f" {self.value}"
+
 
 			if self.comment and self.type == "COMMENT":
 				header += f"{self.comment}"

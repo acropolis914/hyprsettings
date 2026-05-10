@@ -118,6 +118,7 @@ html.glossy .editor-item:not([data-name='comment']) {
 			font-weight: bold;
 			&#key {
 				color: var(--accent);
+				margin-right: 1ch;
 			}
 			&#value {
 				color: var(--accent-active);
