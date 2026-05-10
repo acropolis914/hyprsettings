@@ -1,6 +1,15 @@
 import type { ItemPropsFile, ItemPropsGroup } from '@scripts/types/editorItemTypes.ts'
 
-type ViewType = 'tabs' | 'main' | 'search' | 'dmenu' | 'overlay' | 'colorSelect' | 'editorItem' | 'wikiNavigation' | 'wikiContent'
+type ViewType =
+	'tabs'
+	| 'main'
+	| 'search'
+	| 'dmenu'
+	| 'overlay'
+	| 'colorSelect'
+	| 'editorItem'
+	| 'wikiNavigation'
+	| 'wikiContent'
 // type ConfigGlobal = {
 // 	file: string
 // 	name: string
@@ -51,6 +60,7 @@ export class GLOBAL {
 	static mode: ConfigMode = 'hyprland'
 	static themeVariant: 'dark' | 'light' = 'dark'
 	static groupsave: boolean = false
+	static isDebugging: boolean
 
 	static onChange<K extends keyof typeof GLOBAL>(
 		key: string,
@@ -58,7 +68,7 @@ export class GLOBAL {
 			(): Promise<void>
 			(value: any): void
 			(): void
-		},
+		}
 	) {
 		if (!this._listeners.has(key)) {
 			this._listeners.set(key, [])

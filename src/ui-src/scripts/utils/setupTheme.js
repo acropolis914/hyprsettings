@@ -85,7 +85,7 @@ export function incrementCurrentTheme(forward = true) {
 	const nextIndex = (GLOBAL.currentThemeIndex + step + length) % length
 	GLOBAL.setKey('currentThemeIndex', nextIndex)
 	let theme = GLOBAL.themes[GLOBAL['currentThemeIndex']]
-	console.log(GLOBAL['currentThemeIndex'])
+	// console.log(GLOBAL['currentThemeIndex'])
 	changeTheme(theme)
 }
 

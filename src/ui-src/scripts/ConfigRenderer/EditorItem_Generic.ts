@@ -29,6 +29,9 @@ import keyEditor_Color from '@scripts/ConfigRenderer/keyEditor_Color.svelte'
 import type { ItemPropsKey, NodeType } from '@scripts/types/editorItemTypes.ts'
 import keyEditor_Number from '@scripts/ConfigRenderer/keyEditor_Number.svelte'
 import keyEditor_NiriCurve from '@scripts/ConfigRenderer/keyEditor_NiriCurve.svelte'
+import Dialog from '@scripts/ui_components/dialog.ts'
+import keyEditorNiriShader from '@scripts/ConfigRenderer/keyEditorNiriShader.svelte'
+
 // import { CurveEditor } from '@scripts/ConfigRenderer/NiriCurveEditor.ts'
 
 // class EditorItem_Template {
@@ -168,6 +171,7 @@ export class EditorItem_Generic {
 		this.commentArea.value = this.el.dataset.comment
 		this.createTooltip(json)
 		this.addListeners()
+		this.showDebugTools()
 		this.update()
 		setTimeout(() => {
 			this.initial_load = false
@@ -256,7 +260,6 @@ export class EditorItem_Generic {
 					},
 				},
 			})
-			return null
 		} else if (this.el.dataset.name.startsWith('bind')) {
 			this.isSvelte = true
 			mount(keyEditor_Bind, {
@@ -276,7 +279,6 @@ export class EditorItem_Generic {
 					},
 				},
 			})
-			return null
 		} else if (
 			this.flipValueIfBool(false) ||
 			this.el.dataset.name === 'enable' ||
@@ -307,7 +309,7 @@ export class EditorItem_Generic {
 				}
 				this.update()
 			})
-			this.el.querySelector('.preview-wrapper').appendChild(checkboxWrapper)
+			this.el.querySelector('.inline-buttons').appendChild(checkboxWrapper)
 			return ta
 		} else if (this.info?.type === 'CONFIG_OPTION_VECTOR') {
 			const ta = document.createElement('textarea')
@@ -362,70 +364,20 @@ export class EditorItem_Generic {
 			this.json.name.trim() === 'custom-shader'
 		) {
 			this.isSvelte = true
-			function dedent(str) {
-				const lines = str.replace(/^\n/, '').split('\n')
-
-				// find minimum indentation (ignore empty lines)
-				const indent = lines
-					.filter((line) => line.trim())
-					.reduce((min, line) => {
-						const match = line.match(/^(\s*)/)
-						return Math.min(min, match ? match[1].length : 0)
-					}, Infinity)
-
-				return lines.map((line) => line.slice(indent)).join('\n')
-			}
-			const wrapper = document.createElement('div')
-			const preEditor = document.createElement('pre')
-			const codeEditor = document.createElement('code')
-			preEditor.classList.add('generic-value')
-			preEditor.classList.add('language-glsl')
-			preEditor.appendChild(codeEditor)
-			wrapper.appendChild(preEditor)
-			this.genericEditor_el.appendChild(wrapper)
-			const cleanValue = value.replace(/^r"\s*\n/, '').replace(/\n.*"$/, '')
-			codeEditor.textContent = dedent(cleanValue)
-			codeEditor.classList.add('language-glsl')
-			codeEditor.contentEditable = true
-
-			Prism.highlightElement(codeEditor)
-
-			Object.defineProperty(preEditor, 'value', {
-				get() {
-					const code = this.querySelector('code')
-					return code ? 'r"\n' + codeEditor.textContent + '\n"' : ''
-				},
-				set(v) {
-					let code = this.querySelector('code')
-					code.textContent = v
-					Prism.highlightElement(code)
+			mount(keyEditorNiriShader, {
+				target: this.genericEditor_el,
+				props: {
+					initialValue: value,
+					onChange: (v) => {
+						this.el.dataset.value = v
+						this.update()
+					},
 				},
 			})
-
-			codeEditor.addEventListener('input', (e) => {
-				this.el.dataset.value = 'r"\n' + codeEditor.textContent + '\n"'
-				Prism.highlightElement(codeEditor)
-				this.update()
-			})
-
-			this.genericEditor_el.style.flexWrap = 'wrap'
-			this.genericEditor_el.style.maxWidth = '100%'
-			this.genericEditor_el.style.minWidth = '0'
-
-			wrapper.style.maxWidth = '100%'
-			wrapper.style.overflow = 'scroll'
-			preEditor.style.maxWidth = '100%'
-			preEditor.style.minWidth = '0'
-			codeEditor.style.maxWidth = '100%'
-			codeEditor.style.minWidth = '0'
-
-			preEditor.style.maxWidth = '100%'
-			preEditor.style.overflowX = 'auto'
-			preEditor.style.boxSizing = 'border-box'
 		} else if (Number(value)) {
 			this.isSvelte = true
 			mount(keyEditor_Number, {
-				target: this.el.querySelector('.preview-wrapper'),
+				target: this.el.querySelector('.inline-buttons'),
 				props: {
 					initialValue: value,
 					options: {
@@ -453,12 +405,6 @@ export class EditorItem_Generic {
 					},
 				},
 			})
-			// const curveEditor = new CurveEditor(value, (v) => {
-			// 	this.value = v
-			// 	this.el.dataset.value = v.toString()
-			// 	this.update()
-			// })
-			// curveEditor.mount(this.genericEditor_el)
 		} else {
 			const ta = document.createElement('textarea')
 			ta.rows = 1
@@ -658,6 +604,15 @@ export class EditorItem_Generic {
 			if (e.key === 'Delete' || e.key === 'x') {
 				e.preventDefault()
 				e.stopPropagation()
+				const el = e.target
+
+				const isTypingElement =
+					el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.tagName === 'CODE' || el.isContentEditable
+
+				if (isTypingElement) {
+					return
+					// ignore hotkeys, etc.
+				}
 				this.delete()
 			}
 			if (e.key === 'd') {
@@ -928,5 +883,23 @@ export class EditorItem_Generic {
 		let position = this.el.dataset.position
 		let disabled = this.el.dataset.disabled === 'true'
 		saveKey(type, name, uuid, position, value, comment, disabled)
+	}
+
+	private showDebugTools() {
+		if (GLOBAL.isDebugging) {
+			let jsonButton = document.createElement('button')
+			jsonButton.id = 'debugJSON'
+			jsonButton.classList.add('info-button')
+			jsonButton.innerText = ''
+			this.inlineContainer.append(jsonButton)
+
+			jsonButton.onclick = () => {
+				let jsonView = document.createElement('andypf-json-viewer')
+				jsonView.data = this.json
+				const dialog = new Dialog({ title: 'JSON View' })
+				dialog.render(jsonView)
+				dialog.showModal()
+			}
+		}
 	}
 }

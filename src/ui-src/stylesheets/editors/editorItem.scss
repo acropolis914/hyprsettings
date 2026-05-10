@@ -95,8 +95,24 @@ html.glossy .editor-item:not([data-name='comment']) {
 		.preview-boolean-switch {
 			margin-left: auto;
 		}
-		.inline-buttons {
-			margin-left: auto;
+	}
+
+	.preview-wrapper .inline-buttons {
+		display: flex;
+		flex-direction: row;
+		margin-left: auto;
+		align-items: center;
+		.info-button {
+			padding: 2px;
+			aspect-ratio: 1/1;
+			height: 2rem;
+			background-color: var(--surface-0);
+		}
+		button {
+			&:hover {
+				background-color: var(--surface-1);
+				backdrop-filter: brightness(0.5);
+			}
 		}
 	}
 

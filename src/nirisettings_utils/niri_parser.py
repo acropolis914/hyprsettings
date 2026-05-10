@@ -276,6 +276,10 @@ class NiriParser:
 			# resolver: key_value
 			elif self.current_token.type == 'WORD' and self.peek(ignore_ws=True).type in ['FLOAT', 'INT', 'STRING',
 			                                                                              "REGX", "BOOL", "WORD"]:
+				if self.current_token.value == "custom-shader":
+					console.print_json(
+						  data=[i.to_dict() for i in self.tokens[self.position - 10:self.position + 10]])
+				print(self.current_token)
 				resolver_ = 'key_value'
 				key_token = self.current_token
 				is_disabled = self.peek(-1).type == "SLASHDASH"

@@ -1,24 +1,26 @@
 import { GLOBAL } from '../GLOBAL.ts'
 import { updateJsonViewerTheme } from '../utils/setupTheme.js'
-let debugWindow = document.querySelector('.config-set#debug')
+import Dialog from './dialog.ts'
+let debugWindow = document.querySelector<HTMLDivElement>('.config-set#debug')
 
 import Prism from 'prismjs'
 import 'prismjs/components/prism-typescript.js'
 import '@stylesheets/subs/prism.css'
 
 export default function initializeDebugTab() {
-	debugWindow = document.querySelector('.config-set#debug')
+	debugWindow = document.querySelector<HTMLDivElement>('.config-set#debug')
+	if (!debugWindow) return
 	debugWindow.innerHTML = ''
-	GLOBAL.onChange('data', () => {
+	GLOBAL.onChange('data', async () => {
 		console.log('Global data changed. Rerendering debug tab')
 		jsViewerInit()
 		initGlobalDebugger()
 	})
-	GLOBAL.onChange('config', () => {
+	GLOBAL.onChange('config', async () => {
 		console.log('Global config changed. Rerendering debug tab')
 		initGlobalDebugger()
 	})
-	GLOBAL.onChange('persistence', () => {
+	GLOBAL.onChange('persistence', async () => {
 		initGlobalDebugger()
 	})
 	setTimeout(() => {
@@ -27,12 +29,13 @@ export default function initializeDebugTab() {
 }
 
 export function jsViewerInit() {
+	if (!debugWindow) return
 	let label = document.createElement('p')
 	label.innerHTML = 'Data rendered by the UI'
-	let viewer = debugWindow.querySelector('andypf-json-viewer')
-	let viewerContainer = document.querySelector('.config-set#debug>#json-viewer')
+	let viewer = debugWindow.querySelector('andypf-json-viewer') as any
+	let viewerContainer = document.querySelector('.config-set#debug>#json-viewer') as HTMLDivElement | null
 	if (!viewer) {
-		viewer = document.createElement('andypf-json-viewer')
+		viewer = document.createElement('andypf-json-viewer') as any
 		viewer.setAttribute('show-toolbar', 'true')
 		viewerContainer = document.createElement('div')
 		viewerContainer.setAttribute('id', 'json-viewer')
@@ -43,12 +46,13 @@ export function jsViewerInit() {
 		debugWindow.appendChild(viewerContainer)
 	}
 	viewer.data = GLOBAL.data
-	window.jsViewer = viewer
+	;(window as Window & { jsViewer?: any }).jsViewer = viewer
 	updateJsonViewerTheme(GLOBAL.themeVariant ?? 'dark')
 }
 
 function initGlobalDebugger() {
 	const debugRoot = debugWindow
+	if (!debugRoot) return
 	function render() {
 		// Reuse container if it exists
 		let container = debugRoot.querySelector<HTMLElement>('#global-debugger')
@@ -72,8 +76,8 @@ function initGlobalDebugger() {
 			debugRoot.appendChild(container)
 		}
 
-		const selector = container.querySelector('.debug-selector')
-		const viewer = container.querySelector('.debug-output')
+		const selector = container.querySelector<HTMLElement>('.debug-selector')
+		const viewer = container.querySelector<HTMLElement>('.debug-output')
 
 		// Clear old buttons to avoid duplicates
 		selector.innerHTML = ''
@@ -94,7 +98,7 @@ function initGlobalDebugger() {
 				viewer.innerHTML = ''
 
 				if (typeof value === 'object' && value !== null && key !== '_listeners') {
-					let jsonviewer = document.createElement('andypf-json-viewer')
+								let jsonviewer = document.createElement('andypf-json-viewer') as any
 					jsonviewer.setAttribute('show-toolbar', 'true')
 					jsonviewer.setAttribute('theme', `default-${GLOBAL.themeVariant.toLowerCase()}`)
 					jsonviewer.data = JSON.stringify(value, null, 2)
@@ -114,16 +118,8 @@ function initGlobalDebugger() {
 							cbButton.style.marginLeft = '0.5rem'
 							cbButton.title = cb.toString()
 
-							// Create dialog
-							const dialog = document.createElement('dialog')
-							dialog.style.position = 'absolute'
-							dialog.style.top = '50%'
-							dialog.style.left = '50%'
-							dialog.style.transform = 'translate(-50%, -50%)'
-							dialog.style.width = '90%'
-							dialog.style.padding = '1rem'
-							dialog.style.borderRadius = '0.4rem'
-							dialog.style.border = '1px solid #666'
+							const dialog = new Dialog()
+							dialog.setTitle(`Listener callback ${i + 1}`)
 
 							const code = document.createElement('code')
 							code.style.fontSize = '1.2rem'
@@ -132,17 +128,7 @@ function initGlobalDebugger() {
 							code.classList.add('language-js')
 							Prism.highlightElement(code)
 
-							dialog.appendChild(code)
-
-							// Add a close button inside dialog
-							const closeBtn = document.createElement('button')
-							closeBtn.textContent = 'Close'
-							closeBtn.style.display = 'block'
-							closeBtn.style.marginTop = '0.5rem'
-							closeBtn.onclick = () => dialog.close()
-
-							dialog.appendChild(closeBtn)
-							document.body.appendChild(dialog)
+							dialog.render(code)
 
 							cbButton.onclick = (e) => {
 								e.stopPropagation()
@@ -210,7 +196,7 @@ function initGlobalDebugger() {
 		selector.appendChild(fsButton)
 	}
 	;['config', 'persistence'].forEach((key) => {
-		GLOBAL.onChange(key, () => {
+		GLOBAL.onChange(key, async () => {
 			render()
 		})
 	})

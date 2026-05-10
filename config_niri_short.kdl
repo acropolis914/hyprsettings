@@ -3,7 +3,7 @@ animations {
         duration-ms 250
         curve "linear"
 
-        custom-shader r"
+        /-custom-shader r"
             vec4 open_color(vec3 coords_geo, vec3 size_geo) {
                 vec4 color = vec4(0.0);
 
