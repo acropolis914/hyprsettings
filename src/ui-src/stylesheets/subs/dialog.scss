@@ -1,0 +1,67 @@
+@use '../mixins' as *;
+
+.app-dialog {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	padding: 1rem;
+	border-radius: 0.4rem;
+	border: 1px solid var(--surface-0);
+	background-color: var(--surface-0);
+	width: 90%;
+	max-width: 60rem;
+	max-height: 90vh;
+	backdrop-filter: blur(10px);
+	@include box-shadow;
+	//@include win7bg;
+	&:is(:focus-within, :active, :hover, :focus-visible) {
+		outline: none;
+		border: 1px solid var(--surface-0);
+		//background-color: var(--surface-2);
+	}
+	&[open] {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.dialog-shell {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		flex: 1;
+		min-height: 0;
+	}
+	.dialog-titlebar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-shrink: 0;
+	}
+	.dialog-title {
+		margin: 0;
+	}
+	.dialog-render-area {
+		overflow-y: auto;
+		display: block;
+		flex: 1;
+		//min-height: 10rem;
+	}
+	.dialog-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		flex-shrink: 0;
+	}
+	.dialog-button {
+		/* Base styles for buttons if any */
+		cursor: pointer;
+		&.button-okay {
+			/* Add okay button specific styles here */
+		}
+		&.button-close {
+			/* Add close button specific styles here */
+		}
+	}
+}

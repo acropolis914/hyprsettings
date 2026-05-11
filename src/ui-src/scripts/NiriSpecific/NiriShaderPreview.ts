@@ -1,4 +1,14 @@
 export default class NiriShaderPreview {
+	config: any;
+	state: any;
+	dom: any;
+	gl: WebGLRenderingContext | null;
+	reqId: number | null;
+	onError: (err: any) => void;
+	onSequenceUpdate: (seq: any[]) => void;
+	vbo: WebGLBuffer | null = null;
+	shaders: any;
+
 	constructor() {
 		this.config = {
 			aspectRatio: '4/3',
@@ -27,13 +37,13 @@ export default class NiriShaderPreview {
 		this.dom = { wrapper: null, canvas: null }
 		this.gl = null
 		this.reqId = null
-		this.onError = (err) => console.error(err)
-		this.onSequenceUpdate = (seq) => {}
+		this.onError = (err: any) => console.error(err)
+		this.onSequenceUpdate = (seq: any) => {}
 		this._setupShaders()
 	}
 
-	static applyGl(canvas, userCode, configOpts = {}) {
-		const engine = new NiriStudio()
+	static applyGl(canvas: HTMLCanvasElement, userCode: string, configOpts: any = {}) {
+		const engine: any = new NiriShaderPreview()
 		engine.dom.canvas = canvas
 		engine.gl = canvas.getContext('webgl', {
 			alpha: true,
@@ -58,7 +68,7 @@ export default class NiriShaderPreview {
 		return engine
 	}
 
-	mount(container) {
+	mount(container: HTMLElement) {
 		if (this.dom.wrapper) this.dom.wrapper.remove()
 
 		if (!document.getElementById('niri-library-styles')) {
@@ -82,7 +92,7 @@ export default class NiriShaderPreview {
 		this.gl = this.dom.canvas.getContext('webgl', {
 			alpha: true,
 			premultipliedAlpha: true,
-		})
+		}) as WebGLRenderingContext;
 		this.gl.enable(this.gl.BLEND)
 		this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA)
 		this.vbo = this.gl.createBuffer()
@@ -97,7 +107,7 @@ export default class NiriShaderPreview {
 		this._generateTextures()
 	}
 
-	setBackground(source) {
+	setBackground(source: string) {
 		if (!this.dom.wrapper) return
 
 		// Checks for http/https, data:, blob:, or absolute/relative paths
@@ -112,7 +122,7 @@ export default class NiriShaderPreview {
 		}
 	}
 
-	setWindowContent(source) {
+	setWindowContent(source: string) {
 		const isImage = /^(https?:\/\/|data:image|blob:|\/|\.\/)/i.test(source)
 
 		if (isImage) {
@@ -129,13 +139,13 @@ export default class NiriShaderPreview {
 		}
 	}
 
-	setConfig(configUpdates) {
+	setConfig(configUpdates: any) {
 		Object.assign(this.config, configUpdates)
 		this._applyCSSConfig()
 		this._generateTextures()
 	}
 
-	setShader(userCode) {
+	setShader(userCode: string) {
 		this.state.programs = {}
 		this.state.sequence = []
 		try {
@@ -170,7 +180,7 @@ export default class NiriShaderPreview {
 				this.state.startTime = performance.now()
 				this._renderFrame()
 			}
-		} catch (e) {
+		} catch (e: any) {
 			this.onError(e.message)
 		}
 	}
@@ -186,27 +196,27 @@ export default class NiriShaderPreview {
 		if (this.dom.wrapper) this.dom.wrapper.style.setProperty('--niri-aspect', this.config.aspectRatio)
 	}
 
-	_getTexMat(w, h) {
+	_getTexMat(w: number, h: number) {
 		const texW = w + 2
 		const texH = h + 2
 		return [w / texW, 0, 0, 0, h / texH, 0, 1 / texW, 1 / texH, 1]
 	}
 
 	// Roots the matrix scaling to the Top-Left to maintain the CSS status quo
-	_getTopLeftScaleMat(wCurr, hCurr, targetW, targetH) {
+	_getTopLeftScaleMat(wCurr: number, hCurr: number, targetW: number, targetH: number) {
 		const scaleX = wCurr / targetW
 		const scaleY = hCurr / targetH
 		return [scaleX, 0, 0, 0, scaleY, 0, 0, 0, 1]
 	}
 
-	_drawOSWindow(title, w, h, isPrev) {
+	_drawOSWindow(title: string, w: number, h: number, isPrev: boolean) {
 		if (w <= 0 || h <= 0) return null
 		const texW = w + 2
 		const texH = h + 2
 		const c = document.createElement('canvas')
 		c.width = texW
 		c.height = texH
-		const ctx = c.getContext('2d')
+		const ctx = c.getContext('2d') as CanvasRenderingContext2D
 
 		ctx.clearRect(0, 0, texW, texH)
 		ctx.translate(1, 1)
@@ -260,8 +270,8 @@ export default class NiriShaderPreview {
 		this.state.textures.next = this._drawOSWindow('Active App', cW * this.config.nextPctW, cH * this.config.nextPctH, false)
 	}
 
-	_setUniform(prog, type, name, ...args) {
-		if (!prog) return
+	_setUniform(prog: WebGLProgram, type: string, name: string, ...args: any[]) {
+		if (!prog || !this.gl) return
 		const loc = this.gl.getUniformLocation(prog, name)
 		if (loc !== null) {
 			if (type === '1f') this.gl.uniform1f(loc, args[0])

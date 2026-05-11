@@ -8,6 +8,7 @@ import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts
 import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.ts'
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import { addKeys } from '@scripts/HyprlandSpecific/editorItem_newKey.ts'
+import Dialog from '@scripts/ui_components/dialog.ts'
 
 export class ConfigGroup {
 	group_el: HTMLDivElement
@@ -28,6 +29,7 @@ export class ConfigGroup {
 		this.group_el.setAttribute('tabindex', '0')
 		this.group_el.classList.add('editor-item')
 		this.group_el.dataset.name = json['name']
+		this.group_el.dataset.alias = json['alias'] ?? ''
 		this.group_el.dataset.uuid = json['uuid']
 		this.group_el.dataset.position = json['position']
 		this.group_el.dataset.disabled = String(json['disabled']) || String(false)
@@ -138,10 +140,24 @@ export class ConfigGroup {
 			this.toggleCompact()
 		})
 
+		const jsonDebugBtn = document.createElement('button')
+		jsonDebugBtn.classList.add('debug-btn')
+		jsonDebugBtn.innerText = ''
+		jsonDebugBtn.style.cursor = 'pointer'
+		jsonDebugBtn.addEventListener('click', (e) => {
+			const modal = new Dialog()
+			const jsonView = document.createElement('andypf-json-viewer')
+			jsonView.data = this.json
+			modal.setTitle('Group:' + json['name'])
+			modal.render(jsonView)
+			modal.showModal()
+		})
+
 		this.topbar_tools_el.appendChild(compactBtn)
 		this.topbar_tools_el.appendChild(addBtn)
 		this.topbar_tools_el.appendChild(duplicateBtn)
 		this.topbar_tools_el.appendChild(deleteBtn)
+		this.topbar_tools_el.appendChild(jsonDebugBtn)
 		this.topbar_tools_el.appendChild(switchWrapper)
 
 		this.topbar_el.appendChild(this.group_name_el)
@@ -151,7 +167,8 @@ export class ConfigGroup {
 
 	private async addKey(e: PointerEvent = null) {
 		e?.stopPropagation()
-		let pathString = this.group_el.dataset.position + ':' + this.group_el.dataset.name
+		let name = this.group_el.dataset.alias || this.group_el.dataset.name
+		let pathString = this.group_el.dataset.position + ':' + name
 		await addKeys(pathString, this.childrenContainer, this.json, this.group_el.dataset.disabled === 'true')
 	}
 

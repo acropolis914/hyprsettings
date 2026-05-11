@@ -4,6 +4,12 @@ import type { ConfigDataType, ConfigDescription } from '@scripts/types/configDes
 import { GLOBAL } from '@scripts/GLOBAL.ts'
 import { NiriAnimationsConfigDescriptions } from '@scripts/NiriSpecific/niriAnimationsConfigDescriptions.ts'
 import { NiriLayoutCDs } from '@scripts/NiriSpecific/niriLayoutCDs.ts'
+import { NiriKeybindCDs } from '@scripts/NiriSpecific/niriKeyBindsCDs.ts'
+import { NiriOutputCDs } from '@scripts/NiriSpecific/niriOutputCDs.ts'
+import { NiriInputCDs } from '@scripts/NiriSpecific/niriInputCDs.ts'
+import { NiriSwitchEventCDs } from '@scripts/NiriSpecific/niriSwitchEventsCDs.ts'
+import { NiriWorkspaceCDs } from '@scripts/NiriSpecific/niriWorkspaceCDs.ts'
+import { NiriMiscCDs } from '@scripts/NiriSpecific/niriMiscCDs.ts'
 
 const configDescriptions = _configDescriptions as ConfigDescription[]
 const configDescriptionsExtra = _configDescriptionsExtra as ConfigDescription[]
@@ -24,7 +30,16 @@ function getAllConfigDescriptions(): ConfigDescription[] {
 	if (GLOBAL.mode === 'hyprland') {
 		return [...configDescriptions, ...deviceParams, ...configDescriptionsExtra]
 	} else if (GLOBAL.mode === 'niri') {
-		return [...NiriAnimationsConfigDescriptions, ...NiriLayoutCDs]
+		return [
+			...NiriAnimationsConfigDescriptions,
+			...NiriLayoutCDs,
+			...NiriKeybindCDs,
+			...NiriOutputCDs,
+			...NiriInputCDs,
+			...NiriSwitchEventCDs,
+			...NiriWorkspaceCDs,
+			...NiriMiscCDs,
+		]
 	} else return []
 }
 let configMap: Map<string, ConfigDescription> | null = null

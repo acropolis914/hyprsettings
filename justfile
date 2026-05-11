@@ -11,7 +11,7 @@ dev-niri:
     cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --ui electron --config ~/.config/niri/config.kdl --verbose" "vite --host"
 
 dev-niri-short:
-    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --ui gtk --config ~/Documents/Projects/hyprsettings/config_niri_short.kdl" "vite --host"
+    cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --ui electron --config ~/Documents/Projects/hyprsettings/config_niri_short.kdl" "vite --host"
 
 dev-noui:
     cd src/ui-src && bunx concurrently -k -s first -n py,vt -c cyan,green "sh ../../run.sh --bun-dev --debug --no-daemon --no-browser --no-window" "vite --host"

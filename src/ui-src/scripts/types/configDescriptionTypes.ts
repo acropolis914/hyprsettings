@@ -22,6 +22,8 @@ export type ConfigDataType =
 	| 'CONFIG_OPTION_STRING_SHORT'
 	/** Vector/coordinates. Represented as `{defaultX, defaultY}, {minX, minY}, {maxX, maxY}` or similar ranges. e.g. `{}, {-250, -250}, {250, 250}`, `{0, 0}, {0, 0}, {1000., 1000.}` */
 	| 'CONFIG_OPTION_VECTOR'
+	/**	For Niri valueless stuff*/
+	| 'CONFIG_OPTION_FLAG'
 	/** Represents a configuration group or section */
 	| 'GROUP'
 

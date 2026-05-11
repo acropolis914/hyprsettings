@@ -77,6 +77,34 @@ export const NiriAnimationsConfigDescriptions: ConfigDescription[] = [
 			description: 'Custom shader for drawing the window.',
 		},
 	]),
+	{
+		name: 'spring',
+		path: 'animations:animation-scope',
+		type: 'CONFIG_OPTION_STRING_SHORT' as const,
+		data: 'damping-ratio=0.80 stiffness=523 epsilon=0.0001',
+		description: 'Spring animation parameters (damping-ratio stiffness epsilon).',
+	},
+	{
+		name: 'duration-ms',
+		path: 'animations:animation-scope',
+		type: 'CONFIG_OPTION_INT' as const,
+		data: '150, 0, 10000',
+		description: 'Duration of the animation in milliseconds.',
+	},
+	{
+		name: 'curve',
+		path: 'animations:animation-scope',
+		type: 'CONFIG_OPTION_CHOICE' as const,
+		data: '0, "ease-out-quad,ease-out-cubic,ease-out-expo,linear,cubic-bezier"',
+		description: 'The easing curve to use.',
+	},
+	{
+		name: 'custom-shader',
+		path: 'animations:animation-scope',
+		type: 'CONFIG_OPTION_STRING_LONG' as const,
+		data: '',
+		description: 'Custom shader for drawing the window.',
+	},
 ]
 
 if (import.meta.main) {

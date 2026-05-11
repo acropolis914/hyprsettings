@@ -59,6 +59,26 @@ except:
 
 
 class NiriParser:
+	TYPE_ALIASES = {
+		  "GROUP_KB": "keybind"
+	}
+
+	STARTSWITH_ALIASES = {
+		  "output": "output",
+		  "workspace": "workspace",
+		  "workspace-switch": "animation-scope",
+		  "window-open": "animation-scope",
+		  "window-close": "animation-scope",
+		  "horizontal-view-movement": "animation-scope",
+		  "window-movement": "animation-scope",
+		  "window-resize": "animation-scope",
+		  "config-notification-open-close": "animation-scope",
+		  "exit-confirmation-open-close": "animation-scope",
+		  "screenshot-ui-open": "animation-scope",
+		  "overview-open-close": "animation-scope",
+		  "recent-windows-close": "animation-scope"
+	}
+
 	def __init__(self, tokens: list[KDLToken]):
 		self.tokens = tokens
 		self.position = 0
@@ -167,6 +187,17 @@ class NiriParser:
 			self.current_token = self.tokens[self.position] if self.position < len(self.tokens) else KDLToken(
 				  type='EOF', value=None)
 
+	def get_node_alias(self, node) -> str:
+		if node.type in self.TYPE_ALIASES:
+			return self.TYPE_ALIASES[node.type]
+
+		name = node.name or ""
+		for prefix, alias in self.STARTSWITH_ALIASES.items():
+			if name.startswith(prefix):
+				return alias
+
+		return node.name or "_"
+
 	def parse(self):
 		while self.current_token.type != 'EOF':
 			# resolver: comment
@@ -175,7 +206,8 @@ class NiriParser:
 				newNode = ItemPropsMisc(name=None, comment=f"{self.current_token.value}" or '',
 				                        value=self.current_token.value or '', type='COMMENT',
 				                        token_number=self.position, resolver=resolver_)
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
 				# if "Alternatively" in self.current_token.value:
 				# 	console.print_json(newNode.to_json())
 				# console.print(newNode.position)
@@ -189,7 +221,8 @@ class NiriParser:
 				newNode = ItemPropsMisc(name=None, comment=self.current_token.value or "",
 				                        value=self.current_token.value or '', type='COMMENT',
 				                        token_number=self.position, resolver=resolver_)
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
 				continue
@@ -212,7 +245,9 @@ class NiriParser:
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP_KB', token_number=self.position,
 				                         resolver=resolver_)  # Todo Return to KEYBIND_GROUP
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				newNode.alias = self.get_node_alias(newNode)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				continue
@@ -227,7 +262,9 @@ class NiriParser:
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName, type='GROUP', token_number=self.position,
 				                         resolver=resolver_)
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				newNode.alias = self.get_node_alias(newNode)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				# left_tokens = self.peek_until("BR")
@@ -268,7 +305,9 @@ class NiriParser:
 				self.consume()  # consume '{'
 				newNode = ItemPropsGroup(name=newNodeName.strip(), type='GROUP', token_number=self.position,
 				                         resolver=resolver_, disabled=is_disabled)
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				newNode.alias = self.get_node_alias(newNode)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
 				self.parentStack[-1].children.append(newNode)
 				self.parentStack.append(newNode)
 				continue
@@ -276,9 +315,9 @@ class NiriParser:
 			# resolver: key_value
 			elif self.current_token.type == 'WORD' and self.peek(ignore_ws=True).type in ['FLOAT', 'INT', 'STRING',
 			                                                                              "REGX", "BOOL", "WORD"]:
-				if self.current_token.value == "custom-shader":
-					console.print_json(
-						  data=[i.to_dict() for i in self.tokens[self.position - 10:self.position + 10]])
+				# if self.current_token.value == "custom-shader":
+				# console.print_json(
+				# 	  data=[i.to_dict() for i in self.tokens[self.position - 10:self.position + 10]])
 				print(self.current_token)
 				resolver_ = 'key_value'
 				key_token = self.current_token
@@ -306,7 +345,9 @@ class NiriParser:
 					  resolver=resolver_,
 					  comment=comment_
 				)
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
 				try:
 					self.parentStack[-1].children.append(newNode)
 				except Exception as e:
@@ -341,9 +382,11 @@ class NiriParser:
 				group_name = self.peek(-1, ignore_ws=True).value if self.peek(-1,
 				                                                              ignore_ws=True).type == 'WORD' else ''
 				newNode = ItemPropsGroup(name=group_name, type='GROUP', resolver=resolver_)
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
-				self.parentStack[-1].children.append(new_group)
-				self.parentStack.append(new_group)
+				newNode.alias = self.get_node_alias(newNode)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
+				self.parentStack[-1].children.append(newNode)
+				self.parentStack.append(newNode)
 				self.consume()  # consume '{'
 				continue
 			# resolver: word_key
@@ -351,7 +394,8 @@ class NiriParser:
 				resolver_ = "word_key"
 				newNode = ItemPropsKey(name=self.current_token.value, type='KEY', token_number=self.position,
 				                       resolver=resolver_)
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
 				self.parentStack[-1].children.append(newNode)
 				left_tokens = self.consume_until("BR")
 				for token in left_tokens:
@@ -396,7 +440,8 @@ class NiriParser:
 			# resolver: blank
 			elif self.current_token.type == "BR" and self.peek(-1).type == "BR":
 				newNode = ItemPropsMisc(type="BLANK", resolver='blank')
-				newNode.position = "root:" + ":".join(node.name or "_" for node in self.parentStack)
+				path_ = ":".join(self.get_node_alias(node) for node in self.parentStack)
+				newNode.position = path_ if path_.startswith("root:") else f"root:{path_}"
 				self.parentStack[-1].children.append(newNode)
 				self.consume()
 				continue

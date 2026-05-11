@@ -25,48 +25,28 @@ export default class Dialog {
 
 		this.dialog = document.createElement('dialog')
 		this.dialog.classList.add('app-dialog')
-		this.dialog.style.position = 'absolute'
-		this.dialog.style.transform = 'translate(-50%, -50%)'
-		this.dialog.style.top = '50%'
-		this.dialog.style.left = '50%'
-		this.dialog.style.padding = '1rem'
-		this.dialog.style.borderRadius = '0.4rem'
-		this.dialog.style.border = '1px solid #666'
-		this.dialog.style.width = '90%'
-		this.dialog.style.maxWidth = '60rem'
 
 		const shell = document.createElement('div')
-		shell.classList.add('app-dialog__shell')
-		shell.style.display = 'flex'
-		shell.style.flexDirection = 'column'
-		shell.style.gap = '0.75rem'
+		shell.classList.add('dialog-shell')
 
 		const titlebar = document.createElement('div')
-		titlebar.classList.add('app-dialog__titlebar')
-		titlebar.style.display = 'flex'
-		titlebar.style.alignItems = 'center'
-		titlebar.style.justifyContent = 'space-between'
-		titlebar.style.gap = '1rem'
+		titlebar.classList.add('dialog-titlebar')
 
 		this.titleEl = document.createElement('h3')
-		this.titleEl.classList.add('app-dialog__title')
-		this.titleEl.style.margin = '0'
+		this.titleEl.classList.add('dialog-title')
 		this.titleEl.textContent = this.props.title ?? ''
 
 		titlebar.appendChild(this.titleEl)
 
 		this.renderArea = document.createElement('div')
-		this.renderArea.classList.add('app-dialog__render-area')
-		this.renderArea.style.display = 'block'
+		this.renderArea.classList.add('dialog-render-area')
 
 		const actions = document.createElement('div')
-		actions.classList.add('app-dialog__actions')
-		actions.style.display = 'flex'
-		actions.style.justifyContent = 'flex-end'
-		actions.style.gap = '0.5rem'
+		actions.classList.add('dialog-actions')
 
 		this.okayBtn = document.createElement('button')
 		this.okayBtn.type = 'button'
+		this.okayBtn.classList.add('dialog-button', 'button-okay')
 		this.okayBtn.textContent = 'Okay'
 		this.okayBtn.onclick = () => {
 			this.props.onOkay?.()
@@ -75,6 +55,7 @@ export default class Dialog {
 
 		this.closeBtn = document.createElement('button')
 		this.closeBtn.type = 'button'
+		this.closeBtn.classList.add('dialog-button', 'button-close')
 		this.closeBtn.textContent = 'Close'
 		this.closeBtn.onclick = () => {
 			this.close()

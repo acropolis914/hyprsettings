@@ -20,6 +20,7 @@ class BaseNode:
 	"""Shared properties for all configuration nodes."""
 	type: NodeType
 	name: Optional[str] = None
+	alias: Optional[str] = None
 	uuid: Optional[str] = None
 	position: Optional[str] = None
 	comment: Optional[str] = None

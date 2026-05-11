@@ -5,7 +5,8 @@ export type NodeType = 'KEY' | 'GROUP' | 'COMMENT' | 'BLANK' | 'FILE' | 'GROUPEN
  */
 interface BaseNode {
 	name?: string
-	uuid?: string
+	alias?: string
+	uuid: string
 	type: NodeType
 	position?: string
 	comment?: string | null
