@@ -317,7 +317,11 @@ export async function addKeys(
 				.at(-1)
 		}
 
-		let endIndex = parentJSON.children.indexOf(parentJSON.children.find((i) => i.type === 'GROUPEND')) ?? parentJSON.children.length
+		let endIndex = parentJSON.children.findIndex((i) => i.type === 'GROUPEND')
+
+		if (endIndex === -1) {
+			endIndex = parentJSON.children.length
+		}
 		parentJSON.children.splice(endIndex, 0, newNode)
 		// parentJSON.children.push(newNode)
 		handleSave(filepath, `save ${newNode['uuid']}`, false)

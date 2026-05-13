@@ -2,6 +2,13 @@ import type { ConfigDescription } from '@scripts/types/configDescriptionTypes.ts
 
 export const NiriKeybindCDs: ConfigDescription[] = [
 	{
+		name: 'Mod+NewKeybind',
+		path: 'binds:',
+		type: 'GROUP',
+		data: '',
+		description: 'A niri keybind configuration',
+	},
+	{
 		name: 'spawn',
 		path: 'binds:keybind',
 		type: 'CONFIG_OPTION_STRING_LONG',

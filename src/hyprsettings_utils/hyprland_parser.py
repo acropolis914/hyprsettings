@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 import json
 import os
 import re
@@ -271,7 +272,7 @@ class HyprParser:
 		return cls.from_json(json_string).to_hyprland(**kwargs)
 
 	@staticmethod
-	def load_file(path: PathLike) -> HyprParser:
+	def load_file(path: PathLike) -> "HyprParser":
 		return _ConfigParser.load(path)
 
 	@staticmethod
