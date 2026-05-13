@@ -5,7 +5,7 @@
 	opacity: 1;
 	transition:
 		margin 0.3s ease,
-		scale 0.2s ease, grid-template-rows 0.3s ease, height 0.3s ease;
+		scale 0.2s ease, grid-template-rows 0.3s ease, height 0.3s ease, background-color 0.2s ease-in-out;
 	margin-top: var(--spacing-unit);
 	margin-bottom: var(--spacing-unit);
 	//box-shadow: 0 0px 10px rgba(0, 0, 0, 0.05);
@@ -30,9 +30,30 @@
 		will-change: transform, opacity;
 		transition: grid-template-rows 0.3s ease, padding 0.3s ease, opacity 0.3s ease , height 0.3s ease;
 	}
+	//:not(:focus-visible,:focus, :focus-within) {
+	//	#niri-keybind-editor{
+	//		transform: scaleY(0) translateZ(0);
+	//		height:0;
+	//		margin:0;
+	//		padding:0;
+	//		opacity: 0;
+	//	}
+	//}
 	&.compact{
 		.topbar{
 			margin-bottom: 0;
+		}
+
+		#niri-keybind-editor{
+			transform: scaleY(0) translateZ(0);
+			height:0;
+			margin:0;
+			padding:0;
+		}
+		#actions-label {
+			transform: scaleY(0) !important;
+			height: 0;
+			margin: 0;
 		}
 		.children-container{
 			transform: scaleY(0) translateZ(0);
@@ -43,6 +64,7 @@
 			//margin-bottom: 0 !important;
 			opacity: 0;
 			min-height: 0;
+			transform-origin: top;
 			//overflow: hidden !important;
 			.editor-item.editor-item {
 				transform: scaleY(0) translateZ(0);
@@ -135,9 +157,16 @@
 	opacity: 1;
 }
 .config-group.compact{
+	background-color: var(--surface-0);
 	.compact-btn{
 		rotate: 180deg;
 	}
+}
+
+
+.config-group .config-group.compact{
+	//border-top: 10px solid var(--surface-1) !important;
+	margin-block: 5px !important;
 }
 .config-group > .topbar{
 	color: var(--text-1);
@@ -150,6 +179,7 @@
 	justify-content: space-between;
 
 	.group-name{
+		color: var(--accent);
 		&::first-letter{
 			text-transform: uppercase;
 		}
@@ -186,6 +216,8 @@
 		}
 	}
 }
+
+
 
 /* the floating label on the border */
 //.config-group::before {

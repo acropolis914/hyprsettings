@@ -96,10 +96,10 @@ function getNodeContext_new(uuid: string): {
 	return findNodeFromParent(parent)
 }
 
-export function handleSave(file: string | undefined, logAction: string, debounced: boolean) {
+export function handleSave(file: string | undefined, logAction: string = '', debounced: boolean = true) {
 	if (!file) return console.warn(`No .conf file found for action: ${logAction}`)
 	if (!GLOBAL['config'].dryrun && GLOBAL['config'].autosave) {
-		// console.log(`Saving config (${logAction}):`, file)
+		console.log(`Saving config (${logAction}):`, file)
 		if (debounced) saveConfigDebounced(JSON.stringify(GLOBAL['data']), [file])
 		else Backend.saveConfig(JSON.stringify(GLOBAL['data']), [file])
 	} else {

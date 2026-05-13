@@ -306,7 +306,7 @@
 	}
 
 	.add-flag {
-		background: #007acc;
+		background: var(--accent);
 		color: white;
 		border: none;
 		border-radius: 0.25rem;

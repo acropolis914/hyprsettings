@@ -261,7 +261,15 @@ export async function addKeys(
 	}
 
 	// console.log(configString)
-	let parsed: ItemPropsGroup = await Backend.getHyprlandConfigFromString(configString)
+	let parsed: ItemPropsGroup
+	if (GLOBAL.mode === 'hyprland' || GLOBAL.mode === 'mango') {
+		parsed = await Backend.getHyprlandConfigFromString(configString)
+	} else if (GLOBAL.mode === 'niri') {
+		parsed = await Backend.getHyprlandConfigFromString(configString)
+		console.warn('Niri parsing from backend no yet implemented')
+		// alert('Niri parsing from backend no yet implemented')
+		// return
+	}
 	let newNode = parsed.children[0]
 	newNode['disabled'] = disabled
 	let renderTo = parentElement ?? (document.querySelector('.config-set#miscellaneous') as HTMLElement)
@@ -300,10 +308,14 @@ export async function addKeys(
 		}
 		fixPositionNames()
 
-		let filepath = originalPathString
-			.split(':')
-			.filter((i) => i.endsWith('.conf'))
-			.at(-1)
+		let filepath: string
+		if (GLOBAL.mode === 'hyprland' || GLOBAL.mode === 'mango') {
+		} else if (GLOBAL.mode === 'niri') {
+			filepath = originalPathString
+				.split(':')
+				.filter((i) => i.endsWith('.kdl'))
+				.at(-1)
+		}
 
 		let endIndex = parentJSON.children.indexOf(parentJSON.children.find((i) => i.type === 'GROUPEND')) ?? parentJSON.children.length
 		parentJSON.children.splice(endIndex, 0, newNode)

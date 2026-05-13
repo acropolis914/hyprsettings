@@ -4,6 +4,8 @@ type DialogProps = {
 	closeButton?: boolean
 	onOkay?: () => void
 	onClose?: () => void
+	textContent?: string
+	maxWidth?: string
 }
 
 export default class Dialog {
@@ -21,10 +23,15 @@ export default class Dialog {
 			closeButton: props.closeButton ?? true,
 			onOkay: props.onOkay,
 			onClose: props.onClose,
+			textContent: props.textContent,
+			maxWidth: props.maxWidth ?? '45ch',
 		}
 
 		this.dialog = document.createElement('dialog')
 		this.dialog.classList.add('app-dialog')
+		if (this.props.maxWidth !== 'none') {
+			this.dialog.style.maxWidth = this.props.maxWidth
+		}
 
 		const shell = document.createElement('div')
 		shell.classList.add('dialog-shell')
@@ -40,6 +47,9 @@ export default class Dialog {
 
 		this.renderArea = document.createElement('div')
 		this.renderArea.classList.add('dialog-render-area')
+		if (this.props.textContent) {
+			this.renderArea.innerHTML = this.props.textContent
+		}
 
 		const actions = document.createElement('div')
 		actions.classList.add('dialog-actions')

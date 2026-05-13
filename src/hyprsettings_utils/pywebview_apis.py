@@ -45,7 +45,13 @@ class Api:
 
 	@staticmethod
 	def parse_hypr_string(string) -> str:
-		return HyprParser.load_string(string).to_json()
+		json = HyprParser.load_string(string).to_json()
+		console.print_json(json)
+		return json
+
+	# @staticmethod
+	# def parse_niri_string(string: str) -> str:
+	# 	return NiriParser.parse()
 
 	@staticmethod
 	def get_hyprland_config_texts(json_string: str):

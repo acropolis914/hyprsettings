@@ -9,6 +9,8 @@ import { EditorItem_Generic } from '@scripts/ConfigRenderer/EditorItem_Generic.t
 import { createSwitchBox } from '@scripts/ui_components/switchBox.ts'
 import { addKeys } from '@scripts/HyprlandSpecific/editorItem_newKey.ts'
 import Dialog from '@scripts/ui_components/dialog.ts'
+import NiriGroupEditorKeybind from '@scripts/ConfigRenderer/NiriGroupEditorKeybind.svelte'
+import { mount } from 'svelte'
 
 export class ConfigGroup {
 	group_el: HTMLDivElement
@@ -21,8 +23,10 @@ export class ConfigGroup {
 	group_name_el: HTMLDivElement
 	topbar_tools_el: HTMLDivElement
 	json: ItemPropsGroup
+	initialLoad: boolean = true
 
 	constructor(json: ItemPropsGroup) {
+		this.initialLoad = true
 		json['uuid'] = json['uuid'] ?? makeUUID()
 		this.group_el = document.createElement('div')
 		this.group_el.classList.add('config-group')
@@ -41,6 +45,9 @@ export class ConfigGroup {
 		this.json = json
 
 		this.createTopBar()
+		if (json['alias'] && json['alias'] === 'keybind') {
+			this.createNiriKeybindEditor()
+		}
 		this.childrenContainer = document.createElement('div')
 		this.childrenContainer.classList.add('children-container')
 		this.group_el.appendChild(this.childrenContainer)
@@ -52,6 +59,7 @@ export class ConfigGroup {
 		if (['windowrule', 'layerrule'].includes(json['name'])) {
 			this.group_el.classList.add('rule')
 		}
+
 		this.group_el.addEventListener('keydown', (e) => {
 			// if (e.key == "Enter") {
 			// 	e.preventDefault()
@@ -70,6 +78,9 @@ export class ConfigGroup {
 
 		this.contextMenu = new ContextMenu([])
 		this.addEventListeners()
+		setTimeout(() => {
+			this.initialLoad = false
+		}, 10)
 	}
 
 	private createTopBar(json = this.json) {
@@ -85,7 +96,7 @@ export class ConfigGroup {
 
 		const isGroupDisabled = this.group_el.dataset.disabled === 'true'
 		const { wrapper: switchWrapper, checkbox: switchCheckbox } = createSwitchBox(!isGroupDisabled)
-		switchWrapper.title = 'Enable/Disable (d)'
+		switchWrapper.title = 'Enable/Disable (Press d)'
 
 		switchCheckbox.addEventListener('change', (e) => {
 			this.disable(!switchCheckbox.checked)
@@ -163,6 +174,29 @@ export class ConfigGroup {
 		this.topbar_el.appendChild(this.group_name_el)
 		this.topbar_el.appendChild(this.topbar_tools_el)
 		this.group_el.appendChild(this.topbar_el)
+	}
+
+	private createNiriKeybindEditor() {
+		// this.group_el
+		mount(NiriGroupEditorKeybind, {
+			target: this.group_el,
+			props: {
+				initialValue: this.json.name,
+				onChange: (v) => {
+					if (this.initialLoad) {
+						console.log('initial load')
+						return
+					}
+					this.json.name = v
+					this.group_name_el.innerText = v
+					const file = this.json.position
+						.split(':')
+						.filter((v) => v.endsWith('.kdl'))
+						.at(-1)
+					handleSave(file, 'Saving config group')
+				},
+			},
+		})
 	}
 
 	private async addKey(e: PointerEvent = null) {

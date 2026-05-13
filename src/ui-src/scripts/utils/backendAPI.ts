@@ -38,7 +38,7 @@ export const Backend = {
 
 	async getHyprlandConfigFromString(configString: string) {
 		try {
-			console.debug('[Backend API] getHyprlandConfigFromString called')
+			console.log('[Backend API] getHyprlandConfigFromString called')
 			const response = await fetch('/api/load_from_string', {
 				method: 'POST',
 				headers: {
